@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 2,
+  "idKas": "risma",
+  "nama": "Kas RISMA Al-Huda",
+  "status": "aktif",
+  "saldo": {
+    "awal": 0,
+    "masuk": 0,
+    "keluar": 0,
+    "akhir": 0
+  },
+  "jumlahTransaksi": 0,
+  "updatedAt": 1787334106559,
+  "transactions": []
+}

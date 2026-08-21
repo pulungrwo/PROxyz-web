@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 2,
+  "idKas": "ramadan",
+  "nama": "Kas Ramadan",
+  "status": "aktif",
+  "saldo": {
+    "awal": 0,
+    "masuk": 0,
+    "keluar": 620000,
+    "akhir": -620000
+  },
+  "jumlahTransaksi": 1,
+  "updatedAt": 1787334106559,
+  "transactions": [
+    {
+      "id": "ramadan-260321-001",
+      "nomor": "001",
+      "tanggal": 1774069200000,
+      "jenis": "keluar",
+      "kategori": "hadiah",
+      "keterangan": "THR 1447H",
+      "nominal": 620000,
+      "label": [
+        "1447h"
+      ]
+    }
+  ]
+}

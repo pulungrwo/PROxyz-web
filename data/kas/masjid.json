@@ -1,0 +1,1640 @@
+{
+  "schemaVersion": 2,
+  "idKas": "masjid",
+  "nama": "Kas Masjid Al-Huda Tanjung Bulan",
+  "status": "aktif",
+  "saldo": {
+    "awal": 0,
+    "masuk": 15304500,
+    "keluar": 11567000,
+    "akhir": 3737500
+  },
+  "jumlahTransaksi": 140,
+  "updatedAt": 1787334106559,
+  "transactions": [
+    {
+      "id": "masjid-260821-002",
+      "nomor": "140",
+      "tanggal": 1787295487856,
+      "jenis": "masuk",
+      "kategori": "infak",
+      "keterangan": "Infak Jumat",
+      "nominal": 33000,
+      "label": []
+    },
+    {
+      "id": "masjid-260821-001",
+      "nomor": "139",
+      "tanggal": 1787295402167,
+      "jenis": "keluar",
+      "kategori": "operasional",
+      "keterangan": "marbot",
+      "nominal": 25000,
+      "label": [
+        "marbot"
+      ]
+    },
+    {
+      "id": "masjid-260814-002",
+      "nomor": "138",
+      "tanggal": 1786698648521,
+      "jenis": "keluar",
+      "kategori": "operasional",
+      "keterangan": "Marbot",
+      "nominal": 25000,
+      "label": [
+        "marbot"
+      ]
+    },
+    {
+      "id": "masjid-260814-001",
+      "nomor": "137",
+      "tanggal": 1786686723028,
+      "jenis": "masuk",
+      "kategori": "infak",
+      "keterangan": "Infak Jumat",
+      "nominal": 17000,
+      "label": []
+    },
+    {
+      "id": "masjid-260807-001",
+      "nomor": "135",
+      "tanggal": 1786078800000,
+      "jenis": "masuk",
+      "kategori": "infak",
+      "keterangan": "Infak Jumat",
+      "nominal": 26000,
+      "label": []
+    },
+    {
+      "id": "masjid-260807-002",
+      "nomor": "136",
+      "tanggal": 1786078800000,
+      "jenis": "keluar",
+      "kategori": "operasional",
+      "keterangan": "Marbot",
+      "nominal": 25000,
+      "label": [
+        "marbot"
+      ]
+    },
+    {
+      "id": "masjid-260731-001",
+      "nomor": "133",
+      "tanggal": 1785474000000,
+      "jenis": "masuk",
+      "kategori": "infak",
+      "keterangan": "Infak Jumat",
+      "nominal": 30000,
+      "label": []
+    },
+    {
+      "id": "masjid-260731-002",
+      "nomor": "134",
+      "tanggal": 1785474000000,
+      "jenis": "keluar",
+      "kategori": "operasional",
+      "keterangan": "Marbot",
+      "nominal": 25000,
+      "label": [
+        "marbot"
+      ]
+    },
+    {
+      "id": "masjid-260724-001",
+      "nomor": "131",
+      "tanggal": 1784869200000,
+      "jenis": "masuk",
+      "kategori": "infak",
+      "keterangan": "Infak Jumat",
+      "nominal": 30000,
+      "label": []
+    },
+    {
+      "id": "masjid-260724-002",
+      "nomor": "132",
+      "tanggal": 1784869200000,
+      "jenis": "keluar",
+      "kategori": "operasional",
+      "keterangan": "Marbot",
+      "nominal": 25000,
+      "label": [
+        "marbot"
+      ]
+    },
+    {
+      "id": "masjid-260717-001",
+      "nomor": "130",
+      "tanggal": 1784264400000,
+      "jenis": "keluar",
+      "kategori": "operasional",
+      "keterangan": "Marbot",
+      "nominal": 25000,
+      "label": [
+        "marbot"
+      ]
+    },
+    {
+      "id": "masjid-260712-001",
+      "nomor": "128",
+      "tanggal": 1783832400000,
+      "jenis": "keluar",
+      "kategori": "acara/kegiatan",
+      "keterangan": "Pengajian Annisa",
+      "nominal": 300000,
+      "label": []
+    },
+    {
+      "id": "masjid-260712-002",
+      "nomor": "129",
+      "tanggal": 1783832400000,
+      "jenis": "masuk",
+      "kategori": "infak",
+      "keterangan": "Infak ibu²",
+      "nominal": 1370000,
+      "label": []
+    },
+    {
+      "id": "masjid-260710-001",
+      "nomor": "127",
+      "tanggal": 1783659600000,
+      "jenis": "masuk",
+      "kategori": "infak",
+      "keterangan": "Infak Jumat",
+      "nominal": 25000,
+      "label": []
+    },
+    {
+      "id": "masjid-260703-001",
+      "nomor": "125",
+      "tanggal": 1783054800000,
+      "jenis": "masuk",
+      "kategori": "infak",
+      "keterangan": "Infak Jumat",
+      "nominal": 33000,
+      "label": []
+    },
+    {
+      "id": "masjid-260703-002",
+      "nomor": "126",
+      "tanggal": 1783054800000,
+      "jenis": "keluar",
+      "kategori": "operasional",
+      "keterangan": "Marbot",
+      "nominal": 25000,
+      "label": [
+        "marbot"
+      ]
+    },
+    {
+      "id": "masjid-260626-001",
+      "nomor": "123",
+      "tanggal": 1782450000000,
+      "jenis": "masuk",
+      "kategori": "infak",
+      "keterangan": "Infak Jumat",
+      "nominal": 22000,
+      "label": []
+    },
+    {
+      "id": "masjid-260626-002",
+      "nomor": "124",
+      "tanggal": 1782450000000,
+      "jenis": "keluar",
+      "kategori": "operasional",
+      "keterangan": "Marbot",
+      "nominal": 25000,
+      "label": [
+        "marbot"
+      ]
+    },
+    {
+      "id": "masjid-260619-001",
+      "nomor": "122",
+      "tanggal": 1781845200000,
+      "jenis": "masuk",
+      "kategori": "infak",
+      "keterangan": "Infak Jumat",
+      "nominal": 20000,
+      "label": []
+    },
+    {
+      "id": "masjid-260612-001",
+      "nomor": "121",
+      "tanggal": 1781240400000,
+      "jenis": "masuk",
+      "kategori": "infak",
+      "keterangan": "Infak Jumat",
+      "nominal": 20000,
+      "label": []
+    },
+    {
+      "id": "masjid-260605-001",
+      "nomor": "118",
+      "tanggal": 1780635600000,
+      "jenis": "keluar",
+      "kategori": "konsumsi",
+      "keterangan": "Konsumsi Kirim Doa",
+      "nominal": 73000,
+      "label": []
+    },
+    {
+      "id": "masjid-260605-002",
+      "nomor": "119",
+      "tanggal": 1780635600000,
+      "jenis": "masuk",
+      "kategori": "infak",
+      "keterangan": "Infak Jumat",
+      "nominal": 30000,
+      "label": []
+    },
+    {
+      "id": "masjid-260605-003",
+      "nomor": "120",
+      "tanggal": 1780635600000,
+      "jenis": "masuk",
+      "kategori": "donatur",
+      "keterangan": "Mbah Giarti",
+      "nominal": 1000000,
+      "label": []
+    },
+    {
+      "id": "masjid-260529-001",
+      "nomor": "117",
+      "tanggal": 1780030800000,
+      "jenis": "masuk",
+      "kategori": "infak",
+      "keterangan": "Infak Jumat",
+      "nominal": 32000,
+      "label": []
+    },
+    {
+      "id": "masjid-260527-001",
+      "nomor": "114",
+      "tanggal": 1779858000000,
+      "jenis": "masuk",
+      "kategori": "acara/kegiatan",
+      "keterangan": "Idul Adha",
+      "nominal": 480000,
+      "label": []
+    },
+    {
+      "id": "masjid-260527-002",
+      "nomor": "115",
+      "tanggal": 1779858000000,
+      "jenis": "masuk",
+      "kategori": "infak",
+      "keterangan": "Infak Karet",
+      "nominal": 320000,
+      "label": []
+    },
+    {
+      "id": "masjid-260527-003",
+      "nomor": "116",
+      "tanggal": 1779858000000,
+      "jenis": "keluar",
+      "kategori": "konsumsi",
+      "keterangan": "Konsumsi Kurban",
+      "nominal": 57000,
+      "label": []
+    },
+    {
+      "id": "masjid-260524-001",
+      "nomor": "113",
+      "tanggal": 1779598800000,
+      "jenis": "keluar",
+      "kategori": "acara/kegiatan",
+      "keterangan": "Gotong Royong",
+      "nominal": 90000,
+      "label": []
+    },
+    {
+      "id": "masjid-260522-001",
+      "nomor": "112",
+      "tanggal": 1779426000000,
+      "jenis": "masuk",
+      "kategori": "infak",
+      "keterangan": "Infak Jumat",
+      "nominal": 25000,
+      "label": []
+    },
+    {
+      "id": "masjid-260515-001",
+      "nomor": "111",
+      "tanggal": 1778821200000,
+      "jenis": "masuk",
+      "kategori": "infak",
+      "keterangan": "Infak Jumat",
+      "nominal": 25000,
+      "label": []
+    },
+    {
+      "id": "masjid-260508-001",
+      "nomor": "110",
+      "tanggal": 1778216400000,
+      "jenis": "masuk",
+      "kategori": "infak",
+      "keterangan": "Infak Jumat",
+      "nominal": 50000,
+      "label": []
+    },
+    {
+      "id": "masjid-260501-001",
+      "nomor": "109",
+      "tanggal": 1777611600000,
+      "jenis": "masuk",
+      "kategori": "infak",
+      "keterangan": "Infak Jumat",
+      "nominal": 12000,
+      "label": []
+    },
+    {
+      "id": "masjid-260424-001",
+      "nomor": "108",
+      "tanggal": 1777006800000,
+      "jenis": "masuk",
+      "kategori": "infak",
+      "keterangan": "Infak Jumat",
+      "nominal": 10000,
+      "label": []
+    },
+    {
+      "id": "masjid-260417-001",
+      "nomor": "107",
+      "tanggal": 1776402000000,
+      "jenis": "masuk",
+      "kategori": "infak",
+      "keterangan": "Infak Jumat",
+      "nominal": 25000,
+      "label": []
+    },
+    {
+      "id": "masjid-260410-001",
+      "nomor": "106",
+      "tanggal": 1775797200000,
+      "jenis": "masuk",
+      "kategori": "infak",
+      "keterangan": "Infak Jumat",
+      "nominal": 19000,
+      "label": []
+    },
+    {
+      "id": "masjid-260403-001",
+      "nomor": "105",
+      "tanggal": 1775192400000,
+      "jenis": "masuk",
+      "kategori": "infak",
+      "keterangan": "Infak Jumat",
+      "nominal": 64000,
+      "label": []
+    },
+    {
+      "id": "masjid-260321-001",
+      "nomor": "104",
+      "tanggal": 1774069200000,
+      "jenis": "masuk",
+      "kategori": "acara/kegiatan",
+      "keterangan": "Idul Fitri",
+      "nominal": 609500,
+      "label": [
+        "1447h"
+      ]
+    },
+    {
+      "id": "masjid-260320-001",
+      "nomor": "103",
+      "tanggal": 1773982800000,
+      "jenis": "masuk",
+      "kategori": "infak",
+      "keterangan": "Infak Jumat",
+      "nominal": 45000,
+      "label": [
+        "1447h"
+      ]
+    },
+    {
+      "id": "masjid-260319-001",
+      "nomor": "101",
+      "tanggal": 1773896400000,
+      "jenis": "masuk",
+      "kategori": "donatur",
+      "keterangan": "Bu Tari",
+      "nominal": 100000,
+      "label": [
+        "1447h"
+      ]
+    },
+    {
+      "id": "masjid-260319-002",
+      "nomor": "102",
+      "tanggal": 1773896400000,
+      "jenis": "keluar",
+      "kategori": "konsumsi",
+      "keterangan": "Konsumsi Ngecat",
+      "nominal": 25000,
+      "label": [
+        "1447h"
+      ]
+    },
+    {
+      "id": "masjid-260318-001",
+      "nomor": "100",
+      "tanggal": 1773810000000,
+      "jenis": "keluar",
+      "kategori": "konsumsi",
+      "keterangan": "Gula Kopi",
+      "nominal": 25000,
+      "label": [
+        "1447h"
+      ]
+    },
+    {
+      "id": "masjid-260317-002",
+      "nomor": "095",
+      "tanggal": 1773723600000,
+      "jenis": "keluar",
+      "kategori": "pemeliharaan",
+      "keterangan": "Tiner",
+      "nominal": 20000,
+      "label": [
+        "1447h"
+      ]
+    },
+    {
+      "id": "masjid-260317-003",
+      "nomor": "096",
+      "tanggal": 1773723600000,
+      "jenis": "keluar",
+      "kategori": "perlengkapan",
+      "keterangan": "Kuas",
+      "nominal": 10000,
+      "label": [
+        "1447h"
+      ]
+    },
+    {
+      "id": "masjid-260317-004",
+      "nomor": "097",
+      "tanggal": 1773723600000,
+      "jenis": "keluar",
+      "kategori": "pemeliharaan",
+      "keterangan": "Cat Emas",
+      "nominal": 100000,
+      "label": [
+        "1447h"
+      ]
+    },
+    {
+      "id": "masjid-260317-005",
+      "nomor": "098",
+      "tanggal": 1773723600000,
+      "jenis": "keluar",
+      "kategori": "konsumsi",
+      "keterangan": "Konsumsi Ngecat",
+      "nominal": 83000,
+      "label": [
+        "1447h"
+      ]
+    },
+    {
+      "id": "masjid-260317-006",
+      "nomor": "099",
+      "tanggal": 1773723600000,
+      "jenis": "keluar",
+      "kategori": "perlengkapan",
+      "keterangan": "Gembok",
+      "nominal": 10000,
+      "label": [
+        "1447h"
+      ]
+    },
+    {
+      "id": "masjid-260317-001",
+      "nomor": "094",
+      "tanggal": 1773723600000,
+      "jenis": "keluar",
+      "kategori": "pemeliharaan",
+      "keterangan": "Cat Putih 5kg",
+      "nominal": 100000,
+      "label": [
+        "1447h"
+      ]
+    },
+    {
+      "id": "masjid-260316-001",
+      "nomor": "087",
+      "tanggal": 1773637200000,
+      "jenis": "keluar",
+      "kategori": "pemeliharaan",
+      "keterangan": "Obat Rumput",
+      "nominal": 60000,
+      "label": [
+        "1447h"
+      ]
+    },
+    {
+      "id": "masjid-260316-002",
+      "nomor": "088",
+      "tanggal": 1773637200000,
+      "jenis": "keluar",
+      "kategori": "pemeliharaan",
+      "keterangan": "Cat Emas",
+      "nominal": 100000,
+      "label": [
+        "1447h"
+      ]
+    },
+    {
+      "id": "masjid-260316-003",
+      "nomor": "089",
+      "tanggal": 1773637200000,
+      "jenis": "keluar",
+      "kategori": "perlengkapan",
+      "keterangan": "Kuas",
+      "nominal": 12000,
+      "label": [
+        "1447h"
+      ]
+    },
+    {
+      "id": "masjid-260316-004",
+      "nomor": "090",
+      "tanggal": 1773637200000,
+      "jenis": "keluar",
+      "kategori": "pemeliharaan",
+      "keterangan": "Tiner",
+      "nominal": 10000,
+      "label": [
+        "1447h"
+      ]
+    },
+    {
+      "id": "masjid-260316-005",
+      "nomor": "091",
+      "tanggal": 1773637200000,
+      "jenis": "keluar",
+      "kategori": "pemeliharaan",
+      "keterangan": "Paku",
+      "nominal": 10000,
+      "label": [
+        "1447h"
+      ]
+    },
+    {
+      "id": "masjid-260316-006",
+      "nomor": "092",
+      "tanggal": 1773637200000,
+      "jenis": "keluar",
+      "kategori": "konsumsi",
+      "keterangan": "Air Minum",
+      "nominal": 7000,
+      "label": [
+        "1447h"
+      ]
+    },
+    {
+      "id": "masjid-260316-007",
+      "nomor": "093",
+      "tanggal": 1773637200000,
+      "jenis": "keluar",
+      "kategori": "peralatan",
+      "keterangan": "Lampu",
+      "nominal": 70000,
+      "label": [
+        "1447h"
+      ]
+    },
+    {
+      "id": "masjid-260315-001",
+      "nomor": "084",
+      "tanggal": 1773550800000,
+      "jenis": "keluar",
+      "kategori": "pemeliharaan",
+      "keterangan": "Cat Biru 20kg",
+      "nominal": 500000,
+      "label": [
+        "1447h"
+      ]
+    },
+    {
+      "id": "masjid-260315-002",
+      "nomor": "085",
+      "tanggal": 1773550800000,
+      "jenis": "keluar",
+      "kategori": "perlengkapan",
+      "keterangan": "Kuas",
+      "nominal": 50000,
+      "label": [
+        "1447h"
+      ]
+    },
+    {
+      "id": "masjid-260315-003",
+      "nomor": "086",
+      "tanggal": 1773550800000,
+      "jenis": "keluar",
+      "kategori": "konsumsi",
+      "keterangan": "Konsumsi Ngecat",
+      "nominal": 97000,
+      "label": [
+        "1447h"
+      ]
+    },
+    {
+      "id": "masjid-260314-001",
+      "nomor": "081",
+      "tanggal": 1773464400000,
+      "jenis": "keluar",
+      "kategori": "perlengkapan",
+      "keterangan": "Double Tape",
+      "nominal": 30000,
+      "label": [
+        "1447h"
+      ]
+    },
+    {
+      "id": "masjid-260314-002",
+      "nomor": "082",
+      "tanggal": 1773464400000,
+      "jenis": "keluar",
+      "kategori": "perlengkapan",
+      "keterangan": "Sendok",
+      "nominal": 12000,
+      "label": [
+        "1447h"
+      ]
+    },
+    {
+      "id": "masjid-260314-003",
+      "nomor": "083",
+      "tanggal": 1773464400000,
+      "jenis": "keluar",
+      "kategori": "konsumsi",
+      "keterangan": "Gula Kopi",
+      "nominal": 35000,
+      "label": [
+        "1447h"
+      ]
+    },
+    {
+      "id": "masjid-260313-001",
+      "nomor": "078",
+      "tanggal": 1773378000000,
+      "jenis": "masuk",
+      "kategori": "infak",
+      "keterangan": "Infak Jumat",
+      "nominal": 33000,
+      "label": [
+        "1447h"
+      ]
+    },
+    {
+      "id": "masjid-260313-002",
+      "nomor": "079",
+      "tanggal": 1773378000000,
+      "jenis": "keluar",
+      "kategori": "peralatan",
+      "keterangan": "Kaligrafi Al-Baqarah 153",
+      "nominal": 77000,
+      "label": [
+        "1447h"
+      ]
+    },
+    {
+      "id": "masjid-260313-003",
+      "nomor": "080",
+      "tanggal": 1773378000000,
+      "jenis": "keluar",
+      "kategori": "konsumsi",
+      "keterangan": "Konsumsi Khataman",
+      "nominal": 25000,
+      "label": [
+        "1447h"
+      ]
+    },
+    {
+      "id": "masjid-260312-002",
+      "nomor": "077",
+      "tanggal": 1773291600000,
+      "jenis": "keluar",
+      "kategori": "perlengkapan",
+      "keterangan": "Spidol",
+      "nominal": 10000,
+      "label": [
+        "1447h"
+      ]
+    },
+    {
+      "id": "masjid-260312-001",
+      "nomor": "076",
+      "tanggal": 1773291600000,
+      "jenis": "keluar",
+      "kategori": "peralatan",
+      "keterangan": "Kaligrafi Allah Muhammad",
+      "nominal": 87000,
+      "label": [
+        "1447h"
+      ]
+    },
+    {
+      "id": "masjid-260311-001",
+      "nomor": "075",
+      "tanggal": 1773205200000,
+      "jenis": "keluar",
+      "kategori": "peralatan",
+      "keterangan": "Kotak Amal",
+      "nominal": 68000,
+      "label": [
+        "1447h"
+      ]
+    },
+    {
+      "id": "masjid-260307-001",
+      "nomor": "074",
+      "tanggal": 1772859600000,
+      "jenis": "keluar",
+      "kategori": "konsumsi",
+      "keterangan": "Air Minum",
+      "nominal": 7000,
+      "label": [
+        "1447h"
+      ]
+    },
+    {
+      "id": "masjid-260306-001",
+      "nomor": "073",
+      "tanggal": 1772773200000,
+      "jenis": "masuk",
+      "kategori": "infak",
+      "keterangan": "Infak Jumat",
+      "nominal": 16000,
+      "label": [
+        "1447h"
+      ]
+    },
+    {
+      "id": "masjid-260303-001",
+      "nomor": "071",
+      "tanggal": 1772514000000,
+      "jenis": "keluar",
+      "kategori": "acara/kegiatan",
+      "keterangan": "Rompi Kurban",
+      "nominal": 477000,
+      "label": [
+        "1447h"
+      ]
+    },
+    {
+      "id": "masjid-260303-002",
+      "nomor": "072",
+      "tanggal": 1772514000000,
+      "jenis": "keluar",
+      "kategori": "operasional",
+      "keterangan": "Listrik + Air",
+      "nominal": 50000,
+      "label": [
+        "1447h"
+      ]
+    },
+    {
+      "id": "masjid-260227-001",
+      "nomor": "070",
+      "tanggal": 1772168400000,
+      "jenis": "masuk",
+      "kategori": "infak",
+      "keterangan": "Infak Jumat",
+      "nominal": 30000,
+      "label": [
+        "1447h"
+      ]
+    },
+    {
+      "id": "masjid-260226-001",
+      "nomor": "068",
+      "tanggal": 1772082000000,
+      "jenis": "keluar",
+      "kategori": "konsumsi",
+      "keterangan": "Gula Kopi",
+      "nominal": 17000,
+      "label": [
+        "1447h"
+      ]
+    },
+    {
+      "id": "masjid-260226-002",
+      "nomor": "069",
+      "tanggal": 1772082000000,
+      "jenis": "keluar",
+      "kategori": "peralatan",
+      "keterangan": "Papan Tulis",
+      "nominal": 214000,
+      "label": [
+        "1447h"
+      ]
+    },
+    {
+      "id": "masjid-260225-001",
+      "nomor": "065",
+      "tanggal": 1771995600000,
+      "jenis": "keluar",
+      "kategori": "peralatan",
+      "keterangan": "Galon",
+      "nominal": 48000,
+      "label": [
+        "1447h"
+      ]
+    },
+    {
+      "id": "masjid-260225-002",
+      "nomor": "066",
+      "tanggal": 1771995600000,
+      "jenis": "keluar",
+      "kategori": "peralatan",
+      "keterangan": "Pompa Galon",
+      "nominal": 30000,
+      "label": [
+        "1447h"
+      ]
+    },
+    {
+      "id": "masjid-260225-003",
+      "nomor": "067",
+      "tanggal": 1771995600000,
+      "jenis": "keluar",
+      "kategori": "konsumsi",
+      "keterangan": "Gula Kopi",
+      "nominal": 52500,
+      "label": [
+        "1447h"
+      ]
+    },
+    {
+      "id": "masjid-260224-001",
+      "nomor": "064",
+      "tanggal": 1771909200000,
+      "jenis": "keluar",
+      "kategori": "peralatan",
+      "keterangan": "Teko Listrik",
+      "nominal": 96000,
+      "label": [
+        "1447h"
+      ]
+    },
+    {
+      "id": "masjid-260221-001",
+      "nomor": "062",
+      "tanggal": 1771650000000,
+      "jenis": "keluar",
+      "kategori": "peralatan",
+      "keterangan": "Clip On",
+      "nominal": 257000,
+      "label": [
+        "1447h"
+      ]
+    },
+    {
+      "id": "masjid-260221-002",
+      "nomor": "063",
+      "tanggal": 1771650000000,
+      "jenis": "keluar",
+      "kategori": "pemeliharaan",
+      "keterangan": "Instalasi Lampu",
+      "nominal": 50000,
+      "label": [
+        "1447h"
+      ]
+    },
+    {
+      "id": "masjid-260220-001",
+      "nomor": "053",
+      "tanggal": 1771563600000,
+      "jenis": "masuk",
+      "kategori": "hasil usaha",
+      "keterangan": "Panen Jagung",
+      "nominal": 5000000,
+      "label": [
+        "1447h"
+      ]
+    },
+    {
+      "id": "masjid-260220-002",
+      "nomor": "054",
+      "tanggal": 1771563600000,
+      "jenis": "keluar",
+      "kategori": "pemeliharaan",
+      "keterangan": "Pasang Kaca",
+      "nominal": 1500000,
+      "label": [
+        "1447h"
+      ]
+    },
+    {
+      "id": "masjid-260220-003",
+      "nomor": "055",
+      "tanggal": 1771563600000,
+      "jenis": "keluar",
+      "kategori": "konsumsi",
+      "keterangan": "Utang Makan2",
+      "nominal": 330000,
+      "label": [
+        "1447h"
+      ]
+    },
+    {
+      "id": "masjid-260220-004",
+      "nomor": "056",
+      "tanggal": 1771563600000,
+      "jenis": "masuk",
+      "kategori": "infak",
+      "keterangan": "Infak Jumat",
+      "nominal": 57000,
+      "label": [
+        "1447h"
+      ]
+    },
+    {
+      "id": "masjid-260220-005",
+      "nomor": "057",
+      "tanggal": 1771563600000,
+      "jenis": "keluar",
+      "kategori": "perlengkapan",
+      "keterangan": "Keset",
+      "nominal": 66000,
+      "label": [
+        "1447h"
+      ]
+    },
+    {
+      "id": "masjid-260220-006",
+      "nomor": "058",
+      "tanggal": 1771563600000,
+      "jenis": "keluar",
+      "kategori": "perlengkapan",
+      "keterangan": "Sapu",
+      "nominal": 20000,
+      "label": [
+        "1447h"
+      ]
+    },
+    {
+      "id": "masjid-260220-007",
+      "nomor": "059",
+      "tanggal": 1771563600000,
+      "jenis": "keluar",
+      "kategori": "perlengkapan",
+      "keterangan": "Gelas",
+      "nominal": 13000,
+      "label": [
+        "1447h"
+      ]
+    },
+    {
+      "id": "masjid-260220-008",
+      "nomor": "060",
+      "tanggal": 1771563600000,
+      "jenis": "keluar",
+      "kategori": "perlengkapan",
+      "keterangan": "Sikat WC",
+      "nominal": 11000,
+      "label": [
+        "1447h"
+      ]
+    },
+    {
+      "id": "masjid-260220-009",
+      "nomor": "061",
+      "tanggal": 1771563600000,
+      "jenis": "keluar",
+      "kategori": "peralatan",
+      "keterangan": "Kipas Angin",
+      "nominal": 410000,
+      "label": [
+        "1447h"
+      ]
+    },
+    {
+      "id": "masjid-260219-001",
+      "nomor": "052",
+      "tanggal": 1771477200000,
+      "jenis": "keluar",
+      "kategori": "konsumsi",
+      "keterangan": "Gula Kopi",
+      "nominal": 10000,
+      "label": [
+        "1447h"
+      ]
+    },
+    {
+      "id": "masjid-260218-001",
+      "nomor": "050",
+      "tanggal": 1771390800000,
+      "jenis": "keluar",
+      "kategori": "konsumsi",
+      "keterangan": "Air Minum",
+      "nominal": 38000,
+      "label": [
+        "1447h"
+      ]
+    },
+    {
+      "id": "masjid-260218-002",
+      "nomor": "051",
+      "tanggal": 1771390800000,
+      "jenis": "keluar",
+      "kategori": "konsumsi",
+      "keterangan": "Gula Kopi",
+      "nominal": 20000,
+      "label": [
+        "1447h"
+      ]
+    },
+    {
+      "id": "masjid-260215-001",
+      "nomor": "048",
+      "tanggal": 1771131600000,
+      "jenis": "keluar",
+      "kategori": "acara/kegiatan",
+      "keterangan": "Gotong Royong",
+      "nominal": 16000,
+      "label": [
+        "1447h"
+      ]
+    },
+    {
+      "id": "masjid-260215-002",
+      "nomor": "049",
+      "tanggal": 1771131600000,
+      "jenis": "keluar",
+      "kategori": "peralatan",
+      "keterangan": "Lampu",
+      "nominal": 146000,
+      "label": [
+        "1447h"
+      ]
+    },
+    {
+      "id": "masjid-260213-001",
+      "nomor": "047",
+      "tanggal": 1770958800000,
+      "jenis": "masuk",
+      "kategori": "infak",
+      "keterangan": "Infak Jumat",
+      "nominal": 5000,
+      "label": [
+        "1447h"
+      ]
+    },
+    {
+      "id": "masjid-260212-001",
+      "nomor": "046",
+      "tanggal": 1770872400000,
+      "jenis": "keluar",
+      "kategori": "peralatan",
+      "keterangan": "Clip On",
+      "nominal": 95000,
+      "label": [
+        "1447h"
+      ]
+    },
+    {
+      "id": "masjid-260208-001",
+      "nomor": "045",
+      "tanggal": 1770526800000,
+      "jenis": "keluar",
+      "kategori": "pemeliharaan",
+      "keterangan": "Obat Rumput",
+      "nominal": 45000,
+      "label": [
+        "1447h"
+      ]
+    },
+    {
+      "id": "masjid-260207-001",
+      "nomor": "042",
+      "tanggal": 1770440400000,
+      "jenis": "keluar",
+      "kategori": "perlengkapan",
+      "keterangan": "Ember",
+      "nominal": 16000,
+      "label": [
+        "1447h"
+      ]
+    },
+    {
+      "id": "masjid-260207-002",
+      "nomor": "043",
+      "tanggal": 1770440400000,
+      "jenis": "keluar",
+      "kategori": "perlengkapan",
+      "keterangan": "Stop Kran",
+      "nominal": 15000,
+      "label": [
+        "1447h"
+      ]
+    },
+    {
+      "id": "masjid-260207-003",
+      "nomor": "044",
+      "tanggal": 1770440400000,
+      "jenis": "keluar",
+      "kategori": "pemeliharaan",
+      "keterangan": "Lem Pipa",
+      "nominal": 10000,
+      "label": [
+        "1447h"
+      ]
+    },
+    {
+      "id": "masjid-260206-001",
+      "nomor": "041",
+      "tanggal": 1770354000000,
+      "jenis": "masuk",
+      "kategori": "infak",
+      "keterangan": "Infak Jumat",
+      "nominal": 10000,
+      "label": [
+        "1447h"
+      ]
+    },
+    {
+      "id": "masjid-260130-001",
+      "nomor": "040",
+      "tanggal": 1769749200000,
+      "jenis": "masuk",
+      "kategori": "infak",
+      "keterangan": "Infak Jumat",
+      "nominal": 12000,
+      "label": [
+        "1447h"
+      ]
+    },
+    {
+      "id": "masjid-260128-001",
+      "nomor": "039",
+      "tanggal": 1769576400000,
+      "jenis": "keluar",
+      "kategori": "peralatan",
+      "keterangan": "Batu Jam",
+      "nominal": 15000,
+      "label": [
+        "1447h"
+      ]
+    },
+    {
+      "id": "masjid-260127-001",
+      "nomor": "038",
+      "tanggal": 1769490000000,
+      "jenis": "keluar",
+      "kategori": "sosial",
+      "keterangan": "Ambulance Fania❤️",
+      "nominal": 150000,
+      "label": [
+        "1447h"
+      ]
+    },
+    {
+      "id": "masjid-260123-001",
+      "nomor": "037",
+      "tanggal": 1769144400000,
+      "jenis": "masuk",
+      "kategori": "infak",
+      "keterangan": "Infak Jumat",
+      "nominal": 17000,
+      "label": [
+        "1447h"
+      ]
+    },
+    {
+      "id": "masjid-260116-001",
+      "nomor": "036",
+      "tanggal": 1768539600000,
+      "jenis": "masuk",
+      "kategori": "infak",
+      "keterangan": "Infak Jumat",
+      "nominal": 20000,
+      "label": [
+        "1447h"
+      ]
+    },
+    {
+      "id": "masjid-260109-001",
+      "nomor": "035",
+      "tanggal": 1767934800000,
+      "jenis": "masuk",
+      "kategori": "infak",
+      "keterangan": "Infak Jumat",
+      "nominal": 65000,
+      "label": [
+        "1447h"
+      ]
+    },
+    {
+      "id": "masjid-251226-001",
+      "nomor": "034",
+      "tanggal": 1766725200000,
+      "jenis": "masuk",
+      "kategori": "infak",
+      "keterangan": "Infak Jumat",
+      "nominal": 25000,
+      "label": [
+        "1447h"
+      ]
+    },
+    {
+      "id": "masjid-251219-001",
+      "nomor": "033",
+      "tanggal": 1766120400000,
+      "jenis": "masuk",
+      "kategori": "infak",
+      "keterangan": "Infak Jumat",
+      "nominal": 15000,
+      "label": [
+        "1447h"
+      ]
+    },
+    {
+      "id": "masjid-251212-001",
+      "nomor": "031",
+      "tanggal": 1765515600000,
+      "jenis": "masuk",
+      "kategori": "hasil usaha",
+      "keterangan": "Jual Kayu",
+      "nominal": 50000,
+      "label": [
+        "1447h"
+      ]
+    },
+    {
+      "id": "masjid-251212-002",
+      "nomor": "032",
+      "tanggal": 1765515600000,
+      "jenis": "masuk",
+      "kategori": "infak",
+      "keterangan": "Infak Jumat",
+      "nominal": 17000,
+      "label": [
+        "1447h"
+      ]
+    },
+    {
+      "id": "masjid-251205-001",
+      "nomor": "030",
+      "tanggal": 1764910800000,
+      "jenis": "masuk",
+      "kategori": "infak",
+      "keterangan": "Infak Jumat",
+      "nominal": 20000,
+      "label": [
+        "1447h"
+      ]
+    },
+    {
+      "id": "masjid-251121-001",
+      "nomor": "029",
+      "tanggal": 1763701200000,
+      "jenis": "masuk",
+      "kategori": "infak",
+      "keterangan": "Infak Jumat",
+      "nominal": 15000,
+      "label": [
+        "1447h"
+      ]
+    },
+    {
+      "id": "masjid-251114-001",
+      "nomor": "027",
+      "tanggal": 1763096400000,
+      "jenis": "masuk",
+      "kategori": "hasil usaha",
+      "keterangan": "Jual Kayu",
+      "nominal": 215000,
+      "label": [
+        "1447h"
+      ]
+    },
+    {
+      "id": "masjid-251114-002",
+      "nomor": "028",
+      "tanggal": 1763096400000,
+      "jenis": "masuk",
+      "kategori": "infak",
+      "keterangan": "Infak Jumat",
+      "nominal": 12000,
+      "label": [
+        "1447h"
+      ]
+    },
+    {
+      "id": "masjid-251107-001",
+      "nomor": "026",
+      "tanggal": 1762491600000,
+      "jenis": "masuk",
+      "kategori": "infak",
+      "keterangan": "Infak Jumat",
+      "nominal": 5000,
+      "label": [
+        "1447h"
+      ]
+    },
+    {
+      "id": "masjid-251102-001",
+      "nomor": "025",
+      "tanggal": 1762059600000,
+      "jenis": "keluar",
+      "kategori": "pemeliharaan",
+      "keterangan": "Obat Rumput",
+      "nominal": 65000,
+      "label": [
+        "1447h"
+      ]
+    },
+    {
+      "id": "masjid-251031-001",
+      "nomor": "024",
+      "tanggal": 1761886800000,
+      "jenis": "masuk",
+      "kategori": "infak",
+      "keterangan": "Infak Jumat",
+      "nominal": 14000,
+      "label": [
+        "1447h"
+      ]
+    },
+    {
+      "id": "masjid-251024-001",
+      "nomor": "023",
+      "tanggal": 1761282000000,
+      "jenis": "masuk",
+      "kategori": "infak",
+      "keterangan": "Infak Jumat",
+      "nominal": 30000,
+      "label": [
+        "1447h"
+      ]
+    },
+    {
+      "id": "masjid-251017-001",
+      "nomor": "022",
+      "tanggal": 1760677200000,
+      "jenis": "masuk",
+      "kategori": "infak",
+      "keterangan": "Infak Jumat",
+      "nominal": 12000,
+      "label": [
+        "1447h"
+      ]
+    },
+    {
+      "id": "masjid-251010-001",
+      "nomor": "021",
+      "tanggal": 1760072400000,
+      "jenis": "masuk",
+      "kategori": "infak",
+      "keterangan": "Infak Jumat",
+      "nominal": 5000,
+      "label": [
+        "1447h"
+      ]
+    },
+    {
+      "id": "masjid-251004-001",
+      "nomor": "020",
+      "tanggal": 1759554000000,
+      "jenis": "keluar",
+      "kategori": "pemeliharaan",
+      "keterangan": "Servis Ampli",
+      "nominal": 100000,
+      "label": [
+        "1447h"
+      ]
+    },
+    {
+      "id": "masjid-251003-001",
+      "nomor": "019",
+      "tanggal": 1759467600000,
+      "jenis": "masuk",
+      "kategori": "infak",
+      "keterangan": "Infak Jumat",
+      "nominal": 15000,
+      "label": [
+        "1447h"
+      ]
+    },
+    {
+      "id": "masjid-250928-001",
+      "nomor": "018",
+      "tanggal": 1759035600000,
+      "jenis": "keluar",
+      "kategori": "acara/kegiatan",
+      "keterangan": "Pengajian Annisa",
+      "nominal": 400000,
+      "label": [
+        "1447h"
+      ]
+    },
+    {
+      "id": "masjid-250926-001",
+      "nomor": "017",
+      "tanggal": 1758862800000,
+      "jenis": "masuk",
+      "kategori": "infak",
+      "keterangan": "Infak Jumat",
+      "nominal": 15000,
+      "label": [
+        "1447h"
+      ]
+    },
+    {
+      "id": "masjid-250921-001",
+      "nomor": "015",
+      "tanggal": 1758430800000,
+      "jenis": "keluar",
+      "kategori": "perlengkapan",
+      "keterangan": "Alat Kebersihan",
+      "nominal": 35000,
+      "label": [
+        "1447h"
+      ]
+    },
+    {
+      "id": "masjid-250921-002",
+      "nomor": "016",
+      "tanggal": 1758430800000,
+      "jenis": "keluar",
+      "kategori": "acara/kegiatan",
+      "keterangan": "Gotong Royong",
+      "nominal": 17500,
+      "label": [
+        "1447h"
+      ]
+    },
+    {
+      "id": "masjid-250919-001",
+      "nomor": "013",
+      "tanggal": 1758258000000,
+      "jenis": "masuk",
+      "kategori": "infak",
+      "keterangan": "Infak Jumat",
+      "nominal": 12000,
+      "label": [
+        "1447h"
+      ]
+    },
+    {
+      "id": "masjid-250919-002",
+      "nomor": "014",
+      "tanggal": 1758258000000,
+      "jenis": "keluar",
+      "kategori": "konsumsi",
+      "keterangan": "Konsumsi Rapat",
+      "nominal": 53000,
+      "label": [
+        "1447h"
+      ]
+    },
+    {
+      "id": "masjid-250916-001",
+      "nomor": "012",
+      "tanggal": 1757998800000,
+      "jenis": "keluar",
+      "kategori": "pemeliharaan",
+      "keterangan": "Obat Rumput",
+      "nominal": 70000,
+      "label": [
+        "1447h"
+      ]
+    },
+    {
+      "id": "masjid-250912-001",
+      "nomor": "011",
+      "tanggal": 1757653200000,
+      "jenis": "masuk",
+      "kategori": "infak",
+      "keterangan": "Infak Jumat",
+      "nominal": 35000,
+      "label": [
+        "1447h"
+      ]
+    },
+    {
+      "id": "masjid-250829-001",
+      "nomor": "010",
+      "tanggal": 1756443600000,
+      "jenis": "masuk",
+      "kategori": "infak",
+      "keterangan": "Infak Jumat",
+      "nominal": 15000,
+      "label": [
+        "1447h"
+      ]
+    },
+    {
+      "id": "masjid-250823-001",
+      "nomor": "009",
+      "tanggal": 1755925200000,
+      "jenis": "keluar",
+      "kategori": "peralatan",
+      "keterangan": "Amplifier",
+      "nominal": 514000,
+      "label": [
+        "1447h"
+      ]
+    },
+    {
+      "id": "masjid-250822-001",
+      "nomor": "007",
+      "tanggal": 1755838800000,
+      "jenis": "masuk",
+      "kategori": "infak",
+      "keterangan": "Infak Jumat",
+      "nominal": 35000,
+      "label": [
+        "1447h"
+      ]
+    },
+    {
+      "id": "masjid-250822-002",
+      "nomor": "008",
+      "tanggal": 1755838800000,
+      "jenis": "keluar",
+      "kategori": "peralatan",
+      "keterangan": "Mic Toa",
+      "nominal": 235000,
+      "label": [
+        "1447h"
+      ]
+    },
+    {
+      "id": "masjid-250815-001",
+      "nomor": "005",
+      "tanggal": 1755234000000,
+      "jenis": "masuk",
+      "kategori": "infak",
+      "keterangan": "Infak Jumat",
+      "nominal": 30000,
+      "label": [
+        "1447h"
+      ]
+    },
+    {
+      "id": "masjid-250815-002",
+      "nomor": "006",
+      "tanggal": 1755234000000,
+      "jenis": "masuk",
+      "kategori": "infak",
+      "keterangan": "Infak Karet",
+      "nominal": 150000,
+      "label": [
+        "1447h"
+      ]
+    },
+    {
+      "id": "masjid-250808-001",
+      "nomor": "001",
+      "tanggal": 1754629200000,
+      "jenis": "masuk",
+      "kategori": "hasil usaha",
+      "keterangan": "Panen Jagung",
+      "nominal": 4000000,
+      "label": [
+        "1447h"
+      ]
+    },
+    {
+      "id": "masjid-250808-002",
+      "nomor": "002",
+      "tanggal": 1754629200000,
+      "jenis": "masuk",
+      "kategori": "lainnya",
+      "keterangan": "Saldo Awal",
+      "nominal": 825000,
+      "label": [
+        "1447h"
+      ]
+    },
+    {
+      "id": "masjid-250808-003",
+      "nomor": "003",
+      "tanggal": 1754629200000,
+      "jenis": "keluar",
+      "kategori": "pemeliharaan",
+      "keterangan": "Pasang Kaca",
+      "nominal": 3000000,
+      "label": [
+        "1447h"
+      ]
+    },
+    {
+      "id": "masjid-250808-004",
+      "nomor": "004",
+      "tanggal": 1754629200000,
+      "jenis": "keluar",
+      "kategori": "sosial",
+      "keterangan": "Untuk RISMA",
+      "nominal": 500000,
+      "label": [
+        "1447h"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,476 @@
+{
+  "schemaVersion": 2,
+  "idKas": "hutri",
+  "nama": "Kas HUT RI Tanjung Bulan",
+  "status": "aktif",
+  "saldo": {
+    "awal": 0,
+    "masuk": 4602000,
+    "keluar": 4496000,
+    "akhir": 106000
+  },
+  "jumlahTransaksi": 41,
+  "updatedAt": 1787334106559,
+  "transactions": [
+    {
+      "id": "hutri-260821-002",
+      "nomor": "041",
+      "tanggal": 1787296306617,
+      "jenis": "keluar",
+      "kategori": "konsumsi",
+      "keterangan": "Akua",
+      "nominal": 80000,
+      "label": []
+    },
+    {
+      "id": "hutri-260821-001",
+      "nomor": "040",
+      "tanggal": 1787296272281,
+      "jenis": "keluar",
+      "kategori": "acara/kegiatan",
+      "keterangan": "Sewa Sound 2",
+      "nominal": 100000,
+      "label": []
+    },
+    {
+      "id": "hutri-260820-001",
+      "nomor": "039",
+      "tanggal": 1787215337756,
+      "jenis": "keluar",
+      "kategori": "hadiah",
+      "keterangan": "Kertas Copy",
+      "nominal": 28000,
+      "label": []
+    },
+    {
+      "id": "hutri-260819-001",
+      "nomor": "038",
+      "tanggal": 1787144654181,
+      "jenis": "keluar",
+      "kategori": "hadiah",
+      "keterangan": "Celana Jamet",
+      "nominal": 40000,
+      "label": [
+        "belanja"
+      ]
+    },
+    {
+      "id": "hutri-260817-006",
+      "nomor": "037",
+      "tanggal": 1786969130974,
+      "jenis": "keluar",
+      "kategori": "acara/kegiatan",
+      "keterangan": "Dekorasi",
+      "nominal": 124000,
+      "label": [
+        "belanja"
+      ]
+    },
+    {
+      "id": "hutri-260817-005",
+      "nomor": "036",
+      "tanggal": 1786969075527,
+      "jenis": "keluar",
+      "kategori": "sosial",
+      "keterangan": "Jenguk Uti Rahmat",
+      "nominal": 60000,
+      "label": [
+        "belanja"
+      ]
+    },
+    {
+      "id": "hutri-260817-004",
+      "nomor": "035",
+      "tanggal": 1786969000712,
+      "jenis": "keluar",
+      "kategori": "hadiah",
+      "keterangan": "Hadiah & Akomodasi",
+      "nominal": 1289000,
+      "label": [
+        "belanja"
+      ]
+    },
+    {
+      "id": "hutri-260817-003",
+      "nomor": "034",
+      "tanggal": 1786968889535,
+      "jenis": "keluar",
+      "kategori": "hadiah",
+      "keterangan": "Spidol",
+      "nominal": 9000,
+      "label": [
+        "belanja"
+      ]
+    },
+    {
+      "id": "hutri-260817-002",
+      "nomor": "033",
+      "tanggal": 1786968867846,
+      "jenis": "keluar",
+      "kategori": "hadiah",
+      "keterangan": "Solasi",
+      "nominal": 20000,
+      "label": [
+        "belanja"
+      ]
+    },
+    {
+      "id": "hutri-260817-001",
+      "nomor": "032",
+      "tanggal": 1786968835009,
+      "jenis": "keluar",
+      "kategori": "hadiah",
+      "keterangan": "Kertas Copy",
+      "nominal": 25000,
+      "label": [
+        "belanja"
+      ]
+    },
+    {
+      "id": "hutri-260816-007",
+      "nomor": "031",
+      "tanggal": 1786897435847,
+      "jenis": "keluar",
+      "kategori": "perlengkapan",
+      "keterangan": "Gelas Akua",
+      "nominal": 6000,
+      "label": [
+        "mulyono"
+      ]
+    },
+    {
+      "id": "hutri-260816-006",
+      "nomor": "030",
+      "tanggal": 1786897301309,
+      "jenis": "keluar",
+      "kategori": "konsumsi",
+      "keterangan": "Akua",
+      "nominal": 42000,
+      "label": [
+        "mulyono"
+      ]
+    },
+    {
+      "id": "hutri-260816-005",
+      "nomor": "029",
+      "tanggal": 1786897058153,
+      "jenis": "keluar",
+      "kategori": "konsumsi",
+      "keterangan": "Martabak",
+      "nominal": 12000,
+      "label": [
+        "mulyono"
+      ]
+    },
+    {
+      "id": "hutri-260816-004",
+      "nomor": "028",
+      "tanggal": 1786897005943,
+      "jenis": "keluar",
+      "kategori": "konsumsi",
+      "keterangan": "Gula Kopi",
+      "nominal": 32000,
+      "label": [
+        "mulyono"
+      ]
+    },
+    {
+      "id": "hutri-260816-003",
+      "nomor": "027",
+      "tanggal": 1786896852567,
+      "jenis": "keluar",
+      "kategori": "konsumsi",
+      "keterangan": "Nasi Bungkus",
+      "nominal": 130000,
+      "label": [
+        "mulyono"
+      ]
+    },
+    {
+      "id": "hutri-260816-002",
+      "nomor": "026",
+      "tanggal": 1786894743784,
+      "jenis": "keluar",
+      "kategori": "perlengkapan",
+      "keterangan": "Pulpen",
+      "nominal": 6000,
+      "label": []
+    },
+    {
+      "id": "hutri-260816-001",
+      "nomor": "025",
+      "tanggal": 1786840477181,
+      "jenis": "keluar",
+      "kategori": "operasional",
+      "keterangan": "Bensin",
+      "nominal": 15000,
+      "label": [
+        "paisol"
+      ]
+    },
+    {
+      "id": "hutri-260815-006",
+      "nomor": "024",
+      "tanggal": 1786803754724,
+      "jenis": "keluar",
+      "kategori": "konsumsi",
+      "keterangan": "Gorengan",
+      "nominal": 18000,
+      "label": [
+        "mulyono"
+      ]
+    },
+    {
+      "id": "hutri-260815-005",
+      "nomor": "023",
+      "tanggal": 1786803682981,
+      "jenis": "keluar",
+      "kategori": "konsumsi",
+      "keterangan": "Gula Aren",
+      "nominal": 18000,
+      "label": [
+        "mulyono"
+      ]
+    },
+    {
+      "id": "hutri-260815-004",
+      "nomor": "022",
+      "tanggal": 1786803587199,
+      "jenis": "keluar",
+      "kategori": "konsumsi",
+      "keterangan": "Akua",
+      "nominal": 60000,
+      "label": [
+        "mulyono"
+      ]
+    },
+    {
+      "id": "hutri-260815-003",
+      "nomor": "021",
+      "tanggal": 1786803276560,
+      "jenis": "keluar",
+      "kategori": "operasional",
+      "keterangan": "Bensin",
+      "nominal": 15000,
+      "label": [
+        "paisol"
+      ]
+    },
+    {
+      "id": "hutri-260815-002",
+      "nomor": "020",
+      "tanggal": 1786803200263,
+      "jenis": "keluar",
+      "kategori": "perlengkapan",
+      "keterangan": "Kerupuk",
+      "nominal": 30000,
+      "label": [
+        "paisol"
+      ]
+    },
+    {
+      "id": "hutri-260815-001",
+      "nomor": "019",
+      "tanggal": 1786803176540,
+      "jenis": "keluar",
+      "kategori": "perlengkapan",
+      "keterangan": "Terong",
+      "nominal": 15000,
+      "label": [
+        "paisol"
+      ]
+    },
+    {
+      "id": "hutri-260814-001",
+      "nomor": "018",
+      "tanggal": 1786708520991,
+      "jenis": "keluar",
+      "kategori": "acara/kegiatan",
+      "keterangan": "Sewa Sound & Juri",
+      "nominal": 750000,
+      "label": []
+    },
+    {
+      "id": "hutri-260813-008",
+      "nomor": "017",
+      "tanggal": 1786630280161,
+      "jenis": "keluar",
+      "kategori": "perlengkapan",
+      "keterangan": "Kuas",
+      "nominal": 6000,
+      "label": []
+    },
+    {
+      "id": "hutri-260813-002",
+      "nomor": "016",
+      "tanggal": 1786630164844,
+      "jenis": "keluar",
+      "kategori": "konsumsi",
+      "keterangan": "Mie Goreng",
+      "nominal": 20000,
+      "label": []
+    },
+    {
+      "id": "hutri-260813-007",
+      "nomor": "015",
+      "tanggal": 1786614636068,
+      "jenis": "keluar",
+      "kategori": "perlengkapan",
+      "keterangan": "Peluit",
+      "nominal": 5000,
+      "label": [
+        "paisol"
+      ]
+    },
+    {
+      "id": "hutri-260813-006",
+      "nomor": "014",
+      "tanggal": 1786614618468,
+      "jenis": "keluar",
+      "kategori": "perlengkapan",
+      "keterangan": "Bola Pimpong",
+      "nominal": 15000,
+      "label": [
+        "paisol"
+      ]
+    },
+    {
+      "id": "hutri-260813-005",
+      "nomor": "013",
+      "tanggal": 1786614568420,
+      "jenis": "keluar",
+      "kategori": "perlengkapan",
+      "keterangan": "Gelas Pop ice",
+      "nominal": 12000,
+      "label": [
+        "paisol"
+      ]
+    },
+    {
+      "id": "hutri-260813-004",
+      "nomor": "012",
+      "tanggal": 1786614497400,
+      "jenis": "keluar",
+      "kategori": "perlengkapan",
+      "keterangan": "Benang Nilon",
+      "nominal": 7000,
+      "label": [
+        "paisol"
+      ]
+    },
+    {
+      "id": "hutri-260813-003",
+      "nomor": "011",
+      "tanggal": 1786614451136,
+      "jenis": "keluar",
+      "kategori": "perlengkapan",
+      "keterangan": "Balon",
+      "nominal": 20000,
+      "label": [
+        "paisol"
+      ]
+    },
+    {
+      "id": "hutri-260813-001",
+      "nomor": "010",
+      "tanggal": 1786614280733,
+      "jenis": "keluar",
+      "kategori": "perlengkapan",
+      "keterangan": "Bola Kaki",
+      "nominal": 48000,
+      "label": [
+        "paisol"
+      ]
+    },
+    {
+      "id": "hutri-260811-001",
+      "nomor": "009",
+      "tanggal": 1786461531652,
+      "jenis": "masuk",
+      "kategori": "iuran",
+      "keterangan": "Sumbangan Warga",
+      "nominal": 852000,
+      "label": []
+    },
+    {
+      "id": "hutri-260809-009",
+      "nomor": "008",
+      "tanggal": 1786256217343,
+      "jenis": "masuk",
+      "kategori": "donatur",
+      "keterangan": "Donatur Tanjung Bulan",
+      "nominal": 850000,
+      "label": []
+    },
+    {
+      "id": "hutri-260809-008",
+      "nomor": "007",
+      "tanggal": 1786256010176,
+      "jenis": "keluar",
+      "kategori": "perlengkapan",
+      "keterangan": "Tali Rafia",
+      "nominal": 17000,
+      "label": []
+    },
+    {
+      "id": "hutri-260809-007",
+      "nomor": "006",
+      "tanggal": 1786255405495,
+      "jenis": "keluar",
+      "kategori": "konsumsi",
+      "keterangan": "Gotong Royong",
+      "nominal": 172000,
+      "label": []
+    },
+    {
+      "id": "hutri-260809-006",
+      "nomor": "005",
+      "tanggal": 1786255296300,
+      "jenis": "keluar",
+      "kategori": "konsumsi",
+      "keterangan": "Gotong Royong",
+      "nominal": 100000,
+      "label": []
+    },
+    {
+      "id": "hutri-260809-005",
+      "nomor": "004",
+      "tanggal": 1786254683208,
+      "jenis": "keluar",
+      "kategori": "konsumsi",
+      "keterangan": "Hari H",
+      "nominal": 1000000,
+      "label": []
+    },
+    {
+      "id": "hutri-260809-004",
+      "nomor": "003",
+      "tanggal": 1786254482876,
+      "jenis": "keluar",
+      "kategori": "perlengkapan",
+      "keterangan": "Undangan",
+      "nominal": 50000,
+      "label": []
+    },
+    {
+      "id": "hutri-260809-003",
+      "nomor": "002",
+      "tanggal": 1786254347845,
+      "jenis": "keluar",
+      "kategori": "konsumsi",
+      "keterangan": "Rapat",
+      "nominal": 100000,
+      "label": []
+    },
+    {
+      "id": "hutri-260809-001",
+      "nomor": "001",
+      "tanggal": 1786253901199,
+      "jenis": "masuk",
+      "kategori": "hasil usaha",
+      "keterangan": "Dari Dusun",
+      "nominal": 2900000,
+      "label": []
+    }
+  ]
+}
