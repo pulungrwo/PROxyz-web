@@ -1,13 +1,13 @@
 {
   "schemaVersion": 2,
-  "updatedAt": 1787337323634,
+  "updatedAt": 1787338112417,
   "kas": [
     {
       "idKas": "mbamar",
       "nama": "Celengan MbaMar",
       "visibility": "private",
       "configured": true,
-      "updatedAt": 1787337323634,
+      "updatedAt": 1787338111996,
       "url": "/kas/mbamar/"
     },
     {
@@ -15,7 +15,7 @@
       "nama": "Celengan RIS",
       "visibility": "private",
       "configured": true,
-      "updatedAt": 1787337323634,
+      "updatedAt": 1787338112202,
       "url": "/kas/ris/"
     },
     {
@@ -23,7 +23,7 @@
       "nama": "Kas HUT RI Tanjung Bulan",
       "visibility": "public",
       "configured": true,
-      "updatedAt": 1787337323634,
+      "updatedAt": 1787338111989,
       "url": "/kas/hutri/",
       "saldo": 106000,
       "jumlahTransaksi": 41
@@ -33,7 +33,7 @@
       "nama": "Kas Masjid Al-Huda Tanjung Bulan",
       "visibility": "public",
       "configured": true,
-      "updatedAt": 1787337323634,
+      "updatedAt": 1787338111973,
       "url": "/kas/masjid/",
       "saldo": 3737500,
       "jumlahTransaksi": 140
@@ -43,7 +43,7 @@
       "nama": "Kas Ramadan",
       "visibility": "public",
       "configured": true,
-      "updatedAt": 1787337323634,
+      "updatedAt": 1787338112408,
       "url": "/kas/ramadan/",
       "saldo": -620000,
       "jumlahTransaksi": 1
@@ -53,7 +53,7 @@
       "nama": "Kas RISMA Al-Huda",
       "visibility": "public",
       "configured": true,
-      "updatedAt": 1787337323634,
+      "updatedAt": 1787338112417,
       "url": "/kas/risma/",
       "saldo": 0,
       "jumlahTransaksi": 0

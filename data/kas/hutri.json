@@ -10,7 +10,6 @@
     "akhir": 106000
   },
   "jumlahTransaksi": 41,
-  "updatedAt": 1787337323634,
   "transactions": [
     {
       "id": "hutri-260821-002",
@@ -472,5 +471,6 @@
       "nominal": 2900000,
       "label": []
     }
-  ]
+  ],
+  "updatedAt": 1787338111989
 }
