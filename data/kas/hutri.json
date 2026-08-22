@@ -220,7 +220,7 @@
       "nomor": "025",
       "tanggal": 1786840477181,
       "jenis": "keluar",
-      "kategori": "operasional",
+      "kategori": "perlengkapan",
       "keterangan": "Bensin",
       "nominal": 15000,
       "label": [
@@ -268,7 +268,7 @@
       "nomor": "021",
       "tanggal": 1786803276560,
       "jenis": "keluar",
-      "kategori": "operasional",
+      "kategori": "perlengkapan",
       "keterangan": "Bensin",
       "nominal": 15000,
       "label": [
@@ -492,5 +492,5 @@
       "label": []
     }
   ],
-  "updatedAt": 1787415455693
+  "updatedAt": 1787415569218
 }
