@@ -6,11 +6,31 @@
   "saldo": {
     "awal": 0,
     "masuk": 4602000,
-    "keluar": 4596000,
-    "akhir": 6000
+    "keluar": 4676000,
+    "akhir": -74000
   },
-  "jumlahTransaksi": 41,
+  "jumlahTransaksi": 43,
   "transactions": [
+    {
+      "id": "hutri-260822-002",
+      "nomor": "043",
+      "tanggal": 1787407735657,
+      "jenis": "keluar",
+      "kategori": "konsumsi",
+      "keterangan": "Rapat",
+      "nominal": 30000,
+      "label": []
+    },
+    {
+      "id": "hutri-260822-001",
+      "nomor": "042",
+      "tanggal": 1787407708786,
+      "jenis": "keluar",
+      "kategori": "konsumsi",
+      "keterangan": "Pasang dekor",
+      "nominal": 50000,
+      "label": []
+    },
     {
       "id": "hutri-260821-002",
       "nomor": "041",
@@ -472,5 +492,5 @@
       "label": []
     }
   ],
-  "updatedAt": 1787369184813
+  "updatedAt": 1787414454554
 }
