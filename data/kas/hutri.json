@@ -90,7 +90,7 @@
       "nomor": "036",
       "tanggal": 1786969075527,
       "jenis": "keluar",
-      "kategori": "sosial",
+      "kategori": "konsumsi",
       "keterangan": "Jenguk Uti Rahmat",
       "nominal": 60000,
       "label": [
@@ -492,5 +492,5 @@
       "label": []
     }
   ],
-  "updatedAt": 1787414454554
+  "updatedAt": 1787415455693
 }
