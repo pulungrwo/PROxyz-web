@@ -6,8 +6,8 @@
   "saldo": {
     "awal": 0,
     "masuk": 4602000,
-    "keluar": 4496000,
-    "akhir": 106000
+    "keluar": 4596000,
+    "akhir": 6000
   },
   "jumlahTransaksi": 41,
   "transactions": [
@@ -438,7 +438,7 @@
       "jenis": "keluar",
       "kategori": "konsumsi",
       "keterangan": "Hari H",
-      "nominal": 1000000,
+      "nominal": 1100000,
       "label": []
     },
     {
@@ -472,5 +472,5 @@
       "label": []
     }
   ],
-  "updatedAt": 1787338111989
+  "updatedAt": 1787369184813
 }

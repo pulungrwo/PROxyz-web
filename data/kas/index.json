@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "updatedAt": 1787338112417,
+  "updatedAt": 1787369184813,
   "kas": [
     {
       "idKas": "mbamar",
@@ -23,9 +23,9 @@
       "nama": "Kas HUT RI Tanjung Bulan",
       "visibility": "public",
       "configured": true,
-      "updatedAt": 1787338111989,
+      "updatedAt": 1787369184813,
       "url": "/kas/hutri/",
-      "saldo": 106000,
+      "saldo": 6000,
       "jumlahTransaksi": 41
     },
     {
