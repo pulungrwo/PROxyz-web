@@ -78,7 +78,7 @@
       "nomor": "037",
       "tanggal": 1786969130974,
       "jenis": "keluar",
-      "kategori": "acara/kegiatan",
+      "kategori": "lainnya",
       "keterangan": "Dekorasi",
       "nominal": 124000,
       "label": [
@@ -492,5 +492,5 @@
       "label": []
     }
   ],
-  "updatedAt": 1787415569218
+  "updatedAt": 1787415828185
 }
