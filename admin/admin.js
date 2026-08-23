@@ -3,7 +3,6 @@
 
   const config = window.PROXYZ_ADMIN_CONFIG || {};
   const API = String(config.apiBase || "").replace(/\/$/, "");
-  const TOKEN_KEY = "proxyz_admin_token";
   const rupiah = new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", maximumFractionDigits: 0 });
   const dateFmt = new Intl.DateTimeFormat("id-ID", { day: "2-digit", month: "short", year: "numeric" });
 
@@ -19,8 +18,9 @@
   const dialog = $("tx-dialog");
   const txForm = $("tx-form");
 
+  const OTP_STORAGE_KEY = "proxyz_admin_otp_challenge";
   let challengeId = "";
-  let token = sessionStorage.getItem(TOKEN_KEY) || "";
+  let challengeExpiresAt = 0;
   let me = null;
   let activeKas = null;
   let activeKasDetail = null;
@@ -37,11 +37,9 @@
   async function api(path, options = {}) {
     if (!API) throw new Error("Alamat API Admin belum dikonfigurasi.");
     const headers = { "Content-Type": "application/json", ...(options.headers || {}) };
-    if (token) headers.Authorization = `Bearer ${token}`;
-
     let response;
     try {
-      response = await fetch(`${API}${path}`, { ...options, headers, cache: "no-store" });
+      response = await fetch(`${API}${path}`, { ...options, headers, cache: "no-store", credentials: "include" });
     } catch (_) {
       throw new Error("API PROxyz belum dapat dihubungi.");
     }
@@ -55,11 +53,48 @@
   }
 
   function clearSession() {
-    token = "";
     me = null;
-    sessionStorage.removeItem(TOKEN_KEY);
     appView.hidden = true;
     loginView.hidden = false;
+  }
+
+  function clearOtpChallenge() {
+    challengeId = "";
+    challengeExpiresAt = 0;
+    try { sessionStorage.removeItem(OTP_STORAGE_KEY); } catch (_) {}
+    otpForm.hidden = true;
+    phoneForm.hidden = false;
+  }
+
+  function saveOtpChallenge(phone) {
+    try {
+      sessionStorage.setItem(OTP_STORAGE_KEY, JSON.stringify({
+        challengeId,
+        expiresAt: challengeExpiresAt,
+        phone: String(phone || "")
+      }));
+    } catch (_) {}
+  }
+
+  function restoreOtpChallenge() {
+    try {
+      const raw = sessionStorage.getItem(OTP_STORAGE_KEY);
+      if (!raw) return false;
+      const saved = JSON.parse(raw);
+      if (!saved?.challengeId || Number(saved.expiresAt) <= Date.now()) {
+        clearOtpChallenge();
+        return false;
+      }
+      challengeId = String(saved.challengeId);
+      challengeExpiresAt = Number(saved.expiresAt);
+      if (saved.phone) $("phone").value = saved.phone;
+      phoneForm.hidden = true;
+      otpForm.hidden = false;
+      return true;
+    } catch (_) {
+      clearOtpChallenge();
+      return false;
+    }
   }
 
   function todayJakarta() {
@@ -84,14 +119,13 @@
   }
 
   async function bootstrapSession() {
-    if (!token) return clearSession();
     try {
       const data = await api("/api/me");
       me = data.user;
       renderMe();
-    } catch (error) {
+    } catch (_) {
       clearSession();
-      setStatus(authStatus, error.message, "error");
+      setStatus(authStatus);
     }
   }
 
@@ -270,10 +304,13 @@
     try {
       const result = await api("/api/auth/request", { method: "POST", body: JSON.stringify({ phone: $("phone").value }) });
       challengeId = result.challengeId;
+      challengeExpiresAt = Number(result.expiresAt) || (Date.now() + (Number(result.expiresInSeconds) || 300) * 1000);
+      saveOtpChallenge($("phone").value);
       phoneForm.hidden = true;
       otpForm.hidden = false;
+      $("otp").value = "";
       $("otp").focus();
-      setStatus(authStatus, "Kode OTP sudah dikirim ke WhatsApp.", "success");
+      setStatus(authStatus, "Kode OTP sudah dikirim ke WhatsApp dan berlaku 5 menit.", "success");
     } catch (error) {
       setStatus(authStatus, error.message, "error");
     }
@@ -283,20 +320,21 @@
     event.preventDefault();
     setStatus(authStatus, "Memeriksa kode…");
     try {
-      const result = await api("/api/auth/verify", { method: "POST", body: JSON.stringify({ challengeId, code: $("otp").value }) });
-      token = result.token;
-      sessionStorage.setItem(TOKEN_KEY, token);
+      if (!challengeId) throw new Error("Tekan Kirim kode OTP terlebih dahulu.");
+      await api("/api/auth/verify", { method: "POST", body: JSON.stringify({ challengeId, code: $("otp").value }) });
+      clearOtpChallenge();
       setStatus(authStatus);
       await bootstrapSession();
     } catch (error) {
+      if (/kedaluwarsa|sesi otp tidak ditemukan|sudah berakhir/i.test(error.message)) {
+        clearOtpChallenge();
+      }
       setStatus(authStatus, error.message, "error");
     }
   });
 
   $("change-phone").addEventListener("click", () => {
-    challengeId = "";
-    otpForm.hidden = true;
-    phoneForm.hidden = false;
+    clearOtpChallenge();
     setStatus(authStatus);
   });
 
@@ -348,5 +386,6 @@
     }
   });
 
+  restoreOtpChallenge();
   bootstrapSession();
 })();
