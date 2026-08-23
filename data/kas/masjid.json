@@ -24,10 +24,10 @@
     {
       "id": "masjid-260821-001",
       "nomor": "139",
-      "tanggal": 1787295402167,
+      "tanggal": 1787288400000,
       "jenis": "keluar",
       "kategori": "operasional",
-      "keterangan": "marbot",
+      "keterangan": "Marbot",
       "nominal": 25000,
       "label": [
         "marbot"
@@ -1636,5 +1636,5 @@
       ]
     }
   ],
-  "updatedAt": 1787338111973
+  "updatedAt": 1787500301674
 }
