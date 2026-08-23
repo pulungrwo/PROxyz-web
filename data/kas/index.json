@@ -1,13 +1,13 @@
 {
   "schemaVersion": 2,
-  "updatedAt": 1787500301674,
+  "updatedAt": 1787500807082,
   "kas": [
     {
       "idKas": "mbamar",
       "nama": "Celengan MbaMar",
       "visibility": "private",
       "configured": true,
-      "updatedAt": 1787338111996,
+      "updatedAt": 1787500807082,
       "url": "/kas/mbamar/"
     },
     {
