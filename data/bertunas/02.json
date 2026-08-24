@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": 1787590413265,
+  "id": "02",
+  "nama": "Samping Rumah 500m²",
+  "lokasi": "",
+  "luas": "500 m²",
+  "season": {
+    "id": "01",
+    "nama": "Musim 01",
+    "status": "aktif"
+  },
+  "activeCropId": "01",
+  "crops": [
+    {
+      "id": "01",
+      "komoditas": "Cabai",
+      "category": "hortikultura",
+      "plantingDate": "",
+      "status": "aktif",
+      "weightKg": 0,
+      "harvestCount": 0
+    }
+  ],
+  "summary": {
+    "weightKg": 0,
+    "harvestCount": 0,
+    "activityCount": 0,
+    "pendingScheduleCount": 0
+  },
+  "financeVisible": false,
+  "recentHarvest": [],
+  "recentActivities": [],
+  "schedules": [],
+  "updatedAt": 1787590413265
+}
