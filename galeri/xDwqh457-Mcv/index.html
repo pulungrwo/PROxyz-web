@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Haha hihi · Galeri PROxyz</title>
+  <link rel="stylesheet" href="../assets/gallery.css">
+</head>
+<body data-gallery-token="xDwqh457-Mcv">
+  <header class="topbar">
+    <div>
+      <p class="brand">GALERI PROxyz</p>
+      <h1>Haha hihi</h1>
+      <p id="gallery-meta" class="meta">Memuat galeri…</p>
+    </div>
+  </header>
+  <main>
+    <section class="controls" aria-label="Pencarian galeri">
+      <input id="search" type="search" placeholder="Cari keterangan foto…" autocomplete="off">
+      <select id="period" aria-label="Periode">
+        <option value="all">Semua waktu</option>
+        <option value="today">Hari ini</option>
+        <option value="month">Bulan ini</option>
+        <option value="year">Tahun ini</option>
+      </select>
+    </section>
+    <section id="gallery" class="gallery" aria-live="polite"></section>
+    <p id="empty" class="empty" hidden>Belum ada foto yang sesuai.</p>
+  </main>
+  <dialog id="viewer">
+    <button id="close-viewer" class="close" aria-label="Tutup">×</button>
+    <img id="viewer-image" alt="">
+    <div class="viewer-info">
+      <strong id="viewer-caption"></strong>
+      <span id="viewer-date"></span>
+      <a id="viewer-original" target="_blank" rel="noopener">Buka foto asli</a>
+    </div>
+  </dialog>
+  <footer>Galeri grup · PROxyz</footer>
+  <script src="../assets/gallery.js" defer></script>
+</body>
+</html>

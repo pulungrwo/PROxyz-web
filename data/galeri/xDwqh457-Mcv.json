@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "token": "xDwqh457-Mcv",
+  "groupName": "Haha hihi",
+  "updatedAt": 1787555875801,
+  "photos": [
+    {
+      "id": "F000001",
+      "nomor": 1,
+      "batchId": "G000001",
+      "caption": "tes galeri",
+      "uploaderName": "Pulung Riswanto",
+      "publicUrl": "https://media.pulungriswanto.my.id/galeri/xDwqh457-Mcv/2026/08/F000001.jpg",
+      "mimeType": "image/jpeg",
+      "width": 1280,
+      "height": 960,
+      "createdAt": 1787555869000
+    }
+  ]
+}
