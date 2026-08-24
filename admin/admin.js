@@ -21,6 +21,8 @@
   let kasRows = [];
   let kasTotal = 0;
   const kasPage = 50;
+  let activeEvidenceTx = null;
+  let evidenceRows = [];
 
   // Bertunas
   let activeBertunas = "";
@@ -233,9 +235,10 @@
       const amount = document.createElement("div"); amount.className = `amount ${tx.jenis === "masuk" ? "in" : "out"}`; amount.textContent = `${tx.jenis === "masuk" ? "+" : "−"}${rupiah.format(tx.nominal)}`;
       top.append(left, amount); card.appendChild(top);
       if (tx.catatan) { const note = document.createElement("div"); note.className = "item-meta"; note.style.marginTop = "6px"; note.textContent = tx.catatan; card.appendChild(note); }
+      if (Number(tx.buktiCount || 0) > 0) { const proof = document.createElement("button"); proof.type = "button"; proof.className = "evidence-badge"; proof.textContent = `📎 ${tx.buktiCount} bukti`; proof.addEventListener("click", () => openEvidence(tx)); card.appendChild(proof); }
       for (const tag of tx.label || []) { const span = document.createElement("span"); span.className = "tag"; span.textContent = `#${tag}`; card.appendChild(span); }
       const actions = document.createElement("div"); actions.className = "item-actions";
-      actions.append(button("Edit", "ghost", () => openKasEdit(tx)), button("Hapus", "danger-soft", () => deleteKasTx(tx)));
+      actions.append(button(Number(tx.buktiCount || 0) ? `Bukti · ${tx.buktiCount}` : "+ Bukti", "evidence-soft", () => openEvidence(tx)), button("Edit", "ghost", () => openKasEdit(tx)), button("Hapus", "danger-soft", () => deleteKasTx(tx)));
       card.appendChild(actions); list.appendChild(card);
     }
     $("load-more").hidden = kasRows.length >= kasTotal;
@@ -264,6 +267,122 @@
     if (!reason.trim()) return alert("Alasan hapus wajib diisi.");
     await api(`/api/kas/${encodeURIComponent(activeKas)}/transaksi/${encodeURIComponent(tx.nomor)}`, { method: "DELETE", body: JSON.stringify({ alasan: reason.trim() }) });
     await loadKas(activeKas);
+  }
+
+  function evidenceBase64(blob) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        const value = String(reader.result || "");
+        resolve(value.includes(",") ? value.slice(value.indexOf(",") + 1) : value);
+      };
+      reader.onerror = () => reject(new Error("Foto tidak dapat dibaca."));
+      reader.readAsDataURL(blob);
+    });
+  }
+
+  async function prepareEvidenceFile(file) {
+    if (!file || !String(file.type || "").startsWith("image/")) throw new Error("Pilih file gambar.");
+    const MAX_DIMENSION = 1800;
+    const QUALITY = 0.84;
+
+    try {
+      const bitmap = await createImageBitmap(file);
+      const scale = Math.min(1, MAX_DIMENSION / Math.max(bitmap.width, bitmap.height));
+      const width = Math.max(1, Math.round(bitmap.width * scale));
+      const height = Math.max(1, Math.round(bitmap.height * scale));
+      const canvas = document.createElement("canvas");
+      canvas.width = width; canvas.height = height;
+      const ctx = canvas.getContext("2d");
+      ctx.fillStyle = "#ffffff"; ctx.fillRect(0, 0, width, height);
+      ctx.drawImage(bitmap, 0, 0, width, height);
+      bitmap.close?.();
+      const blob = await new Promise(resolve => canvas.toBlob(resolve, "image/jpeg", QUALITY));
+      if (!blob) throw new Error("Kompresi gagal.");
+      if (blob.size > 5 * 1024 * 1024) throw new Error("Foto masih terlalu besar setelah diproses.");
+      return { name: String(file.name || "bukti.jpg").replace(/\.[^.]+$/, "") + ".jpg", mimeType: "image/jpeg", data: await evidenceBase64(blob) };
+    } catch (error) {
+      if (file.size > 5 * 1024 * 1024) throw new Error(`${file.name}: lebih dari 5 MB dan tidak dapat diperkecil.`);
+      return { name: file.name || "bukti", mimeType: file.type || "image/jpeg", data: await evidenceBase64(file) };
+    }
+  }
+
+  async function openEvidence(tx) {
+    activeEvidenceTx = tx;
+    $("evidence-title").textContent = `Transaksi ${tx.nomor}`;
+    $("evidence-subtitle").textContent = `${tx.keterangan} · ${rupiah.format(tx.nominal)}`;
+    $("evidence-files").value = "";
+    setStatus($("evidence-status"));
+    $("evidence-dialog").showModal();
+    await loadEvidence();
+  }
+
+  async function loadEvidence() {
+    if (!activeKas || !activeEvidenceTx) return;
+    const data = await api(`/api/kas/${encodeURIComponent(activeKas)}/transaksi/${encodeURIComponent(activeEvidenceTx.nomor)}/bukti`);
+    evidenceRows = data.bukti || [];
+    activeEvidenceTx.buktiCount = evidenceRows.length;
+    renderEvidence();
+  }
+
+  function renderEvidence() {
+    const list = $("evidence-list");
+    list.replaceChildren();
+    $("evidence-count").textContent = `${evidenceRows.length} bukti`;
+    if (!evidenceRows.length) { list.appendChild(emptyBox("Belum ada bukti transaksi.")); return; }
+
+    for (const row of evidenceRows) {
+      const card = document.createElement("article"); card.className = "evidence-card";
+      const link = document.createElement("a"); link.href = row.url; link.target = "_blank"; link.rel = "noopener"; link.className = "evidence-thumb-link";
+      const img = document.createElement("img"); img.src = row.url; img.alt = row.id; img.loading = "lazy"; img.className = "evidence-thumb";
+      link.appendChild(img); card.appendChild(link);
+      const body = document.createElement("div"); body.className = "evidence-card-body";
+      const title = document.createElement("strong"); title.textContent = row.id;
+      const meta = document.createElement("span"); meta.textContent = `${row.uploaderName || "Pengguna"} · ${row.createdAt ? dateTimeFmt.format(new Date(row.createdAt)) : ""}`;
+      const remove = button("Hapus", "danger-soft evidence-delete", () => deleteEvidence(row));
+      body.append(title, meta, remove); card.appendChild(body); list.appendChild(card);
+    }
+  }
+
+  async function uploadEvidence() {
+    if (!activeEvidenceTx) return;
+    const files = [...($("evidence-files").files || [])];
+    if (!files.length) return setStatus($("evidence-status"), "Pilih foto terlebih dahulu.", "error");
+    if (files.length > 10) return setStatus($("evidence-status"), "Maksimal 10 foto sekali upload.", "error");
+
+    const uploadButton = $("upload-evidence");
+    uploadButton.disabled = true;
+    setStatus($("evidence-status"), `Menyiapkan ${files.length} foto…`);
+    try {
+      const prepared = [];
+      for (let i = 0; i < files.length; i++) {
+        setStatus($("evidence-status"), `Memproses foto ${i + 1}/${files.length}…`);
+        prepared.push(await prepareEvidenceFile(files[i]));
+      }
+      setStatus($("evidence-status"), "Mengunggah ke penyimpanan…");
+      const result = await api(`/api/kas/${encodeURIComponent(activeKas)}/transaksi/${encodeURIComponent(activeEvidenceTx.nomor)}/bukti`, { method: "POST", body: JSON.stringify({ files: prepared }) });
+      const notes = [];
+      if (result.saved?.length) notes.push(`${result.saved.length} foto tersimpan`);
+      if (result.duplicate) notes.push(`${result.duplicate} duplikat dilewati`);
+      if (result.failed) notes.push(`${result.failed} gagal`);
+      setStatus($("evidence-status"), notes.join(" · ") || "Selesai.", result.failed ? "error" : "success");
+      $("evidence-files").value = "";
+      await loadEvidence();
+      await loadKasTransactions(true);
+    } catch (error) {
+      setStatus($("evidence-status"), error.message, "error");
+    } finally {
+      uploadButton.disabled = false;
+    }
+  }
+
+  async function deleteEvidence(row) {
+    if (!activeEvidenceTx || !confirm(`Hapus ${row.id} dari Transaksi ${activeEvidenceTx.nomor}?\n\nFile bukti juga akan dihapus dari R2.`)) return;
+    try {
+      await api(`/api/kas/${encodeURIComponent(activeKas)}/transaksi/${encodeURIComponent(activeEvidenceTx.nomor)}/bukti/${encodeURIComponent(row.id)}`, { method: "DELETE", body: "{}" });
+      await loadEvidence();
+      await loadKasTransactions(true);
+    } catch (error) { showError(error); }
   }
 
   // ---------- BERTUNAS ----------
@@ -696,6 +815,8 @@
 
   // Kas events
   $("kas-select").addEventListener("change", () => loadKas($("kas-select").value).catch(showError));
+  $("close-evidence-dialog").addEventListener("click", () => $("evidence-dialog").close());
+  $("upload-evidence").addEventListener("click", uploadEvidence);
   $("refresh").addEventListener("click", () => loadKas(activeKas).catch(showError));
   $("add-income").addEventListener("click", () => openKasCreate("masuk")); $("add-expense").addEventListener("click", () => openKasCreate("keluar")); $("tx-type").addEventListener("change", updateKasCategories); $("close-dialog").addEventListener("click", () => $("tx-dialog").close()); $("load-more").addEventListener("click", () => loadKasTransactions(false).catch(showError));
   let kasSearchTimer; $("search").addEventListener("input", () => { clearTimeout(kasSearchTimer); kasSearchTimer = setTimeout(() => loadKasTransactions(true).catch(showError), 300); });
