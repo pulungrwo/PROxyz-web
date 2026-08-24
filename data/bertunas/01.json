@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": 1787382651808,
+  "generatedAt": 1787583160171,
   "id": "01",
   "nama": "Lahan 300 m²",
   "lokasi": "",
@@ -34,12 +34,21 @@
   "summary": {
     "weightKg": 0,
     "harvestCount": 0,
-    "activityCount": 1,
-    "pendingScheduleCount": 2
+    "activityCount": 2,
+    "pendingScheduleCount": 1
   },
   "financeVisible": false,
   "recentHarvest": [],
   "recentActivities": [
+    {
+      "date": "2026-08-24",
+      "cropId": "01",
+      "komoditas": "Cabai",
+      "category": "Pemupukan",
+      "description": "Kocor 40L air,  150 gr ultradap + 4 sdm Humigrow + 60 age",
+      "note": "",
+      "hst": 11
+    },
     {
       "date": "2026-08-18",
       "cropId": "01",
@@ -51,18 +60,6 @@
     }
   ],
   "schedules": [
-    {
-      "nomor": 1,
-      "cropId": "01",
-      "komoditas": "Cabai",
-      "category": "Pemupukan",
-      "description": "Kocor 40L air,  150 gr ultradap + 4 sdm Humigrow + 60 age",
-      "note": "",
-      "targetType": "hst",
-      "targetHst": 10,
-      "targetDate": "2026-08-23",
-      "status": "pending"
-    },
     {
       "nomor": 2,
       "cropId": "01",
@@ -76,5 +73,5 @@
       "status": "pending"
     }
   ],
-  "updatedAt": 1787382651808
+  "updatedAt": 1787583160171
 }
