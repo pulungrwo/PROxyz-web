@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": 1787583160171,
+  "generatedAt": 1787583349017,
   "id": "01",
   "nama": "Lahan 300 m²",
   "lokasi": "",
@@ -73,5 +73,5 @@
       "status": "pending"
     }
   ],
-  "updatedAt": 1787583160171
+  "updatedAt": 1787583349017
 }
