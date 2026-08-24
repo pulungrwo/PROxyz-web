@@ -1,0 +1,51 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": 1787382651808,
+  "totalProjects": 1,
+  "totalWeightKg": 0,
+  "totalHarvestCount": 0,
+  "commodities": [
+    {
+      "komoditas": "Cabai",
+      "weightKg": 0,
+      "harvestCount": 0,
+      "projectCount": 1
+    },
+    {
+      "komoditas": "Kacang Panjang",
+      "weightKg": 0,
+      "harvestCount": 0,
+      "projectCount": 1
+    }
+  ],
+  "projects": [
+    {
+      "id": "01",
+      "nama": "Lahan 300 m²",
+      "lokasi": "",
+      "luas": "",
+      "season": {
+        "id": "01",
+        "nama": "Musim 01",
+        "status": "aktif"
+      },
+      "crops": [
+        {
+          "id": "01",
+          "komoditas": "Cabai",
+          "weightKg": 0,
+          "harvestCount": 0
+        },
+        {
+          "id": "02",
+          "komoditas": "Kacang Panjang",
+          "weightKg": 0,
+          "harvestCount": 0
+        }
+      ],
+      "weightKg": 0,
+      "harvestCount": 0,
+      "updatedAt": 1787382651808
+    }
+  ]
+}

@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#173b2b">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Admin Bertunas · PROxyz</title>
+  <link rel="stylesheet" href="./admin.css">
+  <link rel="stylesheet" href="./bertunas.css">
+</head>
+<body>
+  <main class="shell bertunas-shell">
+    <header class="topbar">
+      <a href="./" class="brand">PROxyz</a>
+      <span>Admin Bertunas</span>
+    </header>
+
+    <section class="panel bt-toolbar">
+      <div>
+        <p class="eyebrow">Bertunas Web</p>
+        <h1>Kelola Bertunas</h1>
+      </div>
+      <a href="./" class="ghost link-button">Multi Kas</a>
+    </section>
+
+    <p id="bt-status" class="status" aria-live="polite"></p>
+
+    <section id="bt-app" hidden>
+      <section class="panel selector-grid">
+        <label>Bertunas
+          <select id="bt-project"></select>
+        </label>
+        <label>Musim Tanam
+          <select id="bt-season"></select>
+        </label>
+        <label>Tanaman
+          <select id="bt-crop"></select>
+        </label>
+      </section>
+
+      <section class="bt-hero">
+        <div>
+          <p class="eyebrow">Lahan aktif</p>
+          <h2 id="bt-name">—</h2>
+          <p id="bt-meta">—</p>
+        </div>
+        <span id="bt-role" class="bt-badge">—</span>
+      </section>
+
+      <section id="bt-summary" class="bt-cards"></section>
+
+      <section class="panel bt-actions">
+        <button type="button" data-create="expense" class="danger-soft">+ Biaya</button>
+        <button type="button" data-create="harvest" class="primary">+ Panen</button>
+        <button type="button" data-create="activity" class="ghost">+ Aktivitas</button>
+        <button type="button" data-create="schedule" class="ghost">+ Jadwal</button>
+        <button type="button" data-create="planting" class="ghost">Tanggal tanam</button>
+      </section>
+
+      <section class="panel">
+        <nav class="bt-tabs" aria-label="Data Bertunas">
+          <button type="button" data-tab="transactions" class="active">Transaksi</button>
+          <button type="button" data-tab="activities">Aktivitas</button>
+          <button type="button" data-tab="schedules">Jadwal</button>
+        </nav>
+        <div id="bt-list" class="bt-list"></div>
+      </section>
+    </section>
+  </main>
+
+  <dialog id="bt-dialog">
+    <form id="bt-form" class="dialog-form">
+      <div class="section-head">
+        <div><p class="eyebrow" id="bt-form-mode">Input</p><h2 id="bt-form-title">Tambah data</h2></div>
+        <button id="bt-close" class="icon-button" type="button" aria-label="Tutup">×</button>
+      </div>
+      <div id="bt-fields" class="bt-fields"></div>
+      <p id="bt-form-status" class="status" aria-live="polite"></p>
+      <button class="primary full" type="submit">Simpan</button>
+    </form>
+  </dialog>
+
+  <script src="./config.js"></script>
+  <script src="./bertunas.js" defer></script>
+</body>
+</html>
