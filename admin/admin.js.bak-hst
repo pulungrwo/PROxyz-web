@@ -406,39 +406,6 @@
     return btCropScope === BT_ALL_CROPS;
   }
 
-  function btDayDiff(fromDate, toDate) {
-    const from = String(fromDate || "").trim();
-    const to = String(toDate || "").trim();
-    if (!/^\d{4}-\d{2}-\d{2}$/.test(from) || !/^\d{4}-\d{2}-\d{2}$/.test(to)) return null;
-    const a = Date.parse(`${from}T00:00:00Z`);
-    const b = Date.parse(`${to}T00:00:00Z`);
-    if (!Number.isFinite(a) || !Number.isFinite(b)) return null;
-    return Math.round((b - a) / 86400000);
-  }
-
-  function btHstForDate(plantingDate, date) {
-    return btDayDiff(plantingDate, date);
-  }
-
-  function btHstLabel(value) {
-    if (value === null || value === undefined || !Number.isFinite(Number(value))) return "";
-    return `${Number(value)} HST`;
-  }
-
-  function btCropCurrentHst(crop) {
-    return crop?.plantingDate ? btHstForDate(crop.plantingDate, todayJakarta()) : null;
-  }
-
-  function btScheduleHst(row) {
-    if (row?.targetHst !== null && row?.targetHst !== undefined && Number.isFinite(Number(row.targetHst))) {
-      return Number(row.targetHst);
-    }
-    if (row?.plantingDate && row?.targetDate) {
-      return btHstForDate(row.plantingDate, row.targetDate);
-    }
-    return null;
-  }
-
   function btQuery() {
     const q = new URLSearchParams();
     const season = btSelectedSeason();
@@ -461,9 +428,9 @@
     const season = btCurrentSeason();
     if (!season) return "Belum ada Musim Tanam";
     const crop = btCurrentCrop();
-    if (!crop) return `Semua tanaman · ${season.nama}`;
-    const hst = btCropCurrentHst(crop);
-    return `${crop.komoditas} · Tanaman ${crop.id}${hst === null ? "" : ` · ${btHstLabel(hst)}`}`;
+    return crop
+      ? `${crop.komoditas} · Tanaman ${crop.id}`
+      : `Semua tanaman · ${season.nama}`;
   }
 
   async function loadBertunas(id, preserve = false) {
@@ -590,10 +557,7 @@
       all: true
     }));
     for (const crop of crops) {
-      const currentHst = btCropCurrentHst(crop);
-      const planting = crop.plantingDate
-        ? ` · tanam ${crop.plantingDate}${currentHst === null ? "" : ` · ${btHstLabel(currentHst)}`}`
-        : "";
+      const planting = crop.plantingDate ? ` · tanam ${crop.plantingDate}` : "";
       grid.appendChild(makeBtCropCard({
         id: crop.id,
         title: crop.komoditas,
@@ -671,13 +635,7 @@
     for (const row of btSchedules) {
       const card = document.createElement("article"); card.className = "item-card";
       const title = document.createElement("h3"); title.textContent = `${row.ref} · ${row.description}`;
-      const scheduleHst = btScheduleHst(row);
-      const targetParts = [];
-      if (scheduleHst !== null) targetParts.push(btHstLabel(scheduleHst));
-      if (row.targetDate) targetParts.push(row.targetDate);
-      const meta = document.createElement("div");
-      meta.className = "item-meta";
-      meta.textContent = `${targetParts.join(" · ")} · ${row.category} · ${row.cropName || ""} · ${row.status}`;
+      const meta = document.createElement("div"); meta.className = "item-meta"; meta.textContent = `${row.targetDate || ""} · ${row.category} · ${row.cropName || ""} · ${row.status}`;
       card.append(title, meta);
       if (row.note) { const n = document.createElement("div"); n.className = "item-meta"; n.style.marginTop = "6px"; n.textContent = row.note; card.appendChild(n); }
       const actions = document.createElement("div"); actions.className = "item-actions";

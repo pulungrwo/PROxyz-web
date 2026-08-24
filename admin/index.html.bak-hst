@@ -153,6 +153,6 @@
   <dialog id="gallery-edit-dialog"><form id="gallery-edit-form" method="dialog" class="dialog-form"><div class="section-head"><div><p class="eyebrow" id="gallery-edit-id">Foto</p><h2>Edit keterangan</h2></div><button id="close-gallery-edit" class="icon-button" type="button">×</button></div><input id="gallery-edit-number" type="hidden"><label>Keterangan<textarea id="gallery-edit-caption" rows="4" maxlength="500"></textarea></label><p id="gallery-edit-status" class="status"></p><button class="primary full" type="submit">Simpan perubahan</button></form></dialog>
 
   <script src="./config.js?v=231"></script>
-  <script src="./admin.js?v=233" defer></script>
+  <script src="./admin.js?v=232" defer></script>
 </body>
 </html>
