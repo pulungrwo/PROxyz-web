@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": 1787590413265,
+  "generatedAt": 1787590603487,
   "totalProjects": 2,
   "totalWeightKg": 0,
   "totalHarvestCount": 0,
@@ -49,7 +49,7 @@
     },
     {
       "id": "02",
-      "nama": "Samping Rumah 500m²",
+      "nama": "Samping Rumah",
       "lokasi": "",
       "luas": "500 m²",
       "season": {
@@ -67,7 +67,7 @@
       ],
       "weightKg": 0,
       "harvestCount": 0,
-      "updatedAt": 1787590413265
+      "updatedAt": 1787590603487
     }
   ]
 }

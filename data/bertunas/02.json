@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
-  "generatedAt": 1787590413265,
+  "generatedAt": 1787590603487,
   "id": "02",
-  "nama": "Samping Rumah 500m²",
+  "nama": "Samping Rumah",
   "lokasi": "",
   "luas": "500 m²",
   "season": {
@@ -32,5 +32,5 @@
   "recentHarvest": [],
   "recentActivities": [],
   "schedules": [],
-  "updatedAt": 1787590413265
+  "updatedAt": 1787590603487
 }
