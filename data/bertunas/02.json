@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": 1787590603487,
+  "generatedAt": 1787591086973,
   "id": "02",
   "nama": "Samping Rumah",
   "lokasi": "",
@@ -25,12 +25,22 @@
   "summary": {
     "weightKg": 0,
     "harvestCount": 0,
-    "activityCount": 0,
+    "activityCount": 1,
     "pendingScheduleCount": 0
   },
   "financeVisible": false,
   "recentHarvest": [],
-  "recentActivities": [],
+  "recentActivities": [
+    {
+      "date": "2026-08-25",
+      "cropId": "01",
+      "komoditas": "Cabai",
+      "category": "Olah Lahan",
+      "description": "Bajak",
+      "note": "",
+      "hst": null
+    }
+  ],
   "schedules": [],
-  "updatedAt": 1787590603487
+  "updatedAt": 1787591086973
 }
