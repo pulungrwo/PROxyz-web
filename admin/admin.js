@@ -29,6 +29,7 @@
   let btActivities = [];
   let btSchedules = [];
   let btFormState = null;
+  let btCropScope = "__all__";
 
   // Galeri
   let activeGallery = "";
@@ -266,20 +267,67 @@
   }
 
   // ---------- BERTUNAS ----------
+  const BT_ALL_CROPS = "__all__";
+
+  function btSelectedSeason() {
+    return $("bt-season").value || btDetail?.activeSeasonId || "";
+  }
+
+  function btCurrentSeason() {
+    const id = btSelectedSeason();
+    return (btDetail?.seasons || []).find(row => row.id === id) || btDetail?.seasons?.[0] || null;
+  }
+
+  function btCurrentCrop() {
+    if (btCropScope === BT_ALL_CROPS) return null;
+    return (btCurrentSeason()?.crops || []).find(row => row.id === btCropScope) || null;
+  }
+
+  function btIsAllCrops() {
+    return btCropScope === BT_ALL_CROPS;
+  }
+
   function btQuery() {
-    const season = $("bt-season").value || "";
-    const crop = $("bt-crop").value || "";
-    return `season=${encodeURIComponent(season)}&crop=${encodeURIComponent(crop)}`;
+    const q = new URLSearchParams();
+    const season = btSelectedSeason();
+    if (season) q.set("season", season);
+    if (btIsAllCrops()) q.set("allCrops", "1");
+    else if (btCropScope) q.set("crop", btCropScope);
+    return q.toString();
+  }
+
+  function btRowContextBody(row = null) {
+    return {
+      seasonId: String(row?.seasonId || btSelectedSeason() || ""),
+      cropId: row && Object.prototype.hasOwnProperty.call(row, "cropId")
+        ? String(row.cropId || "")
+        : (btIsAllCrops() ? "" : String(btCropScope || ""))
+    };
+  }
+
+  function btScopeLabel() {
+    const season = btCurrentSeason();
+    if (!season) return "Belum ada Musim Tanam";
+    const crop = btCurrentCrop();
+    return crop
+      ? `${crop.komoditas} · Tanaman ${crop.id}`
+      : `Semua tanaman · ${season.nama}`;
   }
 
   async function loadBertunas(id, preserve = false) {
     activeBertunas = id;
     $("bertunas-select").value = id;
-    let season = preserve ? $("bt-season").value : "";
-    let crop = preserve ? $("bt-crop").value : "";
-    const q = new URLSearchParams(); if (season) q.set("season", season); if (crop) q.set("crop", crop);
-    const data = await api(`/api/bertunas/${encodeURIComponent(id)}${q.toString() ? `?${q}` : ""}`);
+    const previousSeason = preserve ? $("bt-season").value : "";
+    const previousScope = preserve ? btCropScope : BT_ALL_CROPS;
+    const q = new URLSearchParams();
+    if (previousSeason) q.set("season", previousSeason);
+    if (previousScope === BT_ALL_CROPS) q.set("allCrops", "1");
+    else if (previousScope) q.set("crop", previousScope);
+    if (!q.has("allCrops") && !q.has("crop")) q.set("allCrops", "1");
+
+    const data = await api(`/api/bertunas/${encodeURIComponent(id)}?${q}`);
     btDetail = data.bertunas;
+    btCropScope = previousScope || BT_ALL_CROPS;
     renderBertunasContext();
     await loadBertunasLists();
     $("bertunas-content").hidden = false;
@@ -289,27 +337,129 @@
     $("bt-name").textContent = btDetail.nama;
     $("bt-place").textContent = [btDetail.lokasi, btDetail.luas].filter(Boolean).join(" · ");
     $("bt-role").textContent = btDetail.role;
-    $("bt-expense").textContent = rupiah.format(btDetail.summary?.expense || 0);
-    $("bt-revenue").textContent = rupiah.format(btDetail.summary?.revenue || 0);
-    $("bt-profit").textContent = rupiah.format(btDetail.summary?.profit || 0);
-    $("bt-weight").textContent = `${number.format(btDetail.summary?.weightKg || 0)} kg`;
 
     const seasonSelect = $("bt-season");
-    const oldSeason = btDetail.activeSeasonId || seasonSelect.value;
+    const wantedSeason = btDetail.activeSeasonId || seasonSelect.value;
     seasonSelect.replaceChildren();
-    for (const season of btDetail.seasons || []) { const o = document.createElement("option"); o.value = season.id; o.textContent = `${season.nama} · ${season.status}`; seasonSelect.appendChild(o); }
-    seasonSelect.value = oldSeason || (btDetail.seasons?.[0]?.id || "");
+    for (const season of btDetail.seasons || []) {
+      const option = document.createElement("option");
+      option.value = season.id;
+      option.textContent = `${season.nama} · ${season.status}`;
+      seasonSelect.appendChild(option);
+    }
+    seasonSelect.value = wantedSeason || (btDetail.seasons?.[0]?.id || "");
 
-    const season = (btDetail.seasons || []).find(x => x.id === seasonSelect.value) || btDetail.seasons?.[0];
-    const cropSelect = $("bt-crop"); cropSelect.replaceChildren();
-    for (const crop of season?.crops || []) { const o = document.createElement("option"); o.value = crop.id; o.textContent = `${crop.komoditas} · ${crop.id}`; cropSelect.appendChild(o); }
-    cropSelect.value = btDetail.activeCropId || (season?.crops?.[0]?.id || "");
+    const season = btCurrentSeason();
+    if (btCropScope !== BT_ALL_CROPS && !(season?.crops || []).some(row => row.id === btCropScope)) {
+      btCropScope = BT_ALL_CROPS;
+    }
+
+    const cropSelect = $("bt-crop");
+    cropSelect.replaceChildren();
+    const allOption = document.createElement("option");
+    allOption.value = BT_ALL_CROPS;
+    allOption.textContent = "Semua tanaman";
+    cropSelect.appendChild(allOption);
+    for (const crop of season?.crops || []) {
+      const option = document.createElement("option");
+      option.value = crop.id;
+      option.textContent = `${crop.komoditas} · ${crop.id}`;
+      cropSelect.appendChild(option);
+    }
+    cropSelect.value = btCropScope;
+
+    const scopeSummary = btIsAllCrops()
+      ? (btDetail.summary || {})
+      : (btDetail.cropSummary || btCurrentCrop()?.summary || {});
+    $("bt-expense").textContent = rupiah.format(scopeSummary.expense || 0);
+    $("bt-revenue").textContent = rupiah.format(scopeSummary.revenue ?? scopeSummary.harvestRevenue ?? 0);
+    $("bt-profit").textContent = rupiah.format(scopeSummary.profit ?? scopeSummary.profitBeforeShared ?? 0);
+    $("bt-weight").textContent = `${number.format(scopeSummary.weightKg || 0)} kg`;
+    $("bt-scope-label").textContent = btScopeLabel();
+    renderBtCropOverview();
   }
 
-  async function reloadBertunasForContext() {
+  function makeBtCropCard({ id, title, subtitle, active, summary = {}, scheduleSummary = {}, activityCount = 0, all = false }) {
+    const card = document.createElement("button");
+    card.type = "button";
+    card.className = `crop-card${active ? " active" : ""}${all ? " crop-card-all" : ""}`;
+    const top = document.createElement("div");
+    top.className = "crop-card-top";
+    const names = document.createElement("div");
+    const name = document.createElement("strong");
+    name.textContent = title;
+    const meta = document.createElement("span");
+    meta.textContent = subtitle;
+    names.append(name, meta);
+    const badge = document.createElement("span");
+    badge.className = "crop-status";
+    badge.textContent = active ? "Dilihat" : (all ? "Semua" : "Buka");
+    top.append(names, badge);
+
+    const stats = document.createElement("div");
+    stats.className = "crop-card-stats";
+    const s1 = document.createElement("span");
+    s1.innerHTML = `<small>Biaya</small><b>${rupiah.format(summary.expense || 0)}</b>`;
+    const s2 = document.createElement("span");
+    s2.innerHTML = `<small>Hasil</small><b>${rupiah.format(summary.revenue ?? summary.harvestRevenue ?? 0)}</b>`;
+    stats.append(s1, s2);
+
+    const foot = document.createElement("div");
+    foot.className = "crop-card-foot";
+    const pending = Number(scheduleSummary.pending || 0);
+    const overdue = Number(scheduleSummary.overdue || 0);
+    foot.textContent = all
+      ? `${activityCount} tanaman · ${pending} jadwal aktif${overdue ? ` · ${overdue} terlambat` : ""}`
+      : `${activityCount} aktivitas · ${pending} jadwal aktif${overdue ? ` · ${overdue} terlambat` : ""}`;
+
+    card.append(top, stats, foot);
+    card.addEventListener("click", async () => {
+      if (btCropScope === id) return;
+      btCropScope = id;
+      try { await reloadBertunasForContext(); } catch (error) { showError(error); }
+    });
+    return card;
+  }
+
+  function renderBtCropOverview() {
+    const grid = $("bt-crop-grid");
+    grid.replaceChildren();
+    const season = btCurrentSeason();
+    const crops = season?.crops || [];
+    const seasonSummary = btDetail.summary || {};
+    grid.appendChild(makeBtCropCard({
+      id: BT_ALL_CROPS,
+      title: "Semua tanaman",
+      subtitle: `${crops.length} tanaman · ${season?.nama || "Musim Tanam"}`,
+      active: btIsAllCrops(),
+      summary: seasonSummary,
+      scheduleSummary: btDetail.scheduleSummary || {},
+      activityCount: crops.length,
+      all: true
+    }));
+    for (const crop of crops) {
+      const planting = crop.plantingDate ? ` · tanam ${crop.plantingDate}` : "";
+      grid.appendChild(makeBtCropCard({
+        id: crop.id,
+        title: crop.komoditas,
+        subtitle: `Tanaman ${crop.id} · ${crop.status}${planting}`,
+        active: btCropScope === crop.id,
+        summary: crop.summary || {},
+        scheduleSummary: crop.scheduleSummary || {},
+        activityCount: Number(crop.activityCount || 0)
+      }));
+    }
+    if (!crops.length) grid.appendChild(emptyBox("Belum ada tanaman pada Musim Tanam ini."));
+  }
+
+  async function reloadBertunasForContext({ resetCrop = false } = {}) {
+    if (resetCrop) btCropScope = BT_ALL_CROPS;
+    const q = new URLSearchParams();
     const season = $("bt-season").value;
-    const crop = $("bt-crop").value;
-    const data = await api(`/api/bertunas/${encodeURIComponent(activeBertunas)}?season=${encodeURIComponent(season)}&crop=${encodeURIComponent(crop)}`);
+    if (season) q.set("season", season);
+    if (btIsAllCrops()) q.set("allCrops", "1");
+    else q.set("crop", btCropScope);
+    const data = await api(`/api/bertunas/${encodeURIComponent(activeBertunas)}?${q}`);
     btDetail = data.bertunas;
     renderBertunasContext();
     await loadBertunasLists();
@@ -322,18 +472,25 @@
       api(`/api/bertunas/${encodeURIComponent(activeBertunas)}/aktivitas?${q}`),
       api(`/api/bertunas/${encodeURIComponent(activeBertunas)}/jadwal?${q}`)
     ]);
-    btTransactions = tx.transaksi || []; btActivities = act.aktivitas || []; btSchedules = sch.jadwal || [];
-    renderBtTransactions(); renderBtActivities(); renderBtSchedules();
+    btTransactions = tx.transaksi || [];
+    btActivities = act.aktivitas || [];
+    btSchedules = sch.jadwal || [];
+    $("bt-tx-count").textContent = `${btTransactions.length} data`;
+    $("bt-activity-count").textContent = `${btActivities.length} aktivitas`;
+    $("bt-schedule-count").textContent = `${btSchedules.length} jadwal`;
+    renderBtTransactions();
+    renderBtActivities();
+    renderBtSchedules();
   }
 
   function renderBtTransactions() {
     const list = $("bt-transactions"); list.replaceChildren();
-    if (!btTransactions.length) list.appendChild(emptyBox("Belum ada transaksi pada konteks ini."));
+    if (!btTransactions.length) list.appendChild(emptyBox("Belum ada transaksi pada lingkup ini."));
     for (const row of btTransactions) {
       const card = document.createElement("article"); card.className = "item-card";
       const titleText = row.type === "harvest" ? `${row.ref} · Panen ${number.format(row.weightKg)} kg` : `${row.ref} · ${row.description || row.sourceName || row.category || row.type}`;
       const top = document.createElement("div"); top.className = "item-top";
-      const left = document.createElement("div"); const title = document.createElement("h3"); title.textContent = titleText; const meta = document.createElement("div"); meta.className = "item-meta"; meta.textContent = `${row.date || ""} · ${row.cropName || ""}`; left.append(title, meta);
+      const left = document.createElement("div"); const title = document.createElement("h3"); title.textContent = titleText; const meta = document.createElement("div"); meta.className = "item-meta"; meta.textContent = `${row.date || ""} · ${row.cropName || "Umum / Lahan"}`; left.append(title, meta);
       const amount = document.createElement("div"); amount.className = `amount ${row.type === "harvest" || row.type === "income" ? "in" : "out"}`; amount.textContent = rupiah.format(row.amount || 0); top.append(left, amount); card.appendChild(top);
       if (row.note) { const n = document.createElement("div"); n.className = "item-meta"; n.style.marginTop = "6px"; n.textContent = row.note; card.appendChild(n); }
       const actions = document.createElement("div"); actions.className = "item-actions"; actions.append(button("Edit", "ghost", () => openBtEdit("transaksi", row)), button("Hapus", "danger-soft", () => deleteBt("transaksi", row))); card.appendChild(actions); list.appendChild(card);
@@ -371,29 +528,43 @@
     }
   }
 
-  function btCurrentContextBody() { return { seasonId: $("bt-season").value, cropId: $("bt-crop").value }; }
-
   function fieldHtml(name, label, type = "text", options = []) {
     const wrap = document.createElement("label"); wrap.textContent = label;
     let input;
-    if (type === "select") { input = document.createElement("select"); for (const item of options) { const o = document.createElement("option"); o.value = item; o.textContent = item; input.appendChild(o); } }
-    else if (type === "textarea") { input = document.createElement("textarea"); input.rows = 3; }
+    if (type === "select") {
+      input = document.createElement("select");
+      for (const item of options) {
+        const value = typeof item === "object" ? item.value : item;
+        const labelText = typeof item === "object" ? item.label : item;
+        const option = document.createElement("option"); option.value = value; option.textContent = labelText; input.appendChild(option);
+      }
+    } else if (type === "textarea") { input = document.createElement("textarea"); input.rows = 3; }
     else { input = document.createElement("input"); input.type = type; if (type === "number") input.inputMode = "decimal"; }
     input.id = `bt-field-${name}`; input.dataset.name = name; wrap.appendChild(input); return wrap;
   }
 
+  function btTargetCropOptions(type) {
+    const crops = btCurrentSeason()?.crops || [];
+    const rows = crops.map(crop => ({ value: crop.id, label: `${crop.komoditas} · Tanaman ${crop.id}` }));
+    if (type === "expense") rows.unshift({ value: "__shared__", label: "Umum / Lahan · biaya bersama" });
+    return rows;
+  }
+
   function openBtCreate(type) {
+    const crops = btCurrentSeason()?.crops || [];
+    if (btIsAllCrops() && type !== "expense" && !crops.length) return alert("Belum ada tanaman untuk mencatat data ini.");
     btFormState = { mode: "create", type };
     const fields = $("bt-fields"); fields.replaceChildren();
     const catsA = btDetail.activityCategories || [];
     const catsE = btDetail.expenseCategories || [];
-    const add = (...nodes) => nodes.forEach(n => fields.appendChild(n));
+    const add = (...nodes) => nodes.forEach(node => fields.appendChild(node));
+    if (btIsAllCrops()) add(fieldHtml("targetCrop", type === "expense" ? "Untuk tanaman / lahan" : "Tanaman", "select", btTargetCropOptions(type)));
     if (type === "expense") { $("bt-form-title").textContent = "Tambah biaya"; add(fieldHtml("amount","Nominal","number"), fieldHtml("category","Kategori","select",catsE), fieldHtml("description","Keterangan"), fieldHtml("note","Catatan","textarea"), fieldHtml("date","Tanggal","date")); }
     if (type === "harvest") { $("bt-form-title").textContent = "Tambah panen"; add(fieldHtml("weight","Berat (kg)","number"), fieldHtml("amount","Total penjualan","number"), fieldHtml("description","Keterangan"), fieldHtml("note","Catatan","textarea"), fieldHtml("date","Tanggal","date")); }
     if (type === "activity") { $("bt-form-title").textContent = "Tambah aktivitas"; add(fieldHtml("category","Kategori","select",catsA), fieldHtml("description","Kegiatan"), fieldHtml("note","Catatan","textarea"), fieldHtml("date","Tanggal","date"), fieldHtml("expenseRef","Nomor biaya terkait (opsional)")); }
     if (type === "schedule") { $("bt-form-title").textContent = "Tambah jadwal"; add(fieldHtml("category","Kategori","select",catsA), fieldHtml("description","Kegiatan"), fieldHtml("target","Target (contoh: 14 HST / 30-08-2026)"), fieldHtml("note","Catatan","textarea")); }
     const date = $("bt-field-date"); if (date) date.value = todayJakarta();
-    $("bt-form-mode").textContent = btDetail.nama; setStatus($("bt-form-status")); $("bt-dialog").showModal();
+    $("bt-form-mode").textContent = btScopeLabel(); setStatus($("bt-form-status")); $("bt-dialog").showModal();
   }
 
   function btFieldCurrent(row, field) {
@@ -415,7 +586,7 @@
     if (!fieldsAllowed.length) return alert("Data ini tidak memiliki bagian yang dapat diedit.");
     btFormState = { mode: "edit", type: kind, row };
     $("bt-form-title").textContent = `Edit ${row.ref || "data"}`;
-    $("bt-form-mode").textContent = "Ubah satu bagian";
+    $("bt-form-mode").textContent = row.cropName || btScopeLabel();
     const fields = $("bt-fields"); fields.replaceChildren();
     const select = fieldHtml("editField", "Bagian", "select", fieldsAllowed); fields.appendChild(select);
     const value = fieldHtml("editValue", "Nilai baru"); fields.appendChild(value);
@@ -425,15 +596,15 @@
   }
 
   async function deleteBt(kind, row) {
-    if (!confirm(`Hapus ${kind} ${row.ref || ""}?`)) return;
+    if (!confirm(`Hapus ${kind} ${row.ref || ""} dari ${row.cropName || "Bertunas"}?`)) return;
     const endpoint = kind === "transaksi" ? "transaksi" : kind === "aktivitas" ? "aktivitas" : "jadwal";
-    await api(`/api/bertunas/${encodeURIComponent(activeBertunas)}/${endpoint}/${encodeURIComponent(row.ref || row.nomor)}`, { method: "DELETE", body: JSON.stringify(btCurrentContextBody()) });
+    await api(`/api/bertunas/${encodeURIComponent(activeBertunas)}/${endpoint}/${encodeURIComponent(row.ref || row.nomor)}`, { method: "DELETE", body: JSON.stringify(btRowContextBody(row)) });
     await reloadBertunasForContext();
   }
 
   async function btScheduleAction(row, action) {
     if (action === "selesai" && !confirm(`Tandai ${row.ref} selesai hari ini?`)) return;
-    await api(`/api/bertunas/${encodeURIComponent(activeBertunas)}/jadwal/${encodeURIComponent(row.ref || row.nomor)}/${action}`, { method: "POST", body: JSON.stringify({ ...btCurrentContextBody(), date: "hari ini" }) });
+    await api(`/api/bertunas/${encodeURIComponent(activeBertunas)}/jadwal/${encodeURIComponent(row.ref || row.nomor)}/${action}`, { method: "POST", body: JSON.stringify({ ...btRowContextBody(row), date: "hari ini" }) });
     await reloadBertunasForContext();
   }
 
@@ -532,19 +703,43 @@
 
   // Bertunas events
   $("bertunas-select").addEventListener("change", () => loadBertunas($("bertunas-select").value).catch(showError));
-  $("bt-season").addEventListener("change", () => reloadBertunasForContext().catch(showError)); $("bt-crop").addEventListener("change", () => reloadBertunasForContext().catch(showError)); $("bt-refresh").addEventListener("click", () => reloadBertunasForContext().catch(showError));
-  $("bt-add-expense").addEventListener("click", () => openBtCreate("expense")); $("bt-add-harvest").addEventListener("click", () => openBtCreate("harvest")); $("bt-add-activity").addEventListener("click", () => openBtCreate("activity")); $("bt-add-schedule").addEventListener("click", () => openBtCreate("schedule")); $("bt-close-dialog").addEventListener("click", () => $("bt-dialog").close());
-  document.querySelectorAll(".subtab").forEach(el => el.addEventListener("click", () => { document.querySelectorAll(".subtab").forEach(x => x.classList.toggle("active", x === el)); for (const name of ["transaksi","aktivitas","jadwal"]) $("bt-"+name+"-panel").hidden = name !== el.dataset.btTab; }));
+  $("bt-season").addEventListener("change", () => reloadBertunasForContext({ resetCrop: true }).catch(showError));
+  $("bt-refresh").addEventListener("click", () => reloadBertunasForContext().catch(showError));
+  $("bt-add-expense").addEventListener("click", () => openBtCreate("expense"));
+  $("bt-add-harvest").addEventListener("click", () => openBtCreate("harvest"));
+  $("bt-add-activity").addEventListener("click", () => openBtCreate("activity"));
+  $("bt-add-schedule").addEventListener("click", () => openBtCreate("schedule"));
+  $("bt-close-dialog").addEventListener("click", () => $("bt-dialog").close());
+  document.querySelectorAll(".subtab").forEach(el => el.addEventListener("click", () => {
+    document.querySelectorAll(".subtab").forEach(x => x.classList.toggle("active", x === el));
+    for (const name of ["transaksi","aktivitas","jadwal"]) $("bt-"+name+"-panel").hidden = name !== el.dataset.btTab;
+  }));
   $("bt-form").addEventListener("submit", async event => {
     event.preventDefault(); if (!btFormState) return; setStatus($("bt-form-status"), "Menyimpan…");
     try {
       if (btFormState.mode === "create") {
-        const body = { ...btCurrentContextBody() }; document.querySelectorAll("#bt-fields [data-name]").forEach(el => { body[el.dataset.name] = el.type === "number" ? Number(el.value) : el.value.trim(); });
+        const body = { seasonId: btSelectedSeason(), cropId: btIsAllCrops() ? "" : btCropScope };
+        if (btIsAllCrops()) {
+          const target = $("bt-field-targetCrop")?.value || "";
+          if (target === "__shared__") { body.cropId = ""; body.shared = true; }
+          else { body.cropId = target; body.shared = false; }
+        } else if (btFormState.type === "expense") {
+          body.shared = false;
+        }
+        document.querySelectorAll("#bt-fields [data-name]").forEach(el => {
+          if (el.dataset.name === "targetCrop") return;
+          body[el.dataset.name] = el.type === "number" ? Number(el.value) : el.value.trim();
+        });
+        if (btFormState.type !== "expense") delete body.shared;
+        if (["harvest","activity","schedule"].includes(btFormState.type) && !body.cropId) throw new Error("Pilih tanaman terlebih dahulu.");
         const endpoint = btFormState.type === "expense" ? "biaya" : btFormState.type === "harvest" ? "panen" : btFormState.type === "activity" ? "aktivitas" : "jadwal";
         await api(`/api/bertunas/${encodeURIComponent(activeBertunas)}/${endpoint}`, { method: "POST", body: JSON.stringify(body) });
       } else {
-        const field = $("bt-field-editField").value; const value = $("bt-field-editValue").value; const row = btFormState.row; const endpoint = btFormState.type === "transaksi" ? "transaksi" : btFormState.type === "aktivitas" ? "aktivitas" : "jadwal";
-        await api(`/api/bertunas/${encodeURIComponent(activeBertunas)}/${endpoint}/${encodeURIComponent(row.ref || row.nomor)}`, { method: "PUT", body: JSON.stringify({ ...btCurrentContextBody(), changes: { [field]: value } }) });
+        const field = $("bt-field-editField").value;
+        const value = $("bt-field-editValue").value;
+        const row = btFormState.row;
+        const endpoint = btFormState.type === "transaksi" ? "transaksi" : btFormState.type === "aktivitas" ? "aktivitas" : "jadwal";
+        await api(`/api/bertunas/${encodeURIComponent(activeBertunas)}/${endpoint}/${encodeURIComponent(row.ref || row.nomor)}`, { method: "PUT", body: JSON.stringify({ ...btRowContextBody(row), changes: { [field]: value } }) });
       }
       $("bt-dialog").close(); await reloadBertunasForContext();
     } catch (error) { setStatus($("bt-form-status"), error.message, "error"); }

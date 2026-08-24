@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#0f172a">
   <meta name="robots" content="noindex,nofollow">
   <title>Admin PROxyz</title>
-  <link rel="stylesheet" href="./admin.css?v=23">
+  <link rel="stylesheet" href="./admin.css?v=231">
 </head>
 <body>
   <main class="shell">
@@ -86,9 +86,14 @@
             <div class="hero-head"><div><p class="eyebrow light">Bertunas</p><h2 id="bt-name">—</h2><p id="bt-place" class="hero-sub"></p></div><span id="bt-role" class="role-pill">—</span></div>
             <div class="summary-grid four"><div><span>Biaya</span><b id="bt-expense">—</b></div><div><span>Hasil</span><b id="bt-revenue">—</b></div><div><span>Laba</span><b id="bt-profit">—</b></div><div><span>Panen</span><b id="bt-weight">—</b></div></div>
           </section>
-          <section class="panel context-grid">
-            <label>Musim Tanam<select id="bt-season"></select></label>
-            <label>Tanaman<select id="bt-crop"></select></label>
+          <section class="panel bt-context-panel">
+            <div class="bt-season-row">
+              <label>Musim Tanam<select id="bt-season"></select></label>
+              <span id="bt-scope-label" class="scope-pill">Semua tanaman</span>
+            </div>
+            <select id="bt-crop" hidden aria-hidden="true"></select>
+            <div class="section-head crop-head"><div><p class="eyebrow">Tanaman</p><h2>Semua tanaman</h2></div><span class="muted small">Ketuk tanaman untuk memfilter</span></div>
+            <div id="bt-crop-grid" class="crop-overview"></div>
           </section>
           <section class="quick-actions">
             <button id="bt-add-expense" class="quick-card" type="button"><b>+ Biaya</b><span>Catat pengeluaran</span></button>
@@ -97,9 +102,9 @@
             <button id="bt-add-schedule" class="quick-card" type="button"><b>+ Jadwal</b><span>Rencana kerja</span></button>
           </section>
           <nav class="subtabs"><button class="subtab active" data-bt-tab="transaksi">Keuangan</button><button class="subtab" data-bt-tab="aktivitas">Aktivitas</button><button class="subtab" data-bt-tab="jadwal">Jadwal</button></nav>
-          <section class="panel bt-panel" id="bt-transaksi-panel"><div class="section-head"><div><p class="eyebrow">Keuangan</p><h2>Transaksi</h2></div><button id="bt-refresh" class="ghost compact">Muat ulang</button></div><div id="bt-transactions" class="list-stack"></div></section>
-          <section class="panel bt-panel" id="bt-aktivitas-panel" hidden><div class="section-head"><div><p class="eyebrow">Budidaya</p><h2>Aktivitas</h2></div></div><div id="bt-activities" class="list-stack"></div></section>
-          <section class="panel bt-panel" id="bt-jadwal-panel" hidden><div class="section-head"><div><p class="eyebrow">Rencana</p><h2>Jadwal</h2></div></div><div id="bt-schedules" class="list-stack"></div></section>
+          <section class="panel bt-panel" id="bt-transaksi-panel"><div class="section-head"><div><p class="eyebrow">Keuangan</p><h2>Transaksi</h2></div><div class="section-tools"><span id="bt-tx-count" class="muted small">0 data</span><button id="bt-refresh" class="ghost compact">Muat ulang</button></div></div><div id="bt-transactions" class="list-stack"></div></section>
+          <section class="panel bt-panel" id="bt-aktivitas-panel" hidden><div class="section-head"><div><p class="eyebrow">Budidaya</p><h2>Aktivitas</h2></div><span id="bt-activity-count" class="muted small">0 aktivitas</span></div><div id="bt-activities" class="list-stack"></div></section>
+          <section class="panel bt-panel" id="bt-jadwal-panel" hidden><div class="section-head"><div><p class="eyebrow">Rencana</p><h2>Jadwal</h2></div><span id="bt-schedule-count" class="muted small">0 jadwal</span></div><div id="bt-schedules" class="list-stack"></div></section>
         </section>
       </section>
 
@@ -128,7 +133,7 @@
 
   <dialog id="gallery-edit-dialog"><form id="gallery-edit-form" method="dialog" class="dialog-form"><div class="section-head"><div><p class="eyebrow" id="gallery-edit-id">Foto</p><h2>Edit keterangan</h2></div><button id="close-gallery-edit" class="icon-button" type="button">×</button></div><input id="gallery-edit-number" type="hidden"><label>Keterangan<textarea id="gallery-edit-caption" rows="4" maxlength="500"></textarea></label><p id="gallery-edit-status" class="status"></p><button class="primary full" type="submit">Simpan perubahan</button></form></dialog>
 
-  <script src="./config.js?v=23"></script>
-  <script src="./admin.js?v=23" defer></script>
+  <script src="./config.js?v=231"></script>
+  <script src="./admin.js?v=231" defer></script>
 </body>
 </html>
