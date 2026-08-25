@@ -133,8 +133,8 @@
 
           <section id="gallery-video-panel" class="gallery-panel" hidden>
             <section class="panel">
-              <div class="section-head"><div><p class="eyebrow">Video → Foto</p><h2>Buat dokumentasi dari video</h2></div><span class="feature-pill">Wajah beragam</span></div>
-              <p class="muted small">Video diproses oleh PROxyz. Frame buram dan mirip disaring, lalu sistem memprioritaskan peserta/wajah yang berbeda. Hasil belum masuk R2 final sebelum Anda review dan publish.</p>
+              <div class="section-head"><div><p class="eyebrow">Video → Foto</p><h2>Buat dokumentasi dari video</h2></div><span class="feature-pill">Unik per kejadian</span></div>
+              <p class="muted small">Video diproses oleh PROxyz dan dipecah menjadi beberapa kejadian/lomba. Di setiap kejadian, sistem memprioritaskan satu foto terbaik per wajah/subjek. Orang yang sama boleh terpilih lagi pada kejadian lain. Hasil belum masuk R2 final sebelum Anda review dan publish.</p>
               <form id="gallery-video-form" class="stack video-form">
                 <label>Nama kegiatan
                   <input id="gallery-video-title" maxlength="160" placeholder="Contoh: Lomba Kerupuk Agustusan 2024" required>
@@ -143,8 +143,8 @@
                   <label>Tanggal kegiatan
                     <input id="gallery-video-date" type="date" required>
                   </label>
-                  <label>Target kandidat
-                    <input id="gallery-video-target" type="number" inputmode="numeric" min="5" max="150" value="30" required>
+                  <label>Target foto per kejadian
+                    <input id="gallery-video-target" type="number" inputmode="numeric" min="3" max="40" value="10" required>
                   </label>
                 </div>
                 <label>Jarak analisis frame
@@ -156,12 +156,20 @@
                     <option value="2">2 detik · video panjang</option>
                   </select>
                 </label>
+                <label>Batas maksimum draft
+                  <select id="gallery-video-max-total">
+                    <option value="100">100 foto</option>
+                    <option value="150" selected>150 foto · direkomendasikan</option>
+                    <option value="200">200 foto</option>
+                    <option value="300">300 foto</option>
+                  </select>
+                </label>
                 <label>Pilih video
                   <input id="gallery-video-file" type="file" accept="video/*,.mp4,.mov,.m4v,.webm,.3gp,.mkv" required>
                 </label>
                 <div class="video-info-box">
                   <b>Seleksi otomatis</b>
-                  <span>Wajah berbeda dipilih lebih dulu. Jika jumlah peserta kurang dari target, sistem menambahkan momen berbeda dari peserta yang sama.</span>
+                  <span>Seleksi dilakukan ulang untuk setiap kejadian. Contoh: satu peserta cukup 1 foto pada lomba kerupuk, tetapi boleh muncul lagi pada balap karung, permainan air, pembagian hadiah, atau kejadian lain.</span>
                 </div>
                 <div id="gallery-video-progress-wrap" class="upload-progress" hidden>
                   <div class="progress-head"><span id="gallery-video-progress-label">Menyiapkan…</span><b id="gallery-video-progress-percent">0%</b></div>
@@ -186,6 +194,7 @@
                 <button id="gallery-video-close-review" class="ghost compact" type="button">Tutup</button>
               </div>
               <div class="review-stats">
+                <div><span>Kejadian</span><b id="gallery-video-event-count">0</b></div>
                 <div><span>Kandidat</span><b id="gallery-video-candidate-count">0</b></div>
                 <div><span>Wajah/subjek</span><b id="gallery-video-face-count">0</b></div>
                 <div><span>Dipilih</span><b id="gallery-video-selected-count">0</b></div>
@@ -194,7 +203,7 @@
                 <button id="gallery-video-select-all" class="ghost compact" type="button">Pilih semua</button>
                 <button id="gallery-video-clear-all" class="ghost compact" type="button">Kosongkan pilihan</button>
               </div>
-              <div id="gallery-video-candidates" class="candidate-grid"></div>
+              <div id="gallery-video-candidates" class="candidate-event-list"></div>
               <section class="publish-box">
                 <label>Keterangan foto
                   <textarea id="gallery-video-publish-caption" rows="3" maxlength="500"></textarea>

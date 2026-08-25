@@ -981,10 +981,11 @@
       const info = document.createElement("p");
       info.className = "video-draft-message";
       const faceClusters = new Set((job.candidates || []).map(row => row.faceCluster).filter(Boolean)).size;
-      const faceInfo = job.faceMode === "face-diversity"
+      const faceInfo = job.faceMode === "event-face-diversity"
         ? ` · ${faceClusters || "?"} kelompok wajah/subjek`
         : job.faceMode && job.faceMode !== "pending" ? " · mode waktu/frame" : "";
-      info.textContent = `${job.message || ""}${job.candidateCount ? ` · ${job.candidateCount} kandidat` : ""}${faceInfo}`;
+      const eventInfo = job.eventCount ? ` · ${job.eventCount} kejadian` : "";
+      info.textContent = `${job.message || ""}${eventInfo}${job.candidateCount ? ` · ${job.candidateCount} kandidat` : ""}${faceInfo}`;
 
       const actions = document.createElement("div");
       actions.className = "item-actions";
@@ -1069,7 +1070,8 @@
     const file = $("gallery-video-file").files?.[0];
     const title = $("gallery-video-title").value.trim();
     const eventDate = $("gallery-video-date").value;
-    const targetPhotos = Number($("gallery-video-target").value || 30);
+    const targetPerEvent = Number($("gallery-video-target").value || 10);
+    const maxTotalPhotos = Number($("gallery-video-max-total").value || 150);
     const intervalSec = Number($("gallery-video-interval").value || 0.75);
     if (!activeGallery) return setStatus($("gallery-video-status"), "Pilih Galeri terlebih dahulu.", "error");
     if (!file) return setStatus($("gallery-video-status"), "Pilih video terlebih dahulu.", "error");
@@ -1091,7 +1093,8 @@
           fileName: file.name,
           mimeType: file.type || "video/mp4",
           fileSize: file.size,
-          targetPhotos,
+          targetPerEvent,
+          maxTotalPhotos,
           intervalSec
         })
       });
@@ -1177,6 +1180,27 @@
     await Promise.all(Array.from({ length: Math.min(4, cards.length) }, worker));
   }
 
+  function formatVideoTime(seconds) {
+    const total = Math.max(0, Math.round(Number(seconds || 0)));
+    const minutes = Math.floor(total / 60);
+    const secs = total % 60;
+    return `${String(minutes).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
+  }
+
+  async function renameGalleryVideoEvent(job, eventRow) {
+    const current = eventRow?.label || eventRow?.id || "Kejadian";
+    const next = prompt("Nama kejadian/lomba:", current);
+    if (next === null || !next.trim() || next.trim() === current) return;
+    const data = await api(`/api/galeri/${encodeURIComponent(activeGallery)}/video-review/${encodeURIComponent(job.id)}/event/${encodeURIComponent(eventRow.id)}`, {
+      method: "PATCH",
+      body: JSON.stringify({ label: next.trim() })
+    });
+    upsertGalleryVideoJob(data.draft);
+    activeGalleryVideoJob = data.draft;
+    renderGalleryVideoJobs();
+    await openGalleryVideoReview(data.draft);
+  }
+
   async function openGalleryVideoReview(job) {
     if (!job || job.status !== "review") throw new Error("Draft belum siap direview.");
     activeGalleryVideoJob = job;
@@ -1186,51 +1210,102 @@
 
     $("gallery-video-review-title").textContent = job.title || "Dokumentasi video";
     const faceClusters = new Set((job.candidates || []).map(row => row.faceCluster).filter(Boolean));
-    const mode = job.faceMode === "face-diversity" ? "Keberagaman wajah aktif" : "Keberagaman waktu/frame";
+    const mode = job.faceMode === "event-face-diversity"
+      ? "Wajah unik dihitung per kejadian"
+      : "Keberagaman waktu/frame";
     $("gallery-video-review-meta").textContent = `${job.eventDate || ""} · ${mode} · ${job.sourceWidth || "?"}×${job.sourceHeight || "?"} · ${number.format(job.durationSec || 0)} dtk`;
+    $("gallery-video-event-count").textContent = String(job.eventCount || (job.events || []).length || 1);
     $("gallery-video-candidate-count").textContent = String(job.candidateCount || (job.candidates || []).length);
-    $("gallery-video-face-count").textContent = job.faceMode === "face-diversity" ? String(faceClusters.size || 0) : "—";
+    $("gallery-video-face-count").textContent = job.faceMode === "event-face-diversity" ? String(faceClusters.size || 0) : "—";
     $("gallery-video-publish-caption").value = job.title || "Dokumentasi video";
     $("gallery-video-publish-date").value = job.eventDate || todayJakarta();
     setStatus($("gallery-video-publish-status"));
 
     const list = $("gallery-video-candidates");
     list.replaceChildren();
-    for (const candidate of job.candidates || []) {
-      const card = document.createElement("label");
-      card.className = "candidate-card selected";
-      card.dataset.candidateId = candidate.id;
 
-      const media = document.createElement("div");
-      media.className = "candidate-media";
-      const img = document.createElement("img");
-      img.className = "candidate-thumb loading";
-      img.alt = candidate.id;
-      const check = document.createElement("input");
-      check.type = "checkbox";
-      check.checked = true;
-      check.addEventListener("change", () => {
-        if (check.checked) galleryVideoSelected.add(candidate.id);
-        else galleryVideoSelected.delete(candidate.id);
-        updateGalleryVideoSelection();
-      });
-      const mark = document.createElement("span");
-      mark.className = "candidate-check";
-      mark.textContent = "✓";
-      media.append(img, check, mark);
+    const events = Array.isArray(job.events) && job.events.length
+      ? [...job.events].sort((a, b) => Number(a.order || 0) - Number(b.order || 0))
+      : [{ id: "E01", order: 1, label: "Kejadian 01", startSec: 0, endSec: job.durationSec || 0 }];
 
-      const body = document.createElement("div");
-      body.className = "candidate-body";
-      const title = document.createElement("strong");
-      title.textContent = candidate.id;
-      const meta = document.createElement("span");
-      const face = candidate.faceCluster ? `${candidate.faceCluster} · ` : "";
-      meta.textContent = `${face}${candidate.faceCount || 0} wajah · skor ${Math.round(candidate.score || 0)}`;
-      const reason = document.createElement("small");
-      reason.textContent = candidate.reason || "Momen unik";
-      body.append(title, meta, reason);
-      card.append(media, body);
-      list.appendChild(card);
+    for (const eventRow of events) {
+      const eventCandidates = (job.candidates || [])
+        .filter(row => (row.eventId || "E01") === eventRow.id)
+        .sort((a, b) => Number(a.timestampSec || 0) - Number(b.timestampSec || 0));
+      if (!eventCandidates.length) continue;
+
+      const group = document.createElement("section");
+      group.className = "candidate-event-group";
+      group.dataset.eventId = eventRow.id;
+
+      const head = document.createElement("div");
+      head.className = "candidate-event-head";
+      const text = document.createElement("div");
+      const heading = document.createElement("h3");
+      heading.textContent = eventRow.label || eventRow.id;
+      const meta = document.createElement("p");
+      const eventFaces = new Set(eventCandidates.map(row => row.faceCluster).filter(Boolean));
+      meta.className = "muted small";
+      meta.textContent = `${formatVideoTime(eventRow.startSec)}–${formatVideoTime(eventRow.endSec)} · ${eventCandidates.length} kandidat${eventFaces.size ? ` · ${eventFaces.size} wajah/subjek` : ""}`;
+      text.append(heading, meta);
+
+      const tools = document.createElement("div");
+      tools.className = "candidate-event-tools";
+      tools.append(
+        button("Pilih kejadian", "ghost compact", () => {
+          for (const row of eventCandidates) galleryVideoSelected.add(row.id);
+          updateGalleryVideoSelection();
+        }),
+        button("Kosongkan", "ghost compact", () => {
+          for (const row of eventCandidates) galleryVideoSelected.delete(row.id);
+          updateGalleryVideoSelection();
+        }),
+        button("Ganti nama", "ghost compact", () => renameGalleryVideoEvent(job, eventRow).catch(showError))
+      );
+      head.append(text, tools);
+
+      const grid = document.createElement("div");
+      grid.className = "candidate-grid candidate-event-grid";
+
+      for (const candidate of eventCandidates) {
+        const card = document.createElement("label");
+        card.className = "candidate-card selected";
+        card.dataset.candidateId = candidate.id;
+
+        const media = document.createElement("div");
+        media.className = "candidate-media";
+        const img = document.createElement("img");
+        img.className = "candidate-thumb loading";
+        img.alt = candidate.id;
+        const check = document.createElement("input");
+        check.type = "checkbox";
+        check.checked = true;
+        check.addEventListener("change", () => {
+          if (check.checked) galleryVideoSelected.add(candidate.id);
+          else galleryVideoSelected.delete(candidate.id);
+          updateGalleryVideoSelection();
+        });
+        const mark = document.createElement("span");
+        mark.className = "candidate-check";
+        mark.textContent = "✓";
+        media.append(img, check, mark);
+
+        const body = document.createElement("div");
+        body.className = "candidate-body";
+        const title = document.createElement("strong");
+        title.textContent = `${candidate.id} · ${formatVideoTime(candidate.timestampSec)}`;
+        const metaLine = document.createElement("span");
+        const face = candidate.faceCluster ? `${candidate.faceCluster} · ` : "";
+        metaLine.textContent = `${face}${candidate.faceCount || 0} wajah · skor ${Math.round(candidate.score || 0)}`;
+        const reason = document.createElement("small");
+        reason.textContent = candidate.reason || "Momen unik";
+        body.append(title, metaLine, reason);
+        card.append(media, body);
+        grid.appendChild(card);
+      }
+
+      group.append(head, grid);
+      list.appendChild(group);
     }
 
     $("gallery-video-review").hidden = false;
