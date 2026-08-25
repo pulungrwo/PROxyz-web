@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": 1787638921986,
+  "generatedAt": 1787654723664,
   "id": "02",
   "nama": "Samping Rumah",
   "lokasi": "",
@@ -25,12 +25,21 @@
   "summary": {
     "weightKg": 0,
     "harvestCount": 0,
-    "activityCount": 1,
+    "activityCount": 2,
     "pendingScheduleCount": 0
   },
   "financeVisible": false,
   "recentHarvest": [],
   "recentActivities": [
+    {
+      "date": "2026-08-25",
+      "cropId": "01",
+      "komoditas": "Cabai",
+      "category": "Olah Lahan",
+      "description": "Semai cabai",
+      "note": "",
+      "hst": null
+    },
     {
       "date": "2026-08-25",
       "cropId": "01",
@@ -42,5 +51,5 @@
     }
   ],
   "schedules": [],
-  "updatedAt": 1787638921986
+  "updatedAt": 1787654723664
 }
