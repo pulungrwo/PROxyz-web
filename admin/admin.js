@@ -39,6 +39,13 @@
   let galleryPhotos = [];
   let galleryPhotoTotal = 0;
   const galleryPage = 48;
+  let galleryVideoJobs = [];
+  let activeGalleryVideoJob = null;
+  let galleryVideoSelected = new Set();
+  let galleryVideoObjectUrls = [];
+  let galleryVideoPollTimer = null;
+  let galleryVideoImageLoadToken = 0;
+  let galleryVideoUploadBusy = false;
 
   function setStatus(el, message = "", type = "") {
     if (!el) return;
@@ -63,7 +70,34 @@
     return data;
   }
 
+  async function apiRaw(path, options = {}) {
+    if (!API) throw new Error("Alamat API Admin belum dikonfigurasi.");
+    let response;
+    try {
+      response = await fetch(`${API}${path}`, { ...options, credentials: "include", cache: "no-store" });
+    } catch (_) {
+      throw new Error("API PROxyz belum dapat dihubungi. Pastikan bot dan tunnel aktif.");
+    }
+    if (!response.ok) {
+      let message = `Permintaan gagal (${response.status}).`;
+      try { message = (await response.json()).error || message; } catch (_) {}
+      if (response.status === 401 && !path.includes("/auth/")) clearSession();
+      throw new Error(message);
+    }
+    return response;
+  }
+
+  function formatBytes(value) {
+    const bytes = Number(value || 0);
+    if (bytes < 1024) return `${bytes} B`;
+    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+    if (bytes < 1024 * 1024 * 1024) return `${(bytes / 1024 / 1024).toFixed(1)} MB`;
+    return `${(bytes / 1024 / 1024 / 1024).toFixed(2)} GB`;
+  }
+
   function clearSession() {
+    stopGalleryVideoPolling();
+    clearGalleryVideoObjectUrls();
     me = null;
     $("app-view").hidden = true;
     $("login-view").hidden = false;
@@ -771,6 +805,10 @@
 
   // ---------- GALERI ----------
   async function loadGallery(id) {
+    if (activeGallery && activeGallery !== id) {
+      stopGalleryVideoPolling();
+      closeGalleryVideoReview();
+    }
     activeGallery = id; $("gallery-select").value = id;
     const data = await api(`/api/galeri/${encodeURIComponent(id)}`);
     galleryDetail = data.galeri;
@@ -783,7 +821,7 @@
     $("rename-gallery").hidden = galleryDetail.role !== "owner";
     $("add-gallery-admin").hidden = galleryDetail.role !== "owner";
     $("gallery-content").hidden = false;
-    await Promise.all([loadGalleryPhotos(true), loadGalleryAdmins()]);
+    await Promise.all([loadGalleryPhotos(true), loadGalleryAdmins(), loadGalleryVideoJobs()]);
   }
 
   async function loadGalleryPhotos(reset = false) {
@@ -841,6 +879,418 @@
     await loadGalleryAdmins();
   }
 
+
+
+  function clearGalleryVideoObjectUrls() {
+    galleryVideoImageLoadToken += 1;
+    for (const url of galleryVideoObjectUrls) URL.revokeObjectURL(url);
+    galleryVideoObjectUrls = [];
+  }
+
+  function stopGalleryVideoPolling() {
+    if (galleryVideoPollTimer) clearInterval(galleryVideoPollTimer);
+    galleryVideoPollTimer = null;
+  }
+
+  function galleryVideoStatusLabel(status) {
+    return ({
+      uploading: "Upload",
+      queued: "Antrean",
+      processing: "Memproses",
+      review: "Siap review",
+      published: "Dipublish",
+      failed: "Gagal"
+    })[status] || status || "—";
+  }
+
+  function galleryVideoStatusClass(status) {
+    if (status === "review") return "ready";
+    if (status === "published") return "published";
+    if (status === "failed") return "failed";
+    if (["uploading", "queued", "processing"].includes(status)) return "working";
+    return "";
+  }
+
+  function upsertGalleryVideoJob(job) {
+    if (!job) return;
+    const index = galleryVideoJobs.findIndex(row => row.id === job.id);
+    if (index >= 0) galleryVideoJobs[index] = job;
+    else galleryVideoJobs.unshift(job);
+    galleryVideoJobs.sort((a, b) => Number(b.createdAt || 0) - Number(a.createdAt || 0));
+  }
+
+  function switchGalleryTab(tab) {
+    const wanted = ["foto", "video", "draft"].includes(tab) ? tab : "foto";
+    document.querySelectorAll("[data-gallery-tab]").forEach(el => el.classList.toggle("active", el.dataset.galleryTab === wanted));
+    for (const name of ["foto", "video", "draft"]) $("gallery-" + name + "-panel").hidden = name !== wanted;
+    if (wanted === "video" && !$("gallery-video-date").value) $("gallery-video-date").value = todayJakarta();
+    if (wanted === "draft") loadGalleryVideoJobs().catch(showError);
+  }
+
+  function updateGalleryDraftBadge() {
+    const active = galleryVideoJobs.filter(job => !["published"].includes(job.status)).length;
+    const badge = $("gallery-draft-badge");
+    badge.textContent = String(active);
+    badge.hidden = active <= 0;
+  }
+
+  async function loadGalleryVideoJobs() {
+    if (!activeGallery) return;
+    const data = await api(`/api/galeri/${encodeURIComponent(activeGallery)}/video-review`);
+    galleryVideoJobs = Array.isArray(data.draft) ? data.draft : [];
+    updateGalleryDraftBadge();
+    renderGalleryVideoJobs();
+    if (activeGalleryVideoJob) {
+      const fresh = galleryVideoJobs.find(row => row.id === activeGalleryVideoJob.id);
+      if (fresh) activeGalleryVideoJob = fresh;
+    }
+  }
+
+  function renderGalleryVideoJobs() {
+    const list = $("gallery-video-draft-list");
+    list.replaceChildren();
+    if (!galleryVideoJobs.length) {
+      list.appendChild(emptyBox("Belum ada draft video. Buat dari tab Video → Foto."));
+      return;
+    }
+
+    for (const job of galleryVideoJobs) {
+      const card = document.createElement("article");
+      card.className = "video-draft-card";
+
+      const top = document.createElement("div");
+      top.className = "video-draft-top";
+      const titleWrap = document.createElement("div");
+      const title = document.createElement("strong");
+      title.textContent = job.title || "Dokumentasi video";
+      const sub = document.createElement("span");
+      const dateText = job.eventDate ? dateFmt.format(new Date(`${job.eventDate}T12:00:00+07:00`)) : "Tanpa tanggal";
+      sub.textContent = `${dateText} · ${job.sourceFileName || "video"} · ${formatBytes(job.sourceSize)}`;
+      titleWrap.append(title, sub);
+      const status = document.createElement("span");
+      status.className = `video-status ${galleryVideoStatusClass(job.status)}`.trim();
+      status.textContent = galleryVideoStatusLabel(job.status);
+      top.append(titleWrap, status);
+
+      const progress = document.createElement("div");
+      progress.className = "draft-progress";
+      const bar = document.createElement("span");
+      bar.style.width = `${Math.max(0, Math.min(100, Number(job.progress || 0)))}%`;
+      progress.appendChild(bar);
+
+      const info = document.createElement("p");
+      info.className = "video-draft-message";
+      const faceClusters = new Set((job.candidates || []).map(row => row.faceCluster).filter(Boolean)).size;
+      const faceInfo = job.faceMode === "face-diversity"
+        ? ` · ${faceClusters || "?"} kelompok wajah/subjek`
+        : job.faceMode && job.faceMode !== "pending" ? " · mode waktu/frame" : "";
+      info.textContent = `${job.message || ""}${job.candidateCount ? ` · ${job.candidateCount} kandidat` : ""}${faceInfo}`;
+
+      const actions = document.createElement("div");
+      actions.className = "item-actions";
+      if (job.status === "review") actions.appendChild(button("Review foto", "primary compact", () => openGalleryVideoReview(job).catch(showError)));
+      if (job.status === "failed") actions.appendChild(button("Proses ulang", "ghost compact", () => retryGalleryVideoJob(job).catch(showError)));
+      if (["review", "failed", "published", "uploading"].includes(job.status) && !galleryVideoUploadBusy) {
+        actions.appendChild(button("Hapus draft", "danger-soft compact", () => deleteGalleryVideoJob(job).catch(showError)));
+      }
+      if (["queued", "processing", "uploading"].includes(job.status)) {
+        const refresh = button("Cek status", "ghost compact", () => refreshGalleryVideoJob(job.id).catch(showError));
+        actions.appendChild(refresh);
+      }
+
+      card.append(top, progress, info, actions);
+      list.appendChild(card);
+    }
+  }
+
+  async function refreshGalleryVideoJob(jobId) {
+    if (!activeGallery || !jobId) return null;
+    const data = await api(`/api/galeri/${encodeURIComponent(activeGallery)}/video-review/${encodeURIComponent(jobId)}`);
+    const job = data.draft;
+    upsertGalleryVideoJob(job);
+    updateGalleryDraftBadge();
+    renderGalleryVideoJobs();
+    return job;
+  }
+
+  function startGalleryVideoPolling(jobId) {
+    stopGalleryVideoPolling();
+    const poll = async () => {
+      try {
+        const job = await refreshGalleryVideoJob(jobId);
+        if (!job) return;
+        if (job.status === "review") {
+          stopGalleryVideoPolling();
+          setGalleryVideoProgress(100, "Foto siap direview.");
+          setStatus($("gallery-video-status"), job.message || "Foto siap direview.", "success");
+          switchGalleryTab("draft");
+          await openGalleryVideoReview(job);
+        } else if (job.status === "failed") {
+          stopGalleryVideoPolling();
+          setStatus($("gallery-video-status"), job.message || "Pemrosesan video gagal.", "error");
+        }
+      } catch (error) {
+        stopGalleryVideoPolling();
+        setStatus($("gallery-video-status"), error.message, "error");
+      }
+    };
+    poll();
+    galleryVideoPollTimer = setInterval(poll, 2200);
+  }
+
+  function setGalleryVideoProgress(percent, label) {
+    const value = Math.max(0, Math.min(100, Number(percent || 0)));
+    $("gallery-video-progress-wrap").hidden = false;
+    $("gallery-video-progress-bar").style.width = `${value}%`;
+    $("gallery-video-progress-percent").textContent = `${Math.round(value)}%`;
+    $("gallery-video-progress-label").textContent = label || "Memproses…";
+  }
+
+  async function uploadGalleryVideoChunk(job, index, blob, attempt = 1) {
+    try {
+      const response = await apiRaw(`/api/galeri/${encodeURIComponent(activeGallery)}/video-review/${encodeURIComponent(job.id)}/chunk?index=${index}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/octet-stream" },
+        body: blob
+      });
+      return await response.json();
+    } catch (error) {
+      if (attempt < 3) {
+        await new Promise(resolve => setTimeout(resolve, 800 * attempt));
+        return uploadGalleryVideoChunk(job, index, blob, attempt + 1);
+      }
+      throw error;
+    }
+  }
+
+  async function submitGalleryVideo(event) {
+    event.preventDefault();
+    if (galleryVideoUploadBusy) return;
+    const file = $("gallery-video-file").files?.[0];
+    const title = $("gallery-video-title").value.trim();
+    const eventDate = $("gallery-video-date").value;
+    const targetPhotos = Number($("gallery-video-target").value || 30);
+    const intervalSec = Number($("gallery-video-interval").value || 0.75);
+    if (!activeGallery) return setStatus($("gallery-video-status"), "Pilih Galeri terlebih dahulu.", "error");
+    if (!file) return setStatus($("gallery-video-status"), "Pilih video terlebih dahulu.", "error");
+    if (!title) return setStatus($("gallery-video-status"), "Nama kegiatan wajib diisi.", "error");
+    if (!eventDate) return setStatus($("gallery-video-status"), "Tanggal kegiatan wajib diisi.", "error");
+
+    galleryVideoUploadBusy = true;
+    const submit = $("gallery-video-submit");
+    submit.disabled = true;
+    setStatus($("gallery-video-status"), "Membuat draft video…");
+    setGalleryVideoProgress(0, "Menyiapkan upload…");
+
+    try {
+      const created = await api(`/api/galeri/${encodeURIComponent(activeGallery)}/video-review`, {
+        method: "POST",
+        body: JSON.stringify({
+          title,
+          eventDate,
+          fileName: file.name,
+          mimeType: file.type || "video/mp4",
+          fileSize: file.size,
+          targetPhotos,
+          intervalSec
+        })
+      });
+      const job = created.draft;
+      upsertGalleryVideoJob(job);
+      renderGalleryVideoJobs();
+      const chunkSize = Math.max(1024 * 1024, Number(created.chunkMaxBytes || 12 * 1024 * 1024));
+      const totalChunks = Math.max(1, Math.ceil(file.size / chunkSize));
+
+      for (let index = 0; index < totalChunks; index += 1) {
+        const start = index * chunkSize;
+        const end = Math.min(file.size, start + chunkSize);
+        const blob = file.slice(start, end);
+        await uploadGalleryVideoChunk(job, index, blob);
+        const ratio = end / Math.max(1, file.size);
+        const percent = Math.min(35, ratio * 35);
+        setGalleryVideoProgress(percent, `Upload bagian ${index + 1}/${totalChunks} · ${formatBytes(end)} / ${formatBytes(file.size)}`);
+      }
+
+      const completed = await api(`/api/galeri/${encodeURIComponent(activeGallery)}/video-review/${encodeURIComponent(job.id)}/complete`, {
+        method: "POST",
+        body: "{}"
+      });
+      upsertGalleryVideoJob(completed.draft);
+      updateGalleryDraftBadge();
+      renderGalleryVideoJobs();
+      setGalleryVideoProgress(Math.max(36, completed.draft.progress || 36), "Upload selesai. PROxyz memproses video…");
+      setStatus($("gallery-video-status"), completed.draft.message || "Video masuk antrean pemrosesan.", "success");
+      $("gallery-video-file").value = "";
+      startGalleryVideoPolling(job.id);
+    } catch (error) {
+      setStatus($("gallery-video-status"), error.message, "error");
+    } finally {
+      galleryVideoUploadBusy = false;
+      submit.disabled = false;
+      renderGalleryVideoJobs();
+    }
+  }
+
+  async function fetchGalleryCandidateBlob(jobId, candidateId) {
+    const response = await apiRaw(`/api/galeri/${encodeURIComponent(activeGallery)}/video-review/${encodeURIComponent(jobId)}/candidate/${encodeURIComponent(candidateId)}`);
+    return response.blob();
+  }
+
+  function updateGalleryVideoSelection() {
+    $("gallery-video-selected-count").textContent = String(galleryVideoSelected.size);
+    const publish = $("gallery-video-publish");
+    publish.disabled = galleryVideoSelected.size <= 0;
+    publish.textContent = galleryVideoSelected.size > 0
+      ? `Publish ${galleryVideoSelected.size} foto terpilih`
+      : "Pilih foto untuk dipublish";
+    document.querySelectorAll(".candidate-card[data-candidate-id]").forEach(card => {
+      const selected = galleryVideoSelected.has(card.dataset.candidateId);
+      card.classList.toggle("selected", selected);
+      const input = card.querySelector("input[type=checkbox]");
+      if (input) input.checked = selected;
+    });
+  }
+
+  async function loadGalleryCandidateImages(job, token) {
+    const cards = [...document.querySelectorAll(".candidate-card[data-candidate-id]")];
+    let cursor = 0;
+    const worker = async () => {
+      while (cursor < cards.length) {
+        const card = cards[cursor++];
+        if (token !== galleryVideoImageLoadToken) return;
+        const id = card.dataset.candidateId;
+        const img = card.querySelector("img");
+        try {
+          const blob = await fetchGalleryCandidateBlob(job.id, id);
+          if (token !== galleryVideoImageLoadToken) return;
+          const url = URL.createObjectURL(blob);
+          galleryVideoObjectUrls.push(url);
+          img.src = url;
+          img.classList.remove("loading");
+        } catch (_) {
+          img.alt = "Gagal memuat foto";
+          img.classList.remove("loading");
+          card.classList.add("image-error");
+        }
+      }
+    };
+    await Promise.all(Array.from({ length: Math.min(4, cards.length) }, worker));
+  }
+
+  async function openGalleryVideoReview(job) {
+    if (!job || job.status !== "review") throw new Error("Draft belum siap direview.");
+    activeGalleryVideoJob = job;
+    clearGalleryVideoObjectUrls();
+    const token = galleryVideoImageLoadToken;
+    galleryVideoSelected = new Set((job.candidates || []).map(row => row.id));
+
+    $("gallery-video-review-title").textContent = job.title || "Dokumentasi video";
+    const faceClusters = new Set((job.candidates || []).map(row => row.faceCluster).filter(Boolean));
+    const mode = job.faceMode === "face-diversity" ? "Keberagaman wajah aktif" : "Keberagaman waktu/frame";
+    $("gallery-video-review-meta").textContent = `${job.eventDate || ""} · ${mode} · ${job.sourceWidth || "?"}×${job.sourceHeight || "?"} · ${number.format(job.durationSec || 0)} dtk`;
+    $("gallery-video-candidate-count").textContent = String(job.candidateCount || (job.candidates || []).length);
+    $("gallery-video-face-count").textContent = job.faceMode === "face-diversity" ? String(faceClusters.size || 0) : "—";
+    $("gallery-video-publish-caption").value = job.title || "Dokumentasi video";
+    $("gallery-video-publish-date").value = job.eventDate || todayJakarta();
+    setStatus($("gallery-video-publish-status"));
+
+    const list = $("gallery-video-candidates");
+    list.replaceChildren();
+    for (const candidate of job.candidates || []) {
+      const card = document.createElement("label");
+      card.className = "candidate-card selected";
+      card.dataset.candidateId = candidate.id;
+
+      const media = document.createElement("div");
+      media.className = "candidate-media";
+      const img = document.createElement("img");
+      img.className = "candidate-thumb loading";
+      img.alt = candidate.id;
+      const check = document.createElement("input");
+      check.type = "checkbox";
+      check.checked = true;
+      check.addEventListener("change", () => {
+        if (check.checked) galleryVideoSelected.add(candidate.id);
+        else galleryVideoSelected.delete(candidate.id);
+        updateGalleryVideoSelection();
+      });
+      const mark = document.createElement("span");
+      mark.className = "candidate-check";
+      mark.textContent = "✓";
+      media.append(img, check, mark);
+
+      const body = document.createElement("div");
+      body.className = "candidate-body";
+      const title = document.createElement("strong");
+      title.textContent = candidate.id;
+      const meta = document.createElement("span");
+      const face = candidate.faceCluster ? `${candidate.faceCluster} · ` : "";
+      meta.textContent = `${face}${candidate.faceCount || 0} wajah · skor ${Math.round(candidate.score || 0)}`;
+      const reason = document.createElement("small");
+      reason.textContent = candidate.reason || "Momen unik";
+      body.append(title, meta, reason);
+      card.append(media, body);
+      list.appendChild(card);
+    }
+
+    $("gallery-video-review").hidden = false;
+    updateGalleryVideoSelection();
+    $("gallery-video-review").scrollIntoView({ behavior: "smooth", block: "start" });
+    loadGalleryCandidateImages(job, token).catch(() => {});
+  }
+
+  function closeGalleryVideoReview() {
+    activeGalleryVideoJob = null;
+    galleryVideoSelected.clear();
+    clearGalleryVideoObjectUrls();
+    $("gallery-video-candidates").replaceChildren();
+    $("gallery-video-review").hidden = true;
+  }
+
+  async function publishGalleryVideoSelection() {
+    const job = activeGalleryVideoJob;
+    if (!job || job.status !== "review") return;
+    const ids = [...galleryVideoSelected];
+    if (!ids.length) return setStatus($("gallery-video-publish-status"), "Pilih minimal satu foto.", "error");
+    if (!confirm(`Publish ${ids.length} foto ke Galeri ${galleryDetail?.nama || activeGallery}?\n\nSetelah dipublish, foto akan diunggah ke R2 dan tampil di galeri publik.`)) return;
+
+    const buttonEl = $("gallery-video-publish");
+    buttonEl.disabled = true;
+    setStatus($("gallery-video-publish-status"), "Mengupload foto terpilih ke R2…");
+    try {
+      const data = await api(`/api/galeri/${encodeURIComponent(activeGallery)}/video-review/${encodeURIComponent(job.id)}/publish`, {
+        method: "POST",
+        body: JSON.stringify({
+          selectedIds: ids,
+          caption: $("gallery-video-publish-caption").value.trim() || job.title,
+          eventDate: $("gallery-video-publish-date").value || job.eventDate
+        })
+      });
+      setStatus($("gallery-video-publish-status"), `${data.tersimpan || 0} foto dipublish${data.duplikat ? `, ${data.duplikat} duplikat dilewati` : ""}.`, "success");
+      closeGalleryVideoReview();
+      await loadGallery(activeGallery);
+      switchGalleryTab("foto");
+    } catch (error) {
+      setStatus($("gallery-video-publish-status"), error.message, "error");
+      buttonEl.disabled = false;
+      updateGalleryVideoSelection();
+    }
+  }
+
+  async function retryGalleryVideoJob(job) {
+    if (!confirm(`Proses ulang draft “${job.title || job.id}”?`)) return;
+    const data = await api(`/api/galeri/${encodeURIComponent(activeGallery)}/video-review/${encodeURIComponent(job.id)}/retry`, { method: "POST", body: "{}" });
+    upsertGalleryVideoJob(data.draft);
+    renderGalleryVideoJobs();
+    startGalleryVideoPolling(job.id);
+  }
+
+  async function deleteGalleryVideoJob(job) {
+    if (!confirm(`Hapus draft video “${job.title || job.id}”?\n\nVideo sumber dan kandidat lokal draft akan dihapus. Foto yang sudah dipublish tidak ikut dihapus.`)) return;
+    await api(`/api/galeri/${encodeURIComponent(activeGallery)}/video-review/${encodeURIComponent(job.id)}`, { method: "DELETE", body: "{}" });
+    if (activeGalleryVideoJob?.id === job.id) closeGalleryVideoReview();
+    await loadGalleryVideoJobs();
+  }
   // ---------- EVENTS ----------
   $("phone-form").addEventListener("submit", async event => {
     event.preventDefault(); setStatus($("auth-status"), "Mengirim kode…");
@@ -873,8 +1323,8 @@
   $("bt-add-activity").addEventListener("click", () => openBtCreate("activity"));
   $("bt-add-schedule").addEventListener("click", () => openBtCreate("schedule"));
   $("bt-close-dialog").addEventListener("click", () => $("bt-dialog").close());
-  document.querySelectorAll(".subtab").forEach(el => el.addEventListener("click", () => {
-    document.querySelectorAll(".subtab").forEach(x => x.classList.toggle("active", x === el));
+  document.querySelectorAll(".subtab[data-bt-tab]").forEach(el => el.addEventListener("click", () => {
+    document.querySelectorAll(".subtab[data-bt-tab]").forEach(x => x.classList.toggle("active", x === el));
     for (const name of ["transaksi","aktivitas","jadwal"]) $("bt-"+name+"-panel").hidden = name !== el.dataset.btTab;
   }));
   $("bt-form").addEventListener("submit", async event => {
@@ -909,6 +1359,13 @@
   });
 
   // Galeri events
+  document.querySelectorAll("[data-gallery-tab]").forEach(el => el.addEventListener("click", () => switchGalleryTab(el.dataset.galleryTab)));
+  $("gallery-video-form").addEventListener("submit", submitGalleryVideo);
+  $("gallery-video-refresh").addEventListener("click", () => loadGalleryVideoJobs().catch(showError));
+  $("gallery-video-close-review").addEventListener("click", closeGalleryVideoReview);
+  $("gallery-video-select-all").addEventListener("click", () => { if (!activeGalleryVideoJob) return; galleryVideoSelected = new Set((activeGalleryVideoJob.candidates || []).map(row => row.id)); updateGalleryVideoSelection(); });
+  $("gallery-video-clear-all").addEventListener("click", () => { galleryVideoSelected.clear(); updateGalleryVideoSelection(); });
+  $("gallery-video-publish").addEventListener("click", publishGalleryVideoSelection);
   $("gallery-select").addEventListener("change", () => loadGallery($("gallery-select").value).catch(showError)); $("refresh-gallery").addEventListener("click", () => loadGallery(activeGallery).catch(showError));
   $("rename-gallery").addEventListener("click", async () => { const next = prompt("Nama Galeri baru:", galleryDetail?.nama || ""); if (next === null || !next.trim()) return; try { await api(`/api/galeri/${encodeURIComponent(activeGallery)}`, { method: "PUT", body: JSON.stringify({ nama: next.trim() }) }); const meData = await api("/api/me"); me = meData.user; fillSelect($("gallery-select"), me.galeri || [], row => `${row.nama} · ${row.role}`); await loadGallery(activeGallery); } catch (error) { showError(error); } });
   $("add-gallery-admin").addEventListener("click", async () => { const phone = prompt("Nomor WhatsApp Admin Galeri:", "08"); if (phone === null || !phone.trim()) return; try { await api(`/api/galeri/${encodeURIComponent(activeGallery)}/admin`, { method: "POST", body: JSON.stringify({ phone: phone.trim() }) }); await loadGalleryAdmins(); } catch (error) { showError(error); } });
