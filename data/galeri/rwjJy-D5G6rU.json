@@ -3,7 +3,7 @@
   "token": "rwjJy-D5G6rU",
   "galleryId": "tb",
   "galleryName": "Tanjung Bulan Squad",
-  "updatedAt": 1787649229376,
+  "updatedAt": 1787650331789,
   "photos": [
     {
       "id": "FOTO61",
@@ -2812,6 +2812,71 @@
       "width": 576,
       "height": 1024,
       "createdAt": 1724130000000
+    },
+    {
+      "id": "FOTO221",
+      "nomor": 221,
+      "batchId": "batch7",
+      "caption": "KPPS Pilpres 2024",
+      "uploaderName": "+6288971344131",
+      "originGroupName": "Admin Web · Video",
+      "publicUrl": "https://media.pulungriswanto.my.id/galeri/rwjJy-D5G6rU/2024/02/FOTO221.jpg",
+      "mimeType": "image/jpeg",
+      "width": 576,
+      "height": 1024,
+      "createdAt": 1708405200000
+    },
+    {
+      "id": "FOTO220",
+      "nomor": 220,
+      "batchId": "batch7",
+      "caption": "KPPS Pilpres 2024",
+      "uploaderName": "+6288971344131",
+      "originGroupName": "Admin Web · Video",
+      "publicUrl": "https://media.pulungriswanto.my.id/galeri/rwjJy-D5G6rU/2024/02/FOTO220.jpg",
+      "mimeType": "image/jpeg",
+      "width": 576,
+      "height": 1024,
+      "createdAt": 1708405200000
+    },
+    {
+      "id": "FOTO219",
+      "nomor": 219,
+      "batchId": "batch7",
+      "caption": "KPPS Pilpres 2024",
+      "uploaderName": "+6288971344131",
+      "originGroupName": "Admin Web · Video",
+      "publicUrl": "https://media.pulungriswanto.my.id/galeri/rwjJy-D5G6rU/2024/02/FOTO219.jpg",
+      "mimeType": "image/jpeg",
+      "width": 576,
+      "height": 1024,
+      "createdAt": 1708405200000
+    },
+    {
+      "id": "FOTO218",
+      "nomor": 218,
+      "batchId": "batch7",
+      "caption": "KPPS Pilpres 2024",
+      "uploaderName": "+6288971344131",
+      "originGroupName": "Admin Web · Video",
+      "publicUrl": "https://media.pulungriswanto.my.id/galeri/rwjJy-D5G6rU/2024/02/FOTO218.jpg",
+      "mimeType": "image/jpeg",
+      "width": 576,
+      "height": 1024,
+      "createdAt": 1708405200000
+    },
+    {
+      "id": "FOTO217",
+      "nomor": 217,
+      "batchId": "batch7",
+      "caption": "KPPS Pilpres 2024",
+      "uploaderName": "+6288971344131",
+      "originGroupName": "Admin Web · Video",
+      "publicUrl": "https://media.pulungriswanto.my.id/galeri/rwjJy-D5G6rU/2024/02/FOTO217.jpg",
+      "mimeType": "image/jpeg",
+      "width": 576,
+      "height": 1024,
+      "createdAt": 1708405200000
     }
   ]
 }
