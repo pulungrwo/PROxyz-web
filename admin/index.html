@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#0f172a">
   <meta name="robots" content="noindex,nofollow">
   <title>Admin PROxyz</title>
-  <link rel="stylesheet" href="./admin.css?v=240">
+  <link rel="stylesheet" href="./admin.css?v=241">
 </head>
 <body>
   <main class="shell">
@@ -128,7 +128,23 @@
           </nav>
 
           <section id="gallery-foto-panel" class="gallery-panel">
-            <section class="panel"><div class="section-head"><div><p class="eyebrow">Media</p><h2>Foto</h2></div><span id="gallery-photo-count" class="muted small">0 foto</span></div><input id="gallery-search" type="search" placeholder="Cari FOTO, keterangan, pengunggah…"><div id="gallery-photo-list" class="photo-grid"></div><button id="gallery-load-more" class="ghost full" type="button" hidden>Muat lainnya</button></section>
+            <section class="panel">
+              <div class="section-head">
+                <div><p class="eyebrow">Media</p><h2>Foto</h2></div>
+                <div class="gallery-photo-head-actions"><span id="gallery-photo-count" class="muted small">0 foto</span><button id="gallery-bulk-toggle" class="ghost compact" type="button">Pilih beberapa</button></div>
+              </div>
+              <input id="gallery-search" type="search" placeholder="Cari FOTO, keterangan, pengunggah…">
+              <div id="gallery-bulk-toolbar" class="gallery-bulk-toolbar" hidden>
+                <div><b><span id="gallery-bulk-count">0</span> foto dipilih</b><span class="muted small">Gabungkan sebagai satu kegiatan dengan satu judul dan tanggal.</span></div>
+                <div class="gallery-bulk-actions">
+                  <button id="gallery-bulk-select-loaded" class="ghost compact" type="button">Pilih yang dimuat</button>
+                  <button id="gallery-bulk-clear" class="ghost compact" type="button">Kosongkan</button>
+                  <button id="gallery-bulk-edit" class="primary compact" type="button" disabled>Kelompokkan & edit</button>
+                </div>
+              </div>
+              <div id="gallery-photo-list" class="photo-grid"></div>
+              <button id="gallery-load-more" class="ghost full" type="button" hidden>Muat lainnya</button>
+            </section>
           </section>
 
           <section id="gallery-video-panel" class="gallery-panel" hidden>
@@ -244,9 +260,11 @@
 
   <dialog id="bt-dialog"><form id="bt-form" method="dialog" class="dialog-form"><div class="section-head"><div><p class="eyebrow" id="bt-form-mode">Bertunas</p><h2 id="bt-form-title">Tambah data</h2></div><button id="bt-close-dialog" class="icon-button" type="button">×</button></div><div id="bt-fields" class="stack"></div><p id="bt-form-status" class="status"></p><button class="primary full" type="submit">Simpan</button></form></dialog>
 
-  <dialog id="gallery-edit-dialog"><form id="gallery-edit-form" method="dialog" class="dialog-form"><div class="section-head"><div><p class="eyebrow" id="gallery-edit-id">Foto</p><h2>Edit keterangan</h2></div><button id="close-gallery-edit" class="icon-button" type="button">×</button></div><input id="gallery-edit-number" type="hidden"><label>Keterangan<textarea id="gallery-edit-caption" rows="4" maxlength="500"></textarea></label><p id="gallery-edit-status" class="status"></p><button class="primary full" type="submit">Simpan perubahan</button></form></dialog>
+  <dialog id="gallery-edit-dialog"><form id="gallery-edit-form" method="dialog" class="dialog-form"><div class="section-head"><div><p class="eyebrow" id="gallery-edit-id">Foto</p><h2>Edit foto</h2></div><button id="close-gallery-edit" class="icon-button" type="button">×</button></div><input id="gallery-edit-number" type="hidden"><label>Judul / keterangan<textarea id="gallery-edit-caption" rows="3" maxlength="500"></textarea></label><label>Tanggal kegiatan<input id="gallery-edit-date" type="date" required></label><p class="muted small">Mengubah satu foto akan menempatkannya sebagai kelompok tersendiri agar judul dan tanggal tampil benar di galeri publik.</p><p id="gallery-edit-status" class="status"></p><button class="primary full" type="submit">Simpan perubahan</button></form></dialog>
 
-  <script src="./config.js?v=240"></script>
-  <script src="./admin.js?v=240" defer></script>
+  <dialog id="gallery-bulk-dialog"><form id="gallery-bulk-form" method="dialog" class="dialog-form"><div class="section-head"><div><p class="eyebrow">Edit beberapa foto</p><h2>Kelompokkan kegiatan</h2></div><button id="close-gallery-bulk" class="icon-button" type="button">×</button></div><p class="muted small"><b id="gallery-bulk-dialog-count">0 foto</b> akan dijadikan satu kelompok di galeri publik.</p><label>Judul kegiatan<input id="gallery-bulk-caption" maxlength="160" placeholder="Contoh: Lomba Makan Kerupuk Agustusan 2024" required></label><label>Tanggal kegiatan<input id="gallery-bulk-date" type="date" required></label><p class="muted small">Semua foto terpilih akan memakai satu judul dan satu tanggal. Foto tidak dihapus atau diunggah ulang ke R2.</p><p id="gallery-bulk-status" class="status"></p><button class="primary full" type="submit">Simpan & kelompokkan</button></form></dialog>
+
+  <script src="./config.js?v=241"></script>
+  <script src="./admin.js?v=241" defer></script>
 </body>
 </html>

@@ -46,6 +46,8 @@
   let galleryVideoPollTimer = null;
   let galleryVideoImageLoadToken = 0;
   let galleryVideoUploadBusy = false;
+  let galleryBulkMode = false;
+  let galleryBulkSelected = new Set();
 
   function setStatus(el, message = "", type = "") {
     if (!el) return;
@@ -808,6 +810,8 @@
     if (activeGallery && activeGallery !== id) {
       stopGalleryVideoPolling();
       closeGalleryVideoReview();
+      galleryBulkMode = false;
+      galleryBulkSelected.clear();
     }
     activeGallery = id; $("gallery-select").value = id;
     const data = await api(`/api/galeri/${encodeURIComponent(id)}`);
@@ -834,13 +838,47 @@
     renderGalleryPhotos();
   }
 
+  function updateGalleryBulkUi() {
+    $("gallery-bulk-toolbar").hidden = !galleryBulkMode;
+    $("gallery-bulk-toggle").textContent = galleryBulkMode ? "Selesai memilih" : "Pilih beberapa";
+    $("gallery-bulk-count").textContent = String(galleryBulkSelected.size);
+    $("gallery-bulk-edit").disabled = galleryBulkSelected.size <= 0;
+  }
+
+  function setGalleryBulkMode(enabled, { clear = false } = {}) {
+    galleryBulkMode = Boolean(enabled);
+    if (clear || !galleryBulkMode) galleryBulkSelected.clear();
+    renderGalleryPhotos();
+  }
+
+  function toggleGalleryBulkPhoto(photo, selected) {
+    const number = Number(photo.nomor);
+    if (selected) galleryBulkSelected.add(number);
+    else galleryBulkSelected.delete(number);
+    updateGalleryBulkUi();
+    const card = document.querySelector(`[data-gallery-photo-number="${number}"]`);
+    if (card) card.classList.toggle("bulk-selected", galleryBulkSelected.has(number));
+  }
+
   function renderGalleryPhotos() {
     const list = $("gallery-photo-list"); list.replaceChildren();
     $("gallery-photo-count").textContent = `${galleryPhotoTotal} foto`;
     if (!galleryPhotos.length) list.appendChild(emptyBox("Belum ada foto."));
     for (const photo of galleryPhotos) {
-      const card = document.createElement("article"); card.className = "photo-card";
+      const number = Number(photo.nomor);
+      const card = document.createElement("article");
+      card.className = `photo-card${galleryBulkMode ? " bulk-mode" : ""}${galleryBulkSelected.has(number) ? " bulk-selected" : ""}`;
+      card.dataset.galleryPhotoNumber = String(number);
+
+      if (galleryBulkMode) {
+        const picker = document.createElement("label"); picker.className = "photo-select-wrap"; picker.title = `Pilih ${photo.id}`;
+        const check = document.createElement("input"); check.type = "checkbox"; check.checked = galleryBulkSelected.has(number); check.setAttribute("aria-label", `Pilih ${photo.id}`);
+        check.addEventListener("change", () => toggleGalleryBulkPhoto(photo, check.checked));
+        picker.appendChild(check); card.appendChild(picker);
+      }
+
       const img = document.createElement("img"); img.className = "photo-thumb"; img.loading = "lazy"; img.src = photo.url; img.alt = photo.id;
+      if (galleryBulkMode) img.addEventListener("click", () => toggleGalleryBulkPhoto(photo, !galleryBulkSelected.has(number)));
       const body = document.createElement("div"); body.className = "photo-body";
       const title = document.createElement("div"); title.className = "photo-title"; title.textContent = photo.id;
       const caption = document.createElement("div"); caption.className = "photo-caption"; caption.textContent = photo.keterangan || "Tanpa keterangan";
@@ -849,15 +887,32 @@
       body.append(title, caption, meta, actions); card.append(img, body); list.appendChild(card);
     }
     $("gallery-load-more").hidden = galleryPhotos.length >= galleryPhotoTotal;
+    updateGalleryBulkUi();
   }
 
   function openGalleryPhotoEdit(photo) {
-    $("gallery-edit-number").value = photo.nomor; $("gallery-edit-id").textContent = photo.id; $("gallery-edit-caption").value = photo.keterangan || ""; setStatus($("gallery-edit-status")); $("gallery-edit-dialog").showModal();
+    $("gallery-edit-number").value = photo.nomor;
+    $("gallery-edit-id").textContent = photo.id;
+    $("gallery-edit-caption").value = photo.keterangan || "";
+    $("gallery-edit-date").value = timestampToDate(photo.tanggal || Date.now());
+    setStatus($("gallery-edit-status"));
+    $("gallery-edit-dialog").showModal();
+  }
+
+  function openGalleryBulkEdit() {
+    if (!galleryBulkSelected.size) return;
+    const first = galleryPhotos.find(photo => galleryBulkSelected.has(Number(photo.nomor)));
+    $("gallery-bulk-dialog-count").textContent = `${galleryBulkSelected.size} foto`;
+    $("gallery-bulk-caption").value = first?.keterangan || "";
+    $("gallery-bulk-date").value = first ? timestampToDate(first.tanggal || Date.now()) : todayJakarta();
+    setStatus($("gallery-bulk-status"));
+    $("gallery-bulk-dialog").showModal();
   }
 
   async function deleteGalleryPhoto(photo) {
     if (!confirm(`Hapus ${photo.id} dari Galeri ${galleryDetail?.nama || activeGallery}?\n\nFile juga akan dihapus dari R2.`)) return;
     await api(`/api/galeri/${encodeURIComponent(activeGallery)}/foto/${encodeURIComponent(photo.nomor)}`, { method: "DELETE", body: "{}" });
+    galleryBulkSelected.delete(Number(photo.nomor));
     await loadGallery(activeGallery);
   }
 
@@ -1445,7 +1500,50 @@
   $("rename-gallery").addEventListener("click", async () => { const next = prompt("Nama Galeri baru:", galleryDetail?.nama || ""); if (next === null || !next.trim()) return; try { await api(`/api/galeri/${encodeURIComponent(activeGallery)}`, { method: "PUT", body: JSON.stringify({ nama: next.trim() }) }); const meData = await api("/api/me"); me = meData.user; fillSelect($("gallery-select"), me.galeri || [], row => `${row.nama} · ${row.role}`); await loadGallery(activeGallery); } catch (error) { showError(error); } });
   $("add-gallery-admin").addEventListener("click", async () => { const phone = prompt("Nomor WhatsApp Admin Galeri:", "08"); if (phone === null || !phone.trim()) return; try { await api(`/api/galeri/${encodeURIComponent(activeGallery)}/admin`, { method: "POST", body: JSON.stringify({ phone: phone.trim() }) }); await loadGalleryAdmins(); } catch (error) { showError(error); } });
   $("gallery-load-more").addEventListener("click", () => loadGalleryPhotos(false).catch(showError)); let gallerySearchTimer; $("gallery-search").addEventListener("input", () => { clearTimeout(gallerySearchTimer); gallerySearchTimer = setTimeout(() => loadGalleryPhotos(true).catch(showError), 300); });
-  $("close-gallery-edit").addEventListener("click", () => $("gallery-edit-dialog").close()); $("gallery-edit-form").addEventListener("submit", async event => { event.preventDefault(); const nomor = $("gallery-edit-number").value; setStatus($("gallery-edit-status"), "Menyimpan…"); try { await api(`/api/galeri/${encodeURIComponent(activeGallery)}/foto/${encodeURIComponent(nomor)}`, { method: "PUT", body: JSON.stringify({ keterangan: $("gallery-edit-caption").value.trim() }) }); $("gallery-edit-dialog").close(); await loadGalleryPhotos(true); } catch (error) { setStatus($("gallery-edit-status"), error.message, "error"); } });
+  $("gallery-bulk-toggle").addEventListener("click", () => setGalleryBulkMode(!galleryBulkMode, { clear: true }));
+  $("gallery-bulk-select-loaded").addEventListener("click", () => { for (const photo of galleryPhotos) galleryBulkSelected.add(Number(photo.nomor)); renderGalleryPhotos(); });
+  $("gallery-bulk-clear").addEventListener("click", () => { galleryBulkSelected.clear(); renderGalleryPhotos(); });
+  $("gallery-bulk-edit").addEventListener("click", openGalleryBulkEdit);
+  $("close-gallery-bulk").addEventListener("click", () => $("gallery-bulk-dialog").close());
+  $("gallery-bulk-form").addEventListener("submit", async event => {
+    event.preventDefault();
+    if (!galleryBulkSelected.size) return setStatus($("gallery-bulk-status"), "Pilih minimal satu foto.", "error");
+    const title = $("gallery-bulk-caption").value.trim();
+    const date = $("gallery-bulk-date").value;
+    setStatus($("gallery-bulk-status"), `Menyimpan ${galleryBulkSelected.size} foto…`);
+    try {
+      const result = await api(`/api/galeri/${encodeURIComponent(activeGallery)}/foto/bulk`, {
+        method: "PUT",
+        body: JSON.stringify({ nomor: [...galleryBulkSelected], keterangan: title, tanggal: date })
+      });
+      setStatus($("gallery-bulk-status"), `${result.jumlah || galleryBulkSelected.size} foto berhasil dikelompokkan.`, "success");
+      $("gallery-bulk-dialog").close();
+      galleryBulkMode = false;
+      galleryBulkSelected.clear();
+      await loadGallery(activeGallery);
+    } catch (error) {
+      setStatus($("gallery-bulk-status"), error.message, "error");
+    }
+  });
+  $("close-gallery-edit").addEventListener("click", () => $("gallery-edit-dialog").close());
+  $("gallery-edit-form").addEventListener("submit", async event => {
+    event.preventDefault();
+    const nomor = $("gallery-edit-number").value;
+    setStatus($("gallery-edit-status"), "Menyimpan…");
+    try {
+      await api(`/api/galeri/${encodeURIComponent(activeGallery)}/foto/${encodeURIComponent(nomor)}`, {
+        method: "PUT",
+        body: JSON.stringify({
+          keterangan: $("gallery-edit-caption").value.trim(),
+          tanggal: $("gallery-edit-date").value
+        })
+      });
+      $("gallery-edit-dialog").close();
+      await loadGalleryPhotos(true);
+    } catch (error) {
+      setStatus($("gallery-edit-status"), error.message, "error");
+    }
+  });
 
   restoreOtpChallenge();
   bootstrapSession();
