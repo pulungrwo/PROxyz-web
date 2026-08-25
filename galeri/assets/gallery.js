@@ -21,7 +21,41 @@
   let currentPage=1;
   let visibleRows=[];
   let observer=null;
+  let mainImageObserver=null;
+  let viewerImageObserver=null;
   const fmt=new Intl.DateTimeFormat('id-ID',{dateStyle:'medium',timeStyle:'short',timeZone:'Asia/Jakarta'});
+
+  function createImageObserver(root,rootMargin){
+    if(!('IntersectionObserver' in window))return null;
+    return new IntersectionObserver(entries=>{
+      for(const entry of entries){
+        if(!entry.isIntersecting)continue;
+        const img=entry.target;
+        const src=img.dataset.src;
+        if(src){
+          img.src=src;
+          delete img.dataset.src;
+        }
+        entry.target.__imageObserver?.unobserve(entry.target);
+        delete entry.target.__imageObserver;
+      }
+    },{root,rootMargin,threshold:.01});
+  }
+
+  function queueImage(img,url,{eager=false,observer=null}={}){
+    img.decoding='async';
+    if(eager||!observer){
+      img.loading=eager?'eager':'lazy';
+      img.fetchPriority=eager?'high':'low';
+      img.src=url;
+      return;
+    }
+    img.loading='lazy';
+    img.fetchPriority='low';
+    img.dataset.src=url;
+    img.__imageObserver=observer;
+    observer.observe(img);
+  }
 
   function matchesPeriod(ts,type){
     if(type==='all')return true;
@@ -49,10 +83,8 @@
     b.className='card';
     b.type='button';
     const img=document.createElement('img');
-    img.loading=index<4?'eager':'lazy';
-    img.decoding='async';
-    img.src=p.publicUrl;
     img.alt=p.caption||p.id;
+    queueImage(img,p.publicUrl,{eager:index<2,observer:mainImageObserver});
     const badge=document.createElement('span');
     badge.className='badge';
     badge.textContent=p.id;
@@ -111,6 +143,8 @@
     const start=(currentPage-1)*PAGE_SIZE;
     const visible=rows.slice(start,start+PAGE_SIZE);
     visibleRows=visible.slice();
+    if(mainImageObserver)mainImageObserver.disconnect();
+    mainImageObserver=createImageObserver(null,'520px 0px');
     gallery.innerHTML='';
     const groups=new Map();
     for(const p of visible){
@@ -140,7 +174,7 @@
     resultCount.textContent=rows.length+' foto';
     pageRange.textContent=rows.length?((start+1)+'–'+Math.min(start+PAGE_SIZE,rows.length)+' dari '+rows.length):'';
     renderPagination(rows.length,totalPages);
-    if(options.scroll)window.scrollTo({top:document.querySelector('.toolbar').offsetTop-12,behavior:'smooth'});
+    if(options.scroll)window.scrollTo({top:document.querySelector('.toolbar').offsetTop-12,behavior:'auto'});
   }
 
   function extFor(photo){
@@ -189,10 +223,8 @@
     const media=document.createElement('div');
     media.className='viewer-media';
     const img=document.createElement('img');
-    img.loading=photo.id===selectedId?'eager':'lazy';
-    img.decoding='async';
-    img.src=photo.publicUrl;
     img.alt=photo.caption||photo.id;
+    queueImage(img,photo.publicUrl,{eager:photo.id===selectedId,observer:viewerImageObserver});
     media.appendChild(img);
 
     const info=document.createElement('div');
@@ -232,7 +264,9 @@
 
   function openViewer(photo){
     const rows=visibleRows.length?visibleRows:[photo];
+    if(viewerImageObserver)viewerImageObserver.disconnect();
     viewerFeed.innerHTML='';
+    viewerImageObserver=createImageObserver(viewerFeed,'110% 0px');
     rows.forEach((p,i)=>viewerFeed.appendChild(viewerItem(p,i,photo.id)));
     viewer.showModal();
 
@@ -260,6 +294,7 @@
   document.getElementById('close-viewer').onclick=()=>viewer.close();
   viewer.addEventListener('close',()=>{
     if(observer){observer.disconnect();observer=null}
+    if(viewerImageObserver){viewerImageObserver.disconnect();viewerImageObserver=null}
     viewerFeed.innerHTML='';
     viewerPosition.textContent='';
   });
