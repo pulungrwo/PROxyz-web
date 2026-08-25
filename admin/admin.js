@@ -249,7 +249,8 @@
     $("user-name-id").value = row?.id || "";
     $("user-name-input").value = row?.name === "Pengguna PROxyz" ? "" : (row?.name || "");
     $("user-name-dialog-title").textContent = isSelf ? "Edit nama Anda" : "Edit nama pengguna";
-    $("user-name-help").textContent = isSelf ? "Nama ini akan dipakai sebagai identitas tampilan Anda di PROxyz." : (row?.maskedIdentity || "");
+    const editNumber = whatsappNumberFromUserId(row?.id);
+    $("user-name-help").textContent = isSelf ? "Nama ini akan dipakai sebagai identitas tampilan Anda di PROxyz." : (editNumber ? `WhatsApp +${editNumber}` : "Nomor WhatsApp tidak tersedia");
     setStatus($("user-name-status"));
     dialog.showModal();
     setTimeout(() => $("user-name-input").focus(), 80);
@@ -264,12 +265,18 @@
     setStatus($("users-status"), usersDirectory.length ? `${usersDirectory.length} pengguna ditemukan.` : "Belum ada pengguna.", "success");
   }
 
+  function whatsappNumberFromUserId(value) {
+    const raw = String(value || "").split("@")[0].split(":")[0].replace(/\D/g, "");
+    return raw || "";
+  }
+
   function renderUsers() {
     const list = $("users-list");
     const query = String($("users-search").value || "").trim().toLowerCase();
     const rows = usersDirectory.filter(row => {
       if (!query) return true;
-      return [row.name, row.maskedIdentity, ...(row.access || [])].join(" ").toLowerCase().includes(query);
+      const number = whatsappNumberFromUserId(row.id);
+      return [row.name, number, `+${number}`, ...(row.access || [])].join(" ").toLowerCase().includes(query);
     });
     list.replaceChildren();
     if (!rows.length) {
@@ -281,7 +288,18 @@
       const main = document.createElement("div"); main.className = "user-directory-main";
       const name = document.createElement("strong"); name.textContent = row.hasDisplayName ? row.name : (row.name && row.name !== "Pengguna PROxyz" ? row.name : "Belum diberi nama");
       const access = document.createElement("span"); access.textContent = (row.access || ["Pengguna PROxyz"]).join(" · ");
-      const ident = document.createElement("span"); ident.textContent = row.maskedIdentity || "Identitas tersimpan";
+      const number = whatsappNumberFromUserId(row.id);
+      const ident = document.createElement(number ? "a" : "span");
+      ident.className = number ? "user-wa-link" : "";
+      if (number) {
+        ident.textContent = `WhatsApp +${number}`;
+        ident.href = `https://wa.me/${number}`;
+        ident.target = "_blank";
+        ident.rel = "noopener noreferrer";
+        ident.title = "Buka chat WhatsApp";
+      } else {
+        ident.textContent = "Nomor WhatsApp tidak tersedia";
+      }
       main.append(name);
       if (row.isOwner) { const badge = document.createElement("span"); badge.className = "user-owner-badge"; badge.textContent = "Owner"; main.append(badge); }
       main.append(access, ident);
