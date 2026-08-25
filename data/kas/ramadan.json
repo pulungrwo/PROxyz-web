@@ -5,12 +5,22 @@
   "status": "aktif",
   "saldo": {
     "awal": 0,
-    "masuk": 0,
+    "masuk": 620000,
     "keluar": 620000,
-    "akhir": -620000
+    "akhir": 0
   },
-  "jumlahTransaksi": 1,
+  "jumlahTransaksi": 2,
   "transactions": [
+    {
+      "id": "ramadan-260401-001",
+      "nomor": "002",
+      "tanggal": 1775019600000,
+      "jenis": "masuk",
+      "kategori": "hasil usaha",
+      "keterangan": "Panen Timun",
+      "nominal": 620000,
+      "label": []
+    },
     {
       "id": "ramadan-260321-001",
       "nomor": "001",
@@ -24,5 +34,5 @@
       ]
     }
   ],
-  "updatedAt": 1787338112408
+  "updatedAt": 1787670351095
 }
