@@ -1,5 +1,5 @@
 (()=>{
-  const PAGE_SIZE=50;
+  const LOAD_STEP=50;
   const token=document.body.dataset.galleryToken;
   const liveManifest=document.body.dataset.liveManifest||'';
   const titleEl=document.getElementById('gallery-title');
@@ -12,21 +12,27 @@
   const updatedEl=document.getElementById('gallery-updated');
   const resultCount=document.getElementById('result-count');
   const pageRange=document.getElementById('page-range');
-  const pagination=document.getElementById('pagination');
-  const pagePrev=document.getElementById('page-prev');
-  const pageNext=document.getElementById('page-next');
-  const pageNumbers=document.getElementById('page-numbers');
-  const footerPage=document.getElementById('footer-page');
+  const loadMoreWrap=document.getElementById('load-more-wrap');
+  const loadMore=document.getElementById('load-more');
+  const footerCount=document.getElementById('footer-count');
   const viewer=document.getElementById('viewer');
   const viewerFeed=document.getElementById('viewer-feed');
   const viewerPosition=document.getElementById('viewer-position');
   let photos=[];
-  let currentPage=1;
+  let visibleLimit=LOAD_STEP;
   let visibleRows=[];
   let observer=null;
   let mainImageObserver=null;
   let viewerImageObserver=null;
   const fmt=new Intl.DateTimeFormat('id-ID',{dateStyle:'medium',timeStyle:'short',timeZone:'Asia/Jakarta'});
+
+  function jakartaDateKey(ts){
+    return new Date(ts).toLocaleDateString('en-CA',{timeZone:'Asia/Jakarta'});
+  }
+
+  function currentJakartaYear(){
+    return Number(jakartaDateKey(Date.now()).slice(0,4));
+  }
 
   function createImageObserver(root,rootMargin){
     if(!('IntersectionObserver' in window))return null;
@@ -60,15 +66,31 @@
     observer.observe(img);
   }
 
+  function buildPeriodOptions(){
+    const selected=period.value;
+    period.querySelectorAll('option[data-history-year]').forEach(option=>option.remove());
+    const currentYear=currentJakartaYear();
+    const years=[...new Set(photos.map(photo=>Number(jakartaDateKey(photo.createdAt).slice(0,4))).filter(year=>Number.isFinite(year)&&year>1900&&year<currentYear))].sort((a,b)=>b-a);
+    for(const year of years){
+      const option=document.createElement('option');
+      option.value='year:'+year;
+      option.textContent=String(year);
+      option.dataset.historyYear='1';
+      period.appendChild(option);
+    }
+    if([...period.options].some(option=>option.value===selected))period.value=selected;
+  }
+
   function matchesPeriod(ts,type){
     if(type==='all')return true;
-    const d=new Date(ts),n=new Date();
-    const dKey=d.toLocaleDateString('en-CA',{timeZone:'Asia/Jakarta'});
-    const nKey=n.toLocaleDateString('en-CA',{timeZone:'Asia/Jakarta'});
+    const dKey=jakartaDateKey(ts);
+    const nKey=jakartaDateKey(Date.now());
     if(type==='today')return dKey===nKey;
     const dp=dKey.split('-'),np=nKey.split('-');
     if(type==='month')return dp[0]===np[0]&&dp[1]===np[1];
-    return dp[0]===np[0];
+    if(type==='year')return dp[0]===np[0];
+    if(type.startsWith('year:'))return dp[0]===type.slice(5);
+    return true;
   }
 
   function filteredRows(){
@@ -103,55 +125,9 @@
     return b;
   }
 
-  function paginationItems(totalPages,page){
-    if(totalPages<=5)return Array.from({length:totalPages},(_,i)=>i+1);
-    const items=[1];
-    if(page>3)items.push('…');
-    const from=Math.max(2,page-1),to=Math.min(totalPages-1,page+1);
-    for(let i=from;i<=to;i++)items.push(i);
-    if(page<totalPages-2)items.push('…');
-    items.push(totalPages);
-    return items;
-  }
-
-  function renderPagination(totalRows,totalPages){
-    pagination.hidden=totalPages<=1;
-    pagePrev.disabled=currentPage<=1;
-    pageNext.disabled=currentPage>=totalPages;
-    pageNumbers.innerHTML='';
-    for(const item of paginationItems(totalPages,currentPage)){
-      if(item==='…'){
-        const s=document.createElement('span');
-        s.className='page-ellipsis';
-        s.textContent='…';
-        pageNumbers.appendChild(s);
-        continue;
-      }
-      const b=document.createElement('button');
-      b.type='button';
-      b.className='page-number'+(item===currentPage?' active':'');
-      b.textContent=String(item);
-      b.setAttribute('aria-label','Halaman '+item);
-      if(item===currentPage)b.setAttribute('aria-current','page');
-      b.onclick=()=>goToPage(item);
-      pageNumbers.appendChild(b);
-    }
-    footerPage.textContent=totalPages>0?'Halaman '+currentPage+' / '+totalPages:'';
-  }
-
-  function goToPage(page){
+  function render(){
     const rows=filteredRows();
-    const totalPages=Math.max(1,Math.ceil(rows.length/PAGE_SIZE));
-    currentPage=Math.min(Math.max(1,page),totalPages);
-    render({scroll:true});
-  }
-
-  function render(options={}){
-    const rows=filteredRows();
-    const totalPages=Math.max(1,Math.ceil(rows.length/PAGE_SIZE));
-    if(currentPage>totalPages)currentPage=totalPages;
-    const start=(currentPage-1)*PAGE_SIZE;
-    const visible=rows.slice(start,start+PAGE_SIZE);
+    const visible=rows.slice(0,visibleLimit);
     visibleRows=visible.slice();
     if(mainImageObserver)mainImageObserver.disconnect();
     mainImageObserver=createImageObserver(null,'520px 0px');
@@ -172,7 +148,7 @@
       const title=document.createElement('h2');
       title.textContent=first.caption||'Tanpa keterangan';
       const info=document.createElement('span');
-      info.textContent=batch.length+' foto di halaman ini · '+fmt.format(new Date(first.createdAt));
+      info.textContent=batch.length+' foto ditampilkan · '+fmt.format(new Date(first.createdAt));
       head.append(title,info);
       const grid=document.createElement('div');
       grid.className='batch-grid';
@@ -182,9 +158,10 @@
     }
     empty.hidden=rows.length!==0;
     resultCount.textContent=rows.length+' foto';
-    pageRange.textContent=rows.length?((start+1)+'–'+Math.min(start+PAGE_SIZE,rows.length)+' dari '+rows.length):'';
-    renderPagination(rows.length,totalPages);
-    if(options.scroll)window.scrollTo({top:document.querySelector('.toolbar').offsetTop-12,behavior:'auto'});
+    pageRange.textContent=rows.length?'Menampilkan '+visible.length+' dari '+rows.length:'';
+    footerCount.textContent=rows.length?visible.length+' / '+rows.length+' foto':'';
+    loadMoreWrap.hidden=visible.length>=rows.length;
+    loadMore.textContent=visible.length<rows.length?'Muat lainnya ('+Math.min(LOAD_STEP,rows.length-visible.length)+')':'Muat lainnya';
   }
 
   function extFor(photo){
@@ -301,6 +278,11 @@
     });
   }
 
+  function resetAndRender(){
+    visibleLimit=LOAD_STEP;
+    render();
+  }
+
   document.getElementById('close-viewer').onclick=()=>viewer.close();
   viewer.addEventListener('close',()=>{
     if(observer){observer.disconnect();observer=null}
@@ -308,11 +290,10 @@
     viewerFeed.innerHTML='';
     viewerPosition.textContent='';
   });
-  pagePrev.onclick=()=>goToPage(currentPage-1);
-  pageNext.onclick=()=>goToPage(currentPage+1);
-  search.addEventListener('input',()=>{currentPage=1;render()});
-  period.addEventListener('change',()=>{currentPage=1;render()});
-  sort.addEventListener('change',()=>{currentPage=1;render()});
+  loadMore.onclick=()=>{visibleLimit+=LOAD_STEP;render()};
+  search.addEventListener('input',resetAndRender);
+  period.addEventListener('change',resetAndRender);
+  sort.addEventListener('change',resetAndRender);
 
   function loadLiveManifest(){
     if(!liveManifest)return Promise.reject(new Error('Manifest live belum tersedia'));
@@ -358,6 +339,7 @@
       if(titleEl&&data.galleryName)titleEl.textContent=data.galleryName;
       countEl.textContent=photos.length+' foto';
       updatedEl.textContent='diperbarui '+fmt.format(new Date(data.updatedAt||Date.now()));
+      buildPeriodOptions();
       render();
     })
     .catch(err=>{
@@ -365,6 +347,8 @@
       updatedEl.textContent='';
       resultCount.textContent='';
       pageRange.textContent='';
+      footerCount.textContent='';
+      loadMoreWrap.hidden=true;
       empty.textContent=err.message;
       empty.hidden=false;
     });
