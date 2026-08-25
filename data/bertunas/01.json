@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": 1787590136344,
+  "generatedAt": 1787654581725,
   "id": "01",
   "nama": "Lahan 300 m²",
   "lokasi": "",
@@ -35,7 +35,7 @@
     "weightKg": 0,
     "harvestCount": 0,
     "activityCount": 2,
-    "pendingScheduleCount": 2
+    "pendingScheduleCount": 4
   },
   "financeVisible": false,
   "recentHarvest": [],
@@ -83,7 +83,31 @@
       "targetHst": 8,
       "targetDate": "2026-08-30",
       "status": "pending"
+    },
+    {
+      "nomor": 5,
+      "cropId": "01",
+      "komoditas": "Cabai",
+      "category": "Pemupukan",
+      "description": "Kocor NPK 16 1kg",
+      "note": "",
+      "targetType": "hst",
+      "targetHst": 20,
+      "targetDate": "2026-09-02",
+      "status": "pending"
+    },
+    {
+      "nomor": 4,
+      "cropId": "02",
+      "komoditas": "Kacang Panjang",
+      "category": "Pemupukan",
+      "description": "Kocor Ultradap + Ambition + Humigrow",
+      "note": "",
+      "targetType": "hst",
+      "targetHst": 13,
+      "targetDate": "2026-09-04",
+      "status": "pending"
     }
   ],
-  "updatedAt": 1787590136344
+  "updatedAt": 1787654581725
 }
