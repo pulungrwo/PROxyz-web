@@ -1,10 +1,11 @@
 (()=>{
-  const PAGE_SIZE=24;
+  const PAGE_SIZE=50;
   const token=document.body.dataset.galleryToken;
   const gallery=document.getElementById('gallery');
   const empty=document.getElementById('empty');
   const search=document.getElementById('search');
   const period=document.getElementById('period');
+  const sort=document.getElementById('sort');
   const countEl=document.getElementById('gallery-count');
   const updatedEl=document.getElementById('gallery-updated');
   const resultCount=document.getElementById('result-count');
@@ -70,12 +71,19 @@
 
   function filteredRows(){
     const q=search.value.trim().toLowerCase();
-    return photos.filter(p=>matchesPeriod(p.createdAt,period.value)&&(!q||
+    const rows=photos.filter(p=>matchesPeriod(p.createdAt,period.value)&&(!q||
       String(p.caption||'').toLowerCase().includes(q)||
       String(p.uploaderName||'').toLowerCase().includes(q)||
       String(p.id||'').toLowerCase().includes(q)||
       String(p.originGroupName||'').toLowerCase().includes(q)
     ));
+    rows.sort((a,b)=>{
+      const diff=Number(a.createdAt||0)-Number(b.createdAt||0);
+      if(diff!==0)return sort.value==='oldest'?diff:-diff;
+      const aNo=Number(a.nomor||0),bNo=Number(b.nomor||0);
+      return sort.value==='oldest'?aNo-bNo:bNo-aNo;
+    });
+    return rows;
   }
 
   function cardFor(p,index){
@@ -302,6 +310,7 @@
   pageNext.onclick=()=>goToPage(currentPage+1);
   search.addEventListener('input',()=>{currentPage=1;render()});
   period.addEventListener('change',()=>{currentPage=1;render()});
+  sort.addEventListener('change',()=>{currentPage=1;render()});
 
   fetch('../../data/galeri/'+encodeURIComponent(token)+'.json',{cache:'no-store'})
     .then(r=>{if(!r.ok)throw new Error('Data galeri tidak ditemukan');return r.json()})
