@@ -295,6 +295,22 @@
   period.addEventListener('change',resetAndRender);
   sort.addEventListener('change',resetAndRender);
 
+  const searchSticky=document.querySelector('.search-sticky');
+  function bringSearchToTop(){
+    if(!searchSticky)return;
+    searchSticky.classList.add('is-focused');
+    const target=Math.max(0,window.scrollY+searchSticky.getBoundingClientRect().top);
+    window.scrollTo({top:target,behavior:'smooth'});
+  }
+  search.addEventListener('focus',()=>{
+    requestAnimationFrame(bringSearchToTop);
+    setTimeout(bringSearchToTop,180);
+  });
+  search.addEventListener('click',()=>requestAnimationFrame(bringSearchToTop));
+  search.addEventListener('blur',()=>{
+    if(searchSticky)searchSticky.classList.remove('is-focused');
+  });
+
   function loadLiveManifest(){
     if(!liveManifest)return Promise.reject(new Error('Manifest live belum tersedia'));
     return new Promise((resolve,reject)=>{
