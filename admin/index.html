@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#0f172a">
   <meta name="robots" content="noindex,nofollow">
   <title>Admin PROxyz</title>
-  <link rel="stylesheet" href="./admin.css?v=241">
+  <link rel="stylesheet" href="./admin.css?v=246">
 </head>
 <body>
   <main class="shell">
@@ -151,6 +151,17 @@
             <section class="panel">
               <div class="section-head"><div><p class="eyebrow">Video → Foto</p><h2>Buat dokumentasi dari video</h2></div><span class="feature-pill">Unik per kejadian</span></div>
               <p class="muted small">Video diproses oleh PROxyz dan dipecah menjadi beberapa kejadian/lomba. Di setiap kejadian, sistem memberi setiap wajah/subjek kesempatan yang adil lalu dapat mengambil 2–3 momen terbaik per orang. Orang yang sama tetap boleh terpilih lagi pada kejadian lain. Hasil belum masuk R2 final sebelum Anda review dan publish.</p>
+              <div id="gallery-video-busy-card" class="video-busy-card" hidden>
+                <div class="busy-spinner" aria-hidden="true"></div>
+                <div class="video-busy-copy">
+                  <span id="gallery-video-busy-stage" class="busy-stage">Menyiapkan</span>
+                  <strong id="gallery-video-busy-title">PROxyz sedang bekerja…</strong>
+                  <p id="gallery-video-busy-detail">Mohon tunggu sebentar.</p>
+                </div>
+                <div class="busy-progress-head"><span>Progres</span><b id="gallery-video-busy-percent">0%</b></div>
+                <div id="gallery-video-busy-track" class="busy-progress-track"><span id="gallery-video-busy-bar" style="width:0%"></span></div>
+                <small>Jangan mengirim ulang video. Setelah selesai, review akan dibuka otomatis.</small>
+              </div>
               <form id="gallery-video-form" class="stack video-form">
                 <label>Nama kegiatan
                   <input id="gallery-video-title" maxlength="160" placeholder="Contoh: Lomba Kerupuk Agustusan 2024" required>
@@ -221,6 +232,15 @@
                 <div><p class="eyebrow">Review foto</p><h2 id="gallery-video-review-title">Dokumentasi video</h2><p id="gallery-video-review-meta" class="muted small"></p></div>
                 <button id="gallery-video-close-review" class="ghost compact" type="button">Tutup</button>
               </div>
+              <div id="gallery-video-review-loader" class="review-loading-card" hidden>
+                <div class="busy-spinner small" aria-hidden="true"></div>
+                <div class="review-loading-copy">
+                  <strong id="gallery-video-review-loader-title">Menyiapkan review…</strong>
+                  <span id="gallery-video-review-loader-detail">Memuat kandidat foto.</span>
+                </div>
+                <b id="gallery-video-review-loader-percent">0%</b>
+                <div id="gallery-video-review-loader-track" class="busy-progress-track"><span id="gallery-video-review-loader-bar" style="width:0%"></span></div>
+              </div>
               <div class="review-stats">
                 <div><span>Kejadian</span><b id="gallery-video-event-count">0</b></div>
                 <div><span>Kandidat</span><b id="gallery-video-candidate-count">0</b></div>
@@ -277,6 +297,6 @@
   <dialog id="gallery-bulk-dialog"><form id="gallery-bulk-form" method="dialog" class="dialog-form"><div class="section-head"><div><p class="eyebrow">Edit beberapa foto</p><h2>Kelompokkan kegiatan</h2></div><button id="close-gallery-bulk" class="icon-button" type="button">×</button></div><p class="muted small"><b id="gallery-bulk-dialog-count">0 foto</b> akan dijadikan satu kelompok di galeri publik.</p><label>Judul kegiatan<input id="gallery-bulk-caption" maxlength="160" placeholder="Contoh: Lomba Makan Kerupuk Agustusan 2024" required></label><label>Tanggal kegiatan<input id="gallery-bulk-date" type="date" required></label><p class="muted small">Semua foto terpilih akan memakai satu judul dan satu tanggal. Foto tidak dihapus atau diunggah ulang ke R2.</p><p id="gallery-bulk-status" class="status"></p><button class="primary full" type="submit">Simpan & kelompokkan</button></form></dialog>
 
   <script src="./config.js?v=242"></script>
-  <script src="./admin.js?v=242" defer></script>
+  <script src="./admin.js?v=246" defer></script>
 </body>
 </html>

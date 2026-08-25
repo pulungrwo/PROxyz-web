@@ -46,6 +46,8 @@
   let galleryVideoPollTimer = null;
   let galleryVideoImageLoadToken = 0;
   let galleryVideoUploadBusy = false;
+  let galleryVideoProcessingJobId = "";
+  let galleryVideoReviewBusy = false;
   let galleryBulkMode = false;
   let galleryBulkSelected = new Set();
 
@@ -936,6 +938,63 @@
 
 
 
+  function setGalleryVideoFormLocked(locked) {
+    const form = $("gallery-video-form");
+    if (!form) return;
+    form.hidden = Boolean(locked);
+    form.querySelectorAll("input, select, textarea, button").forEach(el => {
+      el.disabled = Boolean(locked);
+    });
+  }
+
+  function showGalleryVideoBusyCard({ stage = "Memproses", title = "PROxyz sedang bekerja…", detail = "", percent = 0, indeterminate = false } = {}) {
+    const card = $("gallery-video-busy-card");
+    if (!card) return;
+    card.hidden = false;
+    $("gallery-video-busy-stage").textContent = stage;
+    $("gallery-video-busy-title").textContent = title;
+    $("gallery-video-busy-detail").textContent = detail;
+    const value = Math.max(0, Math.min(100, Number(percent || 0)));
+    $("gallery-video-busy-percent").textContent = indeterminate ? "…" : `${Math.round(value)}%`;
+    const track = $("gallery-video-busy-track");
+    track.classList.toggle("indeterminate", Boolean(indeterminate));
+    $("gallery-video-busy-bar").style.width = indeterminate ? "38%" : `${value}%`;
+  }
+
+  function hideGalleryVideoBusyCard() {
+    const card = $("gallery-video-busy-card");
+    if (card) card.hidden = true;
+  }
+
+  function finishGalleryVideoProcessing({ clearFile = true } = {}) {
+    galleryVideoProcessingJobId = "";
+    galleryVideoUploadBusy = false;
+    setGalleryVideoFormLocked(false);
+    hideGalleryVideoBusyCard();
+    const submit = $("gallery-video-submit");
+    if (submit) submit.disabled = false;
+    if (clearFile && $("gallery-video-file")) $("gallery-video-file").value = "";
+  }
+
+  function showGalleryReviewLoader(title = "Menyiapkan review…", detail = "", percent = 0, indeterminate = false) {
+    const loader = $("gallery-video-review-loader");
+    if (!loader) return;
+    loader.hidden = false;
+    $("gallery-video-review-loader-title").textContent = title;
+    $("gallery-video-review-loader-detail").textContent = detail;
+    const value = Math.max(0, Math.min(100, Number(percent || 0)));
+    $("gallery-video-review-loader-percent").textContent = indeterminate ? "…" : `${Math.round(value)}%`;
+    const track = $("gallery-video-review-loader-track");
+    track.classList.toggle("indeterminate", Boolean(indeterminate));
+    $("gallery-video-review-loader-bar").style.width = indeterminate ? "38%" : `${value}%`;
+  }
+
+  function hideGalleryReviewLoader() {
+    const loader = $("gallery-video-review-loader");
+    if (loader) loader.hidden = true;
+  }
+
+
   function clearGalleryVideoObjectUrls() {
     galleryVideoImageLoadToken += 1;
     for (const url of galleryVideoObjectUrls) URL.revokeObjectURL(url);
@@ -1072,23 +1131,37 @@
 
   function startGalleryVideoPolling(jobId) {
     stopGalleryVideoPolling();
+    galleryVideoProcessingJobId = jobId;
     const poll = async () => {
       try {
         const job = await refreshGalleryVideoJob(jobId);
         if (!job) return;
+        const progress = Math.max(36, Number(job.progress || 36));
+        const detail = job.message || (job.status === "queued" ? "Menunggu giliran pemrosesan…" : "Menganalisis video dan mencari momen terbaik…");
+        setGalleryVideoProgress(progress, detail);
+        showGalleryVideoBusyCard({
+          stage: job.status === "queued" ? "Antrean pemrosesan" : "Analisis video",
+          title: job.status === "queued" ? "Video sudah diterima PROxyz" : "Mencari kejadian & foto terbaik…",
+          detail,
+          percent: progress,
+          indeterminate: job.status === "processing" && progress <= 36
+        });
         if (job.status === "review") {
           stopGalleryVideoPolling();
           setGalleryVideoProgress(100, "Foto siap direview.");
           setStatus($("gallery-video-status"), job.message || "Foto siap direview.", "success");
+          finishGalleryVideoProcessing({ clearFile: true });
           switchGalleryTab("draft");
           await openGalleryVideoReview(job);
         } else if (job.status === "failed") {
           stopGalleryVideoPolling();
           setStatus($("gallery-video-status"), job.message || "Pemrosesan video gagal.", "error");
+          finishGalleryVideoProcessing({ clearFile: false });
         }
       } catch (error) {
         stopGalleryVideoPolling();
-        setStatus($("gallery-video-status"), error.message, "error");
+        setStatus($("gallery-video-status"), `${error.message} Draft mungkin masih diproses; cek tab Draft Review.`, "error");
+        finishGalleryVideoProcessing({ clearFile: false });
       }
     };
     poll();
@@ -1122,7 +1195,7 @@
 
   async function submitGalleryVideo(event) {
     event.preventDefault();
-    if (galleryVideoUploadBusy) return;
+    if (galleryVideoUploadBusy || galleryVideoProcessingJobId) return;
     const file = $("gallery-video-file").files?.[0];
     const title = $("gallery-video-title").value.trim();
     const eventDate = $("gallery-video-date").value;
@@ -1138,7 +1211,14 @@
     galleryVideoUploadBusy = true;
     const submit = $("gallery-video-submit");
     submit.disabled = true;
-    setStatus($("gallery-video-status"), "Membuat draft video…");
+    setStatus($("gallery-video-status"));
+    setGalleryVideoFormLocked(true);
+    showGalleryVideoBusyCard({
+      stage: "Menyiapkan upload",
+      title: "Mengirim video ke PROxyz…",
+      detail: `${file.name} · ${formatBytes(file.size)}`,
+      percent: 0
+    });
     setGalleryVideoProgress(0, "Menyiapkan upload…");
 
     try {
@@ -1157,6 +1237,7 @@
         })
       });
       const job = created.draft;
+      galleryVideoProcessingJobId = job.id;
       upsertGalleryVideoJob(job);
       renderGalleryVideoJobs();
       const chunkSize = Math.max(1024 * 1024, Number(created.chunkMaxBytes || 12 * 1024 * 1024));
@@ -1169,8 +1250,23 @@
         await uploadGalleryVideoChunk(job, index, blob);
         const ratio = end / Math.max(1, file.size);
         const percent = Math.min(35, ratio * 35);
-        setGalleryVideoProgress(percent, `Upload bagian ${index + 1}/${totalChunks} · ${formatBytes(end)} / ${formatBytes(file.size)}`);
+        const label = `Bagian ${index + 1}/${totalChunks} · ${formatBytes(end)} / ${formatBytes(file.size)}`;
+        setGalleryVideoProgress(percent, `Upload ${label}`);
+        showGalleryVideoBusyCard({
+          stage: "Upload video",
+          title: "Mengirim video ke PROxyz…",
+          detail: label,
+          percent
+        });
       }
+
+      showGalleryVideoBusyCard({
+        stage: "Upload selesai",
+        title: "Menyiapkan analisis video…",
+        detail: "Video sudah terkirim. PROxyz mulai memisahkan kejadian dan mencari foto terbaik.",
+        percent: 36,
+        indeterminate: true
+      });
 
       const completed = await api(`/api/galeri/${encodeURIComponent(activeGallery)}/video-review/${encodeURIComponent(job.id)}/complete`, {
         method: "POST",
@@ -1179,15 +1275,25 @@
       upsertGalleryVideoJob(completed.draft);
       updateGalleryDraftBadge();
       renderGalleryVideoJobs();
-      setGalleryVideoProgress(Math.max(36, completed.draft.progress || 36), "Upload selesai. PROxyz memproses video…");
+      const progress = Math.max(36, completed.draft.progress || 36);
+      setGalleryVideoProgress(progress, "Upload selesai. PROxyz memproses video…");
+      showGalleryVideoBusyCard({
+        stage: "Analisis video",
+        title: "Mencari kejadian & foto terbaik…",
+        detail: completed.draft.message || "Mendeteksi perpindahan kejadian, wajah/subjek, dan variasi momen.",
+        percent: progress,
+        indeterminate: progress <= 36
+      });
       setStatus($("gallery-video-status"), completed.draft.message || "Video masuk antrean pemrosesan.", "success");
-      $("gallery-video-file").value = "";
+      galleryVideoUploadBusy = false;
       startGalleryVideoPolling(job.id);
     } catch (error) {
-      setStatus($("gallery-video-status"), error.message, "error");
-    } finally {
       galleryVideoUploadBusy = false;
+      galleryVideoProcessingJobId = "";
+      setGalleryVideoFormLocked(false);
+      hideGalleryVideoBusyCard();
       submit.disabled = false;
+      setStatus($("gallery-video-status"), error.message, "error");
       renderGalleryVideoJobs();
     }
   }
@@ -1215,6 +1321,13 @@
   async function loadGalleryCandidateImages(job, token) {
     const cards = [...document.querySelectorAll(".candidate-card[data-candidate-id]")];
     let cursor = 0;
+    let completed = 0;
+    const total = cards.length;
+    if (!total) {
+      showGalleryReviewLoader("Review siap", "Tidak ada kandidat foto pada draft ini.", 100);
+      return;
+    }
+    showGalleryReviewLoader("Memuat foto kandidat…", `0 dari ${total} foto`, 0);
     const worker = async () => {
       while (cursor < cards.length) {
         const card = cards[cursor++];
@@ -1228,10 +1341,20 @@
           galleryVideoObjectUrls.push(url);
           img.src = url;
           img.classList.remove("loading");
+          card.classList.remove("is-loading");
         } catch (_) {
           img.alt = "Gagal memuat foto";
           img.classList.remove("loading");
+          card.classList.remove("is-loading");
           card.classList.add("image-error");
+        } finally {
+          completed += 1;
+          const percent = (completed / Math.max(1, total)) * 100;
+          showGalleryReviewLoader(
+            completed >= total ? "Review siap" : "Memuat foto kandidat…",
+            `${completed} dari ${total} foto${completed >= total ? " sudah siap dipilih" : ""}`,
+            percent
+          );
         }
       }
     };
@@ -1261,8 +1384,12 @@
 
   async function openGalleryVideoReview(job) {
     if (!job || job.status !== "review") throw new Error("Draft belum siap direview.");
+    if (galleryVideoReviewBusy) return;
+    galleryVideoReviewBusy = true;
     activeGalleryVideoJob = job;
     clearGalleryVideoObjectUrls();
+    $("gallery-video-review").hidden = false;
+    showGalleryReviewLoader("Menyiapkan review…", "Menyusun kejadian dan kandidat foto.", 0, true);
     const token = galleryVideoImageLoadToken;
     galleryVideoSelected = new Set((job.candidates || []).map(row => row.id));
 
@@ -1327,7 +1454,7 @@
 
       for (const candidate of eventCandidates) {
         const card = document.createElement("label");
-        card.className = "candidate-card selected";
+        card.className = "candidate-card selected is-loading";
         card.dataset.candidateId = candidate.id;
 
         const media = document.createElement("div");
@@ -1366,15 +1493,24 @@
       list.appendChild(group);
     }
 
-    $("gallery-video-review").hidden = false;
     updateGalleryVideoSelection();
     $("gallery-video-review").scrollIntoView({ behavior: "smooth", block: "start" });
-    loadGalleryCandidateImages(job, token).catch(() => {});
+    try {
+      await loadGalleryCandidateImages(job, token);
+      if (token === galleryVideoImageLoadToken) {
+        await new Promise(resolve => setTimeout(resolve, 180));
+        hideGalleryReviewLoader();
+      }
+    } finally {
+      galleryVideoReviewBusy = false;
+    }
   }
 
   function closeGalleryVideoReview() {
     activeGalleryVideoJob = null;
     galleryVideoSelected.clear();
+    galleryVideoReviewBusy = false;
+    hideGalleryReviewLoader();
     clearGalleryVideoObjectUrls();
     $("gallery-video-candidates").replaceChildren();
     $("gallery-video-review").hidden = true;
@@ -1389,6 +1525,9 @@
 
     const buttonEl = $("gallery-video-publish");
     buttonEl.disabled = true;
+    buttonEl.dataset.originalText = buttonEl.textContent;
+    buttonEl.textContent = `Mem-publish ${ids.length} foto…`;
+    showGalleryReviewLoader("Menyimpan ke Galeri…", `Mengupload ${ids.length} foto terpilih ke R2.`, 0, true);
     setStatus($("gallery-video-publish-status"), "Mengupload foto terpilih ke R2…");
     try {
       const data = await api(`/api/galeri/${encodeURIComponent(activeGallery)}/video-review/${encodeURIComponent(job.id)}/publish`, {
@@ -1399,13 +1538,17 @@
           eventDate: $("gallery-video-publish-date").value || job.eventDate
         })
       });
+      showGalleryReviewLoader("Selesai", `${data.tersimpan || 0} foto berhasil disimpan ke Galeri.`, 100);
       setStatus($("gallery-video-publish-status"), `${data.tersimpan || 0} foto dipublish${data.duplikat ? `, ${data.duplikat} duplikat dilewati` : ""}.`, "success");
+      await new Promise(resolve => setTimeout(resolve, 220));
       closeGalleryVideoReview();
       await loadGallery(activeGallery);
       switchGalleryTab("foto");
     } catch (error) {
+      hideGalleryReviewLoader();
       setStatus($("gallery-video-publish-status"), error.message, "error");
       buttonEl.disabled = false;
+      buttonEl.textContent = buttonEl.dataset.originalText || "Publish foto terpilih";
       updateGalleryVideoSelection();
     }
   }
