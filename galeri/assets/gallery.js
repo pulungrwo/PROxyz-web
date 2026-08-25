@@ -1,6 +1,8 @@
 (()=>{
   const PAGE_SIZE=50;
   const token=document.body.dataset.galleryToken;
+  const liveManifest=document.body.dataset.liveManifest||'';
+  const titleEl=document.getElementById('gallery-title');
   const gallery=document.getElementById('gallery');
   const empty=document.getElementById('empty');
   const search=document.getElementById('search');
@@ -312,10 +314,48 @@
   period.addEventListener('change',()=>{currentPage=1;render()});
   sort.addEventListener('change',()=>{currentPage=1;render()});
 
-  fetch('../../data/galeri/'+encodeURIComponent(token)+'.json',{cache:'no-store'})
-    .then(r=>{if(!r.ok)throw new Error('Data galeri tidak ditemukan');return r.json()})
+  function loadLiveManifest(){
+    if(!liveManifest)return Promise.reject(new Error('Manifest live belum tersedia'));
+    return new Promise((resolve,reject)=>{
+      const previous=globalThis.__PROXYZ_GALLERY_LIVE__;
+      try{delete globalThis.__PROXYZ_GALLERY_LIVE__}catch{}
+      const script=document.createElement('script');
+      const joiner=liveManifest.includes('?')?'&':'?';
+      script.src=liveManifest+joiner+'v='+Date.now();
+      script.async=true;
+      script.onload=()=>{
+        const data=globalThis.__PROXYZ_GALLERY_LIVE__;
+        script.remove();
+        if(data&&String(data.token||'')===String(token||'')){
+          resolve(data);
+        }else{
+          if(previous!==undefined)globalThis.__PROXYZ_GALLERY_LIVE__=previous;
+          reject(new Error('Manifest live tidak cocok'));
+        }
+      };
+      script.onerror=()=>{
+        script.remove();
+        if(previous!==undefined)globalThis.__PROXYZ_GALLERY_LIVE__=previous;
+        reject(new Error('Manifest live gagal dimuat'));
+      };
+      document.head.appendChild(script);
+    });
+  }
+
+  async function loadGalleryData(){
+    try{
+      return await loadLiveManifest();
+    }catch(liveError){
+      const r=await fetch('../../data/galeri/'+encodeURIComponent(token)+'.json?v='+Date.now(),{cache:'no-store'});
+      if(!r.ok)throw new Error('Data galeri tidak ditemukan');
+      return await r.json();
+    }
+  }
+
+  loadGalleryData()
     .then(data=>{
       photos=Array.isArray(data.photos)?data.photos:[];
+      if(titleEl&&data.galleryName)titleEl.textContent=data.galleryName;
       countEl.textContent=photos.length+' foto';
       updatedEl.textContent='diperbarui '+fmt.format(new Date(data.updatedAt||Date.now()));
       render();
