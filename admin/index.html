@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#0f172a">
   <meta name="robots" content="noindex,nofollow">
   <title>Admin PROxyz</title>
-  <link rel="stylesheet" href="./admin.css?v=246">
+  <link rel="stylesheet" href="./admin.css?v=247">
 </head>
 <body>
   <main class="shell">
@@ -124,7 +124,7 @@
           <nav class="subtabs gallery-subtabs" aria-label="Media Galeri">
             <button class="subtab active" type="button" data-gallery-tab="foto">Foto</button>
             <button class="subtab" type="button" data-gallery-tab="video">Video → Foto</button>
-            <button class="subtab" type="button" data-gallery-tab="draft">Draft Review <span id="gallery-draft-badge" class="tab-count" hidden>0</span></button>
+            <button class="subtab" type="button" data-gallery-tab="draft">Foto sementara <span id="gallery-draft-badge" class="tab-count" hidden>0</span></button>
           </nav>
 
           <section id="gallery-foto-panel" class="gallery-panel">
@@ -135,7 +135,7 @@
               </div>
               <input id="gallery-search" type="search" placeholder="Cari FOTO, keterangan, pengunggah…">
               <div id="gallery-bulk-toolbar" class="gallery-bulk-toolbar" hidden>
-                <div><b><span id="gallery-bulk-count">0</span> foto dipilih</b><span class="muted small">Gabungkan sebagai satu kegiatan dengan satu judul dan tanggal.</span></div>
+                <div><b><span id="gallery-bulk-count">0</span> foto dipilih</b><span class="muted small">Gabungkan sebagai satu kejadian dengan satu judul dan tanggal.</span></div>
                 <div class="gallery-bulk-actions">
                   <button id="gallery-bulk-select-loaded" class="ghost compact" type="button">Pilih yang dimuat</button>
                   <button id="gallery-bulk-clear" class="ghost compact" type="button">Kosongkan</button>
@@ -150,7 +150,7 @@
           <section id="gallery-video-panel" class="gallery-panel" hidden>
             <section class="panel">
               <div class="section-head"><div><p class="eyebrow">Video → Foto</p><h2>Buat dokumentasi dari video</h2></div><span class="feature-pill">Unik per kejadian</span></div>
-              <p class="muted small">Video diproses oleh PROxyz dan dipecah menjadi beberapa kejadian/lomba. Di setiap kejadian, sistem memberi setiap wajah/subjek kesempatan yang adil lalu dapat mengambil 2–3 momen terbaik per orang. Orang yang sama tetap boleh terpilih lagi pada kejadian lain. Hasil belum masuk R2 final sebelum Anda review dan publish.</p>
+              <p class="muted small">Video diproses oleh PROxyz dan dibagi menjadi beberapa kejadian. Pada setiap kejadian, sistem memberi setiap orang/subjek kesempatan yang adil lalu menyiapkan beberapa foto terbaik per orang. Orang yang sama tetap boleh muncul lagi pada kejadian lain. Hasil disimpan sementara dan belum masuk Galeri publik sampai Anda memilih foto dan menyimpannya.</p>
               <div id="gallery-video-busy-card" class="video-busy-card" hidden>
                 <div class="busy-spinner" aria-hidden="true"></div>
                 <div class="video-busy-copy">
@@ -160,22 +160,22 @@
                 </div>
                 <div class="busy-progress-head"><span>Progres</span><b id="gallery-video-busy-percent">0%</b></div>
                 <div id="gallery-video-busy-track" class="busy-progress-track"><span id="gallery-video-busy-bar" style="width:0%"></span></div>
-                <small>Jangan mengirim ulang video. Setelah selesai, review akan dibuka otomatis.</small>
+                <small>Jangan mengirim ulang video. Setelah selesai, pilihan foto akan dibuka otomatis.</small>
               </div>
               <form id="gallery-video-form" class="stack video-form">
-                <label>Nama kegiatan
-                  <input id="gallery-video-title" maxlength="160" placeholder="Contoh: Lomba Kerupuk Agustusan 2024" required>
+                <label>Nama dokumentasi
+                  <input id="gallery-video-title" maxlength="160" placeholder="Contoh: Agustusan 2024" required>
                 </label>
                 <div class="context-grid">
-                  <label>Tanggal kegiatan
+                  <label>Tanggal dokumentasi
                     <input id="gallery-video-date" type="date" required>
                   </label>
-                  <label>Target kandidat per kejadian
+                  <label>Pilihan foto per kejadian
                     <input id="gallery-video-target" type="number" inputmode="numeric" min="3" max="60" value="30" required>
                   </label>
                 </div>
                 <div class="context-grid">
-                  <label>Maks. kandidat per orang
+                  <label>Pilihan maksimal per orang
                     <select id="gallery-video-max-per-face">
                       <option value="1">1 foto · paling ringkas</option>
                       <option value="2">2 foto</option>
@@ -184,7 +184,7 @@
                       <option value="5">5 foto · banyak pilihan</option>
                     </select>
                   </label>
-                  <label>Jarak analisis frame
+                  <label>Jarak cuplikan video
                     <select id="gallery-video-interval">
                       <option value="0.5" selected>0,5 detik · direkomendasikan</option>
                       <option value="0.75">0,75 detik · seimbang</option>
@@ -194,7 +194,7 @@
                     </select>
                   </label>
                 </div>
-                <label>Batas maksimum draft
+                <label>Maksimum foto sementara
                   <select id="gallery-video-max-total">
                     <option value="150">150 foto</option>
                     <option value="200">200 foto</option>
@@ -208,7 +208,7 @@
                 </label>
                 <div class="video-info-box">
                   <b>Seleksi otomatis</b>
-                  <span>Seleksi dilakukan ulang untuk setiap kejadian. Sistem memilih semua kandidat pertama dari wajah berbeda lebih dulu, lalu kandidat kedua, lalu ketiga. Jadi admin mendapat beberapa pilihan terbaik per orang tanpa satu peserta mendominasi kejadian.</span>
+                  <span>Pemilihan dilakukan ulang pada setiap kejadian. Sistem memberi setiap orang/subjek satu pilihan terlebih dahulu, lalu menambahkan pilihan kedua dan ketiga jika tersedia. Dengan begitu hasil lebih beragam dan admin tetap punya beberapa foto untuk dipilih.</span>
                 </div>
                 <div id="gallery-video-progress-wrap" class="upload-progress" hidden>
                   <div class="progress-head"><span id="gallery-video-progress-label">Menyiapkan…</span><b id="gallery-video-progress-percent">0%</b></div>
@@ -217,34 +217,34 @@
                 <p id="gallery-video-status" class="status"></p>
                 <button id="gallery-video-submit" class="primary full" type="submit">Upload & proses video</button>
               </form>
-              <p class="muted small video-footnote">Saat upload, halaman harus tetap terbuka. Setelah upload selesai, pemrosesan dapat dilanjutkan PROxyz di Termux dan hasil akan muncul di Draft Review.</p>
+              <p class="muted small video-footnote">Saat mengirim video, halaman harus tetap terbuka. Setelah video terkirim, PROxyz akan melanjutkan proses dan hasil akan muncul di Foto sementara.</p>
             </section>
           </section>
 
           <section id="gallery-draft-panel" class="gallery-panel" hidden>
             <section class="panel">
-              <div class="section-head"><div><p class="eyebrow">Video</p><h2>Draft Review</h2></div><button id="gallery-video-refresh" class="ghost compact" type="button">Muat ulang</button></div>
+              <div class="section-head"><div><p class="eyebrow">Video</p><h2>Foto sementara</h2></div><button id="gallery-video-refresh" class="ghost compact" type="button">Muat ulang</button></div>
               <div id="gallery-video-draft-list" class="video-draft-list"></div>
             </section>
 
             <section id="gallery-video-review" class="panel review-panel" hidden>
               <div class="section-head review-head">
-                <div><p class="eyebrow">Review foto</p><h2 id="gallery-video-review-title">Dokumentasi video</h2><p id="gallery-video-review-meta" class="muted small"></p></div>
+                <div><p class="eyebrow">Pilih foto</p><h2 id="gallery-video-review-title">Dokumentasi video</h2><p id="gallery-video-review-meta" class="muted small"></p></div>
                 <button id="gallery-video-close-review" class="ghost compact" type="button">Tutup</button>
               </div>
               <div id="gallery-video-review-loader" class="review-loading-card" hidden>
                 <div class="busy-spinner small" aria-hidden="true"></div>
                 <div class="review-loading-copy">
-                  <strong id="gallery-video-review-loader-title">Menyiapkan review…</strong>
-                  <span id="gallery-video-review-loader-detail">Memuat kandidat foto.</span>
+                  <strong id="gallery-video-review-loader-title">Menyiapkan pilihan foto…</strong>
+                  <span id="gallery-video-review-loader-detail">Memuat pilihan foto.</span>
                 </div>
                 <b id="gallery-video-review-loader-percent">0%</b>
                 <div id="gallery-video-review-loader-track" class="busy-progress-track"><span id="gallery-video-review-loader-bar" style="width:0%"></span></div>
               </div>
               <div class="review-stats">
                 <div><span>Kejadian</span><b id="gallery-video-event-count">0</b></div>
-                <div><span>Kandidat</span><b id="gallery-video-candidate-count">0</b></div>
-                <div><span>Wajah/subjek</span><b id="gallery-video-face-count">0</b></div>
+                <div><span>Pilihan foto</span><b id="gallery-video-candidate-count">0</b></div>
+                <div><span>Orang/subjek</span><b id="gallery-video-face-count">0</b></div>
                 <div><span>Dipilih</span><b id="gallery-video-selected-count">0</b></div>
               </div>
               <div class="review-tools">
@@ -260,7 +260,7 @@
                   <input id="gallery-video-publish-date" type="date" required>
                 </label>
                 <p id="gallery-video-publish-status" class="status"></p>
-                <button id="gallery-video-publish" class="primary full" type="button">Publish foto terpilih</button>
+                <button id="gallery-video-publish" class="primary full" type="button">Simpan foto terpilih</button>
               </section>
             </section>
           </section>
@@ -292,11 +292,11 @@
 
   <dialog id="bt-dialog"><form id="bt-form" method="dialog" class="dialog-form"><div class="section-head"><div><p class="eyebrow" id="bt-form-mode">Bertunas</p><h2 id="bt-form-title">Tambah data</h2></div><button id="bt-close-dialog" class="icon-button" type="button">×</button></div><div id="bt-fields" class="stack"></div><p id="bt-form-status" class="status"></p><button class="primary full" type="submit">Simpan</button></form></dialog>
 
-  <dialog id="gallery-edit-dialog"><form id="gallery-edit-form" method="dialog" class="dialog-form"><div class="section-head"><div><p class="eyebrow" id="gallery-edit-id">Foto</p><h2>Edit foto</h2></div><button id="close-gallery-edit" class="icon-button" type="button">×</button></div><input id="gallery-edit-number" type="hidden"><label>Judul / keterangan<textarea id="gallery-edit-caption" rows="3" maxlength="500"></textarea></label><label>Tanggal kegiatan<input id="gallery-edit-date" type="date" required></label><p class="muted small">Mengubah satu foto akan menempatkannya sebagai kelompok tersendiri agar judul dan tanggal tampil benar di galeri publik.</p><p id="gallery-edit-status" class="status"></p><button class="primary full" type="submit">Simpan perubahan</button></form></dialog>
+  <dialog id="gallery-edit-dialog"><form id="gallery-edit-form" method="dialog" class="dialog-form"><div class="section-head"><div><p class="eyebrow" id="gallery-edit-id">Foto</p><h2>Edit foto</h2></div><button id="close-gallery-edit" class="icon-button" type="button">×</button></div><input id="gallery-edit-number" type="hidden"><label>Judul / keterangan<textarea id="gallery-edit-caption" rows="3" maxlength="500"></textarea></label><label>Tanggal dokumentasi<input id="gallery-edit-date" type="date" required></label><p class="muted small">Mengubah satu foto akan menempatkannya sebagai kelompok tersendiri agar judul dan tanggal tampil benar di galeri publik.</p><p id="gallery-edit-status" class="status"></p><button class="primary full" type="submit">Simpan perubahan</button></form></dialog>
 
-  <dialog id="gallery-bulk-dialog"><form id="gallery-bulk-form" method="dialog" class="dialog-form"><div class="section-head"><div><p class="eyebrow">Edit beberapa foto</p><h2>Kelompokkan kegiatan</h2></div><button id="close-gallery-bulk" class="icon-button" type="button">×</button></div><p class="muted small"><b id="gallery-bulk-dialog-count">0 foto</b> akan dijadikan satu kelompok di galeri publik.</p><label>Judul kegiatan<input id="gallery-bulk-caption" maxlength="160" placeholder="Contoh: Lomba Makan Kerupuk Agustusan 2024" required></label><label>Tanggal kegiatan<input id="gallery-bulk-date" type="date" required></label><p class="muted small">Semua foto terpilih akan memakai satu judul dan satu tanggal. Foto tidak dihapus atau diunggah ulang ke R2.</p><p id="gallery-bulk-status" class="status"></p><button class="primary full" type="submit">Simpan & kelompokkan</button></form></dialog>
+  <dialog id="gallery-bulk-dialog"><form id="gallery-bulk-form" method="dialog" class="dialog-form"><div class="section-head"><div><p class="eyebrow">Edit beberapa foto</p><h2>Kelompokkan kejadian</h2></div><button id="close-gallery-bulk" class="icon-button" type="button">×</button></div><p class="muted small"><b id="gallery-bulk-dialog-count">0 foto</b> akan dijadikan satu kelompok di galeri publik.</p><label>Judul kejadian<input id="gallery-bulk-caption" maxlength="160" placeholder="Contoh: Makan Kerupuk Agustusan 2024" required></label><label>Tanggal dokumentasi<input id="gallery-bulk-date" type="date" required></label><p class="muted small">Semua foto terpilih akan memakai satu judul dan satu tanggal. Foto tidak dihapus atau diunggah ulang ke penyimpanan Galeri.</p><p id="gallery-bulk-status" class="status"></p><button class="primary full" type="submit">Simpan & kelompokkan</button></form></dialog>
 
   <script src="./config.js?v=242"></script>
-  <script src="./admin.js?v=246" defer></script>
+  <script src="./admin.js?v=247" defer></script>
 </body>
 </html>
