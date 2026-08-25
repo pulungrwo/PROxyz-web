@@ -35,6 +35,9 @@
 
   // Galeri
   let activeGallery = "";
+
+  // Pengguna (khusus Owner)
+  let usersDirectory = [];
   let galleryDetail = null;
   let galleryPhotos = [];
   let galleryPhotoTotal = 0;
@@ -188,7 +191,7 @@
   function renderMe() {
     $("login-view").hidden = true;
     $("app-view").hidden = false;
-    $("welcome").textContent = `+${me.phone}`;
+    $("welcome").textContent = me.name || "Pengguna PROxyz";
 
     const counts = [
       (me.kas || []).length ? `${me.kas.length} Kas` : "",
@@ -200,7 +203,8 @@
     const availability = {
       kas: (me.kas || []).length > 0,
       bertunas: (me.bertunas || []).length > 0,
-      galeri: (me.galeri || []).length > 0
+      galeri: (me.galeri || []).length > 0,
+      users: Boolean(me.isOwner)
     };
     for (const [name, available] of Object.entries(availability)) $("tab-" + name).hidden = !available;
 
@@ -208,7 +212,8 @@
     fillSelect($("bertunas-select"), me.bertunas || [], row => `${row.nama} · ${row.role}`);
     fillSelect($("gallery-select"), me.galeri || [], row => `${row.nama} · ${row.role}`);
 
-    const first = ["kas", "bertunas", "galeri"].find(name => availability[name]);
+    const preferred = activeView && availability[activeView] ? activeView : "";
+    const first = preferred || ["kas", "bertunas", "galeri", "users"].find(name => availability[name]);
     if (first) switchView(first);
   }
 
@@ -224,16 +229,66 @@
 
   function switchView(view) {
     activeView = view;
-    for (const name of ["kas", "bertunas", "galeri"]) {
+    for (const name of ["kas", "bertunas", "galeri", "users"]) {
       $(`${name}-view`).hidden = name !== view;
       $("tab-" + name).classList.toggle("active", name === view);
     }
     if (view === "kas" && !activeKas && me.kas?.length) loadKas(me.kas[0].id).catch(showError);
     if (view === "bertunas" && !activeBertunas && me.bertunas?.length) loadBertunas(me.bertunas[0].id).catch(showError);
     if (view === "galeri" && !activeGallery && me.galeri?.length) loadGallery(me.galeri[0].id).catch(showError);
+    if (view === "users" && me.isOwner) loadUsers().catch(showError);
   }
 
   function showError(error) { alert(error?.message || String(error)); }
+
+  // ---------- PENGGUNA ----------
+  function openUserNameDialog(user = null, self = false) {
+    const dialog = $("user-name-dialog");
+    const isSelf = self || !user;
+    const row = isSelf ? { id: me.userId, name: me.name, maskedIdentity: "Nama Anda sendiri" } : user;
+    $("user-name-id").value = row?.id || "";
+    $("user-name-input").value = row?.name === "Pengguna PROxyz" ? "" : (row?.name || "");
+    $("user-name-dialog-title").textContent = isSelf ? "Edit nama Anda" : "Edit nama pengguna";
+    $("user-name-help").textContent = isSelf ? "Nama ini akan dipakai sebagai identitas tampilan Anda di PROxyz." : (row?.maskedIdentity || "");
+    setStatus($("user-name-status"));
+    dialog.showModal();
+    setTimeout(() => $("user-name-input").focus(), 80);
+  }
+
+  async function loadUsers() {
+    if (!me?.isOwner) return;
+    setStatus($("users-status"), "Memuat pengguna…");
+    const data = await api("/api/users");
+    usersDirectory = data.users || [];
+    renderUsers();
+    setStatus($("users-status"), usersDirectory.length ? `${usersDirectory.length} pengguna ditemukan.` : "Belum ada pengguna.", "success");
+  }
+
+  function renderUsers() {
+    const list = $("users-list");
+    const query = String($("users-search").value || "").trim().toLowerCase();
+    const rows = usersDirectory.filter(row => {
+      if (!query) return true;
+      return [row.name, row.maskedIdentity, ...(row.access || [])].join(" ").toLowerCase().includes(query);
+    });
+    list.replaceChildren();
+    if (!rows.length) {
+      const empty = document.createElement("div"); empty.className = "empty"; empty.textContent = "Pengguna tidak ditemukan."; list.appendChild(empty); return;
+    }
+    for (const row of rows) {
+      const card = document.createElement("div");
+      card.className = `user-directory-row${row.hasDisplayName ? "" : " user-no-name"}`;
+      const main = document.createElement("div"); main.className = "user-directory-main";
+      const name = document.createElement("strong"); name.textContent = row.hasDisplayName ? row.name : (row.name && row.name !== "Pengguna PROxyz" ? row.name : "Belum diberi nama");
+      const access = document.createElement("span"); access.textContent = (row.access || ["Pengguna PROxyz"]).join(" · ");
+      const ident = document.createElement("span"); ident.textContent = row.maskedIdentity || "Identitas tersimpan";
+      main.append(name);
+      if (row.isOwner) { const badge = document.createElement("span"); badge.className = "user-owner-badge"; badge.textContent = "Owner"; main.append(badge); }
+      main.append(access, ident);
+      const edit = button(row.hasDisplayName ? "Edit" : "Beri nama", "ghost", () => openUserNameDialog(row, false));
+      card.append(main, edit); list.appendChild(card);
+    }
+  }
 
   // ---------- KAS ----------
   async function loadKas(id) {
@@ -1627,6 +1682,28 @@
   $("change-phone").addEventListener("click", () => { clearOtpChallenge(); setStatus($("auth-status")); });
   $("logout").addEventListener("click", async () => { try { await api("/api/auth/logout", { method: "POST", body: "{}" }); } catch (_) {} clearSession(); });
   document.querySelectorAll(".app-tab").forEach(el => el.addEventListener("click", () => switchView(el.dataset.view)));
+  $("edit-my-name").addEventListener("click", () => openUserNameDialog(null, true));
+  $("close-user-name").addEventListener("click", () => $("user-name-dialog").close());
+  $("users-refresh").addEventListener("click", () => loadUsers().catch(showError));
+  $("users-search").addEventListener("input", renderUsers);
+  $("user-name-form").addEventListener("submit", async event => {
+    event.preventDefault();
+    const userId = $("user-name-id").value;
+    const name = $("user-name-input").value.trim();
+    const isSelf = userId === me.userId;
+    setStatus($("user-name-status"), "Menyimpan…");
+    try {
+      if (isSelf) {
+        const data = await api("/api/me/name", { method: "PATCH", body: JSON.stringify({ name }) });
+        me = data.user;
+        renderMe();
+      } else {
+        await api("/api/users/name", { method: "PATCH", body: JSON.stringify({ userId, name }) });
+        await loadUsers();
+      }
+      $("user-name-dialog").close();
+    } catch (error) { setStatus($("user-name-status"), error.message, "error"); }
+  });
 
   // Kas events
   $("kas-select").addEventListener("change", () => loadKas($("kas-select").value).catch(showError));

@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#0f172a">
   <meta name="robots" content="noindex,nofollow">
   <title>Admin PROxyz</title>
-  <link rel="stylesheet" href="./admin.css?v=247">
+  <link rel="stylesheet" href="./admin.css?v=0.4.0">
 </head>
 <body>
   <main class="shell">
@@ -43,7 +43,7 @@
       <section class="profilebar panel">
         <div>
           <p class="eyebrow">Admin PROxyz</p>
-          <h1 id="welcome">Admin</h1>
+          <div class="profile-name-row"><h1 id="welcome">Admin</h1><button id="edit-my-name" class="name-edit-btn" type="button">Edit nama</button></div>
           <p id="access-summary" class="muted small"></p>
         </div>
         <button id="logout" class="ghost compact" type="button">Keluar</button>
@@ -53,6 +53,7 @@
         <button id="tab-kas" class="app-tab" type="button" data-view="kas">Kas</button>
         <button id="tab-bertunas" class="app-tab" type="button" data-view="bertunas">Bertunas</button>
         <button id="tab-galeri" class="app-tab" type="button" data-view="galeri">Galeri</button>
+        <button id="tab-users" class="app-tab" type="button" data-view="users" hidden>Pengguna</button>
       </nav>
 
       <section id="kas-view" class="app-section" hidden>
@@ -266,8 +267,31 @@
           </section>
         </section>
       </section>
+      <section id="users-view" class="app-section" hidden>
+        <section class="panel">
+          <div class="section-head">
+            <div><p class="eyebrow">Owner PROxyz</p><h2>Pengguna</h2><p class="muted small">Atur nama yang tampil di seluruh PROxyz. Nomor hanya dipakai sebagai identitas internal.</p></div>
+            <button id="users-refresh" class="ghost compact" type="button">Muat ulang</button>
+          </div>
+          <input id="users-search" type="search" placeholder="Cari nama pengguna…" autocomplete="off">
+          <div id="users-list" class="user-directory-list"></div>
+          <p id="users-status" class="status" aria-live="polite"></p>
+        </section>
+      </section>
+
     </section>
   </main>
+
+  <dialog id="user-name-dialog">
+    <form id="user-name-form" class="dialog-form">
+      <div class="section-head"><div><p class="eyebrow">Nama pengguna</p><h2 id="user-name-dialog-title">Edit nama</h2></div><button id="close-user-name" class="icon-button" type="button">×</button></div>
+      <input id="user-name-id" type="hidden">
+      <label>Nama<input id="user-name-input" maxlength="60" required placeholder="Contoh: Pulung Riswanto"></label>
+      <p id="user-name-help" class="muted small"></p>
+      <button class="primary full" type="submit">Simpan nama</button>
+      <p id="user-name-status" class="status" aria-live="polite"></p>
+    </form>
+  </dialog>
 
   <dialog id="tx-dialog"><form id="tx-form" method="dialog" class="dialog-form"><div class="section-head"><div><p class="eyebrow" id="form-mode">Transaksi</p><h2 id="form-title">Tambah transaksi</h2></div><button id="close-dialog" class="icon-button" type="button">×</button></div><input id="tx-ref" type="hidden"><label>Jenis<select id="tx-type" required><option value="masuk">Pemasukan</option><option value="keluar">Pengeluaran</option></select></label><label>Nominal<input id="tx-amount" type="number" inputmode="numeric" min="1" required></label><label>Kategori<select id="tx-category" required></select></label><label>Keterangan<input id="tx-description" required maxlength="160"></label><label>Catatan<textarea id="tx-note" rows="2" maxlength="300"></textarea></label><label>Tag<input id="tx-tags" placeholder="#ramadhan #konsumsi"></label><label>Tanggal<input id="tx-date" type="date" required></label><label id="edit-reason-wrap" hidden>Alasan edit<input id="tx-reason" maxlength="200"></label><p id="form-status" class="status"></p><button class="primary full" type="submit">Simpan</button></form></dialog>
 
@@ -297,6 +321,6 @@
   <dialog id="gallery-bulk-dialog"><form id="gallery-bulk-form" method="dialog" class="dialog-form"><div class="section-head"><div><p class="eyebrow">Edit beberapa foto</p><h2>Kelompokkan kejadian</h2></div><button id="close-gallery-bulk" class="icon-button" type="button">×</button></div><p class="muted small"><b id="gallery-bulk-dialog-count">0 foto</b> akan dijadikan satu kelompok di galeri publik.</p><label>Judul kejadian<input id="gallery-bulk-caption" maxlength="160" placeholder="Contoh: Makan Kerupuk Agustusan 2024" required></label><label>Tanggal dokumentasi<input id="gallery-bulk-date" type="date" required></label><p class="muted small">Semua foto terpilih akan memakai satu judul dan satu tanggal. Foto tidak dihapus atau diunggah ulang ke penyimpanan Galeri.</p><p id="gallery-bulk-status" class="status"></p><button class="primary full" type="submit">Simpan & kelompokkan</button></form></dialog>
 
   <script src="./config.js?v=242"></script>
-  <script src="./admin.js?v=247" defer></script>
+  <script src="./admin.js?v=0.4.0" defer></script>
 </body>
 </html>
