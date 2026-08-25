@@ -6,7 +6,7 @@
   <meta name="robots" content="noindex,nofollow">
   <meta name="theme-color" content="#f8fafc">
   <title>Tanjung Bulan · Galeri PROxyz</title>
-  <link rel="stylesheet" href="../assets/gallery.css?v=2.4">
+  <link rel="stylesheet" href="../assets/gallery.css?v=2.4.1">
 </head>
 <body data-gallery-token="rwjJy-D5G6rU">
   <header class="hero">
@@ -55,23 +55,11 @@
   </main>
 
   <dialog id="viewer">
-    <div class="viewer-shell">
+    <div class="viewer-topbar">
+      <span id="viewer-position" class="viewer-position"></span>
       <button id="close-viewer" class="close" type="button" aria-label="Tutup">×</button>
-      <div class="viewer-media">
-        <img id="viewer-image" alt="">
-      </div>
-      <div class="viewer-info">
-        <div class="viewer-copy">
-          <strong id="viewer-caption"></strong>
-          <span id="viewer-date"></span>
-          <span id="viewer-origin"></span>
-        </div>
-        <div class="viewer-actions">
-          <a id="viewer-original" class="action secondary" target="_blank" rel="noopener">Lihat asli</a>
-          <button id="viewer-download" class="action primary" type="button">↓ Download</button>
-        </div>
-      </div>
     </div>
+    <div id="viewer-feed" class="viewer-feed" aria-label="Penampil foto"></div>
   </dialog>
 
   <footer>
@@ -83,6 +71,6 @@
       <span id="footer-page" class="footer-page"></span>
     </div>
   </footer>
-  <script src="../assets/gallery.js?v=2.4" defer></script>
+  <script src="../assets/gallery.js?v=2.4.1" defer></script>
 </body>
 </html>
