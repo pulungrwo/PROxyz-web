@@ -1040,7 +1040,8 @@
         ? ` · ${faceClusters || "?"} kelompok wajah/subjek`
         : job.faceMode && job.faceMode !== "pending" ? " · mode waktu/frame" : "";
       const eventInfo = job.eventCount ? ` · ${job.eventCount} kejadian` : "";
-      info.textContent = `${job.message || ""}${eventInfo}${job.candidateCount ? ` · ${job.candidateCount} kandidat` : ""}${faceInfo}`;
+      const perFaceInfo = job.maxPerFace ? ` · maks ${job.maxPerFace}/orang` : "";
+      info.textContent = `${job.message || ""}${eventInfo}${job.candidateCount ? ` · ${job.candidateCount} kandidat` : ""}${faceInfo}${perFaceInfo}`;
 
       const actions = document.createElement("div");
       actions.className = "item-actions";
@@ -1125,9 +1126,10 @@
     const file = $("gallery-video-file").files?.[0];
     const title = $("gallery-video-title").value.trim();
     const eventDate = $("gallery-video-date").value;
-    const targetPerEvent = Number($("gallery-video-target").value || 10);
-    const maxTotalPhotos = Number($("gallery-video-max-total").value || 150);
-    const intervalSec = Number($("gallery-video-interval").value || 0.75);
+    const targetPerEvent = Number($("gallery-video-target").value || 30);
+    const maxPerFace = Number($("gallery-video-max-per-face").value || 3);
+    const maxTotalPhotos = Number($("gallery-video-max-total").value || 250);
+    const intervalSec = Number($("gallery-video-interval").value || 0.5);
     if (!activeGallery) return setStatus($("gallery-video-status"), "Pilih Galeri terlebih dahulu.", "error");
     if (!file) return setStatus($("gallery-video-status"), "Pilih video terlebih dahulu.", "error");
     if (!title) return setStatus($("gallery-video-status"), "Nama kegiatan wajib diisi.", "error");
@@ -1149,6 +1151,7 @@
           mimeType: file.type || "video/mp4",
           fileSize: file.size,
           targetPerEvent,
+          maxPerFace,
           maxTotalPhotos,
           intervalSec
         })
@@ -1266,7 +1269,7 @@
     $("gallery-video-review-title").textContent = job.title || "Dokumentasi video";
     const faceClusters = new Set((job.candidates || []).map(row => row.faceCluster).filter(Boolean));
     const mode = job.faceMode === "event-face-diversity"
-      ? "Wajah unik dihitung per kejadian"
+      ? `Maks ${job.maxPerFace || 3} kandidat/orang per kejadian`
       : "Keberagaman waktu/frame";
     $("gallery-video-review-meta").textContent = `${job.eventDate || ""} · ${mode} · ${job.sourceWidth || "?"}×${job.sourceHeight || "?"} · ${number.format(job.durationSec || 0)} dtk`;
     $("gallery-video-event-count").textContent = String(job.eventCount || (job.events || []).length || 1);

@@ -150,7 +150,7 @@
           <section id="gallery-video-panel" class="gallery-panel" hidden>
             <section class="panel">
               <div class="section-head"><div><p class="eyebrow">Video → Foto</p><h2>Buat dokumentasi dari video</h2></div><span class="feature-pill">Unik per kejadian</span></div>
-              <p class="muted small">Video diproses oleh PROxyz dan dipecah menjadi beberapa kejadian/lomba. Di setiap kejadian, sistem memprioritaskan satu foto terbaik per wajah/subjek. Orang yang sama boleh terpilih lagi pada kejadian lain. Hasil belum masuk R2 final sebelum Anda review dan publish.</p>
+              <p class="muted small">Video diproses oleh PROxyz dan dipecah menjadi beberapa kejadian/lomba. Di setiap kejadian, sistem memberi setiap wajah/subjek kesempatan yang adil lalu dapat mengambil 2–3 momen terbaik per orang. Orang yang sama tetap boleh terpilih lagi pada kejadian lain. Hasil belum masuk R2 final sebelum Anda review dan publish.</p>
               <form id="gallery-video-form" class="stack video-form">
                 <label>Nama kegiatan
                   <input id="gallery-video-title" maxlength="160" placeholder="Contoh: Lomba Kerupuk Agustusan 2024" required>
@@ -159,25 +159,37 @@
                   <label>Tanggal kegiatan
                     <input id="gallery-video-date" type="date" required>
                   </label>
-                  <label>Target foto per kejadian
-                    <input id="gallery-video-target" type="number" inputmode="numeric" min="3" max="40" value="10" required>
+                  <label>Target kandidat per kejadian
+                    <input id="gallery-video-target" type="number" inputmode="numeric" min="3" max="60" value="30" required>
                   </label>
                 </div>
-                <label>Jarak analisis frame
-                  <select id="gallery-video-interval">
-                    <option value="0.5">0,5 detik · lebih banyak momen</option>
-                    <option value="0.75" selected>0,75 detik · direkomendasikan</option>
-                    <option value="1">1 detik · seimbang</option>
-                    <option value="1.5">1,5 detik · lebih ringkas</option>
-                    <option value="2">2 detik · video panjang</option>
-                  </select>
-                </label>
+                <div class="context-grid">
+                  <label>Maks. kandidat per orang
+                    <select id="gallery-video-max-per-face">
+                      <option value="1">1 foto · paling ringkas</option>
+                      <option value="2">2 foto</option>
+                      <option value="3" selected>3 foto · direkomendasikan</option>
+                      <option value="4">4 foto</option>
+                      <option value="5">5 foto · banyak pilihan</option>
+                    </select>
+                  </label>
+                  <label>Jarak analisis frame
+                    <select id="gallery-video-interval">
+                      <option value="0.5" selected>0,5 detik · direkomendasikan</option>
+                      <option value="0.75">0,75 detik · seimbang</option>
+                      <option value="1">1 detik · seimbang</option>
+                      <option value="1.5">1,5 detik · lebih ringkas</option>
+                      <option value="2">2 detik · video panjang</option>
+                    </select>
+                  </label>
+                </div>
                 <label>Batas maksimum draft
                   <select id="gallery-video-max-total">
-                    <option value="100">100 foto</option>
-                    <option value="150" selected>150 foto · direkomendasikan</option>
+                    <option value="150">150 foto</option>
                     <option value="200">200 foto</option>
+                    <option value="250" selected>250 foto · direkomendasikan</option>
                     <option value="300">300 foto</option>
+                    <option value="400">400 foto · video sangat ramai</option>
                   </select>
                 </label>
                 <label>Pilih video
@@ -185,7 +197,7 @@
                 </label>
                 <div class="video-info-box">
                   <b>Seleksi otomatis</b>
-                  <span>Seleksi dilakukan ulang untuk setiap kejadian. Contoh: satu peserta cukup 1 foto pada lomba kerupuk, tetapi boleh muncul lagi pada balap karung, permainan air, pembagian hadiah, atau kejadian lain.</span>
+                  <span>Seleksi dilakukan ulang untuk setiap kejadian. Sistem memilih semua kandidat pertama dari wajah berbeda lebih dulu, lalu kandidat kedua, lalu ketiga. Jadi admin mendapat beberapa pilihan terbaik per orang tanpa satu peserta mendominasi kejadian.</span>
                 </div>
                 <div id="gallery-video-progress-wrap" class="upload-progress" hidden>
                   <div class="progress-head"><span id="gallery-video-progress-label">Menyiapkan…</span><b id="gallery-video-progress-percent">0%</b></div>
@@ -264,7 +276,7 @@
 
   <dialog id="gallery-bulk-dialog"><form id="gallery-bulk-form" method="dialog" class="dialog-form"><div class="section-head"><div><p class="eyebrow">Edit beberapa foto</p><h2>Kelompokkan kegiatan</h2></div><button id="close-gallery-bulk" class="icon-button" type="button">×</button></div><p class="muted small"><b id="gallery-bulk-dialog-count">0 foto</b> akan dijadikan satu kelompok di galeri publik.</p><label>Judul kegiatan<input id="gallery-bulk-caption" maxlength="160" placeholder="Contoh: Lomba Makan Kerupuk Agustusan 2024" required></label><label>Tanggal kegiatan<input id="gallery-bulk-date" type="date" required></label><p class="muted small">Semua foto terpilih akan memakai satu judul dan satu tanggal. Foto tidak dihapus atau diunggah ulang ke R2.</p><p id="gallery-bulk-status" class="status"></p><button class="primary full" type="submit">Simpan & kelompokkan</button></form></dialog>
 
-  <script src="./config.js?v=241"></script>
-  <script src="./admin.js?v=241" defer></script>
+  <script src="./config.js?v=242"></script>
+  <script src="./admin.js?v=242" defer></script>
 </body>
 </html>
