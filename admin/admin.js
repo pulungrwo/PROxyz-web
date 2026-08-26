@@ -620,36 +620,43 @@
     }
   }
 
-  async function downloadKasReportPdf() {
-    if (!activeKas) return;
-    const start = $("kas-report-start").value;
-    const end = $("kas-report-end").value;
-    if (!start || !end) return alert("Pilih tanggal laporan terlebih dahulu.");
-    const response = await apiRaw(`/api/kas/${encodeURIComponent(activeKas)}/laporan/pdf?mulai=${dateToTimestamp(start)}&selesai=${dateToTimestamp(end)}`);
-    const blob = await response.blob();
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a"); link.href = url; link.download = `laporan-${activeKas}-${start}-${end}.pdf`; document.body.appendChild(link); link.click(); link.remove();
-    setTimeout(() => URL.revokeObjectURL(url), 2000);
+  function kasReportActionButtons() {
+    return [
+      $("kas-report-wa-pdf"),
+      $("kas-report-wa-complete"),
+      $("kas-report-wa-simple")
+    ].filter(Boolean);
   }
 
-  async function sendKasReportWhatsApp() {
+  async function sendKasReportWhatsApp(action) {
     if (!activeKas) return;
     const start = $("kas-report-start").value;
     const end = $("kas-report-end").value;
     if (!start || !end) return alert("Buat laporan terlebih dahulu.");
-    const buttonEl = $("kas-report-wa");
-    buttonEl.disabled = true;
-    setStatus($("kas-report-status"), "Mengirim PDF ke WhatsApp Anda…");
+
+    const labels = {
+      pdf_self: "Mengirim PDF ke WhatsApp Anda…",
+      complete_group: "Mengirim laporan lengkap ke grup…",
+      simple_group: "Mengirim laporan singkat ke grup…"
+    };
+    const buttons = kasReportActionButtons();
+    buttons.forEach(button => { button.disabled = true; });
+    setStatus($("kas-report-status"), labels[action] || "Mengirim laporan ke WhatsApp…");
+
     try {
       const result = await api(`/api/kas/${encodeURIComponent(activeKas)}/laporan/wa`, {
         method: "POST",
-        body: JSON.stringify({ mulai: dateToTimestamp(start), selesai: dateToTimestamp(end) })
+        body: JSON.stringify({
+          mulai: dateToTimestamp(start),
+          selesai: dateToTimestamp(end),
+          action
+        })
       });
-      setStatus($("kas-report-status"), result.message || "Laporan sudah dikirim ke WhatsApp Anda.", "success");
+      setStatus($("kas-report-status"), result.message || "Laporan berhasil dikirim.", "success");
     } catch (error) {
       setStatus($("kas-report-status"), error.message, "error");
     } finally {
-      buttonEl.disabled = false;
+      buttons.forEach(button => { button.disabled = false; });
     }
   }
 
@@ -2393,8 +2400,9 @@
   $("kas-report-month-select").addEventListener("change", updateKasReportShortcutLabels);
   $("kas-report-year-select").addEventListener("change", updateKasReportShortcutLabels);
   $("kas-report-load").addEventListener("click", () => loadKasReport().catch(showError));
-  $("kas-report-pdf").addEventListener("click", () => downloadKasReportPdf().catch(showError));
-  $("kas-report-wa").addEventListener("click", () => sendKasReportWhatsApp().catch(showError));
+  $("kas-report-wa-pdf").addEventListener("click", () => sendKasReportWhatsApp("pdf_self").catch(showError));
+  $("kas-report-wa-complete").addEventListener("click", () => sendKasReportWhatsApp("complete_group").catch(showError));
+  $("kas-report-wa-simple").addEventListener("click", () => sendKasReportWhatsApp("simple_group").catch(showError));
   $("kas-schedule-add").addEventListener("click", () => openKasScheduleDialog());
   $("close-kas-schedule").addEventListener("click", () => { kasScheduleEditing = null; $("kas-schedule-dialog").close(); });
   $("kas-schedule-form").addEventListener("submit", submitKasSchedule);

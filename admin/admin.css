@@ -110,7 +110,7 @@
 .kas-report-period-picker{margin-bottom:9px}
 .kas-report-shortcuts{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:0 0 12px}
 .kas-report-shortcuts button{font-size:12px;white-space:nowrap}
-.kas-report-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:11px 0 4px}
+.kas-report-actions{display:grid;grid-template-columns:1fr;gap:9px;margin:11px 0 4px}
 .kas-report-actions button{min-height:42px;font-size:12.5px}
 .schedule-note{margin:8px 0 0}
 .schedule-actions{gap:6px;flex-wrap:wrap}
@@ -121,6 +121,6 @@
 #kas-pengelola-panel .section-head{align-items:center}
 @media(max-width:640px){
   .kas-action-card{min-height:50px;padding:10px 12px}.kas-action-card b{font-size:13.5px}
-  .kas-report-period-picker{grid-template-columns:1fr 1fr}.kas-report-actions{grid-template-columns:1fr 1fr}
+  .kas-report-period-picker{grid-template-columns:1fr 1fr}.kas-report-actions{grid-template-columns:1fr}
   .nominal-entry button{min-width:66px;padding-left:10px;padding-right:10px}
 }
