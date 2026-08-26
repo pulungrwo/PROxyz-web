@@ -1046,75 +1046,69 @@
     if (!caption) return setStatus($("gallery-upload-status"), "Judul/keterangan wajib diisi.", "error");
     if (!date) return setStatus($("gallery-upload-status"), "Tanggal dokumentasi wajib diisi.", "error");
     if (!files.length) return setStatus($("gallery-upload-status"), "Pilih minimal satu foto.", "error");
-    if (files.length > 10) return setStatus($("gallery-upload-status"), "Maksimal 10 foto sekali tambah.", "error");
+    if (files.length > 50) return setStatus($("gallery-upload-status"), "Maksimal 50 foto sekali tambah.", "error");
 
     const submit = $("gallery-upload-submit");
     submit.disabled = true;
+    const chunkSize = 10;
+    let batchId = "";
+    let savedTotal = 0;
+    let duplicateTotal = 0;
+    let failedTotal = 0;
+    let processed = 0;
+
     try {
-      const prepared = [];
-      for (let i = 0; i < files.length; i++) {
-        const progress = 5 + Math.round(((i + 1) / files.length) * 45);
-        setGalleryUploadProgress(progress, `Menyiapkan foto ${i + 1}/${files.length}…`);
-        prepared.push(await prepareEvidenceFile(files[i]));
+      for (let offset = 0; offset < files.length; offset += chunkSize) {
+        const chunk = files.slice(offset, offset + chunkSize);
+        const prepared = [];
+        for (let i = 0; i < chunk.length; i++) {
+          const absolute = offset + i + 1;
+          const progress = 5 + Math.round((absolute / files.length) * 45);
+          setGalleryUploadProgress(progress, `Menyiapkan foto ${absolute}/${files.length}…`);
+          prepared.push(await prepareEvidenceFile(chunk[i]));
+        }
+
+        const isLast = offset + chunk.length >= files.length;
+        setGalleryUploadProgress(
+          50 + Math.round(((offset + chunk.length) / files.length) * 35),
+          `Mengunggah ${Math.min(offset + chunk.length, files.length)}/${files.length} foto…`
+        );
+        setStatus($("gallery-upload-status"), "Mengirim foto ke penyimpanan Galeri…");
+        const result = await api(`/api/galeri/${encodeURIComponent(activeGallery)}/foto`, {
+          method: "POST",
+          body: JSON.stringify({
+            files: prepared,
+            keterangan: caption,
+            tanggal: date,
+            batchId,
+            finalize: isLast
+          })
+        });
+        batchId = result.batchId || batchId;
+        savedTotal += Number(result.jumlah || 0);
+        duplicateTotal += Number(result.duplicate || 0);
+        failedTotal += Number(result.failed || 0);
+        processed += chunk.length;
+        setGalleryUploadProgress(
+          50 + Math.round((processed / files.length) * 35),
+          `${processed}/${files.length} foto diproses…`
+        );
       }
-      setGalleryUploadProgress(60, `Mengunggah ${files.length} foto…`);
-      setStatus($("gallery-upload-status"), "Mengirim foto ke penyimpanan Galeri…");
-      const result = await api(`/api/galeri/${encodeURIComponent(activeGallery)}/foto`, {
-        method: "POST",
-        body: JSON.stringify({ files: prepared, keterangan: caption, tanggal: date })
-      });
+
       setGalleryUploadProgress(92, "Memperbarui Galeri publik…");
-      const notes = [];
-      if (result.jumlah) notes.push(`${result.jumlah} foto berhasil ditambahkan`);
-      if (result.duplicate) notes.push(`${result.duplicate} foto yang sama dilewati`);
-      if (result.failed) notes.push(`${result.failed} gagal`);
-      setGalleryUploadProgress(100, "Selesai");
-      setStatus($("gallery-upload-status"), notes.join(" · ") || "Selesai.", result.failed ? "error" : "success");
       await loadGallery(activeGallery);
+      const notes = [];
+      if (savedTotal) notes.push(`${savedTotal} foto berhasil ditambahkan`);
+      if (duplicateTotal) notes.push(`${duplicateTotal} foto yang sama dilewati`);
+      if (failedTotal) notes.push(`${failedTotal} gagal`);
+      setGalleryUploadProgress(100, "Selesai");
+      setStatus($("gallery-upload-status"), notes.join(" · ") || "Selesai.", failedTotal ? "error" : "success");
       setTimeout(() => { if ($("gallery-upload-dialog").open) $("gallery-upload-dialog").close(); }, 650);
     } catch (error) {
-      setStatus($("gallery-upload-status"), error.message, "error");
+      setStatus($("gallery-upload-status"), `${error.message}${savedTotal ? ` · ${savedTotal} foto sudah tersimpan` : ""}`, "error");
     } finally {
       submit.disabled = false;
     }
-  }
-
-  function openGalleryPhotoEdit(photo) {
-    $("gallery-edit-number").value = photo.nomor;
-    $("gallery-edit-id").textContent = photo.id;
-    $("gallery-edit-caption").value = photo.keterangan || "";
-    $("gallery-edit-date").value = timestampToDate(photo.tanggal || Date.now());
-    setStatus($("gallery-edit-status"));
-    $("gallery-edit-dialog").showModal();
-  }
-
-  function openGalleryBulkEdit() {
-    if (!galleryBulkSelected.size) return;
-    const first = galleryPhotos.find(photo => galleryBulkSelected.has(Number(photo.nomor)));
-    $("gallery-bulk-dialog-count").textContent = `${galleryBulkSelected.size} foto`;
-    $("gallery-bulk-caption").value = first?.keterangan || "";
-    $("gallery-bulk-date").value = first ? timestampToDate(first.tanggal || Date.now()) : todayJakarta();
-    setStatus($("gallery-bulk-status"));
-    $("gallery-bulk-dialog").showModal();
-  }
-
-  function syncGalleryAccessOptions() {
-    const isPrivate = $("gallery-access-visibility").value === "private";
-    $("gallery-private-options").hidden = !isPrivate;
-  }
-
-  function openGalleryAccessDialog() {
-    if (!galleryDetail) return;
-    $("gallery-access-visibility").value = galleryDetail.visibility === "private" ? "private" : "public";
-    $("gallery-access-hours").value = String(galleryDetail.privateSessionHours || 12);
-    $("gallery-access-password").value = "";
-    $("gallery-access-password").placeholder = galleryDetail.hasPrivatePassword ? "Kosongkan untuk memakai sandi yang sekarang" : "Buat sandi Galeri";
-    $("gallery-private-note").textContent = galleryDetail.hasPrivatePassword
-      ? "Galeri sudah memiliki sandi. Kosongkan kolom sandi jika tidak ingin menggantinya."
-      : "Saat pertama kali menjadikan Galeri privat, Anda wajib membuat sandi.";
-    syncGalleryAccessOptions();
-    setStatus($("gallery-access-status"));
-    $("gallery-access-dialog").showModal();
   }
 
   async function deleteGalleryPhoto(photo) {
