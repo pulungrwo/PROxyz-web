@@ -48,3 +48,50 @@
 /* PROxyz Admin V0.6.6 — tampilan lebih ringkas */
 .shell{padding-top:12px}.profilebar{align-items:flex-start;padding:16px 17px;gap:14px}.profile-copy{min-width:0;flex:1}.profile-eyebrow{margin:0 0 5px;color:#7c8798;font-size:12px;font-weight:800;letter-spacing:.01em;text-transform:none}.profilebar #welcome{margin:0 0 7px;font-size:23px;line-height:1.12;letter-spacing:-.025em}.profilebar #access-summary{margin:0;font-size:12.5px}.profile-actions{display:grid;gap:7px;flex:0 0 auto;min-width:106px}.logout-btn,.name-edit-btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;width:100%;min-height:36px;border-radius:11px;padding:8px 10px;font-size:12px;font-weight:800}.logout-btn{background:#101828;color:#fff}.logout-btn:active{background:#1d2939}.logout-icon{font-size:15px;line-height:1}.name-edit-btn{background:#f2f4f7;color:#475467}.app-tabs{gap:7px;margin-bottom:13px}.app-tab{padding:10px 7px;font-size:14px;border-radius:11px}.panel,.hero{padding:16px;border-radius:18px}.compact-panel{padding:13px 15px}h2{font-size:19px}h3{font-size:14px}.hero h2{font-size:21px}.hero>strong{font-size:33px;margin:14px 0 17px}.section-head{margin-bottom:11px}.section-head h2{font-size:19px}.eyebrow{font-size:10.5px}.small{font-size:12.5px}label{font-size:13px}input,select,textarea{font-size:14px}button{font-size:14px}.hero-link{font-size:12.5px}.role-pill{font-size:11px}.subtab{font-size:13px}.quick-card b{font-size:13px}.quick-card span{font-size:11px}
 @media(max-width:640px){.shell{padding-left:12px;padding-right:12px}.profilebar{padding:15px}.profilebar #welcome{font-size:21px}.profile-actions{min-width:100px}.logout-btn,.name-edit-btn{font-size:11.5px}.app-tab{font-size:13.5px;padding:9px 6px}.hero h2{font-size:20px}.hero>strong{font-size:30px}}
+
+/* V0.6.8 — Kas Admin ringkas dan konsisten */
+.kas-hero{text-align:center;padding:20px 18px 17px;background:linear-gradient(145deg,#111827,#24344d)}
+.kas-hero h2{margin:0 auto 4px;max-width:560px;font-size:22px;line-height:1.18;letter-spacing:-.018em;font-weight:820}
+.kas-balance-label{display:block;margin-top:12px;color:rgba(255,255,255,.62);font-size:11.5px;font-weight:680;letter-spacing:.02em}
+.kas-hero>strong{margin:3px 0 17px;font-size:34px;line-height:1.08;letter-spacing:-.028em;font-weight:790}
+.kas-flow-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;max-width:520px;margin:0 auto}
+.kas-flow-grid>div{display:grid;gap:2px;padding:10px 12px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.07);border-radius:12px;text-align:left}
+.kas-flow-grid span{color:rgba(255,255,255,.62);font-size:11.5px;font-weight:650}
+.kas-flow-grid b{font-size:16px;color:#fff;letter-spacing:-.01em}
+.kas-primary-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:0 0 13px}
+.kas-action-card{min-height:62px;padding:12px 14px}
+.kas-action-card b{font-size:14px}
+.kas-action-card span{font-size:11.5px}
+.kas-subtabs{margin-bottom:12px;padding:3px;border-radius:13px;background:#eef1f5}
+.kas-subtabs .subtab{flex:1;text-align:center;border-radius:10px;background:transparent;padding:9px 10px;font-size:12.5px}
+.kas-subtabs .subtab.active{background:#101828;color:#fff}
+.kas-panel{margin-bottom:14px}
+.kas-report-shortcuts{display:flex;gap:7px;margin:-2px 0 12px;flex-wrap:wrap}
+.kas-report-range{margin-bottom:10px}
+.kas-report-summary{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:14px 0}
+.kas-report-summary>div{display:grid;gap:3px;padding:11px 12px;border-radius:12px;background:#f7f8fa;border:1px solid #eceff3}
+.kas-report-summary span{font-size:11px;color:#667085}
+.kas-report-summary b{font-size:14px;color:#101828}
+.kas-report-groups{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+.report-category-section{border:1px solid #e7eaf0;border-radius:14px;padding:12px;background:#fff}
+.mini-section-title{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px;font-size:12.5px;font-weight:800;color:#344054}
+.report-category-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:7px 0;border-top:1px solid #f0f2f5;font-size:12px;color:#475467}
+.report-category-row b{font-size:12px;color:#101828;white-space:nowrap}
+.report-tx-card{padding:11px 12px}
+.schedule-card .schedule-status{margin-top:9px;padding:8px 10px;border-radius:10px;background:#f8fafc;color:#667085;font-size:11.5px;line-height:1.45}
+.kas-category-columns{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.category-list{display:grid;gap:8px}
+.category-row{display:flex;align-items:center;justify-content:space-between;gap:10px;border:1px solid #e7eaf0;border-radius:13px;padding:10px 11px;background:#fff}
+.category-row.category-inactive{opacity:.62;background:#f8fafc}
+.category-copy{display:grid;gap:2px;min-width:0}
+.category-copy strong{font-size:13px;color:#101828;line-height:1.25}
+.category-copy span{font-size:10.5px;color:#98a2b3;word-break:break-word}
+.category-actions{display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end}
+.category-actions button{font-size:10.5px;padding:7px 8px}
+
+@media(max-width:640px){
+  .kas-hero{padding:18px 14px 15px}.kas-hero h2{font-size:19px}.kas-hero>strong{font-size:30px}.kas-flow-grid b{font-size:14px}
+  .kas-subtabs{overflow:auto;display:flex}.kas-subtabs .subtab{min-width:82px;flex:1 0 auto}
+  .kas-report-groups,.kas-category-columns{grid-template-columns:1fr}
+  .kas-report-summary{grid-template-columns:1fr 1fr}
+}

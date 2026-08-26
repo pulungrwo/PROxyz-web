@@ -1,7 +1,7 @@
 (() => {
   "use strict";
 
-  const ADMIN_BUILD = "0.6.7";
+  const ADMIN_BUILD = "0.6.8";
   const config = window.PROXYZ_ADMIN_CONFIG || {};
 
   async function checkAdminBuild() {
@@ -20,6 +20,7 @@
   const API = String(config.apiBase || "").replace(/\/$/, "");
   const rupiah = new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", maximumFractionDigits: 0 });
   const number = new Intl.NumberFormat("id-ID", { maximumFractionDigits: 2 });
+  const wholeNumber = new Intl.NumberFormat("id-ID", { maximumFractionDigits: 0 });
   const dateFmt = new Intl.DateTimeFormat("id-ID", { day: "2-digit", month: "short", year: "numeric" });
   const dateTimeFmt = new Intl.DateTimeFormat("id-ID", { day: "2-digit", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" });
   const $ = id => document.getElementById(id);
@@ -46,6 +47,10 @@
   const kasPage = 50;
   let activeEvidenceTx = null;
   let evidenceRows = [];
+  let activeKasTab = "transaksi";
+  let kasSchedules = [];
+  let kasReportData = null;
+  let kasCategoryEditing = null;
 
   // Bertunas
   let activeBertunas = "";
@@ -400,10 +405,12 @@
     activeKasDetail = data.kas;
     $("kas-name").textContent = data.kas.nama;
     $("kas-balance").textContent = rupiah.format(data.kas.saldo.akhir || 0);
-    $("kas-in").textContent = rupiah.format(data.kas.saldo.masuk || 0);
-    $("kas-out").textContent = rupiah.format(data.kas.saldo.keluar || 0);
+    $("kas-in").textContent = wholeNumber.format(data.kas.saldo.masuk || 0);
+    $("kas-out").textContent = wholeNumber.format(data.kas.saldo.keluar || 0);
     $("kas-content").hidden = false;
+    renderKasCategories();
     await loadKasTransactions(true);
+    await refreshKasActivePanel();
   }
 
   async function loadKasTransactions(reset = false) {
@@ -425,7 +432,7 @@
       const top = document.createElement("div"); top.className = "item-top";
       const left = document.createElement("div");
       const title = document.createElement("h3"); title.textContent = `${tx.nomor} · ${tx.keterangan}`;
-      const meta = document.createElement("div"); meta.className = "item-meta"; meta.textContent = `${dateFmt.format(new Date(tx.tanggal))} · ${tx.kategori}`;
+      const meta = document.createElement("div"); meta.className = "item-meta"; meta.textContent = `${dateFmt.format(new Date(tx.tanggal))} · ${tx.kategoriNama || tx.kategori}`;
       left.append(title, meta);
       const amount = document.createElement("div"); amount.className = `amount ${tx.jenis === "masuk" ? "in" : "out"}`; amount.textContent = `${tx.jenis === "masuk" ? "+" : "−"}${rupiah.format(tx.nominal)}`;
       top.append(left, amount); card.appendChild(top);
@@ -439,13 +446,242 @@
     $("load-more").hidden = kasRows.length >= kasTotal;
   }
 
+  function kasCategoryRows(type, includeInactive = false) {
+    const rows = activeKasDetail?.kategoriDetail?.[type] || [];
+    return includeInactive ? rows : rows.filter(row => row.aktif !== false);
+  }
+
   function updateKasCategories() {
     const type = $("tx-type").value;
-    const categories = activeKasDetail?.kategori?.[type] || [];
     const current = $("tx-category").value;
+    const categories = kasCategoryRows(type, true);
     $("tx-category").replaceChildren();
-    for (const category of categories) { const opt = document.createElement("option"); opt.value = category; opt.textContent = category.charAt(0).toUpperCase() + category.slice(1); $("tx-category").appendChild(opt); }
-    if (categories.includes(current)) $("tx-category").value = current;
+    for (const category of categories) {
+      if (category.aktif === false && category.id !== current) continue;
+      const opt = document.createElement("option");
+      opt.value = category.id;
+      opt.textContent = category.nama + (category.aktif === false ? " · nonaktif" : "");
+      $("tx-category").appendChild(opt);
+    }
+    if ([...$("tx-category").options].some(opt => opt.value === current)) $("tx-category").value = current;
+  }
+
+
+  function setKasTab(tab, load = true) {
+    activeKasTab = ["transaksi", "laporan", "jadwal", "kategori"].includes(tab) ? tab : "transaksi";
+    document.querySelectorAll("[data-kas-tab]").forEach(btn => btn.classList.toggle("active", btn.dataset.kasTab === activeKasTab));
+    ["transaksi", "laporan", "jadwal", "kategori"].forEach(name => {
+      const panel = $(`kas-${name}-panel`);
+      if (panel) panel.hidden = name !== activeKasTab;
+    });
+    if (load) refreshKasActivePanel().catch(showError);
+  }
+
+  async function refreshKasActivePanel() {
+    if (!activeKas) return;
+    if (activeKasTab === "jadwal") await loadKasSchedules();
+    else if (activeKasTab === "kategori") renderKasCategories();
+    else if (activeKasTab === "laporan" && !$("kas-report-start").value) {
+      setKasReportMonth();
+      await loadKasReport();
+    }
+  }
+
+  function setKasReportMonth() {
+    const today = todayJakarta();
+    const [year, month] = today.split("-").map(Number);
+    const last = new Date(year, month, 0).getDate();
+    $("kas-report-start").value = `${year}-${String(month).padStart(2, "0")}-01`;
+    $("kas-report-end").value = `${year}-${String(month).padStart(2, "0")}-${String(last).padStart(2, "0")}`;
+  }
+
+  function setKasReportYear() {
+    const year = Number(todayJakarta().slice(0, 4));
+    $("kas-report-start").value = `${year}-01-01`;
+    $("kas-report-end").value = `${year}-12-31`;
+  }
+
+  async function loadKasReport() {
+    if (!activeKas) return;
+    const start = $("kas-report-start").value;
+    const end = $("kas-report-end").value;
+    if (!start || !end) return setStatus($("kas-report-status"), "Pilih tanggal laporan.", "error");
+    setStatus($("kas-report-status"), "Menyusun laporan…");
+    const data = await api(`/api/kas/${encodeURIComponent(activeKas)}/laporan?mulai=${dateToTimestamp(start)}&selesai=${dateToTimestamp(end)}`);
+    kasReportData = data.laporan;
+    renderKasReport();
+    setStatus($("kas-report-status"), `${kasReportData.jumlahTransaksi || 0} transaksi ditemukan.`, "success");
+  }
+
+  function renderKasReport() {
+    const report = kasReportData;
+    if (!report) return;
+    $("kas-report-summary").hidden = false;
+    $("kas-report-opening").textContent = rupiah.format(report.saldoAwal || 0);
+    $("kas-report-in").textContent = rupiah.format(report.totalMasuk || 0);
+    $("kas-report-out").textContent = rupiah.format(report.totalKeluar || 0);
+    $("kas-report-closing").textContent = rupiah.format(report.saldoAkhir || 0);
+
+    const groups = $("kas-report-categories"); groups.replaceChildren();
+    for (const jenis of ["masuk", "keluar"]) {
+      const rows = (report.ringkasan || []).filter(row => row.jenis === jenis);
+      if (!rows.length) continue;
+      const totals = new Map();
+      for (const row of rows) {
+        const name = row.kategoriNama || row.kategori || "Lainnya";
+        totals.set(name, (totals.get(name) || 0) + Number(row.totalNominal || 0));
+      }
+      const section = document.createElement("section"); section.className = "report-category-section";
+      const head = document.createElement("div"); head.className = "mini-section-title";
+      const label = document.createElement("span"); label.textContent = jenis === "masuk" ? "Pemasukan" : "Pengeluaran";
+      const total = document.createElement("b"); total.textContent = rupiah.format(jenis === "masuk" ? report.totalMasuk : report.totalKeluar);
+      head.append(label, total); section.appendChild(head);
+      for (const [name, amount] of totals) {
+        const row = document.createElement("div"); row.className = "report-category-row";
+        const left = document.createElement("span"); left.textContent = name;
+        const right = document.createElement("b"); right.textContent = rupiah.format(amount);
+        row.append(left, right); section.appendChild(row);
+      }
+      groups.appendChild(section);
+    }
+
+    const list = $("kas-report-transactions"); list.replaceChildren();
+    if (!(report.transaksi || []).length) list.appendChild(emptyBox("Tidak ada transaksi pada periode ini."));
+    for (const tx of report.transaksi || []) {
+      const card = document.createElement("article"); card.className = "item-card report-tx-card";
+      const top = document.createElement("div"); top.className = "item-top";
+      const info = document.createElement("div");
+      const title = document.createElement("h3"); title.textContent = `${tx.keterangan || "Transaksi"}`;
+      const meta = document.createElement("div"); meta.className = "item-meta"; meta.textContent = `${dateFmt.format(new Date(tx.tanggal))} · ${tx.kategoriNama || tx.kategori}`;
+      info.append(title, meta);
+      const amount = document.createElement("div"); amount.className = `amount ${tx.jenis === "masuk" ? "in" : "out"}`; amount.textContent = `${tx.jenis === "masuk" ? "+" : "−"}${rupiah.format(tx.nominal || 0)}`;
+      top.append(info, amount); card.appendChild(top); list.appendChild(card);
+    }
+  }
+
+  async function downloadKasReportPdf() {
+    if (!activeKas) return;
+    const start = $("kas-report-start").value;
+    const end = $("kas-report-end").value;
+    if (!start || !end) return alert("Pilih tanggal laporan terlebih dahulu.");
+    const response = await apiRaw(`/api/kas/${encodeURIComponent(activeKas)}/laporan/pdf?mulai=${dateToTimestamp(start)}&selesai=${dateToTimestamp(end)}`);
+    const blob = await response.blob();
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a"); link.href = url; link.download = `laporan-${activeKas}-${start}-${end}.pdf`; document.body.appendChild(link); link.click(); link.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 2000);
+  }
+
+  async function loadKasSchedules() {
+    if (!activeKas) return;
+    const data = await api(`/api/kas/${encodeURIComponent(activeKas)}/jadwal`);
+    kasSchedules = data.jadwal || [];
+    renderKasSchedules();
+  }
+
+  function renderKasSchedules() {
+    const list = $("kas-schedule-list"); list.replaceChildren();
+    if (!kasSchedules.length) return list.appendChild(emptyBox("Belum ada jadwal pembayaran rutin."));
+    for (const row of kasSchedules) {
+      const card = document.createElement("article"); card.className = "item-card schedule-card";
+      const top = document.createElement("div"); top.className = "item-top";
+      const info = document.createElement("div");
+      const title = document.createElement("h3"); title.textContent = row.nama;
+      const meta = document.createElement("div"); meta.className = "item-meta"; meta.textContent = `${row.namaHari || ""} · ${row.kategoriNama || row.kategori}`;
+      info.append(title, meta);
+      const amount = document.createElement("div"); amount.className = "amount out"; amount.textContent = rupiah.format(row.nominal || 0);
+      top.append(info, amount); card.appendChild(top);
+      const status = document.createElement("div"); status.className = "schedule-status";
+      const overdue = Number(row.tertunggak?.length || 0);
+      status.textContent = overdue ? `${overdue} periode belum diselesaikan · berikutnya ${dateFmt.format(new Date(row.berikutnya))}` : `Berikutnya ${dateFmt.format(new Date(row.berikutnya))}`;
+      card.appendChild(status);
+      const actions = document.createElement("div"); actions.className = "item-actions";
+      actions.append(
+        button("Bayar", "success-soft", () => payKasSchedule(row)),
+        button("Lewati", "ghost", () => skipKasSchedule(row)),
+        button("Ubah nominal", "ghost", () => changeKasScheduleNominal(row))
+      );
+      card.appendChild(actions); list.appendChild(card);
+    }
+  }
+
+  function fillKasScheduleCategories() {
+    const select = $("kas-schedule-category"); select.replaceChildren();
+    for (const row of kasCategoryRows("keluar")) {
+      const opt = document.createElement("option"); opt.value = row.id; opt.textContent = row.nama; select.appendChild(opt);
+    }
+  }
+
+  function openKasScheduleDialog() {
+    $("kas-schedule-form").reset(); fillKasScheduleCategories(); setStatus($("kas-schedule-status")); $("kas-schedule-dialog").showModal();
+  }
+
+  async function payKasSchedule(row) {
+    if (!confirm(`Bayar satu periode ${row.nama} sebesar ${rupiah.format(row.nominal)}?`)) return;
+    await api(`/api/kas/${encodeURIComponent(activeKas)}/jadwal/${encodeURIComponent(row.id)}/bayar`, { method: "POST", body: JSON.stringify({ count: 1 }) });
+    await loadKas(activeKas); setKasTab("jadwal", true);
+  }
+
+  async function skipKasSchedule(row) {
+    const alasan = prompt(`Lewati periode ${row.nama}?\nAlasan:`, "Tidak dibayar periode ini");
+    if (alasan === null) return;
+    await api(`/api/kas/${encodeURIComponent(activeKas)}/jadwal/${encodeURIComponent(row.id)}/lewati`, { method: "POST", body: JSON.stringify({ alasan: alasan.trim() }) });
+    await loadKasSchedules();
+  }
+
+  async function changeKasScheduleNominal(row) {
+    const value = prompt(`Nominal baru untuk ${row.nama}:`, String(row.nominal || ""));
+    if (value === null) return;
+    const nominal = Number(String(value).replace(/[^0-9]/g, ""));
+    if (!nominal) return alert("Nominal tidak valid.");
+    await api(`/api/kas/${encodeURIComponent(activeKas)}/jadwal/${encodeURIComponent(row.id)}/nominal`, { method: "POST", body: JSON.stringify({ nominal }) });
+    await loadKasSchedules();
+  }
+
+  function renderKasCategories() {
+    if (!activeKasDetail) return;
+    const isOwner = activeKasDetail.role === "owner";
+    $("kas-category-add").hidden = !isOwner;
+    $("kas-category-owner-note").hidden = isOwner;
+    const renderType = (type, listId, countId) => {
+      const rows = kasCategoryRows(type, true);
+      $(countId).textContent = String(rows.filter(row => row.aktif !== false).length);
+      const list = $(listId); list.replaceChildren();
+      for (const row of rows) {
+        const card = document.createElement("div"); card.className = `category-row${row.aktif === false ? " category-inactive" : ""}`;
+        const info = document.createElement("div"); info.className = "category-copy";
+        const label = document.createElement("strong"); label.textContent = row.nama;
+        const meta = document.createElement("span"); meta.textContent = `${row.id}${row.bawaan ? " · bawaan" : " · tambahan"}${row.aktif === false ? " · nonaktif" : ""}`;
+        info.append(label, meta); card.appendChild(info);
+        if (isOwner) {
+          const actions = document.createElement("div"); actions.className = "category-actions";
+          actions.append(button("Edit", "ghost compact", () => openKasCategoryDialog(type, row)), button(row.aktif === false ? "Aktifkan" : "Nonaktifkan", row.aktif === false ? "success-soft compact" : "danger-soft compact", () => toggleKasCategory(type, row)));
+          card.appendChild(actions);
+        }
+        list.appendChild(card);
+      }
+    };
+    renderType("masuk", "kas-category-in-list", "kas-category-in-count");
+    renderType("keluar", "kas-category-out-list", "kas-category-out-count");
+  }
+
+  function openKasCategoryDialog(type = "keluar", row = null) {
+    kasCategoryEditing = row ? { type, row } : null;
+    $("kas-category-form").reset(); setStatus($("kas-category-status"));
+    $("kas-category-dialog-title").textContent = row ? "Edit kategori" : "Tambah kategori";
+    $("kas-category-original-id").value = row?.id || "";
+    $("kas-category-type").value = type;
+    $("kas-category-type").disabled = Boolean(row);
+    $("kas-category-id").value = row?.id || "";
+    $("kas-category-id").disabled = Boolean(row);
+    $("kas-category-label").value = row?.nama || "";
+    $("kas-category-dialog").showModal();
+  }
+
+  async function toggleKasCategory(type, row) {
+    const action = row.aktif === false ? "aktifkan" : "nonaktifkan";
+    if (!confirm(`${action.charAt(0).toUpperCase() + action.slice(1)} kategori ${row.nama}?`)) return;
+    await api(`/api/kas/${encodeURIComponent(activeKas)}/kategori/${type}/${encodeURIComponent(row.id)}`, { method: "PUT", body: JSON.stringify({ aktif: row.aktif === false, nama: row.nama }) });
+    await loadKas(activeKas); setKasTab("kategori", false);
   }
 
   function openKasCreate(type) {
@@ -453,7 +689,9 @@
   }
 
   function openKasEdit(tx) {
-    $("tx-form").reset(); $("tx-ref").value = tx.nomor; $("form-mode").textContent = `Edit ${tx.nomor}`; $("form-title").textContent = tx.keterangan; $("tx-type").value = tx.jenis; updateKasCategories(); $("tx-category").value = tx.kategori; $("tx-amount").value = tx.nominal; $("tx-description").value = tx.keterangan; $("tx-note").value = tx.catatan || ""; $("tx-tags").value = (tx.label || []).map(x => `#${x}`).join(" "); $("tx-date").value = timestampToDate(tx.tanggal); $("edit-reason-wrap").hidden = false; setStatus($("form-status")); $("tx-dialog").showModal();
+    $("tx-form").reset(); $("tx-ref").value = tx.nomor; $("form-mode").textContent = `Edit ${tx.nomor}`; $("form-title").textContent = tx.keterangan; $("tx-type").value = tx.jenis; updateKasCategories();
+    if (![...$("tx-category").options].some(opt => opt.value === tx.kategori)) { const opt = document.createElement("option"); opt.value = tx.kategori; opt.textContent = tx.kategoriNama || tx.kategori; $("tx-category").appendChild(opt); }
+    $("tx-category").value = tx.kategori; $("tx-amount").value = tx.nominal; $("tx-description").value = tx.keterangan; $("tx-note").value = tx.catatan || ""; $("tx-tags").value = (tx.label || []).map(x => `#${x}`).join(" "); $("tx-date").value = timestampToDate(tx.tanggal); $("edit-reason-wrap").hidden = false; setStatus($("form-status")); $("tx-dialog").showModal();
   }
 
   async function deleteKasTx(tx) {
@@ -578,6 +816,32 @@
       await loadEvidence();
       await loadKasTransactions(true);
     } catch (error) { showError(error); }
+  }
+
+
+  async function submitKasSchedule(event) {
+    event.preventDefault();
+    setStatus($("kas-schedule-status"), "Menyimpan…");
+    try {
+      await api(`/api/kas/${encodeURIComponent(activeKas)}/jadwal`, { method: "POST", body: JSON.stringify({
+        nama: $("kas-schedule-name").value.trim(), nominal: Number($("kas-schedule-amount").value), hari: $("kas-schedule-day").value,
+        kategori: $("kas-schedule-category").value, catatan: $("kas-schedule-note").value.trim(), label: []
+      }) });
+      $("kas-schedule-dialog").close(); await loadKasSchedules();
+    } catch (error) { setStatus($("kas-schedule-status"), error.message, "error"); }
+  }
+
+  async function submitKasCategory(event) {
+    event.preventDefault();
+    setStatus($("kas-category-status"), "Menyimpan…");
+    try {
+      const original = $("kas-category-original-id").value;
+      const type = kasCategoryEditing?.type || $("kas-category-type").value;
+      const payload = { jenis: type, id: original || $("kas-category-id").value.trim().toLowerCase(), nama: $("kas-category-label").value.trim(), aktif: kasCategoryEditing?.row?.aktif !== false };
+      if (original) await api(`/api/kas/${encodeURIComponent(activeKas)}/kategori/${type}/${encodeURIComponent(original)}`, { method: "PUT", body: JSON.stringify(payload) });
+      else await api(`/api/kas/${encodeURIComponent(activeKas)}/kategori`, { method: "POST", body: JSON.stringify(payload) });
+      $("kas-category-dialog").close(); kasCategoryEditing = null; await loadKas(activeKas); setKasTab("kategori", false);
+    } catch (error) { setStatus($("kas-category-status"), error.message, "error"); }
   }
 
   // ---------- BERTUNAS ----------
@@ -1932,6 +2196,17 @@
 
   // Kas events
   $("kas-select").addEventListener("change", () => loadKas($("kas-select").value).catch(showError));
+  document.querySelectorAll("[data-kas-tab]").forEach(btn => btn.addEventListener("click", () => setKasTab(btn.dataset.kasTab)));
+  $("kas-report-month").addEventListener("click", () => { setKasReportMonth(); loadKasReport().catch(showError); });
+  $("kas-report-year").addEventListener("click", () => { setKasReportYear(); loadKasReport().catch(showError); });
+  $("kas-report-load").addEventListener("click", () => loadKasReport().catch(showError));
+  $("kas-report-pdf").addEventListener("click", () => downloadKasReportPdf().catch(showError));
+  $("kas-schedule-add").addEventListener("click", openKasScheduleDialog);
+  $("close-kas-schedule").addEventListener("click", () => $("kas-schedule-dialog").close());
+  $("kas-schedule-form").addEventListener("submit", submitKasSchedule);
+  $("kas-category-add").addEventListener("click", () => openKasCategoryDialog("keluar"));
+  $("close-kas-category").addEventListener("click", () => { kasCategoryEditing = null; $("kas-category-dialog").close(); });
+  $("kas-category-form").addEventListener("submit", submitKasCategory);
   $("close-evidence-dialog").addEventListener("click", () => $("evidence-dialog").close());
   $("upload-evidence").addEventListener("click", uploadEvidence);
   $("refresh").addEventListener("click", () => loadKas(activeKas).catch(showError));
