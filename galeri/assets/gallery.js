@@ -3,7 +3,7 @@
   const token=document.body.dataset.galleryToken;
   const galleryId=document.body.dataset.galleryId||'';
   const visibility=document.body.dataset.galleryVisibility||'public';
-  const apiBase=(document.body.dataset.apiBase||'').replace(//+$/,'');
+  const apiBase=(document.body.dataset.apiBase||'').replace(/\/+$/,'');
   const privateGate=document.getElementById('private-gate');
   const privateForm=document.getElementById('private-form');
   const privatePassword=document.getElementById('private-password');
