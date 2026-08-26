@@ -132,7 +132,7 @@
             <section class="panel">
               <div class="section-head">
                 <div><p class="eyebrow">Media</p><h2>Foto</h2></div>
-                <div class="gallery-photo-head-actions"><span id="gallery-photo-count" class="muted small">0 foto</span><button id="gallery-bulk-toggle" class="ghost compact" type="button">Pilih beberapa</button></div>
+                <div class="gallery-photo-head-actions"><span id="gallery-photo-count" class="muted small">0 foto</span><button id="gallery-upload-open" class="primary compact" type="button">+ Tambah foto</button><button id="gallery-bulk-toggle" class="ghost compact" type="button">Pilih beberapa</button></div>
               </div>
               <input id="gallery-search" type="search" placeholder="Cari FOTO, keterangan, pengunggah…">
               <div id="gallery-bulk-toolbar" class="gallery-bulk-toolbar" hidden>
@@ -317,12 +317,25 @@
   <dialog id="bt-dialog"><form id="bt-form" method="dialog" class="dialog-form"><div class="section-head"><div><p class="eyebrow" id="bt-form-mode">Bertunas</p><h2 id="bt-form-title">Tambah data</h2></div><button id="bt-close-dialog" class="icon-button" type="button">×</button></div><div id="bt-fields" class="stack"></div><p id="bt-form-status" class="status"></p><button class="primary full" type="submit">Simpan</button></form></dialog>
 
 
+  <dialog id="gallery-upload-dialog">
+    <form id="gallery-upload-form" class="dialog-form">
+      <div class="section-head"><div><p class="eyebrow">Tambah foto</p><h2>Masukkan ke Galeri</h2></div><button id="close-gallery-upload" class="icon-button" type="button">×</button></div>
+      <label>Judul / keterangan<input id="gallery-upload-caption" maxlength="160" placeholder="Contoh: Agustusan 2026" required></label>
+      <label>Tanggal dokumentasi<input id="gallery-upload-date" type="date" required></label>
+      <label>Pilih foto<input id="gallery-upload-files" type="file" accept="image/*" multiple required></label>
+      <p class="muted small">Maksimal 10 foto sekali tambah. Foto otomatis diperkecil agar upload lebih cepat. Semua foto memakai satu judul dan satu tanggal.</p>
+      <div id="gallery-upload-progress" class="upload-progress" hidden><div class="progress-head"><span id="gallery-upload-progress-label">Menyiapkan…</span><b id="gallery-upload-progress-percent">0%</b></div><div class="progress-track"><span id="gallery-upload-progress-bar" style="width:0%"></span></div></div>
+      <p id="gallery-upload-status" class="status"></p>
+      <button id="gallery-upload-submit" class="primary full" type="submit">Simpan ke Galeri</button>
+    </form>
+  </dialog>
+
   <dialog id="gallery-access-dialog"><form id="gallery-access-form" method="dialog" class="dialog-form"><div class="section-head"><div><p class="eyebrow">Akses Galeri</p><h2>Publik atau privat</h2></div><button id="close-gallery-access" class="icon-button" type="button">×</button></div><label>Status akses<select id="gallery-access-visibility"><option value="public">Publik · siapa pun dengan link dapat melihat</option><option value="private">Privat · harus memasukkan sandi</option></select></label><div id="gallery-private-options" class="stack" hidden><label>Sandi Galeri<input id="gallery-access-password" type="password" minlength="4" maxlength="80" placeholder="Kosongkan jika tidak ingin mengganti sandi"></label><label>Masa akses setelah memasukkan sandi<select id="gallery-access-hours"><option value="1">1 jam</option><option value="6">6 jam</option><option value="12" selected>12 jam</option><option value="24">24 jam</option><option value="72">3 hari</option><option value="168">7 hari</option></select></label><p id="gallery-private-note" class="muted small">Link Galeri tetap sama. Semua foto di Galeri ini akan mengikuti status privat.</p></div><p id="gallery-access-status" class="status"></p><button class="primary full" type="submit">Simpan akses</button></form></dialog>
   <dialog id="gallery-edit-dialog"><form id="gallery-edit-form" method="dialog" class="dialog-form"><div class="section-head"><div><p class="eyebrow" id="gallery-edit-id">Foto</p><h2>Edit foto</h2></div><button id="close-gallery-edit" class="icon-button" type="button">×</button></div><input id="gallery-edit-number" type="hidden"><label>Judul / keterangan<textarea id="gallery-edit-caption" rows="3" maxlength="500"></textarea></label><label>Tanggal dokumentasi<input id="gallery-edit-date" type="date" required></label><p class="muted small">Mengubah satu foto akan menempatkannya sebagai kelompok tersendiri agar judul dan tanggal tampil benar di galeri publik.</p><p id="gallery-edit-status" class="status"></p><button class="primary full" type="submit">Simpan perubahan</button></form></dialog>
 
   <dialog id="gallery-bulk-dialog"><form id="gallery-bulk-form" method="dialog" class="dialog-form"><div class="section-head"><div><p class="eyebrow">Edit beberapa foto</p><h2>Kelompokkan kejadian</h2></div><button id="close-gallery-bulk" class="icon-button" type="button">×</button></div><p class="muted small"><b id="gallery-bulk-dialog-count">0 foto</b> akan dijadikan satu kelompok di galeri publik.</p><label>Judul kejadian<input id="gallery-bulk-caption" maxlength="160" placeholder="Contoh: Makan Kerupuk Agustusan 2024" required></label><label>Tanggal dokumentasi<input id="gallery-bulk-date" type="date" required></label><p class="muted small">Semua foto terpilih akan memakai satu judul dan satu tanggal. Foto tidak dihapus atau diunggah ulang ke penyimpanan Galeri.</p><p id="gallery-bulk-status" class="status"></p><button class="primary full" type="submit">Simpan & kelompokkan</button></form></dialog>
 
   <script src="./config.js?v=242"></script>
-  <script src="./admin.js?v=0.6.1" defer></script>
+  <script src="./admin.js?v=0.6.3" defer></script>
 </body>
 </html>

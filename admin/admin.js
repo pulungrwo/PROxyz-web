@@ -460,10 +460,10 @@
       const blob = await new Promise(resolve => canvas.toBlob(resolve, "image/jpeg", QUALITY));
       if (!blob) throw new Error("Kompresi gagal.");
       if (blob.size > 5 * 1024 * 1024) throw new Error("Foto masih terlalu besar setelah diproses.");
-      return { name: String(file.name || "bukti.jpg").replace(/\.[^.]+$/, "") + ".jpg", mimeType: "image/jpeg", data: await evidenceBase64(blob) };
+      return { name: String(file.name || "foto.jpg").replace(/\.[^.]+$/, "") + ".jpg", mimeType: "image/jpeg", width, height, data: await evidenceBase64(blob) };
     } catch (error) {
       if (file.size > 5 * 1024 * 1024) throw new Error(`${file.name}: lebih dari 5 MB dan tidak dapat diperkecil.`);
-      return { name: file.name || "bukti", mimeType: file.type || "image/jpeg", data: await evidenceBase64(file) };
+      return { name: file.name || "foto", mimeType: file.type || "image/jpeg", width: 0, height: 0, data: await evidenceBase64(file) };
     }
   }
 
@@ -1014,6 +1014,69 @@
     }
     $("gallery-load-more").hidden = galleryPhotos.length >= galleryPhotoTotal;
     updateGalleryBulkUi();
+  }
+
+  function setGalleryUploadProgress(percent, label = "") {
+    const wrap = $("gallery-upload-progress");
+    if (!wrap) return;
+    const value = Math.max(0, Math.min(100, Math.round(Number(percent || 0))));
+    wrap.hidden = false;
+    $("gallery-upload-progress-bar").style.width = `${value}%`;
+    $("gallery-upload-progress-percent").textContent = `${value}%`;
+    if (label) $("gallery-upload-progress-label").textContent = label;
+  }
+
+  function openGalleryPhotoUpload() {
+    if (!activeGallery) return;
+    $("gallery-upload-form").reset();
+    $("gallery-upload-date").value = todayJakarta();
+    $("gallery-upload-progress").hidden = true;
+    $("gallery-upload-progress-bar").style.width = "0%";
+    $("gallery-upload-progress-percent").textContent = "0%";
+    setStatus($("gallery-upload-status"));
+    $("gallery-upload-dialog").showModal();
+  }
+
+  async function submitGalleryPhotoUpload(event) {
+    event.preventDefault();
+    if (!activeGallery) return;
+    const files = [...($("gallery-upload-files").files || [])];
+    const caption = $("gallery-upload-caption").value.trim();
+    const date = $("gallery-upload-date").value;
+    if (!caption) return setStatus($("gallery-upload-status"), "Judul/keterangan wajib diisi.", "error");
+    if (!date) return setStatus($("gallery-upload-status"), "Tanggal dokumentasi wajib diisi.", "error");
+    if (!files.length) return setStatus($("gallery-upload-status"), "Pilih minimal satu foto.", "error");
+    if (files.length > 10) return setStatus($("gallery-upload-status"), "Maksimal 10 foto sekali tambah.", "error");
+
+    const submit = $("gallery-upload-submit");
+    submit.disabled = true;
+    try {
+      const prepared = [];
+      for (let i = 0; i < files.length; i++) {
+        const progress = 5 + Math.round(((i + 1) / files.length) * 45);
+        setGalleryUploadProgress(progress, `Menyiapkan foto ${i + 1}/${files.length}…`);
+        prepared.push(await prepareEvidenceFile(files[i]));
+      }
+      setGalleryUploadProgress(60, `Mengunggah ${files.length} foto…`);
+      setStatus($("gallery-upload-status"), "Mengirim foto ke penyimpanan Galeri…");
+      const result = await api(`/api/galeri/${encodeURIComponent(activeGallery)}/foto`, {
+        method: "POST",
+        body: JSON.stringify({ files: prepared, keterangan: caption, tanggal: date })
+      });
+      setGalleryUploadProgress(92, "Memperbarui Galeri publik…");
+      const notes = [];
+      if (result.jumlah) notes.push(`${result.jumlah} foto berhasil ditambahkan`);
+      if (result.duplicate) notes.push(`${result.duplicate} foto yang sama dilewati`);
+      if (result.failed) notes.push(`${result.failed} gagal`);
+      setGalleryUploadProgress(100, "Selesai");
+      setStatus($("gallery-upload-status"), notes.join(" · ") || "Selesai.", result.failed ? "error" : "success");
+      await loadGallery(activeGallery);
+      setTimeout(() => { if ($("gallery-upload-dialog").open) $("gallery-upload-dialog").close(); }, 650);
+    } catch (error) {
+      setStatus($("gallery-upload-status"), error.message, "error");
+    } finally {
+      submit.disabled = false;
+    }
   }
 
   function openGalleryPhotoEdit(photo) {
@@ -1872,6 +1935,9 @@
     } catch (error) { setStatus($("gallery-access-status"), error.message, "error"); }
   });
   $("add-gallery-admin").addEventListener("click", async () => { const phone = prompt("Nomor WhatsApp Admin Galeri:", "08"); if (phone === null || !phone.trim()) return; try { await api(`/api/galeri/${encodeURIComponent(activeGallery)}/admin`, { method: "POST", body: JSON.stringify({ phone: phone.trim() }) }); await loadGalleryAdmins(); } catch (error) { showError(error); } });
+  $("gallery-upload-open").addEventListener("click", openGalleryPhotoUpload);
+  $("close-gallery-upload").addEventListener("click", () => $("gallery-upload-dialog").close());
+  $("gallery-upload-form").addEventListener("submit", submitGalleryPhotoUpload);
   $("gallery-load-more").addEventListener("click", () => loadGalleryPhotos(false).catch(showError)); let gallerySearchTimer; $("gallery-search").addEventListener("input", () => { clearTimeout(gallerySearchTimer); gallerySearchTimer = setTimeout(() => loadGalleryPhotos(true).catch(showError), 300); });
   $("gallery-bulk-toggle").addEventListener("click", () => setGalleryBulkMode(!galleryBulkMode, { clear: true }));
   $("gallery-bulk-select-loaded").addEventListener("click", () => { for (const photo of galleryPhotos) galleryBulkSelected.add(Number(photo.nomor)); renderGalleryPhotos(); });
