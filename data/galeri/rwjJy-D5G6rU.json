@@ -3,7 +3,7 @@
   "token": "rwjJy-D5G6rU",
   "galleryId": "tb",
   "galleryName": "Tanjung Bulan Squad",
-  "updatedAt": 1787733454111,
+  "updatedAt": 1787735509374,
   "photos": [
     {
       "id": "FOTO302",
@@ -745,6 +745,71 @@
       "width": 1040,
       "height": 780,
       "createdAt": 1787575735000
+    },
+    {
+      "id": "FOTO307",
+      "nomor": 307,
+      "batchId": "batch14",
+      "caption": "lomba agustusan 2026",
+      "uploaderName": "Pulung Riswanto",
+      "originGroupName": "Admin Web · Video",
+      "publicUrl": "https://media.pulungriswanto.my.id/galeri/rwjJy-D5G6rU/2026/08/FOTO307.jpg",
+      "mimeType": "image/jpeg",
+      "width": 848,
+      "height": 480,
+      "createdAt": 1787202000000
+    },
+    {
+      "id": "FOTO306",
+      "nomor": 306,
+      "batchId": "batch14",
+      "caption": "lomba agustusan 2026",
+      "uploaderName": "Pulung Riswanto",
+      "originGroupName": "Admin Web · Video",
+      "publicUrl": "https://media.pulungriswanto.my.id/galeri/rwjJy-D5G6rU/2026/08/FOTO306.jpg",
+      "mimeType": "image/jpeg",
+      "width": 848,
+      "height": 480,
+      "createdAt": 1787202000000
+    },
+    {
+      "id": "FOTO305",
+      "nomor": 305,
+      "batchId": "batch14",
+      "caption": "lomba agustusan 2026",
+      "uploaderName": "Pulung Riswanto",
+      "originGroupName": "Admin Web · Video",
+      "publicUrl": "https://media.pulungriswanto.my.id/galeri/rwjJy-D5G6rU/2026/08/FOTO305.jpg",
+      "mimeType": "image/jpeg",
+      "width": 848,
+      "height": 480,
+      "createdAt": 1787202000000
+    },
+    {
+      "id": "FOTO304",
+      "nomor": 304,
+      "batchId": "batch14",
+      "caption": "lomba agustusan 2026",
+      "uploaderName": "Pulung Riswanto",
+      "originGroupName": "Admin Web · Video",
+      "publicUrl": "https://media.pulungriswanto.my.id/galeri/rwjJy-D5G6rU/2026/08/FOTO304.jpg",
+      "mimeType": "image/jpeg",
+      "width": 848,
+      "height": 480,
+      "createdAt": 1787202000000
+    },
+    {
+      "id": "FOTO303",
+      "nomor": 303,
+      "batchId": "batch14",
+      "caption": "lomba agustusan 2026",
+      "uploaderName": "Pulung Riswanto",
+      "originGroupName": "Admin Web · Video",
+      "publicUrl": "https://media.pulungriswanto.my.id/galeri/rwjJy-D5G6rU/2026/08/FOTO303.jpg",
+      "mimeType": "image/jpeg",
+      "width": 848,
+      "height": 480,
+      "createdAt": 1787202000000
     },
     {
       "id": "FOTO57",
