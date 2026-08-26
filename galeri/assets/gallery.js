@@ -517,6 +517,34 @@
     });
   }
 
+  function applyGalleryData(data,{keepViewer=true}={}){
+    if(!data||!Array.isArray(data.photos))return false;
+    const activeViewerNo=keepViewer&&viewer?.open?Number(currentViewerPhoto?.nomor||0):0;
+    photos=data.photos;
+    if(titleEl&&data.galleryName)titleEl.textContent=data.galleryName;
+    countEl.textContent=photos.length+' foto';
+    updatedEl.textContent='diperbarui '+fmt.format(new Date(data.updatedAt||Date.now()));
+    buildPeriodOptions();
+    render();
+    if(activeViewerNo){
+      const updatedPhoto=photos.find(p=>Number(p.nomor||0)===activeViewerNo);
+      if(updatedPhoto)currentViewerPhoto=updatedPhoto;
+    }
+    return true;
+  }
+
+  function refreshLiveInBackground(){
+    if(visibility!=='public'||!liveManifest)return;
+    loadLiveManifest().then(data=>{
+      if(!data||!Array.isArray(data.photos))return;
+      const currentMax=Math.max(0,...photos.map(p=>Number(p.nomor||0)));
+      const liveMax=Math.max(0,...data.photos.map(p=>Number(p.nomor||0)));
+      if(data.photos.length!==photos.length||liveMax!==currentMax){
+        applyGalleryData(data,{keepViewer:true});
+      }
+    }).catch(()=>{});
+  }
+
   async function loadGalleryData(){
     if(visibility==='private'){
       let accessToken=localStorage.getItem(privateStorageKey())||'';
@@ -536,12 +564,7 @@
 
   loadGalleryData()
     .then(data=>{
-      photos=Array.isArray(data.photos)?data.photos:[];
-      if(titleEl&&data.galleryName)titleEl.textContent=data.galleryName;
-      countEl.textContent=photos.length+' foto';
-      updatedEl.textContent='diperbarui '+fmt.format(new Date(data.updatedAt||Date.now()));
-      buildPeriodOptions();
-      render();
+      applyGalleryData(data,{keepViewer:false});
       const directNo=Number(new URLSearchParams(location.search).get('foto')||0);
       if(Number.isInteger(directNo)&&directNo>0){
         const direct=photos.find(p=>Number(p.nomor||0)===directNo);
@@ -553,6 +576,7 @@
           if(target)revealPhotoInGallery(target.id);
         }
       }
+      refreshLiveInBackground();
     })
     .catch(err=>{
       console.error('[Galeri Loader]',err);
