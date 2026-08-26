@@ -1843,6 +1843,13 @@
       showGalleryReviewLoader("Selesai", finished.publishMessage || "Foto berhasil disimpan ke Galeri.", 100, false);
       setStatus($("gallery-video-publish-status"), finished.publishMessage || "Foto berhasil disimpan ke Galeri.", "success");
       await new Promise(resolve => setTimeout(resolve, 450));
+      // Setelah berhasil disimpan, hasil sementara tidak lagi diperlukan.
+      // Hapus job + file sementara, sementara foto yang sudah masuk Galeri tetap aman.
+      try {
+        await api(`/api/galeri/${encodeURIComponent(activeGallery)}/video-review/${encodeURIComponent(job.id)}`, { method: "DELETE", body: "{}" });
+      } catch (cleanupError) {
+        console.warn("[Admin Galeri] Hasil sementara belum dapat dibersihkan otomatis:", cleanupError.message);
+      }
       closeGalleryVideoReview();
       resetGalleryVideoProgress();
       setStatus($("gallery-video-status"));

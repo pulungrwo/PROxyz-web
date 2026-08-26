@@ -6,15 +6,10 @@
   <meta name="theme-color" content="#0f172a">
   <meta name="robots" content="noindex,nofollow">
   <title>Admin PROxyz</title>
-  <link rel="stylesheet" href="./admin.css?v=0.6.5">
+  <link rel="stylesheet" href="./admin.css?v=0.6.6">
 </head>
 <body>
   <main class="shell">
-    <header class="topbar">
-      <a href="/" class="brand"><span class="brand-mark">P</span><span>PROxyz</span></a>
-      <span class="top-label">Admin</span>
-    </header>
-
     <section id="login-view" class="auth-wrap">
       <section class="panel auth-panel">
         <div class="auth-icon">P</div>
@@ -41,12 +36,15 @@
 
     <section id="app-view" hidden>
       <section class="profilebar panel">
-        <div>
-          <p class="eyebrow">Admin PROxyz</p>
-          <div class="profile-name-row"><h1 id="welcome">Admin</h1><button id="edit-my-name" class="name-edit-btn" type="button">Edit nama</button></div>
+        <div class="profile-copy">
+          <p class="profile-eyebrow">Admin PROxyz</p>
+          <h1 id="welcome">Admin</h1>
           <p id="access-summary" class="muted small"></p>
         </div>
-        <button id="logout" class="ghost compact" type="button">Keluar</button>
+        <div class="profile-actions">
+          <button id="logout" class="logout-btn" type="button" aria-label="Keluar dari Admin"><span class="logout-icon" aria-hidden="true">↪</span><span>Keluar</span></button>
+          <button id="edit-my-name" class="name-edit-btn" type="button"><span aria-hidden="true">✎</span><span>Edit nama</span></button>
+        </div>
       </section>
 
       <nav id="app-tabs" class="app-tabs" aria-label="Aplikasi Admin">
@@ -336,6 +334,6 @@
   <dialog id="gallery-bulk-dialog"><form id="gallery-bulk-form" method="dialog" class="dialog-form"><div class="section-head"><div><p class="eyebrow">Edit beberapa foto</p><h2>Kelompokkan kejadian</h2></div><button id="close-gallery-bulk" class="icon-button" type="button">×</button></div><p class="muted small"><b id="gallery-bulk-dialog-count">0 foto</b> akan dijadikan satu kelompok di galeri publik.</p><label>Judul kejadian<input id="gallery-bulk-caption" maxlength="160" placeholder="Contoh: Makan Kerupuk Agustusan 2024" required></label><label>Tanggal dokumentasi<input id="gallery-bulk-date" type="date" required></label><p class="muted small">Semua foto terpilih akan memakai satu judul dan satu tanggal. Foto tidak dihapus atau diunggah ulang ke penyimpanan Galeri.</p><p id="gallery-bulk-status" class="status"></p><button class="primary full" type="submit">Simpan & kelompokkan</button></form></dialog>
 
   <script src="./config.js?v=242"></script>
-  <script src="./admin.js?v=0.6.5" defer></script>
+  <script src="./admin.js?v=0.6.6" defer></script>
 </body>
 </html>
