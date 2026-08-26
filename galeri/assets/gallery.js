@@ -318,25 +318,6 @@
     if(searchSticky)searchSticky.classList.remove('is-focused');
   });
 
-  function embeddedManifest(){
-    const el=document.getElementById('embedded-gallery');
-    if(!el||!el.textContent.trim())return null;
-    try{
-      const data=JSON.parse(el.textContent);
-      return data&&Array.isArray(data.photos)?data:null;
-    }catch(err){
-      console.warn('[Galeri] Data bawaan gagal dibaca',err);
-      return null;
-    }
-  }
-
-  function withTimeout(promise,ms,label){
-    return Promise.race([
-      promise,
-      new Promise((_,reject)=>setTimeout(()=>reject(new Error(label||'Waktu tunggu habis')),ms))
-    ]);
-  }
-
   function loadLiveManifest(){
     if(!liveManifest)return Promise.reject(new Error('Manifest live belum tersedia'));
     return new Promise((resolve,reject)=>{
@@ -365,16 +346,23 @@
     });
   }
 
+  function fetchWithTimeout(url,options={},ms=8000){
+    const controller=new AbortController();
+    const timer=setTimeout(()=>controller.abort(),ms);
+    return fetch(url,{...options,signal:controller.signal}).finally(()=>clearTimeout(timer));
+  }
+
   function privateStorageKey(){return 'proxyz_gallery_access_'+galleryId}
 
   async function privateManifest(accessToken){
-    const r=await fetch(apiBase+'/api/public/galeri/'+encodeURIComponent(galleryId)+'/manifest',{cache:'no-store',headers:{Authorization:'Bearer '+accessToken}});
+    const r=await fetchWithTimeout(apiBase+'/api/public/galeri/'+encodeURIComponent(galleryId)+'/manifest',{cache:'no-store',headers:{Authorization:'Bearer '+accessToken}},10000);
     const d=await r.json().catch(()=>({}));
     if(!r.ok)throw new Error(d.error||d.message||'Akses Galeri berakhir');
     return {galleryId:d.galeri?.id,galleryName:d.galeri?.nama,updatedAt:Date.now(),photos:Array.isArray(d.photos)?d.photos:[]};
   }
 
   async function requestPrivateAccess(){
+    if(!privateGate||!privateForm)throw new Error('Form akses Galeri tidak tersedia');
     privateGate.hidden=false;
     return await new Promise(resolve=>{
       privateForm.onsubmit=async event=>{
@@ -382,12 +370,12 @@
         privateStatus.textContent='Memeriksa sandi…';
         const button=privateForm.querySelector('button');button.disabled=true;
         try{
-          const r=await fetch(apiBase+'/api/public/galeri/'+encodeURIComponent(galleryId)+'/access',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({password:privatePassword.value})});
+          const r=await fetchWithTimeout(apiBase+'/api/public/galeri/'+encodeURIComponent(galleryId)+'/access',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({password:privatePassword.value})},10000);
           const d=await r.json().catch(()=>({}));
           if(!r.ok)throw new Error(d.error||d.message||'Sandi salah');
           localStorage.setItem(privateStorageKey(),d.token||'');
           privateGate.hidden=true;privateStatus.textContent='';button.disabled=false;resolve(d.token||'');
-        }catch(err){privateStatus.textContent=err.message;button.disabled=false;privatePassword.focus()}
+        }catch(err){privateStatus.textContent=err.name==='AbortError'?'Koneksi terlalu lama. Coba lagi.':err.message;button.disabled=false;privatePassword.focus()}
       };
     });
   }
@@ -400,22 +388,13 @@
       return await privateManifest(accessToken);
     }
 
-    // Untuk Galeri publik, data bawaan HTML adalah sumber pertama agar halaman
-    // langsung tampil tanpa menunggu R2/API. Live manifest hanya fallback/refresh.
-    const embedded=embeddedManifest();
-    if(embedded)return embedded;
-
-    try{
-      return await withTimeout(loadLiveManifest(),3000,'Manifest live terlalu lama');
-    }catch(liveError){
-      const r=await withTimeout(
-        fetch('/data/galeri/'+encodeURIComponent(token)+'.json?v='+Date.now(),{cache:'no-store'}),
-        5000,
-        'Data galeri terlalu lama'
-      );
-      if(!r.ok)throw new Error('Data galeri tidak ditemukan');
-      return await r.json();
-    }
+    // Stabil: halaman publik SELALU membaca JSON statis hasil deploy terlebih dahulu.
+    // Tidak bergantung pada R2/live manifest/API untuk render awal.
+    const r=await fetchWithTimeout('/data/galeri/'+encodeURIComponent(token)+'.json?v='+Date.now(),{cache:'no-store'},8000);
+    if(!r.ok)throw new Error('Data Galeri tidak ditemukan (HTTP '+r.status+')');
+    const d=await r.json();
+    if(!d||!Array.isArray(d.photos))throw new Error('Format data Galeri tidak valid');
+    return d;
   }
 
   loadGalleryData()
@@ -429,10 +408,16 @@
       const directNo=Number(new URLSearchParams(location.search).get('foto')||0);
       if(Number.isInteger(directNo)&&directNo>0){
         const direct=photos.find(p=>Number(p.nomor||0)===directNo);
-        if(direct){visibleRows=[direct];openViewer(direct)}
+        if(direct){
+          const rows=filteredRows();
+          const targetIndex=rows.findIndex(p=>p.id===direct.id);
+          if(targetIndex>=0){visibleLimit=Math.max(LOAD_STEP,targetIndex+1);render();}
+          openViewer(direct);
+        }
       }
     })
     .catch(err=>{
+      console.error('[Galeri Loader]',err);
       countEl.textContent='Galeri belum tersedia';
       updatedEl.textContent='';
       resultCount.textContent='';
