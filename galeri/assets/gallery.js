@@ -1,6 +1,13 @@
 (()=>{
   const LOAD_STEP=50;
   const token=document.body.dataset.galleryToken;
+  const galleryId=document.body.dataset.galleryId||'';
+  const visibility=document.body.dataset.galleryVisibility||'public';
+  const apiBase=(document.body.dataset.apiBase||'').replace(//+$/,'');
+  const privateGate=document.getElementById('private-gate');
+  const privateForm=document.getElementById('private-form');
+  const privatePassword=document.getElementById('private-password');
+  const privateStatus=document.getElementById('private-status');
   const liveManifest=document.body.dataset.liveManifest||'';
   const titleEl=document.getElementById('gallery-title');
   const gallery=document.getElementById('gallery');
@@ -339,10 +346,41 @@
     });
   }
 
+  function privateStorageKey(){return 'proxyz_gallery_access_'+galleryId}
+
+  async function privateManifest(accessToken){
+    const r=await fetch(apiBase+'/api/public/galeri/'+encodeURIComponent(galleryId)+'/manifest',{cache:'no-store',headers:{Authorization:'Bearer '+accessToken}});
+    const d=await r.json().catch(()=>({}));
+    if(!r.ok)throw new Error(d.error||d.message||'Akses Galeri berakhir');
+    return {galleryId:d.galeri?.id,galleryName:d.galeri?.nama,updatedAt:Date.now(),photos:Array.isArray(d.photos)?d.photos:[]};
+  }
+
+  async function requestPrivateAccess(){
+    privateGate.hidden=false;
+    return await new Promise(resolve=>{
+      privateForm.onsubmit=async event=>{
+        event.preventDefault();
+        privateStatus.textContent='Memeriksa sandi…';
+        const button=privateForm.querySelector('button');button.disabled=true;
+        try{
+          const r=await fetch(apiBase+'/api/public/galeri/'+encodeURIComponent(galleryId)+'/access',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({password:privatePassword.value})});
+          const d=await r.json().catch(()=>({}));
+          if(!r.ok)throw new Error(d.error||d.message||'Sandi salah');
+          localStorage.setItem(privateStorageKey(),d.token||'');
+          privateGate.hidden=true;privateStatus.textContent='';button.disabled=false;resolve(d.token||'');
+        }catch(err){privateStatus.textContent=err.message;button.disabled=false;privatePassword.focus()}
+      };
+    });
+  }
+
   async function loadGalleryData(){
-    try{
-      return await loadLiveManifest();
-    }catch(liveError){
+    if(visibility==='private'){
+      let accessToken=localStorage.getItem(privateStorageKey())||'';
+      if(accessToken){try{return await privateManifest(accessToken)}catch{localStorage.removeItem(privateStorageKey())}}
+      accessToken=await requestPrivateAccess();
+      return await privateManifest(accessToken);
+    }
+    try{return await loadLiveManifest()}catch(liveError){
       const r=await fetch('../../data/galeri/'+encodeURIComponent(token)+'.json?v='+Date.now(),{cache:'no-store'});
       if(!r.ok)throw new Error('Data galeri tidak ditemukan');
       return await r.json();
@@ -357,6 +395,11 @@
       updatedEl.textContent='diperbarui '+fmt.format(new Date(data.updatedAt||Date.now()));
       buildPeriodOptions();
       render();
+      const directNo=Number(new URLSearchParams(location.search).get('foto')||0);
+      if(Number.isInteger(directNo)&&directNo>0){
+        const direct=photos.find(p=>Number(p.nomor||0)===directNo);
+        if(direct){visibleRows=[direct];openViewer(direct)}
+      }
     })
     .catch(err=>{
       countEl.textContent='Galeri belum tersedia';
