@@ -9,6 +9,7 @@
   const dateTimeFmt = new Intl.DateTimeFormat("id-ID", { day: "2-digit", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" });
   const $ = id => document.getElementById(id);
   const OTP_STORAGE_KEY = "proxyz_admin_otp_challenge";
+  const SESSION_TOKEN_KEY = "proxyz_admin_session_token";
   const deepLinkParams = new URLSearchParams(window.location.search);
   const adminDeepLink = {
     view: deepLinkParams.get("view") || "",
@@ -67,9 +68,27 @@
     el.className = `status ${type}`.trim();
   }
 
+  function storedSessionToken() {
+    try { return String(localStorage.getItem(SESSION_TOKEN_KEY) || "").trim(); } catch (_) { return ""; }
+  }
+
+  function saveSessionToken(token) {
+    try {
+      if (token) localStorage.setItem(SESSION_TOKEN_KEY, String(token));
+      else localStorage.removeItem(SESSION_TOKEN_KEY);
+    } catch (_) {}
+  }
+
+  function authHeaders(headers = {}) {
+    const result = { ...headers };
+    const token = storedSessionToken();
+    if (token && !result.Authorization && !result.authorization) result.Authorization = `Bearer ${token}`;
+    return result;
+  }
+
   async function api(path, options = {}) {
     if (!API) throw new Error("Alamat API Admin belum dikonfigurasi.");
-    const headers = { "Content-Type": "application/json", ...(options.headers || {}) };
+    const headers = authHeaders({ "Content-Type": "application/json", ...(options.headers || {}) });
     let response;
     try {
       response = await fetch(`${API}${path}`, { ...options, headers, credentials: "include", cache: "no-store" });
@@ -78,7 +97,7 @@
     }
     const data = await response.json().catch(() => ({}));
     if (!response.ok) {
-      if (response.status === 401 && !path.includes("/auth/")) clearSession();
+      if (response.status === 401 && !path.includes("/auth/")) { saveSessionToken(""); clearSession(); }
       throw new Error(data.error || `Permintaan gagal (${response.status}).`);
     }
     return data;
@@ -86,16 +105,17 @@
 
   async function apiRaw(path, options = {}) {
     if (!API) throw new Error("Alamat API Admin belum dikonfigurasi.");
+    const headers = authHeaders(options.headers || {});
     let response;
     try {
-      response = await fetch(`${API}${path}`, { ...options, credentials: "include", cache: "no-store" });
+      response = await fetch(`${API}${path}`, { ...options, headers, credentials: "include", cache: "no-store" });
     } catch (_) {
       throw new Error("API PROxyz belum dapat dihubungi. Pastikan bot dan tunnel aktif.");
     }
     if (!response.ok) {
       let message = `Permintaan gagal (${response.status}).`;
       try { message = (await response.json()).error || message; } catch (_) {}
-      if (response.status === 401 && !path.includes("/auth/")) clearSession();
+      if (response.status === 401 && !path.includes("/auth/")) { saveSessionToken(""); clearSession(); }
       throw new Error(message);
     }
     return response;
@@ -1111,6 +1131,44 @@
     }
   }
 
+  function openGalleryPhotoEdit(photo) {
+    $("gallery-edit-number").value = photo.nomor;
+    $("gallery-edit-id").textContent = photo.id;
+    $("gallery-edit-caption").value = photo.keterangan || "";
+    $("gallery-edit-date").value = timestampToDate(photo.tanggal || Date.now());
+    setStatus($("gallery-edit-status"));
+    $("gallery-edit-dialog").showModal();
+  }
+
+  function openGalleryBulkEdit() {
+    if (!galleryBulkSelected.size) return;
+    const first = galleryPhotos.find(photo => galleryBulkSelected.has(Number(photo.nomor)));
+    $("gallery-bulk-dialog-count").textContent = `${galleryBulkSelected.size} foto`;
+    $("gallery-bulk-caption").value = first?.keterangan || "";
+    $("gallery-bulk-date").value = first ? timestampToDate(first.tanggal || Date.now()) : todayJakarta();
+    setStatus($("gallery-bulk-status"));
+    $("gallery-bulk-dialog").showModal();
+  }
+
+  function syncGalleryAccessOptions() {
+    const isPrivate = $("gallery-access-visibility").value === "private";
+    $("gallery-private-options").hidden = !isPrivate;
+  }
+
+  function openGalleryAccessDialog() {
+    if (!galleryDetail) return;
+    $("gallery-access-visibility").value = galleryDetail.visibility === "private" ? "private" : "public";
+    $("gallery-access-hours").value = String(galleryDetail.privateSessionHours || 12);
+    $("gallery-access-password").value = "";
+    $("gallery-access-password").placeholder = galleryDetail.hasPrivatePassword ? "Kosongkan untuk memakai sandi yang sekarang" : "Buat sandi Galeri";
+    $("gallery-private-note").textContent = galleryDetail.hasPrivatePassword
+      ? "Galeri sudah memiliki sandi. Kosongkan kolom sandi jika tidak ingin menggantinya."
+      : "Saat pertama kali menjadikan Galeri privat, Anda wajib membuat sandi.";
+    syncGalleryAccessOptions();
+    setStatus($("gallery-access-status"));
+    $("gallery-access-dialog").showModal();
+  }
+
   async function deleteGalleryPhoto(photo) {
     if (!confirm(`Hapus ${photo.id} dari Galeri ${galleryDetail?.nama || activeGallery}?\n\nFile juga akan dihapus dari penyimpanan Galeri.`)) return;
     await api(`/api/galeri/${encodeURIComponent(activeGallery)}/foto/${encodeURIComponent(photo.nomor)}`, { method: "DELETE", body: "{}" });
@@ -1822,10 +1880,10 @@
 
   $("otp-form").addEventListener("submit", async event => {
     event.preventDefault(); setStatus($("auth-status"), "Memeriksa kode…");
-    try { if (!challengeId) throw new Error("Kirim kode OTP terlebih dahulu."); await api("/api/auth/verify", { method: "POST", body: JSON.stringify({ challengeId, code: $("otp").value }) }); clearOtpChallenge(); setStatus($("auth-status")); await bootstrapSession(); } catch (error) { if (/kedaluwarsa|tidak ditemukan|berakhir/i.test(error.message)) clearOtpChallenge(); setStatus($("auth-status"), error.message, "error"); }
+    try { if (!challengeId) throw new Error("Kirim kode OTP terlebih dahulu."); const verified = await api("/api/auth/verify", { method: "POST", body: JSON.stringify({ challengeId, code: $("otp").value }) }); saveSessionToken(verified.token || ""); clearOtpChallenge(); setStatus($("auth-status")); await bootstrapSession(); } catch (error) { if (/kedaluwarsa|tidak ditemukan|berakhir/i.test(error.message)) clearOtpChallenge(); setStatus($("auth-status"), error.message, "error"); }
   });
   $("change-phone").addEventListener("click", () => { clearOtpChallenge(); setStatus($("auth-status")); });
-  $("logout").addEventListener("click", async () => { try { await api("/api/auth/logout", { method: "POST", body: "{}" }); } catch (_) {} clearSession(); });
+  $("logout").addEventListener("click", async () => { try { await api("/api/auth/logout", { method: "POST", body: "{}" }); } catch (_) {} saveSessionToken(""); clearSession(); });
   document.querySelectorAll(".app-tab").forEach(el => el.addEventListener("click", () => switchView(el.dataset.view)));
   $("edit-my-name").addEventListener("click", () => openUserNameDialog(null, true));
   $("close-user-name").addEventListener("click", () => $("user-name-dialog").close());
