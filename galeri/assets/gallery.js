@@ -1,7 +1,5 @@
 (()=>{
   const LOAD_STEP=50;
-  const VIEWER_INITIAL_RADIUS=2;
-  const VIEWER_EXTEND_STEP=3;
   const token=document.body.dataset.galleryToken;
   const galleryId=document.body.dataset.galleryId||'';
   const visibility=document.body.dataset.galleryVisibility||'public';
@@ -11,11 +9,6 @@
   const privatePassword=document.getElementById('private-password');
   const privateStatus=document.getElementById('private-status');
   const liveManifest=document.body.dataset.liveManifest||'';
-  const embeddedDataEl=document.getElementById('gallery-data');
-  let embeddedData=null;
-  if(embeddedDataEl){
-    try{embeddedData=JSON.parse(embeddedDataEl.textContent||'null')}catch(err){console.error('[Galeri] Data tertanam tidak valid',err)}
-  }
   const titleEl=document.getElementById('gallery-title');
   const gallery=document.getElementById('gallery');
   const empty=document.getElementById('empty');
@@ -35,11 +28,6 @@
   let photos=[];
   let visibleLimit=LOAD_STEP;
   let visibleRows=[];
-  let viewerRows=[];
-  let viewerStart=0;
-  let viewerEnd=0;
-  let activeViewerPhotoId='';
-  let closingViewerToGallery=false;
   let observer=null;
   let mainImageObserver=null;
   let viewerImageObserver=null;
@@ -133,7 +121,6 @@
     const b=document.createElement('button');
     b.className='card';
     b.type='button';
-    b.dataset.photoId=p.id;
     const img=document.createElement('img');
     img.alt=p.caption||p.id;
     queueImage(img,p.publicUrl,{eager:index<2,observer:mainImageObserver});
@@ -269,46 +256,14 @@
     return item;
   }
 
-  function viewerSortedRows(){
-    const rows=filteredRows();
-    if(rows.some(p=>Number(p.nomor||0)===Number(activeViewerPhotoId.replace(/D+/g,''))))return rows;
-    return photos.slice().sort((a,b)=>{
-      const diff=Number(a.createdAt||0)-Number(b.createdAt||0);
-      if(diff!==0)return sort.value==='oldest'?diff:-diff;
-      const aNo=Number(a.nomor||0),bNo=Number(b.nomor||0);
-      return sort.value==='oldest'?aNo-bNo:bNo-aNo;
-    });
-  }
+  function openViewer(photo){
+    const rows=visibleRows.length?visibleRows:[photo];
+    if(viewerImageObserver)viewerImageObserver.disconnect();
+    viewerFeed.innerHTML='';
+    viewerImageObserver=createImageObserver(viewerFeed,'110% 0px');
+    rows.forEach((p,i)=>viewerFeed.appendChild(viewerItem(p,i,photo.id)));
+    viewer.showModal();
 
-  function syncViewerUrl(photo){
-    if(!photo||!photo.nomor)return;
-    activeViewerPhotoId=photo.id;
-    const url=new URL(location.href);
-    url.searchParams.set('foto',String(photo.nomor));
-    history.replaceState({viewer:true,photoId:photo.id},'',url.pathname+url.search+url.hash);
-  }
-
-  function updateViewerPosition(photo,index){
-    if(!photo)return;
-    viewerPosition.textContent=photo.id+' · '+(index+1)+' dari '+viewerRows.length;
-    syncViewerUrl(photo);
-  }
-
-  function appendViewerRange(from,to){
-    for(let i=from;i<to;i++)viewerFeed.appendChild(viewerItem(viewerRows[i],i,activeViewerPhotoId));
-  }
-
-  function prependViewerRange(from,to){
-    const beforeHeight=viewerFeed.scrollHeight;
-    const beforeTop=viewerFeed.scrollTop;
-    const fragment=document.createDocumentFragment();
-    for(let i=from;i<to;i++)fragment.appendChild(viewerItem(viewerRows[i],i,activeViewerPhotoId));
-    viewerFeed.insertBefore(fragment,viewerFeed.firstChild);
-    const delta=viewerFeed.scrollHeight-beforeHeight;
-    viewerFeed.scrollTop=beforeTop+delta;
-  }
-
-  function observeViewerItems(){
     if(observer)observer.disconnect();
     observer=new IntersectionObserver(entries=>{
       let best=null;
@@ -316,44 +271,13 @@
         if(!entry.isIntersecting)continue;
         if(!best||entry.intersectionRatio>best.intersectionRatio)best=entry;
       }
-      if(!best)return;
-      const idx=Number(best.target.dataset.index||0);
-      const p=viewerRows[idx];
-      updateViewerPosition(p,idx);
-
-      if(idx>=viewerEnd-2&&viewerEnd<viewerRows.length){
-        const oldEnd=viewerEnd;
-        viewerEnd=Math.min(viewerRows.length,viewerEnd+VIEWER_EXTEND_STEP);
-        appendViewerRange(oldEnd,viewerEnd);
-        viewerFeed.querySelectorAll('.viewer-item').forEach(el=>observer.observe(el));
-      }
-      if(idx<=viewerStart+1&&viewerStart>0){
-        const oldStart=viewerStart;
-        viewerStart=Math.max(0,viewerStart-VIEWER_EXTEND_STEP);
-        prependViewerRange(viewerStart,oldStart);
-        viewerFeed.querySelectorAll('.viewer-item').forEach(el=>observer.observe(el));
+      if(best){
+        const idx=Number(best.target.dataset.index||0);
+        const p=rows[idx];
+        viewerPosition.textContent=(p?p.id:'Foto')+' · '+(idx+1)+' dari '+rows.length;
       }
     },{root:viewerFeed,threshold:[.45,.6,.75]});
     viewerFeed.querySelectorAll('.viewer-item').forEach(el=>observer.observe(el));
-  }
-
-  function openViewer(photo){
-    activeViewerPhotoId=photo.id;
-    viewerRows=filteredRows();
-    if(!viewerRows.some(p=>p.id===photo.id)){
-      viewerRows=photos.slice().sort((a,b)=>Number(b.createdAt||0)-Number(a.createdAt||0)||Number(b.nomor||0)-Number(a.nomor||0));
-    }
-    const center=Math.max(0,viewerRows.findIndex(p=>p.id===photo.id));
-    viewerStart=Math.max(0,center-VIEWER_INITIAL_RADIUS);
-    viewerEnd=Math.min(viewerRows.length,center+VIEWER_INITIAL_RADIUS+1);
-
-    if(viewerImageObserver)viewerImageObserver.disconnect();
-    viewerFeed.innerHTML='';
-    viewerImageObserver=createImageObserver(viewerFeed,'110% 0px');
-    appendViewerRange(viewerStart,viewerEnd);
-    viewer.showModal();
-    observeViewerItems();
-    syncViewerUrl(photo);
 
     requestAnimationFrame(()=>{
       const target=viewerFeed.querySelector('[data-photo-id="'+CSS.escape(photo.id)+'"]');
@@ -361,49 +285,17 @@
     });
   }
 
-  function revealPhotoInGallery(photoId){
-    const rows=filteredRows();
-    const idx=rows.findIndex(p=>p.id===photoId);
-    if(idx<0)return;
-    visibleLimit=Math.max(visibleLimit,idx+1);
-    render();
-    requestAnimationFrame(()=>{
-      const target=gallery.querySelector('[data-photo-id="'+CSS.escape(photoId)+'"]');
-      if(target){
-        target.scrollIntoView({block:'center',behavior:'auto'});
-        target.classList.add('return-highlight');
-        setTimeout(()=>target.classList.remove('return-highlight'),1400);
-      }
-    });
-  }
-
-  function closeViewerToGallery(){
-    const photoId=activeViewerPhotoId;
-    closingViewerToGallery=true;
-    const url=new URL(location.href);
-    url.searchParams.delete('foto');
-    history.replaceState({},'',url.pathname+url.search+url.hash);
-    viewer.close();
-    if(photoId)revealPhotoInGallery(photoId);
-  }
-
   function resetAndRender(){
     visibleLimit=LOAD_STEP;
     render();
   }
 
-  document.getElementById('close-viewer').onclick=closeViewerToGallery;
-  viewer.addEventListener('cancel',event=>{event.preventDefault();closeViewerToGallery()});
+  document.getElementById('close-viewer').onclick=()=>viewer.close();
   viewer.addEventListener('close',()=>{
     if(observer){observer.disconnect();observer=null}
     if(viewerImageObserver){viewerImageObserver.disconnect();viewerImageObserver=null}
     viewerFeed.innerHTML='';
     viewerPosition.textContent='';
-    viewerRows=[];viewerStart=0;viewerEnd=0;
-    if(!closingViewerToGallery){
-      const url=new URL(location.href);url.searchParams.delete('foto');history.replaceState({},'',url.pathname+url.search+url.hash);
-    }
-    closingViewerToGallery=false;
   });
   loadMore.onclick=()=>{visibleLimit+=LOAD_STEP;render()};
   search.addEventListener('input',resetAndRender);
@@ -426,16 +318,6 @@
     if(searchSticky)searchSticky.classList.remove('is-focused');
   });
 
-  async function fetchWithTimeout(url,options={},timeoutMs=8000){
-    const controller=new AbortController();
-    const timer=setTimeout(()=>controller.abort(),timeoutMs);
-    try{
-      return await fetch(url,{...options,signal:controller.signal});
-    }finally{
-      clearTimeout(timer);
-    }
-  }
-
   function loadLiveManifest(){
     if(!liveManifest)return Promise.reject(new Error('Manifest live belum tersedia'));
     return new Promise((resolve,reject)=>{
@@ -443,32 +325,22 @@
       try{delete globalThis.__PROXYZ_GALLERY_LIVE__}catch{}
       const script=document.createElement('script');
       const joiner=liveManifest.includes('?')?'&':'?';
-      let settled=false;
-      const finish=(fn,value)=>{
-        if(settled)return;
-        settled=true;
-        clearTimeout(timer);
-        try{script.remove()}catch{}
-        fn(value);
-      };
-      const timer=setTimeout(()=>{
-        if(previous!==undefined)globalThis.__PROXYZ_GALLERY_LIVE__=previous;
-        finish(reject,new Error('Manifest live terlalu lama dimuat'));
-      },5000);
       script.src=liveManifest+joiner+'v='+Date.now();
       script.async=true;
       script.onload=()=>{
         const data=globalThis.__PROXYZ_GALLERY_LIVE__;
+        script.remove();
         if(data&&String(data.token||'')===String(token||'')){
-          finish(resolve,data);
+          resolve(data);
         }else{
           if(previous!==undefined)globalThis.__PROXYZ_GALLERY_LIVE__=previous;
-          finish(reject,new Error('Manifest live tidak cocok'));
+          reject(new Error('Manifest live tidak cocok'));
         }
       };
       script.onerror=()=>{
+        script.remove();
         if(previous!==undefined)globalThis.__PROXYZ_GALLERY_LIVE__=previous;
-        finish(reject,new Error('Manifest live gagal dimuat'));
+        reject(new Error('Manifest live gagal dimuat'));
       };
       document.head.appendChild(script);
     });
@@ -477,7 +349,7 @@
   function privateStorageKey(){return 'proxyz_gallery_access_'+galleryId}
 
   async function privateManifest(accessToken){
-    const r=await fetchWithTimeout(apiBase+'/api/public/galeri/'+encodeURIComponent(galleryId)+'/manifest',{cache:'no-store',headers:{Authorization:'Bearer '+accessToken}},8000);
+    const r=await fetch(apiBase+'/api/public/galeri/'+encodeURIComponent(galleryId)+'/manifest',{cache:'no-store',headers:{Authorization:'Bearer '+accessToken}});
     const d=await r.json().catch(()=>({}));
     if(!r.ok)throw new Error(d.error||d.message||'Akses Galeri berakhir');
     return {galleryId:d.galeri?.id,galleryName:d.galeri?.nama,updatedAt:Date.now(),photos:Array.isArray(d.photos)?d.photos:[]};
@@ -491,7 +363,7 @@
         privateStatus.textContent='Memeriksa sandi…';
         const button=privateForm.querySelector('button');button.disabled=true;
         try{
-          const r=await fetchWithTimeout(apiBase+'/api/public/galeri/'+encodeURIComponent(galleryId)+'/access',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({password:privatePassword.value})},8000);
+          const r=await fetch(apiBase+'/api/public/galeri/'+encodeURIComponent(galleryId)+'/access',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({password:privatePassword.value})});
           const d=await r.json().catch(()=>({}));
           if(!r.ok)throw new Error(d.error||d.message||'Sandi salah');
           localStorage.setItem(privateStorageKey(),d.token||'');
@@ -508,47 +380,25 @@
       accessToken=await requestPrivateAccess();
       return await privateManifest(accessToken);
     }
-    if(embeddedData&&Array.isArray(embeddedData.photos))return embeddedData;
     try{return await loadLiveManifest()}catch(liveError){
-      const r=await fetchWithTimeout('../../data/galeri/'+encodeURIComponent(token)+'.json?v='+Date.now(),{cache:'no-store'},8000);
+      const r=await fetch('../../data/galeri/'+encodeURIComponent(token)+'.json?v='+Date.now(),{cache:'no-store'});
       if(!r.ok)throw new Error('Data galeri tidak ditemukan');
       return await r.json();
     }
   }
 
-  function applyGalleryData(data,{openDirect=false}={}){
-    photos=Array.isArray(data?.photos)?data.photos:[];
-    if(titleEl&&data?.galleryName)titleEl.textContent=data.galleryName;
-    countEl.textContent=photos.length+' foto';
-    updatedEl.textContent='diperbarui '+fmt.format(new Date(data?.updatedAt||Date.now()));
-    buildPeriodOptions();
-    render();
-    if(openDirect){
+  loadGalleryData()
+    .then(data=>{
+      photos=Array.isArray(data.photos)?data.photos:[];
+      if(titleEl&&data.galleryName)titleEl.textContent=data.galleryName;
+      countEl.textContent=photos.length+' foto';
+      updatedEl.textContent='diperbarui '+fmt.format(new Date(data.updatedAt||Date.now()));
+      buildPeriodOptions();
+      render();
       const directNo=Number(new URLSearchParams(location.search).get('foto')||0);
       if(Number.isInteger(directNo)&&directNo>0){
         const direct=photos.find(p=>Number(p.nomor||0)===directNo);
-        if(direct)openViewer(direct);
-      }
-    }
-  }
-
-  loadGalleryData()
-    .then(data=>{
-      applyGalleryData(data,{openDirect:true});
-      if(visibility!=='private'&&embeddedData&&liveManifest){
-        loadLiveManifest().then(live=>{
-          if(!live||!Array.isArray(live.photos))return;
-          const embeddedUpdated=Number(data?.updatedAt||0);
-          const liveUpdated=Number(live.updatedAt||0);
-          if(liveUpdated>embeddedUpdated||live.photos.length!==photos.length){
-            const activeNo=Number(new URLSearchParams(location.search).get('foto')||0);
-            applyGalleryData(live,{openDirect:false});
-            if(activeNo>0&&!viewer.open){
-              const direct=photos.find(p=>Number(p.nomor||0)===activeNo);
-              if(direct)openViewer(direct);
-            }
-          }
-        }).catch(()=>{});
+        if(direct){visibleRows=[direct];openViewer(direct)}
       }
     })
     .catch(err=>{
@@ -558,8 +408,7 @@
       pageRange.textContent='';
       footerCount.textContent='';
       loadMoreWrap.hidden=true;
-      const timedOut=err&&(/abort|timeout|terlalu lama/i.test(String(err.name||'')+' '+String(err.message||'')));
-      empty.textContent=timedOut?'Koneksi ke data Galeri terlalu lama. Muat ulang halaman atau pastikan PROxyz aktif jika Galeri privat.':(err.message||'Data Galeri gagal dimuat.');
+      empty.textContent=err.message;
       empty.hidden=false;
     });
 })();
