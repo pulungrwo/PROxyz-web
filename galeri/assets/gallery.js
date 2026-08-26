@@ -576,7 +576,14 @@
           if(target)revealPhotoInGallery(target.id);
         }
       }
+      // Sinkronkan foto baru tanpa menunggu deploy GitHub. Percobaan awal
+      // dibuat beberapa kali karena manifest baru bisa tiba sesaat setelah upload.
       refreshLiveInBackground();
+      setTimeout(refreshLiveInBackground,1200);
+      setTimeout(refreshLiveInBackground,4500);
+      setInterval(()=>{if(document.visibilityState==='visible')refreshLiveInBackground()},12000);
+      document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')refreshLiveInBackground()});
+      window.addEventListener('focus',refreshLiveInBackground);
     })
     .catch(err=>{
       console.error('[Galeri Loader]',err);
