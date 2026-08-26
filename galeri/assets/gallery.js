@@ -421,6 +421,16 @@
     if(searchSticky)searchSticky.classList.remove('is-focused');
   });
 
+  async function fetchWithTimeout(url,options={},timeoutMs=8000){
+    const controller=new AbortController();
+    const timer=setTimeout(()=>controller.abort(),timeoutMs);
+    try{
+      return await fetch(url,{...options,signal:controller.signal});
+    }finally{
+      clearTimeout(timer);
+    }
+  }
+
   function loadLiveManifest(){
     if(!liveManifest)return Promise.reject(new Error('Manifest live belum tersedia'));
     return new Promise((resolve,reject)=>{
@@ -428,22 +438,32 @@
       try{delete globalThis.__PROXYZ_GALLERY_LIVE__}catch{}
       const script=document.createElement('script');
       const joiner=liveManifest.includes('?')?'&':'?';
+      let settled=false;
+      const finish=(fn,value)=>{
+        if(settled)return;
+        settled=true;
+        clearTimeout(timer);
+        try{script.remove()}catch{}
+        fn(value);
+      };
+      const timer=setTimeout(()=>{
+        if(previous!==undefined)globalThis.__PROXYZ_GALLERY_LIVE__=previous;
+        finish(reject,new Error('Manifest live terlalu lama dimuat'));
+      },5000);
       script.src=liveManifest+joiner+'v='+Date.now();
       script.async=true;
       script.onload=()=>{
         const data=globalThis.__PROXYZ_GALLERY_LIVE__;
-        script.remove();
         if(data&&String(data.token||'')===String(token||'')){
-          resolve(data);
+          finish(resolve,data);
         }else{
           if(previous!==undefined)globalThis.__PROXYZ_GALLERY_LIVE__=previous;
-          reject(new Error('Manifest live tidak cocok'));
+          finish(reject,new Error('Manifest live tidak cocok'));
         }
       };
       script.onerror=()=>{
-        script.remove();
         if(previous!==undefined)globalThis.__PROXYZ_GALLERY_LIVE__=previous;
-        reject(new Error('Manifest live gagal dimuat'));
+        finish(reject,new Error('Manifest live gagal dimuat'));
       };
       document.head.appendChild(script);
     });
@@ -452,7 +472,7 @@
   function privateStorageKey(){return 'proxyz_gallery_access_'+galleryId}
 
   async function privateManifest(accessToken){
-    const r=await fetch(apiBase+'/api/public/galeri/'+encodeURIComponent(galleryId)+'/manifest',{cache:'no-store',headers:{Authorization:'Bearer '+accessToken}});
+    const r=await fetchWithTimeout(apiBase+'/api/public/galeri/'+encodeURIComponent(galleryId)+'/manifest',{cache:'no-store',headers:{Authorization:'Bearer '+accessToken}},8000);
     const d=await r.json().catch(()=>({}));
     if(!r.ok)throw new Error(d.error||d.message||'Akses Galeri berakhir');
     return {galleryId:d.galeri?.id,galleryName:d.galeri?.nama,updatedAt:Date.now(),photos:Array.isArray(d.photos)?d.photos:[]};
@@ -466,7 +486,7 @@
         privateStatus.textContent='Memeriksa sandi…';
         const button=privateForm.querySelector('button');button.disabled=true;
         try{
-          const r=await fetch(apiBase+'/api/public/galeri/'+encodeURIComponent(galleryId)+'/access',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({password:privatePassword.value})});
+          const r=await fetchWithTimeout(apiBase+'/api/public/galeri/'+encodeURIComponent(galleryId)+'/access',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({password:privatePassword.value})},8000);
           const d=await r.json().catch(()=>({}));
           if(!r.ok)throw new Error(d.error||d.message||'Sandi salah');
           localStorage.setItem(privateStorageKey(),d.token||'');
@@ -484,7 +504,7 @@
       return await privateManifest(accessToken);
     }
     try{return await loadLiveManifest()}catch(liveError){
-      const r=await fetch('../../data/galeri/'+encodeURIComponent(token)+'.json?v='+Date.now(),{cache:'no-store'});
+      const r=await fetchWithTimeout('../../data/galeri/'+encodeURIComponent(token)+'.json?v='+Date.now(),{cache:'no-store'},8000);
       if(!r.ok)throw new Error('Data galeri tidak ditemukan');
       return await r.json();
     }
@@ -511,7 +531,8 @@
       pageRange.textContent='';
       footerCount.textContent='';
       loadMoreWrap.hidden=true;
-      empty.textContent=err.message;
+      const timedOut=err&&(/abort|timeout|terlalu lama/i.test(String(err.name||'')+' '+String(err.message||'')));
+      empty.textContent=timedOut?'Koneksi ke data Galeri terlalu lama. Muat ulang halaman atau pastikan PROxyz aktif jika Galeri privat.':(err.message||'Data Galeri gagal dimuat.');
       empty.hidden=false;
     });
 })();
