@@ -1,7 +1,22 @@
 (() => {
   "use strict";
 
+  const ADMIN_BUILD = "0.6.7";
   const config = window.PROXYZ_ADMIN_CONFIG || {};
+
+  async function checkAdminBuild() {
+    try {
+      const response = await fetch(`./version.json?t=${Date.now()}`, { cache: "no-store" });
+      if (!response.ok) return;
+      const info = await response.json();
+      const latest = String(info?.version || "").trim();
+      if (!latest || latest === ADMIN_BUILD) return;
+      const next = new URL(window.location.href);
+      next.searchParams.set("v", latest.replace(/[^0-9A-Za-z._-]/g, ""));
+      window.location.replace(next.toString());
+    } catch (_) {}
+  }
+
   const API = String(config.apiBase || "").replace(/\/$/, "");
   const rupiah = new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", maximumFractionDigits: 0 });
   const number = new Intl.NumberFormat("id-ID", { maximumFractionDigits: 2 });
@@ -2045,4 +2060,7 @@
 
   restoreOtpChallenge();
   bootstrapSession();
+  setTimeout(checkAdminBuild, 1500);
+  window.addEventListener("pageshow", event => { if (event.persisted) checkAdminBuild(); });
+  document.addEventListener("visibilitychange", () => { if (!document.hidden) checkAdminBuild(); });
 })();
