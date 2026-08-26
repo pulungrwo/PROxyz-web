@@ -1,7 +1,7 @@
 (() => {
   "use strict";
 
-  const ADMIN_BUILD = "0.6.8";
+  const ADMIN_BUILD = "0.6.9";
   const config = window.PROXYZ_ADMIN_CONFIG || {};
 
   async function checkAdminBuild() {
@@ -51,6 +51,8 @@
   let kasSchedules = [];
   let kasReportData = null;
   let kasCategoryEditing = null;
+  let kasScheduleEditing = null;
+  let kasManagerData = null;
 
   // Bertunas
   let activeBertunas = "";
@@ -172,6 +174,27 @@
     const parts = new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Jakarta", year: "numeric", month: "2-digit", day: "2-digit" }).formatToParts(new Date(Number(value) || Date.now()));
     const map = Object.fromEntries(parts.map(p => [p.type, p.value]));
     return `${map.year}-${map.month}-${map.day}`;
+  }
+
+  function nominalDigits(value) {
+    return String(value ?? "").replace(/\D/g, "").replace(/^0+(?=\d)/, "");
+  }
+
+  function formatNominalText(value) {
+    const digits = nominalDigits(value);
+    if (!digits) return "";
+    return digits.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+  }
+
+  function parseNominalText(value) {
+    const digits = nominalDigits(value);
+    if (!digits) return 0;
+    const amount = Number(digits);
+    return Number.isSafeInteger(amount) ? amount : 0;
+  }
+
+  function formatNominalInput(el) {
+    if (el) el.value = formatNominalText(el.value);
   }
 
   function parseTags(value) {
@@ -468,9 +491,9 @@
 
 
   function setKasTab(tab, load = true) {
-    activeKasTab = ["transaksi", "laporan", "jadwal", "kategori"].includes(tab) ? tab : "transaksi";
+    activeKasTab = ["transaksi", "laporan", "jadwal", "kategori", "pengelola"].includes(tab) ? tab : "transaksi";
     document.querySelectorAll("[data-kas-tab]").forEach(btn => btn.classList.toggle("active", btn.dataset.kasTab === activeKasTab));
-    ["transaksi", "laporan", "jadwal", "kategori"].forEach(name => {
+    ["transaksi", "laporan", "jadwal", "kategori", "pengelola"].forEach(name => {
       const panel = $(`kas-${name}-panel`);
       if (panel) panel.hidden = name !== activeKasTab;
     });
@@ -481,24 +504,60 @@
     if (!activeKas) return;
     if (activeKasTab === "jadwal") await loadKasSchedules();
     else if (activeKasTab === "kategori") renderKasCategories();
-    else if (activeKasTab === "laporan" && !$("kas-report-start").value) {
-      setKasReportMonth();
+    else if (activeKasTab === "pengelola") await loadKasManagers();
+    else if (activeKasTab === "laporan") {
+      if (!$("kas-report-start").value) { setupKasReportPeriodPicker(); setKasReportMonth(); }
       await loadKasReport();
     }
   }
 
+  const KAS_MONTH_NAMES = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+
+  function setupKasReportPeriodPicker() {
+    const monthSelect = $("kas-report-month-select");
+    const yearSelect = $("kas-report-year-select");
+    const today = todayJakarta().split("-").map(Number);
+    const monthWasEmpty = !monthSelect.options.length;
+    const yearWasEmpty = !yearSelect.options.length;
+    if (monthWasEmpty) {
+      KAS_MONTH_NAMES.forEach((name, index) => {
+        const opt = document.createElement("option"); opt.value = String(index + 1); opt.textContent = name; monthSelect.appendChild(opt);
+      });
+    }
+    if (yearWasEmpty) {
+      const currentYear = Number(today[0]);
+      for (let year = currentYear + 1; year >= currentYear - 15; year -= 1) {
+        const opt = document.createElement("option"); opt.value = String(year); opt.textContent = String(year); yearSelect.appendChild(opt);
+      }
+    }
+    if (monthWasEmpty) monthSelect.value = String(today[1]);
+    if (yearWasEmpty) yearSelect.value = String(today[0]);
+    updateKasReportShortcutLabels();
+  }
+
+  function updateKasReportShortcutLabels() {
+    const month = Number($("kas-report-month-select").value || 1);
+    const year = Number($("kas-report-year-select").value || todayJakarta().slice(0, 4));
+    $("kas-report-month").textContent = `${KAS_MONTH_NAMES[month - 1] || "Bulan"} ${year}`;
+    $("kas-report-year").textContent = `Tahun ${year}`;
+  }
+
   function setKasReportMonth() {
-    const today = todayJakarta();
-    const [year, month] = today.split("-").map(Number);
+    setupKasReportPeriodPicker();
+    const year = Number($("kas-report-year-select").value);
+    const month = Number($("kas-report-month-select").value);
     const last = new Date(year, month, 0).getDate();
     $("kas-report-start").value = `${year}-${String(month).padStart(2, "0")}-01`;
     $("kas-report-end").value = `${year}-${String(month).padStart(2, "0")}-${String(last).padStart(2, "0")}`;
+    updateKasReportShortcutLabels();
   }
 
   function setKasReportYear() {
-    const year = Number(todayJakarta().slice(0, 4));
+    setupKasReportPeriodPicker();
+    const year = Number($("kas-report-year-select").value);
     $("kas-report-start").value = `${year}-01-01`;
     $("kas-report-end").value = `${year}-12-31`;
+    updateKasReportShortcutLabels();
   }
 
   async function loadKasReport() {
@@ -507,9 +566,11 @@
     const end = $("kas-report-end").value;
     if (!start || !end) return setStatus($("kas-report-status"), "Pilih tanggal laporan.", "error");
     setStatus($("kas-report-status"), "Menyusun laporan…");
+    $("kas-report-actions").hidden = true;
     const data = await api(`/api/kas/${encodeURIComponent(activeKas)}/laporan?mulai=${dateToTimestamp(start)}&selesai=${dateToTimestamp(end)}`);
     kasReportData = data.laporan;
     renderKasReport();
+    $("kas-report-actions").hidden = false;
     setStatus($("kas-report-status"), `${kasReportData.jumlahTransaksi || 0} transaksi ditemukan.`, "success");
   }
 
@@ -571,6 +632,27 @@
     setTimeout(() => URL.revokeObjectURL(url), 2000);
   }
 
+  async function sendKasReportWhatsApp() {
+    if (!activeKas) return;
+    const start = $("kas-report-start").value;
+    const end = $("kas-report-end").value;
+    if (!start || !end) return alert("Buat laporan terlebih dahulu.");
+    const buttonEl = $("kas-report-wa");
+    buttonEl.disabled = true;
+    setStatus($("kas-report-status"), "Mengirim PDF ke WhatsApp Anda…");
+    try {
+      const result = await api(`/api/kas/${encodeURIComponent(activeKas)}/laporan/wa`, {
+        method: "POST",
+        body: JSON.stringify({ mulai: dateToTimestamp(start), selesai: dateToTimestamp(end) })
+      });
+      setStatus($("kas-report-status"), result.message || "Laporan sudah dikirim ke WhatsApp Anda.", "success");
+    } catch (error) {
+      setStatus($("kas-report-status"), error.message, "error");
+    } finally {
+      buttonEl.disabled = false;
+    }
+  }
+
   async function loadKasSchedules() {
     if (!activeKas) return;
     const data = await api(`/api/kas/${encodeURIComponent(activeKas)}/jadwal`);
@@ -586,19 +668,22 @@
       const top = document.createElement("div"); top.className = "item-top";
       const info = document.createElement("div");
       const title = document.createElement("h3"); title.textContent = row.nama;
-      const meta = document.createElement("div"); meta.className = "item-meta"; meta.textContent = `${row.namaHari || ""} · ${row.kategoriNama || row.kategori}`;
+      const meta = document.createElement("div"); meta.className = "item-meta"; meta.textContent = `${row.frekuensiNama || "Mingguan"} · ${row.jadwalLabel || ""} · ${row.kategoriNama || row.kategori}`;
       info.append(title, meta);
       const amount = document.createElement("div"); amount.className = "amount out"; amount.textContent = rupiah.format(row.nominal || 0);
       top.append(info, amount); card.appendChild(top);
+      if (row.catatan) { const note = document.createElement("p"); note.className = "muted small schedule-note"; note.textContent = row.catatan; card.appendChild(note); }
       const status = document.createElement("div"); status.className = "schedule-status";
       const overdue = Number(row.tertunggak?.length || 0);
-      status.textContent = overdue ? `${overdue} periode belum diselesaikan · berikutnya ${dateFmt.format(new Date(row.berikutnya))}` : `Berikutnya ${dateFmt.format(new Date(row.berikutnya))}`;
+      const nextText = row.berikutnya ? dateFmt.format(new Date(row.berikutnya)) : "—";
+      status.textContent = overdue ? `${overdue} periode belum diselesaikan · berikutnya ${nextText}` : `Berikutnya ${nextText}`;
       card.appendChild(status);
-      const actions = document.createElement("div"); actions.className = "item-actions";
+      const actions = document.createElement("div"); actions.className = "item-actions schedule-actions";
       actions.append(
         button("Bayar", "success-soft", () => payKasSchedule(row)),
         button("Lewati", "ghost", () => skipKasSchedule(row)),
-        button("Ubah nominal", "ghost", () => changeKasScheduleNominal(row))
+        button("Edit", "ghost", () => openKasScheduleDialog(row)),
+        button("Hapus", "danger-soft", () => deleteKasSchedule(row))
       );
       card.appendChild(actions); list.appendChild(card);
     }
@@ -611,8 +696,20 @@
     }
   }
 
-  function openKasScheduleDialog() {
-    $("kas-schedule-form").reset(); fillKasScheduleCategories(); setStatus($("kas-schedule-status")); $("kas-schedule-dialog").showModal();
+  function openKasScheduleDialog(row = null) {
+    kasScheduleEditing = row || null;
+    $("kas-schedule-form").reset();
+    fillKasScheduleCategories();
+    setStatus($("kas-schedule-status"));
+    $("kas-schedule-dialog-title").textContent = row ? "Edit jadwal" : "Tambah jadwal";
+    $("kas-schedule-id").value = row?.id || "";
+    $("kas-schedule-name").value = row?.nama || "";
+    $("kas-schedule-amount").value = row ? formatNominalText(row.nominal) : "";
+    $("kas-schedule-frequency").value = row?.frekuensi || "mingguan";
+    $("kas-schedule-start").value = row?.mulai ? timestampToDate(row.mulai) : todayJakarta();
+    if (row?.kategori) $("kas-schedule-category").value = row.kategori;
+    $("kas-schedule-note").value = row?.catatan || "";
+    $("kas-schedule-dialog").showModal();
   }
 
   async function payKasSchedule(row) {
@@ -628,13 +725,58 @@
     await loadKasSchedules();
   }
 
-  async function changeKasScheduleNominal(row) {
-    const value = prompt(`Nominal baru untuk ${row.nama}:`, String(row.nominal || ""));
-    if (value === null) return;
-    const nominal = Number(String(value).replace(/[^0-9]/g, ""));
-    if (!nominal) return alert("Nominal tidak valid.");
-    await api(`/api/kas/${encodeURIComponent(activeKas)}/jadwal/${encodeURIComponent(row.id)}/nominal`, { method: "POST", body: JSON.stringify({ nominal }) });
+  async function deleteKasSchedule(row) {
+    if (!confirm(`Hapus jadwal ${row.nama}?\n\nRiwayat pembayaran yang sudah tercatat tetap aman.`)) return;
+    await api(`/api/kas/${encodeURIComponent(activeKas)}/jadwal/${encodeURIComponent(row.id)}`, { method: "DELETE", body: "{}" });
     await loadKasSchedules();
+  }
+
+  async function loadKasManagers() {
+    if (!activeKas) return;
+    const data = await api(`/api/kas/${encodeURIComponent(activeKas)}/pengelola`);
+    kasManagerData = data;
+    renderKasManagers();
+  }
+
+  function renderKasManagers() {
+    const data = kasManagerData || {};
+    const list = $("kas-manager-list"); list.replaceChildren();
+    const canEdit = Boolean(data.canEdit);
+    $("kas-manager-add").hidden = !canEdit;
+    $("kas-manager-owner-note").hidden = canEdit;
+    const manager = data.pengelola || {};
+    const rows = [manager.owner, ...(manager.admins || [])].filter(Boolean);
+    if (!rows.length) return list.appendChild(emptyBox("Belum ada data pengelola."));
+    for (const row of rows) {
+      const card = document.createElement("article"); card.className = "item-card manager-card";
+      const top = document.createElement("div"); top.className = "item-top";
+      const info = document.createElement("div");
+      const title = document.createElement("h3"); title.textContent = row.name || (row.role === "owner" ? "Owner" : "Admin");
+      const meta = document.createElement("div"); meta.className = "item-meta"; meta.textContent = row.role === "owner" ? "Owner Kas" : "Admin Kas";
+      info.append(title, meta); top.appendChild(info);
+      if (row.role === "owner") {
+        const badge = document.createElement("span"); badge.className = "role-pill manager-role"; badge.textContent = "Owner"; top.appendChild(badge);
+      }
+      card.appendChild(top);
+      if (canEdit && row.role === "admin") {
+        const actions = document.createElement("div"); actions.className = "item-actions";
+        actions.append(button("Hapus Admin", "danger-soft", () => removeKasManager(row)));
+        card.appendChild(actions);
+      }
+      list.appendChild(card);
+    }
+  }
+
+  function openKasManagerDialog() {
+    $("kas-manager-form").reset();
+    setStatus($("kas-manager-status"));
+    $("kas-manager-dialog").showModal();
+  }
+
+  async function removeKasManager(row) {
+    if (!confirm(`Hapus ${row.name || "Admin"} dari Admin Kas?`)) return;
+    await api(`/api/kas/${encodeURIComponent(activeKas)}/pengelola/admin/${encodeURIComponent(row.id)}`, { method: "DELETE", body: "{}" });
+    await loadKasManagers();
   }
 
   function renderKasCategories() {
@@ -685,13 +827,38 @@
   }
 
   function openKasCreate(type) {
-    $("tx-form").reset(); $("tx-ref").value = ""; $("form-mode").textContent = "Transaksi baru"; $("form-title").textContent = type === "masuk" ? "Tambah pemasukan" : "Tambah pengeluaran"; $("tx-type").value = type; $("tx-date").value = todayJakarta(); $("edit-reason-wrap").hidden = true; updateKasCategories(); setStatus($("form-status")); $("tx-dialog").showModal();
+    $("tx-form").reset();
+    $("tx-ref").value = "";
+    $("form-mode").textContent = type === "masuk" ? "Pemasukan" : "Pengeluaran";
+    $("form-title").textContent = type === "masuk" ? "Tambah pemasukan" : "Tambah pengeluaran";
+    $("tx-type").value = type;
+    $("tx-type-wrap").hidden = true;
+    $("tx-date").value = todayJakarta();
+    $("edit-reason-wrap").hidden = true;
+    updateKasCategories();
+    setStatus($("form-status"));
+    $("tx-dialog").showModal();
+    setTimeout(() => $("tx-amount").focus(), 50);
   }
 
   function openKasEdit(tx) {
-    $("tx-form").reset(); $("tx-ref").value = tx.nomor; $("form-mode").textContent = `Edit ${tx.nomor}`; $("form-title").textContent = tx.keterangan; $("tx-type").value = tx.jenis; updateKasCategories();
+    $("tx-form").reset();
+    $("tx-ref").value = tx.nomor;
+    $("form-mode").textContent = `Edit ${tx.nomor}`;
+    $("form-title").textContent = tx.keterangan;
+    $("tx-type").value = tx.jenis;
+    $("tx-type-wrap").hidden = false;
+    updateKasCategories();
     if (![...$("tx-category").options].some(opt => opt.value === tx.kategori)) { const opt = document.createElement("option"); opt.value = tx.kategori; opt.textContent = tx.kategoriNama || tx.kategori; $("tx-category").appendChild(opt); }
-    $("tx-category").value = tx.kategori; $("tx-amount").value = tx.nominal; $("tx-description").value = tx.keterangan; $("tx-note").value = tx.catatan || ""; $("tx-tags").value = (tx.label || []).map(x => `#${x}`).join(" "); $("tx-date").value = timestampToDate(tx.tanggal); $("edit-reason-wrap").hidden = false; setStatus($("form-status")); $("tx-dialog").showModal();
+    $("tx-category").value = tx.kategori;
+    $("tx-amount").value = formatNominalText(tx.nominal);
+    $("tx-description").value = tx.keterangan;
+    $("tx-note").value = tx.catatan || "";
+    $("tx-tags").value = (tx.label || []).map(x => `#${x}`).join(" ");
+    $("tx-date").value = timestampToDate(tx.tanggal);
+    $("edit-reason-wrap").hidden = false;
+    setStatus($("form-status"));
+    $("tx-dialog").showModal();
   }
 
   async function deleteKasTx(tx) {
@@ -821,14 +988,38 @@
 
   async function submitKasSchedule(event) {
     event.preventDefault();
+    const ref = $("kas-schedule-id").value;
+    const nominal = parseNominalText($("kas-schedule-amount").value);
+    if (!nominal) return setStatus($("kas-schedule-status"), "Nominal belum valid.", "error");
     setStatus($("kas-schedule-status"), "Menyimpan…");
     try {
-      await api(`/api/kas/${encodeURIComponent(activeKas)}/jadwal`, { method: "POST", body: JSON.stringify({
-        nama: $("kas-schedule-name").value.trim(), nominal: Number($("kas-schedule-amount").value), hari: $("kas-schedule-day").value,
-        kategori: $("kas-schedule-category").value, catatan: $("kas-schedule-note").value.trim(), label: []
-      }) });
-      $("kas-schedule-dialog").close(); await loadKasSchedules();
+      const payload = {
+        nama: $("kas-schedule-name").value.trim(),
+        nominal,
+        frekuensi: $("kas-schedule-frequency").value,
+        mulai: dateToTimestamp($("kas-schedule-start").value),
+        kategori: $("kas-schedule-category").value,
+        catatan: $("kas-schedule-note").value.trim(),
+        label: []
+      };
+      await api(ref ? `/api/kas/${encodeURIComponent(activeKas)}/jadwal/${encodeURIComponent(ref)}` : `/api/kas/${encodeURIComponent(activeKas)}/jadwal`, { method: ref ? "PUT" : "POST", body: JSON.stringify(payload) });
+      $("kas-schedule-dialog").close();
+      kasScheduleEditing = null;
+      await loadKasSchedules();
     } catch (error) { setStatus($("kas-schedule-status"), error.message, "error"); }
+  }
+
+  async function submitKasManager(event) {
+    event.preventDefault();
+    setStatus($("kas-manager-status"), "Menambahkan Admin…");
+    try {
+      await api(`/api/kas/${encodeURIComponent(activeKas)}/pengelola/admin`, {
+        method: "POST",
+        body: JSON.stringify({ phone: $("kas-manager-phone").value.trim(), name: $("kas-manager-name").value.trim() })
+      });
+      $("kas-manager-dialog").close();
+      await loadKasManagers();
+    } catch (error) { setStatus($("kas-manager-status"), error.message, "error"); }
   }
 
   async function submitKasCategory(event) {
@@ -2199,20 +2390,50 @@
   document.querySelectorAll("[data-kas-tab]").forEach(btn => btn.addEventListener("click", () => setKasTab(btn.dataset.kasTab)));
   $("kas-report-month").addEventListener("click", () => { setKasReportMonth(); loadKasReport().catch(showError); });
   $("kas-report-year").addEventListener("click", () => { setKasReportYear(); loadKasReport().catch(showError); });
+  $("kas-report-month-select").addEventListener("change", updateKasReportShortcutLabels);
+  $("kas-report-year-select").addEventListener("change", updateKasReportShortcutLabels);
   $("kas-report-load").addEventListener("click", () => loadKasReport().catch(showError));
   $("kas-report-pdf").addEventListener("click", () => downloadKasReportPdf().catch(showError));
-  $("kas-schedule-add").addEventListener("click", openKasScheduleDialog);
-  $("close-kas-schedule").addEventListener("click", () => $("kas-schedule-dialog").close());
+  $("kas-report-wa").addEventListener("click", () => sendKasReportWhatsApp().catch(showError));
+  $("kas-schedule-add").addEventListener("click", () => openKasScheduleDialog());
+  $("close-kas-schedule").addEventListener("click", () => { kasScheduleEditing = null; $("kas-schedule-dialog").close(); });
   $("kas-schedule-form").addEventListener("submit", submitKasSchedule);
+  $("kas-schedule-amount").addEventListener("input", () => formatNominalInput($("kas-schedule-amount")));
+  $("kas-manager-add").addEventListener("click", openKasManagerDialog);
+  $("close-kas-manager").addEventListener("click", () => $("kas-manager-dialog").close());
+  $("kas-manager-form").addEventListener("submit", submitKasManager);
   $("kas-category-add").addEventListener("click", () => openKasCategoryDialog("keluar"));
   $("close-kas-category").addEventListener("click", () => { kasCategoryEditing = null; $("kas-category-dialog").close(); });
   $("kas-category-form").addEventListener("submit", submitKasCategory);
   $("close-evidence-dialog").addEventListener("click", () => $("evidence-dialog").close());
   $("upload-evidence").addEventListener("click", uploadEvidence);
   $("refresh").addEventListener("click", () => loadKas(activeKas).catch(showError));
-  $("add-income").addEventListener("click", () => openKasCreate("masuk")); $("add-expense").addEventListener("click", () => openKasCreate("keluar")); $("tx-type").addEventListener("change", updateKasCategories); $("close-dialog").addEventListener("click", () => $("tx-dialog").close()); $("load-more").addEventListener("click", () => loadKasTransactions(false).catch(showError));
+  $("add-income").addEventListener("click", () => openKasCreate("masuk"));
+  $("add-expense").addEventListener("click", () => openKasCreate("keluar"));
+  $("tx-type").addEventListener("change", updateKasCategories);
+  $("tx-amount").addEventListener("input", () => formatNominalInput($("tx-amount")));
+  $("tx-amount-thousand").addEventListener("click", () => {
+    const digits = nominalDigits($("tx-amount").value);
+    if (!digits) { $("tx-amount").focus(); return; }
+    $("tx-amount").value = formatNominalText(`${digits}000`);
+    $("tx-amount").focus();
+  });
+  $("close-dialog").addEventListener("click", () => $("tx-dialog").close());
+  $("load-more").addEventListener("click", () => loadKasTransactions(false).catch(showError));
   let kasSearchTimer; $("search").addEventListener("input", () => { clearTimeout(kasSearchTimer); kasSearchTimer = setTimeout(() => loadKasTransactions(true).catch(showError), 300); });
-  $("tx-form").addEventListener("submit", async event => { event.preventDefault(); const ref = $("tx-ref").value; const payload = { jenis: $("tx-type").value, nominal: Number($("tx-amount").value), kategori: $("tx-category").value, keterangan: $("tx-description").value.trim(), catatan: $("tx-note").value.trim(), label: parseTags($("tx-tags").value), tanggal: dateToTimestamp($("tx-date").value) }; if (ref) payload.alasan = $("tx-reason").value.trim() || "Edit melalui Web PROxyz"; setStatus($("form-status"), "Menyimpan…"); try { await api(ref ? `/api/kas/${encodeURIComponent(activeKas)}/transaksi/${encodeURIComponent(ref)}` : `/api/kas/${encodeURIComponent(activeKas)}/transaksi`, { method: ref ? "PUT" : "POST", body: JSON.stringify(payload) }); $("tx-dialog").close(); await loadKas(activeKas); } catch (error) { setStatus($("form-status"), error.message, "error"); } });
+  $("tx-form").addEventListener("submit", async event => {
+    event.preventDefault();
+    const ref = $("tx-ref").value;
+    const nominal = parseNominalText($("tx-amount").value);
+    if (!nominal) return setStatus($("form-status"), "Nominal belum valid.", "error");
+    const payload = { jenis: $("tx-type").value, nominal, kategori: $("tx-category").value, keterangan: $("tx-description").value.trim(), catatan: $("tx-note").value.trim(), label: parseTags($("tx-tags").value), tanggal: dateToTimestamp($("tx-date").value) };
+    if (ref) payload.alasan = $("tx-reason").value.trim() || "Edit melalui Web PROxyz";
+    setStatus($("form-status"), "Menyimpan…");
+    try {
+      await api(ref ? `/api/kas/${encodeURIComponent(activeKas)}/transaksi/${encodeURIComponent(ref)}` : `/api/kas/${encodeURIComponent(activeKas)}/transaksi`, { method: ref ? "PUT" : "POST", body: JSON.stringify(payload) });
+      $("tx-dialog").close(); await loadKas(activeKas);
+    } catch (error) { setStatus($("form-status"), error.message, "error"); }
+  });
 
   // Bertunas events
   $("bertunas-select").addEventListener("change", () => loadBertunas($("bertunas-select").value).catch(showError));

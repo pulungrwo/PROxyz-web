@@ -95,3 +95,32 @@
   .kas-report-groups,.kas-category-columns{grid-template-columns:1fr}
   .kas-report-summary{grid-template-columns:1fr 1fr}
 }
+
+/* V0.6.9 — Kas Admin Plus */
+.kas-primary-actions{gap:10px}
+.kas-action-card{min-height:54px;border:0;box-shadow:0 8px 22px rgba(16,24,40,.06);display:flex;align-items:center;justify-content:center;text-align:center}
+.kas-action-card b{font-size:14px;font-weight:850;letter-spacing:-.01em}
+.kas-action-income{background:linear-gradient(145deg,#e8f8ef,#d9f3e5);color:#166534}
+.kas-action-income:hover,.kas-action-income:active{background:linear-gradient(145deg,#dcf4e7,#caecd9)}
+.kas-action-expense{background:linear-gradient(145deg,#fff0f0,#ffe2e2);color:#b42318}
+.kas-action-expense:hover,.kas-action-expense:active{background:linear-gradient(145deg,#ffe6e6,#ffd5d5)}
+.nominal-entry{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:center}
+.nominal-entry input{min-width:0}
+.nominal-entry button{height:100%;min-width:72px;font-weight:850;color:#344054;background:#f2f4f7}
+.kas-report-period-picker{margin-bottom:9px}
+.kas-report-shortcuts{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:0 0 12px}
+.kas-report-shortcuts button{font-size:12px;white-space:nowrap}
+.kas-report-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:11px 0 4px}
+.kas-report-actions button{min-height:42px;font-size:12.5px}
+.schedule-note{margin:8px 0 0}
+.schedule-actions{gap:6px;flex-wrap:wrap}
+.schedule-actions button{font-size:11px;padding:8px 10px}
+.manager-card{padding:12px 13px}
+.manager-role{background:#eef2ff;color:#3730a3;border-color:#d9def9}
+#kas-manager-list{margin-top:10px}
+#kas-pengelola-panel .section-head{align-items:center}
+@media(max-width:640px){
+  .kas-action-card{min-height:50px;padding:10px 12px}.kas-action-card b{font-size:13.5px}
+  .kas-report-period-picker{grid-template-columns:1fr 1fr}.kas-report-actions{grid-template-columns:1fr 1fr}
+  .nominal-entry button{min-width:66px;padding-left:10px;padding-right:10px}
+}

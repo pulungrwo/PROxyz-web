@@ -9,7 +9,7 @@
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
   <title>Admin PROxyz</title>
-  <link rel="stylesheet" href="./admin.css?v=0.6.8">
+  <link rel="stylesheet" href="./admin.css?v=0.6.9">
 </head>
 <body>
   <main class="shell">
@@ -74,8 +74,8 @@
           </section>
 
           <section class="kas-primary-actions">
-            <button id="add-income" class="quick-card kas-action-card" type="button"><b>+ Pemasukan</b><span>Catat uang masuk</span></button>
-            <button id="add-expense" class="quick-card kas-action-card" type="button"><b>− Pengeluaran</b><span>Catat uang keluar</span></button>
+            <button id="add-income" class="quick-card kas-action-card kas-action-income" type="button"><b>+ Pemasukan</b></button>
+            <button id="add-expense" class="quick-card kas-action-card kas-action-expense" type="button"><b>− Pengeluaran</b></button>
           </section>
 
           <nav class="subtabs kas-subtabs" aria-label="Fitur Kas">
@@ -83,6 +83,7 @@
             <button class="subtab" type="button" data-kas-tab="laporan">Laporan</button>
             <button class="subtab" type="button" data-kas-tab="jadwal">Jadwal</button>
             <button class="subtab" type="button" data-kas-tab="kategori">Kategori</button>
+            <button class="subtab" type="button" data-kas-tab="pengelola">Pengelola</button>
           </nav>
 
           <section id="kas-transaksi-panel" class="kas-panel panel">
@@ -93,17 +94,25 @@
           </section>
 
           <section id="kas-laporan-panel" class="kas-panel panel" hidden>
-            <div class="section-head"><div><p class="eyebrow">Keuangan</p><h2>Laporan</h2></div><button id="kas-report-pdf" class="ghost compact" type="button">Download PDF</button></div>
+            <div class="section-head"><div><p class="eyebrow">Keuangan</p><h2>Laporan</h2></div></div>
+            <div class="context-grid kas-report-period-picker">
+              <label>Bulan<select id="kas-report-month-select"></select></label>
+              <label>Tahun<select id="kas-report-year-select"></select></label>
+            </div>
             <div class="kas-report-shortcuts">
-              <button id="kas-report-month" class="ghost compact" type="button">Bulan ini</button>
-              <button id="kas-report-year" class="ghost compact" type="button">Tahun ini</button>
+              <button id="kas-report-month" class="ghost compact" type="button">Agustus 2026</button>
+              <button id="kas-report-year" class="ghost compact" type="button">Tahun 2026</button>
             </div>
             <div class="context-grid kas-report-range">
               <label>Dari tanggal<input id="kas-report-start" type="date"></label>
               <label>Sampai tanggal<input id="kas-report-end" type="date"></label>
             </div>
-            <button id="kas-report-load" class="primary full" type="button">Tampilkan laporan</button>
+            <button id="kas-report-load" class="primary full" type="button">Buat laporan</button>
             <p id="kas-report-status" class="status"></p>
+            <div id="kas-report-actions" class="kas-report-actions" hidden>
+              <button id="kas-report-pdf" class="ghost" type="button">Download PDF</button>
+              <button id="kas-report-wa" class="primary" type="button">Kirim ke WA saya</button>
+            </div>
             <div id="kas-report-summary" class="kas-report-summary" hidden>
               <div><span>Saldo awal</span><b id="kas-report-opening">—</b></div>
               <div><span>Masuk</span><b id="kas-report-in">—</b></div>
@@ -128,6 +137,13 @@
               <section><div class="mini-section-title"><span>Pemasukan</span><b id="kas-category-in-count">0</b></div><div id="kas-category-in-list" class="category-list"></div></section>
               <section><div class="mini-section-title"><span>Pengeluaran</span><b id="kas-category-out-count">0</b></div><div id="kas-category-out-list" class="category-list"></div></section>
             </div>
+          </section>
+
+          <section id="kas-pengelola-panel" class="kas-panel panel" hidden>
+            <div class="section-head"><div><p class="eyebrow">Akses Kas</p><h2>Pengelola</h2></div><button id="kas-manager-add" class="primary compact" type="button">+ Admin</button></div>
+            <p class="muted small">Owner dapat menambah atau menghapus Admin Kas. Hak akses transaksi tetap mengikuti peran Kas.</p>
+            <div id="kas-manager-owner-note" class="session-note" hidden>Hanya Owner Kas yang dapat mengubah daftar Admin.</div>
+            <div id="kas-manager-list" class="list-stack"></div>
           </section>
         </section>
       </section>
@@ -350,16 +366,29 @@
 
   <dialog id="kas-schedule-dialog">
     <form id="kas-schedule-form" class="dialog-form">
-      <div class="section-head"><div><p class="eyebrow">Pembayaran rutin</p><h2>Tambah jadwal</h2></div><button id="close-kas-schedule" class="icon-button" type="button">×</button></div>
+      <div class="section-head"><div><p class="eyebrow">Pembayaran rutin</p><h2 id="kas-schedule-dialog-title">Tambah jadwal</h2></div><button id="close-kas-schedule" class="icon-button" type="button">×</button></div>
+      <input id="kas-schedule-id" type="hidden">
       <label>Nama pembayaran<input id="kas-schedule-name" maxlength="100" placeholder="Contoh: Marbot" required></label>
-      <label>Nominal<input id="kas-schedule-amount" type="number" min="1" inputmode="numeric" required></label>
+      <label>Nominal<input id="kas-schedule-amount" type="text" inputmode="numeric" placeholder="25.000" required></label>
       <div class="context-grid">
-        <label>Hari<select id="kas-schedule-day"><option value="senin">Senin</option><option value="selasa">Selasa</option><option value="rabu">Rabu</option><option value="kamis">Kamis</option><option value="jumat">Jumat</option><option value="sabtu">Sabtu</option><option value="minggu">Minggu</option></select></label>
-        <label>Kategori<select id="kas-schedule-category" required></select></label>
+        <label>Frekuensi<select id="kas-schedule-frequency"><option value="mingguan">Mingguan</option><option value="bulanan">Bulanan</option><option value="tahunan">Tahunan</option></select></label>
+        <label>Jatuh tempo pertama<input id="kas-schedule-start" type="date" required></label>
       </div>
+      <label>Kategori<select id="kas-schedule-category" required></select></label>
       <label>Catatan<textarea id="kas-schedule-note" rows="2" maxlength="250"></textarea></label>
+      <p class="muted small">Mingguan mengikuti hari dari tanggal pertama. Bulanan mengikuti tanggalnya. Tahunan mengikuti tanggal dan bulan yang sama.</p>
       <p id="kas-schedule-status" class="status"></p>
       <button class="primary full" type="submit">Simpan jadwal</button>
+    </form>
+  </dialog>
+
+  <dialog id="kas-manager-dialog">
+    <form id="kas-manager-form" class="dialog-form">
+      <div class="section-head"><div><p class="eyebrow">Pengelola Kas</p><h2>Tambah Admin</h2></div><button id="close-kas-manager" class="icon-button" type="button">×</button></div>
+      <label>Nomor WhatsApp<input id="kas-manager-phone" inputmode="tel" placeholder="08xxxxxxxxxx" required></label>
+      <label>Nama<input id="kas-manager-name" maxlength="60" placeholder="Nama Admin" required></label>
+      <p id="kas-manager-status" class="status"></p>
+      <button class="primary full" type="submit">Tambah Admin</button>
     </form>
   </dialog>
 
@@ -376,7 +405,7 @@
     </form>
   </dialog>
 
-  <dialog id="tx-dialog"><form id="tx-form" method="dialog" class="dialog-form"><div class="section-head"><div><p class="eyebrow" id="form-mode">Transaksi</p><h2 id="form-title">Tambah transaksi</h2></div><button id="close-dialog" class="icon-button" type="button">×</button></div><input id="tx-ref" type="hidden"><label>Jenis<select id="tx-type" required><option value="masuk">Pemasukan</option><option value="keluar">Pengeluaran</option></select></label><label>Nominal<input id="tx-amount" type="number" inputmode="numeric" min="1" required></label><label>Kategori<select id="tx-category" required></select></label><label>Keterangan<input id="tx-description" required maxlength="160"></label><label>Catatan<textarea id="tx-note" rows="2" maxlength="300"></textarea></label><label>Tag<input id="tx-tags" placeholder="#ramadhan #konsumsi"></label><label>Tanggal<input id="tx-date" type="date" required></label><label id="edit-reason-wrap" hidden>Alasan edit<input id="tx-reason" maxlength="200"></label><p id="form-status" class="status"></p><button class="primary full" type="submit">Simpan</button></form></dialog>
+  <dialog id="tx-dialog"><form id="tx-form" method="dialog" class="dialog-form"><div class="section-head"><div><p class="eyebrow" id="form-mode">Transaksi</p><h2 id="form-title">Tambah transaksi</h2></div><button id="close-dialog" class="icon-button" type="button">×</button></div><input id="tx-ref" type="hidden"><label id="tx-type-wrap">Jenis<select id="tx-type" required><option value="masuk">Pemasukan</option><option value="keluar">Pengeluaran</option></select></label><label>Nominal<div class="nominal-entry"><input id="tx-amount" type="text" inputmode="numeric" placeholder="10.000" required><button id="tx-amount-thousand" class="ghost compact" type="button">+000</button></div></label><label>Kategori<select id="tx-category" required></select></label><label>Keterangan<input id="tx-description" required maxlength="160"></label><label>Catatan<textarea id="tx-note" rows="2" maxlength="300"></textarea></label><label>Tag<input id="tx-tags" placeholder="#ramadhan #konsumsi"></label><label>Tanggal<input id="tx-date" type="date" required></label><label id="edit-reason-wrap" hidden>Alasan edit<input id="tx-reason" maxlength="200"></label><p id="form-status" class="status"></p><button class="primary full" type="submit">Simpan</button></form></dialog>
 
   <dialog id="evidence-dialog">
     <div class="dialog-form evidence-dialog-body">
@@ -419,6 +448,6 @@
   <dialog id="gallery-bulk-dialog"><form id="gallery-bulk-form" method="dialog" class="dialog-form"><div class="section-head"><div><p class="eyebrow">Edit beberapa foto</p><h2>Kelompokkan kejadian</h2></div><button id="close-gallery-bulk" class="icon-button" type="button">×</button></div><p class="muted small"><b id="gallery-bulk-dialog-count">0 foto</b> akan dijadikan satu kelompok di galeri publik.</p><label>Judul kejadian<input id="gallery-bulk-caption" maxlength="160" placeholder="Contoh: Makan Kerupuk Agustusan 2024" required></label><label>Tanggal dokumentasi<input id="gallery-bulk-date" type="date" required></label><p class="muted small">Semua foto terpilih akan memakai satu judul dan satu tanggal. Foto tidak dihapus atau diunggah ulang ke penyimpanan Galeri.</p><p id="gallery-bulk-status" class="status"></p><button class="primary full" type="submit">Simpan & kelompokkan</button></form></dialog>
 
   <script src="./config.js?v=242"></script>
-  <script src="./admin.js?v=0.6.8" defer></script>
+  <script src="./admin.js?v=0.6.9" defer></script>
 </body>
 </html>
