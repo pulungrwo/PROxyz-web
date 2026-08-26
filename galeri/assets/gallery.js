@@ -318,6 +318,25 @@
     if(searchSticky)searchSticky.classList.remove('is-focused');
   });
 
+  function embeddedManifest(){
+    const el=document.getElementById('embedded-gallery');
+    if(!el||!el.textContent.trim())return null;
+    try{
+      const data=JSON.parse(el.textContent);
+      return data&&Array.isArray(data.photos)?data:null;
+    }catch(err){
+      console.warn('[Galeri] Data bawaan gagal dibaca',err);
+      return null;
+    }
+  }
+
+  function withTimeout(promise,ms,label){
+    return Promise.race([
+      promise,
+      new Promise((_,reject)=>setTimeout(()=>reject(new Error(label||'Waktu tunggu habis')),ms))
+    ]);
+  }
+
   function loadLiveManifest(){
     if(!liveManifest)return Promise.reject(new Error('Manifest live belum tersedia'));
     return new Promise((resolve,reject)=>{
@@ -380,8 +399,20 @@
       accessToken=await requestPrivateAccess();
       return await privateManifest(accessToken);
     }
-    try{return await loadLiveManifest()}catch(liveError){
-      const r=await fetch('../../data/galeri/'+encodeURIComponent(token)+'.json?v='+Date.now(),{cache:'no-store'});
+
+    // Untuk Galeri publik, data bawaan HTML adalah sumber pertama agar halaman
+    // langsung tampil tanpa menunggu R2/API. Live manifest hanya fallback/refresh.
+    const embedded=embeddedManifest();
+    if(embedded)return embedded;
+
+    try{
+      return await withTimeout(loadLiveManifest(),3000,'Manifest live terlalu lama');
+    }catch(liveError){
+      const r=await withTimeout(
+        fetch('/data/galeri/'+encodeURIComponent(token)+'.json?v='+Date.now(),{cache:'no-store'}),
+        5000,
+        'Data galeri terlalu lama'
+      );
       if(!r.ok)throw new Error('Data galeri tidak ditemukan');
       return await r.json();
     }
