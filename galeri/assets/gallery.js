@@ -1,5 +1,7 @@
 (()=>{
   const LOAD_STEP=50;
+  const VIEWER_INITIAL_RADIUS=2;
+  const VIEWER_EXTEND_STEP=3;
   const token=document.body.dataset.galleryToken;
   const galleryId=document.body.dataset.galleryId||'';
   const visibility=document.body.dataset.galleryVisibility||'public';
@@ -19,6 +21,8 @@
   const updatedEl=document.getElementById('gallery-updated');
   const resultCount=document.getElementById('result-count');
   const pageRange=document.getElementById('page-range');
+  const loadPreviousWrap=document.getElementById('load-previous-wrap');
+  const loadPrevious=document.getElementById('load-previous');
   const loadMoreWrap=document.getElementById('load-more-wrap');
   const loadMore=document.getElementById('load-more');
   const footerCount=document.getElementById('footer-count');
@@ -26,11 +30,17 @@
   const viewerFeed=document.getElementById('viewer-feed');
   const viewerPosition=document.getElementById('viewer-position');
   let photos=[];
+  let visibleStart=0;
   let visibleLimit=LOAD_STEP;
   let visibleRows=[];
   let observer=null;
   let mainImageObserver=null;
   let viewerImageObserver=null;
+  let viewerRows=[];
+  let viewerStart=0;
+  let viewerEnd=0;
+  let activeViewerPhotoId='';
+  let closingViewerToGallery=false;
   const fmt=new Intl.DateTimeFormat('id-ID',{dateStyle:'medium',timeStyle:'short',timeZone:'Asia/Jakarta'});
 
   function jakartaDateKey(ts){
@@ -121,6 +131,7 @@
     const b=document.createElement('button');
     b.className='card';
     b.type='button';
+    b.dataset.photoId=p.id;
     const img=document.createElement('img');
     img.alt=p.caption||p.id;
     queueImage(img,p.publicUrl,{eager:index<2,observer:mainImageObserver});
@@ -134,7 +145,9 @@
 
   function render(){
     const rows=filteredRows();
-    const visible=rows.slice(0,visibleLimit);
+    const maxStart=Math.max(0,rows.length-1);
+    if(visibleStart>maxStart)visibleStart=Math.max(0,rows.length-LOAD_STEP);
+    const visible=rows.slice(visibleStart,visibleStart+visibleLimit);
     visibleRows=visible.slice();
     if(mainImageObserver)mainImageObserver.disconnect();
     mainImageObserver=createImageObserver(null,'520px 0px');
@@ -165,10 +178,20 @@
     }
     empty.hidden=rows.length!==0;
     resultCount.textContent=rows.length+' foto';
-    pageRange.textContent=rows.length?'Menampilkan '+visible.length+' dari '+rows.length:'';
-    footerCount.textContent=rows.length?visible.length+' / '+rows.length+' foto':'';
-    loadMoreWrap.hidden=visible.length>=rows.length;
-    loadMore.textContent=visible.length<rows.length?'Muat lainnya ('+Math.min(LOAD_STEP,rows.length-visible.length)+')':'Muat lainnya';
+    if(rows.length){
+      const from=visibleStart+1;
+      const to=visibleStart+visible.length;
+      pageRange.textContent=visibleStart===0?'Menampilkan '+visible.length+' dari '+rows.length:'Menampilkan '+from+'–'+to+' dari '+rows.length;
+      footerCount.textContent=from+'–'+to+' / '+rows.length+' foto';
+    }else{
+      pageRange.textContent='';
+      footerCount.textContent='';
+    }
+    loadPreviousWrap.hidden=visibleStart<=0;
+    loadPrevious.textContent=visibleStart>0?'Muat sebelumnya ('+Math.min(LOAD_STEP,visibleStart)+')':'Muat sebelumnya';
+    const remaining=Math.max(0,rows.length-(visibleStart+visible.length));
+    loadMoreWrap.hidden=remaining<=0;
+    loadMore.textContent=remaining>0?'Muat lainnya ('+Math.min(LOAD_STEP,remaining)+')':'Muat lainnya';
   }
 
   function extFor(photo){
@@ -256,14 +279,35 @@
     return item;
   }
 
-  function openViewer(photo){
-    const rows=visibleRows.length?visibleRows:[photo];
-    if(viewerImageObserver)viewerImageObserver.disconnect();
-    viewerFeed.innerHTML='';
-    viewerImageObserver=createImageObserver(viewerFeed,'110% 0px');
-    rows.forEach((p,i)=>viewerFeed.appendChild(viewerItem(p,i,photo.id)));
-    viewer.showModal();
+  function syncViewerUrl(photo){
+    if(!photo||!photo.nomor)return;
+    activeViewerPhotoId=photo.id;
+    const url=new URL(location.href);
+    url.searchParams.set('foto',String(photo.nomor));
+    history.replaceState({viewer:true,photoId:photo.id},'',url.pathname+url.search+url.hash);
+  }
 
+  function updateViewerPosition(photo,index){
+    if(!photo)return;
+    viewerPosition.textContent=photo.id+' · '+(index+1)+' dari '+viewerRows.length;
+    syncViewerUrl(photo);
+  }
+
+  function appendViewerRange(from,to){
+    for(let i=from;i<to;i++)viewerFeed.appendChild(viewerItem(viewerRows[i],i,activeViewerPhotoId));
+  }
+
+  function prependViewerRange(from,to){
+    const beforeHeight=viewerFeed.scrollHeight;
+    const beforeTop=viewerFeed.scrollTop;
+    const fragment=document.createDocumentFragment();
+    for(let i=from;i<to;i++)fragment.appendChild(viewerItem(viewerRows[i],i,activeViewerPhotoId));
+    viewerFeed.insertBefore(fragment,viewerFeed.firstChild);
+    const delta=viewerFeed.scrollHeight-beforeHeight;
+    viewerFeed.scrollTop=beforeTop+delta;
+  }
+
+  function observeViewerItems(){
     if(observer)observer.disconnect();
     observer=new IntersectionObserver(entries=>{
       let best=null;
@@ -271,13 +315,48 @@
         if(!entry.isIntersecting)continue;
         if(!best||entry.intersectionRatio>best.intersectionRatio)best=entry;
       }
-      if(best){
-        const idx=Number(best.target.dataset.index||0);
-        const p=rows[idx];
-        viewerPosition.textContent=(p?p.id:'Foto')+' · '+(idx+1)+' dari '+rows.length;
+      if(!best)return;
+      const idx=Number(best.target.dataset.index||0);
+      const p=viewerRows[idx];
+      updateViewerPosition(p,idx);
+
+      if(idx>=viewerEnd-2&&viewerEnd<viewerRows.length){
+        const oldEnd=viewerEnd;
+        viewerEnd=Math.min(viewerRows.length,viewerEnd+VIEWER_EXTEND_STEP);
+        appendViewerRange(oldEnd,viewerEnd);
+        viewerFeed.querySelectorAll('.viewer-item').forEach(el=>observer.observe(el));
+      }
+      if(idx<=viewerStart+1&&viewerStart>0){
+        const oldStart=viewerStart;
+        viewerStart=Math.max(0,viewerStart-VIEWER_EXTEND_STEP);
+        prependViewerRange(viewerStart,oldStart);
+        viewerFeed.querySelectorAll('.viewer-item').forEach(el=>observer.observe(el));
       }
     },{root:viewerFeed,threshold:[.45,.6,.75]});
     viewerFeed.querySelectorAll('.viewer-item').forEach(el=>observer.observe(el));
+  }
+
+  function openViewer(photo){
+    activeViewerPhotoId=photo.id;
+    viewerRows=filteredRows();
+    if(!viewerRows.some(p=>p.id===photo.id)){
+      viewerRows=photos.slice().sort((a,b)=>{
+        const diff=Number(a.createdAt||0)-Number(b.createdAt||0);
+        if(diff!==0)return sort.value==='oldest'?diff:-diff;
+        return sort.value==='oldest'?Number(a.nomor||0)-Number(b.nomor||0):Number(b.nomor||0)-Number(a.nomor||0);
+      });
+    }
+    const center=Math.max(0,viewerRows.findIndex(p=>p.id===photo.id));
+    viewerStart=Math.max(0,center-VIEWER_INITIAL_RADIUS);
+    viewerEnd=Math.min(viewerRows.length,center+VIEWER_INITIAL_RADIUS+1);
+
+    if(viewerImageObserver)viewerImageObserver.disconnect();
+    viewerFeed.innerHTML='';
+    viewerImageObserver=createImageObserver(viewerFeed,'110% 0px');
+    appendViewerRange(viewerStart,viewerEnd);
+    viewer.showModal();
+    observeViewerItems();
+    syncViewerUrl(photo);
 
     requestAnimationFrame(()=>{
       const target=viewerFeed.querySelector('[data-photo-id="'+CSS.escape(photo.id)+'"]');
@@ -285,18 +364,76 @@
     });
   }
 
+  function highlightCard(photoId){
+    requestAnimationFrame(()=>{
+      const target=gallery.querySelector('[data-photo-id="'+CSS.escape(photoId)+'"]');
+      if(!target)return;
+      target.scrollIntoView({block:'center',behavior:'auto'});
+      target.classList.add('return-highlight');
+      setTimeout(()=>target.classList.remove('return-highlight'),1600);
+    });
+  }
+
+  function revealPhotoInGallery(photoId){
+    if(!photoId)return;
+    const existing=gallery.querySelector('[data-photo-id="'+CSS.escape(photoId)+'"]');
+    if(existing){
+      highlightCard(photoId);
+      return;
+    }
+
+    const rows=filteredRows();
+    const idx=rows.findIndex(p=>p.id===photoId);
+    if(idx<0)return;
+
+    // Smart return: tampilkan hanya satu jendela 50 foto di sekitar target,
+    // bukan memuat semua foto dari urutan pertama hingga target.
+    const half=Math.floor(LOAD_STEP/2);
+    visibleStart=Math.max(0,Math.min(idx-half,Math.max(0,rows.length-LOAD_STEP)));
+    visibleLimit=Math.min(LOAD_STEP,Math.max(0,rows.length-visibleStart));
+    render();
+    highlightCard(photoId);
+  }
+
+  function closeViewerToGallery(){
+    const photoId=activeViewerPhotoId;
+    closingViewerToGallery=true;
+    const url=new URL(location.href);
+    url.searchParams.delete('foto');
+    if(photoId)url.hash='foto-'+photoId.replace(/D+/g,'');
+    history.replaceState({photoId},'',url.pathname+url.search+url.hash);
+    viewer.close();
+    if(photoId)revealPhotoInGallery(photoId);
+  }
+
   function resetAndRender(){
+    visibleStart=0;
     visibleLimit=LOAD_STEP;
     render();
   }
 
-  document.getElementById('close-viewer').onclick=()=>viewer.close();
+  document.getElementById('close-viewer').onclick=closeViewerToGallery;
+  viewer.addEventListener('cancel',event=>{event.preventDefault();closeViewerToGallery()});
   viewer.addEventListener('close',()=>{
     if(observer){observer.disconnect();observer=null}
     if(viewerImageObserver){viewerImageObserver.disconnect();viewerImageObserver=null}
     viewerFeed.innerHTML='';
     viewerPosition.textContent='';
+    viewerRows=[];viewerStart=0;viewerEnd=0;
+    if(!closingViewerToGallery){
+      const url=new URL(location.href);
+      url.searchParams.delete('foto');
+      history.replaceState({},'',url.pathname+url.search+url.hash);
+    }
+    closingViewerToGallery=false;
   });
+  loadPrevious.onclick=()=>{
+    const add=Math.min(LOAD_STEP,visibleStart);
+    if(add<=0)return;
+    visibleStart-=add;
+    visibleLimit+=add;
+    render();
+  };
   loadMore.onclick=()=>{visibleLimit+=LOAD_STEP;render()};
   search.addEventListener('input',resetAndRender);
   period.addEventListener('change',resetAndRender);
@@ -408,11 +545,12 @@
       const directNo=Number(new URLSearchParams(location.search).get('foto')||0);
       if(Number.isInteger(directNo)&&directNo>0){
         const direct=photos.find(p=>Number(p.nomor||0)===directNo);
-        if(direct){
-          const rows=filteredRows();
-          const targetIndex=rows.findIndex(p=>p.id===direct.id);
-          if(targetIndex>=0){visibleLimit=Math.max(LOAD_STEP,targetIndex+1);render();}
-          openViewer(direct);
+        if(direct)openViewer(direct);
+      }else{
+        const hashMatch=String(location.hash||'').match(/^#foto-(\d+)$/);
+        if(hashMatch){
+          const target=photos.find(p=>Number(p.nomor||0)===Number(hashMatch[1]));
+          if(target)revealPhotoInGallery(target.id);
         }
       }
     })
