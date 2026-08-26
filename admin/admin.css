@@ -40,3 +40,6 @@
 @media(max-width:640px){.profile-name-row{align-items:flex-start}.name-edit-btn{margin-top:1px}.user-directory-row{align-items:flex-start}.app-tabs{grid-template-columns:repeat(2,minmax(0,1fr))}}
 
 .user-wa-link{display:inline-flex;width:max-content;max-width:100%;color:#3448a5!important;font-weight:750;text-decoration:none;border-bottom:1px dashed #aab6df;padding-bottom:1px}.user-wa-link:active,.user-wa-link:hover{color:#1d2f7a!important;border-bottom-color:#3448a5}
+
+/* Galeri V0.5.0 — akses publik / privat */
+.actions.three{grid-template-columns:repeat(3,1fr)}.gallery-main-actions #gallery-access{background:#eef2ff;color:#3730a3}.gallery-access-badge{display:inline-flex;align-items:center;padding:4px 8px;border-radius:999px;font-size:10px;font-weight:850}.gallery-access-badge.private{background:#fff7ed;color:#c2410c}.gallery-access-badge.public{background:#ecfdf3;color:#067647}@media(max-width:540px){.actions.three{grid-template-columns:1fr 1fr}.actions.three button:last-child{grid-column:1/-1}}

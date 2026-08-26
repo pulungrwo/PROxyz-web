@@ -897,7 +897,9 @@
     $("gallery-photo-total").textContent = galleryDetail.foto;
     $("gallery-group-total").textContent = `${galleryDetail.grup} grup`;
     $("gallery-public-link").href = galleryDetail.publicUrl;
+    $("gallery-public-link").textContent = galleryDetail.visibility === "private" ? "Buka Galeri privat ↗" : "Buka Galeri publik ↗";
     $("rename-gallery").hidden = galleryDetail.role !== "owner";
+    $("gallery-access").hidden = galleryDetail.role !== "owner";
     $("add-gallery-admin").hidden = galleryDetail.role !== "owner";
     $("gallery-content").hidden = false;
     await Promise.all([loadGalleryPhotos(true), loadGalleryAdmins(), loadGalleryVideoJobs()]);
@@ -982,6 +984,25 @@
     $("gallery-bulk-date").value = first ? timestampToDate(first.tanggal || Date.now()) : todayJakarta();
     setStatus($("gallery-bulk-status"));
     $("gallery-bulk-dialog").showModal();
+  }
+
+  function syncGalleryAccessOptions() {
+    const isPrivate = $("gallery-access-visibility").value === "private";
+    $("gallery-private-options").hidden = !isPrivate;
+  }
+
+  function openGalleryAccessDialog() {
+    if (!galleryDetail) return;
+    $("gallery-access-visibility").value = galleryDetail.visibility === "private" ? "private" : "public";
+    $("gallery-access-hours").value = String(galleryDetail.privateSessionHours || 12);
+    $("gallery-access-password").value = "";
+    $("gallery-access-password").placeholder = galleryDetail.hasPrivatePassword ? "Kosongkan untuk memakai sandi yang sekarang" : "Buat sandi Galeri";
+    $("gallery-private-note").textContent = galleryDetail.hasPrivatePassword
+      ? "Galeri sudah memiliki sandi. Kosongkan kolom sandi jika tidak ingin menggantinya."
+      : "Saat pertama kali menjadikan Galeri privat, Anda wajib membuat sandi.";
+    syncGalleryAccessOptions();
+    setStatus($("gallery-access-status"));
+    $("gallery-access-dialog").showModal();
   }
 
   async function deleteGalleryPhoto(photo) {
@@ -1786,6 +1807,21 @@
   $("gallery-video-publish").addEventListener("click", publishGalleryVideoSelection);
   $("gallery-select").addEventListener("change", () => loadGallery($("gallery-select").value).catch(showError)); $("refresh-gallery").addEventListener("click", () => loadGallery(activeGallery).catch(showError));
   $("rename-gallery").addEventListener("click", async () => { const next = prompt("Nama Galeri baru:", galleryDetail?.nama || ""); if (next === null || !next.trim()) return; try { await api(`/api/galeri/${encodeURIComponent(activeGallery)}`, { method: "PUT", body: JSON.stringify({ nama: next.trim() }) }); const meData = await api("/api/me"); me = meData.user; fillSelect($("gallery-select"), me.galeri || [], row => `${row.nama} · ${row.role}`); await loadGallery(activeGallery); } catch (error) { showError(error); } });
+  $("gallery-access").addEventListener("click", openGalleryAccessDialog);
+  $("gallery-access-visibility").addEventListener("change", syncGalleryAccessOptions);
+  $("close-gallery-access").addEventListener("click", () => $("gallery-access-dialog").close());
+  $("gallery-access-form").addEventListener("submit", async event => {
+    event.preventDefault();
+    const visibility = $("gallery-access-visibility").value;
+    const password = $("gallery-access-password").value;
+    setStatus($("gallery-access-status"), "Menyimpan aturan akses…");
+    try {
+      const data = await api(`/api/galeri/${encodeURIComponent(activeGallery)}/access`, { method: "PATCH", body: JSON.stringify({ visibility, password, sessionHours: Number($("gallery-access-hours").value || 12) }) });
+      galleryDetail = data.galeri;
+      $("gallery-access-dialog").close();
+      await loadGallery(activeGallery);
+    } catch (error) { setStatus($("gallery-access-status"), error.message, "error"); }
+  });
   $("add-gallery-admin").addEventListener("click", async () => { const phone = prompt("Nomor WhatsApp Admin Galeri:", "08"); if (phone === null || !phone.trim()) return; try { await api(`/api/galeri/${encodeURIComponent(activeGallery)}/admin`, { method: "POST", body: JSON.stringify({ phone: phone.trim() }) }); await loadGalleryAdmins(); } catch (error) { showError(error); } });
   $("gallery-load-more").addEventListener("click", () => loadGalleryPhotos(false).catch(showError)); let gallerySearchTimer; $("gallery-search").addEventListener("input", () => { clearTimeout(gallerySearchTimer); gallerySearchTimer = setTimeout(() => loadGalleryPhotos(true).catch(showError), 300); });
   $("gallery-bulk-toggle").addEventListener("click", () => setGalleryBulkMode(!galleryBulkMode, { clear: true }));
