@@ -9,11 +9,18 @@
   const dateTimeFmt = new Intl.DateTimeFormat("id-ID", { day: "2-digit", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" });
   const $ = id => document.getElementById(id);
   const OTP_STORAGE_KEY = "proxyz_admin_otp_challenge";
+  const deepLinkParams = new URLSearchParams(window.location.search);
+  const adminDeepLink = {
+    view: deepLinkParams.get("view") || "",
+    gallery: String(deepLinkParams.get("gallery") || "").trim().toLowerCase(),
+    videoJob: String(deepLinkParams.get("videoJob") || "").trim()
+  };
 
   let me = null;
   let challengeId = "";
   let challengeExpiresAt = 0;
-  let activeView = "";
+  let activeView = ["kas", "bertunas", "galeri", "users"].includes(adminDeepLink.view) ? adminDeepLink.view : "";
+  let deepLinkHandled = false;
 
   // Kas
   let activeKas = "";
@@ -104,6 +111,7 @@
 
   function clearSession() {
     stopGalleryVideoPolling();
+    deepLinkHandled = false;
     clearGalleryVideoObjectUrls();
     me = null;
     $("app-view").hidden = true;
@@ -212,9 +220,21 @@
     fillSelect($("bertunas-select"), me.bertunas || [], row => `${row.nama} · ${row.role}`);
     fillSelect($("gallery-select"), me.galeri || [], row => `${row.nama} · ${row.role}`);
 
+    const requestedGallery = adminDeepLink.gallery && (me.galeri || []).some(row => row.id === adminDeepLink.gallery)
+      ? adminDeepLink.gallery
+      : "";
+    if (requestedGallery) {
+      activeGallery = requestedGallery;
+      $("gallery-select").value = requestedGallery;
+    }
+
     const preferred = activeView && availability[activeView] ? activeView : "";
     const first = preferred || ["kas", "bertunas", "galeri", "users"].find(name => availability[name]);
     if (first) switchView(first);
+
+    if (requestedGallery && first === "galeri") {
+      setTimeout(() => handleAdminDeepLink().catch(showError), 0);
+    }
   }
 
   function fillSelect(select, rows, labeler) {
@@ -237,6 +257,35 @@
     if (view === "bertunas" && !activeBertunas && me.bertunas?.length) loadBertunas(me.bertunas[0].id).catch(showError);
     if (view === "galeri" && !activeGallery && me.galeri?.length) loadGallery(me.galeri[0].id).catch(showError);
     if (view === "users" && me.isOwner) loadUsers().catch(showError);
+  }
+
+  async function handleAdminDeepLink() {
+    if (deepLinkHandled || !me || !adminDeepLink.gallery) return;
+    const allowed = (me.galeri || []).some(row => row.id === adminDeepLink.gallery);
+    if (!allowed) return;
+
+    deepLinkHandled = true;
+    switchView("galeri");
+    await loadGallery(adminDeepLink.gallery);
+
+    if (!adminDeepLink.videoJob) return;
+
+    switchGalleryTab("video");
+    const job = await refreshGalleryVideoJob(adminDeepLink.videoJob);
+    if (!job) return;
+
+    if (job.status === "review") {
+      switchGalleryTab("draft");
+      await openGalleryVideoReview(job);
+      return;
+    }
+
+    if (["uploading", "queued", "processing"].includes(job.status)) {
+      startGalleryVideoPolling(job.id);
+      return;
+    }
+
+    switchGalleryTab("draft");
   }
 
   function showError(error) { alert(error?.message || String(error)); }
