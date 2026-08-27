@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": 1787654581725,
+  "generatedAt": 1787821606808,
   "id": "01",
   "nama": "Lahan 300 m²",
   "lokasi": "",
@@ -34,7 +34,7 @@
   "summary": {
     "weightKg": 0,
     "harvestCount": 0,
-    "activityCount": 2,
+    "activityCount": 3,
     "pendingScheduleCount": 4
   },
   "financeVisible": false,
@@ -48,6 +48,15 @@
       "description": "Kocor 40L air,  150 gr ultradap + 4 sdm Humigrow + 60 age",
       "note": "",
       "hst": 11
+    },
+    {
+      "date": "2026-08-19",
+      "cropId": "01",
+      "komoditas": "Cabai",
+      "category": "Penyemprotan",
+      "description": "Spray 1 sdm Mutual + 1 sdt Vitaflex+ 30ml ambition",
+      "note": "",
+      "hst": 6
     },
     {
       "date": "2026-08-18",
@@ -109,5 +118,5 @@
       "status": "pending"
     }
   ],
-  "updatedAt": 1787654581725
+  "updatedAt": 1787821606808
 }
