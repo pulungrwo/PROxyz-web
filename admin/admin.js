@@ -1,7 +1,7 @@
 (() => {
   "use strict";
 
-  const ADMIN_BUILD = "0.7.3";
+  const ADMIN_BUILD = "0.7.4";
   const config = window.PROXYZ_ADMIN_CONFIG || {};
 
   async function checkAdminBuild() {
@@ -36,7 +36,7 @@
   let me = null;
   let challengeId = "";
   let challengeExpiresAt = 0;
-  let activeView = ["kas", "bertunas", "galeri", "users"].includes(adminDeepLink.view) ? adminDeepLink.view : "";
+  let activeView = ["kas", "bertunas", "galeri", "risma", "ternak", "users"].includes(adminDeepLink.view) ? adminDeepLink.view : "";
   let deepLinkHandled = false;
 
   // Kas
@@ -83,6 +83,19 @@
   let galleryVideoReviewBusy = false;
   let galleryBulkMode = false;
   let galleryBulkSelected = new Set();
+
+  // RISMA
+  let rismaDetail = null;
+  let activeRismaTab = "ringkasan";
+  let rismaCouponType = "ngaji";
+
+  // Ternak
+  let activeTernak = "";
+  let ternakDetail = null;
+  let ternakList = [];
+  let ternakJenis = [];
+  let activeTernakTab = "populasi";
+  let ternakSearch = "";
 
   function setStatus(el, message = "", type = "") {
     if (!el) return;
@@ -274,7 +287,9 @@
     const counts = [
       (me.kas || []).length ? `${me.kas.length} Kas` : "",
       (me.bertunas || []).length ? `${me.bertunas.length} Bertunas` : "",
-      (me.galeri || []).length ? `${me.galeri.length} Galeri` : ""
+      (me.galeri || []).length ? `${me.galeri.length} Galeri` : "",
+      (me.risma || []).length ? "RISMA" : "",
+      (me.ternak || []).length ? `${me.ternak.length} Ternak` : ""
     ].filter(Boolean);
     $("access-summary").textContent = counts.join(" · ") || "Tidak ada akses aplikasi.";
 
@@ -282,6 +297,8 @@
       kas: (me.kas || []).length > 0,
       bertunas: (me.bertunas || []).length > 0,
       galeri: (me.galeri || []).length > 0,
+      risma: (me.risma || []).length > 0 || Boolean(me.isOwner),
+      ternak: (me.ternak || []).length > 0 || Boolean(me.isOwner),
       users: Boolean(me.isOwner)
     };
     for (const [name, available] of Object.entries(availability)) $("tab-" + name).hidden = !available;
@@ -289,6 +306,7 @@
     fillSelect($("kas-select"), me.kas || [], row => `${row.nama} · ${row.role}`);
     fillSelect($("bertunas-select"), me.bertunas || [], row => `${row.nama} · ${row.role}`);
     fillSelect($("gallery-select"), me.galeri || [], row => `${row.nama} · ${row.role}`);
+    fillSelect($("ternak-select"), me.ternak || [], row => `${row.nama} · ${row.jenis || "Ternak"} · ${row.role}`);
 
     const requestedGallery = adminDeepLink.gallery && (me.galeri || []).some(row => row.id === adminDeepLink.gallery)
       ? adminDeepLink.gallery
@@ -299,7 +317,7 @@
     }
 
     const preferred = activeView && availability[activeView] ? activeView : "";
-    const first = preferred || ["kas", "bertunas", "galeri", "users"].find(name => availability[name]);
+    const first = preferred || ["kas", "bertunas", "galeri", "risma", "ternak", "users"].find(name => availability[name]);
     if (first) switchView(first);
 
     if (requestedGallery && first === "galeri") {
@@ -319,13 +337,15 @@
 
   function switchView(view) {
     activeView = view;
-    for (const name of ["kas", "bertunas", "galeri", "users"]) {
+    for (const name of ["kas", "bertunas", "galeri", "risma", "ternak", "users"]) {
       $(`${name}-view`).hidden = name !== view;
       $("tab-" + name).classList.toggle("active", name === view);
     }
     if (view === "kas" && !activeKas && me.kas?.length) loadKas(me.kas[0].id).catch(showError);
     if (view === "bertunas" && !activeBertunas && me.bertunas?.length) loadBertunas(me.bertunas[0].id).catch(showError);
     if (view === "galeri" && !activeGallery && me.galeri?.length) loadGallery(me.galeri[0].id).catch(showError);
+    if (view === "risma") loadRisma().catch(showError);
+    if (view === "ternak") loadTernakIndex().catch(showError);
     if (view === "users" && me.isOwner) loadUsers().catch(showError);
   }
 
@@ -1551,6 +1571,216 @@
     await reloadBertunasForContext();
   }
 
+
+  // ---------- RISMA ----------
+  async function loadRisma() {
+    const data = await api("/api/risma");
+    rismaDetail = data.risma;
+    renderRisma();
+  }
+
+  function switchRismaTab(tab) {
+    activeRismaTab = ["ringkasan","poin","kupon","tim","pengaturan","pengelola"].includes(tab) ? tab : "ringkasan";
+    document.querySelectorAll("[data-risma-tab]").forEach(el => el.classList.toggle("active", el.dataset.rismaTab === activeRismaTab));
+    for (const name of ["ringkasan","poin","kupon","tim","pengaturan","pengelola"]) $("risma-"+name+"-panel").hidden = name !== activeRismaTab;
+  }
+
+  function renderRisma() {
+    if (!rismaDetail) return;
+    const period = rismaDetail.activePeriod;
+    $("risma-name").textContent = rismaDetail.nama || "RISMA";
+    $("risma-period").textContent = period ? `Ramadan ${period.hijriYear} H${period.isSimulation ? " · Simulasi" : ""}` : "Belum ada periode aktif";
+    $("risma-role").textContent = rismaDetail.role || "admin";
+    $("risma-participants").textContent = wholeNumber.format(rismaDetail.summary?.participants || 0);
+    $("risma-weeks").textContent = `${rismaDetail.summary?.weeks || 0}/4`;
+    $("risma-teams").textContent = wholeNumber.format(rismaDetail.summary?.teams || 0);
+    $("risma-coupons").textContent = wholeNumber.format(rismaDetail.summary?.coupons || 0);
+    $("risma-total-points").textContent = `${number.format(rismaDetail.summary?.totalPoints || 0)} poin`;
+    const owner = rismaDetail.role === "owner";
+    $("risma-period-new").hidden = !owner || Boolean(period);
+    $("risma-period-close").hidden = !owner || !period || Boolean(period?.isSimulation);
+    $("risma-manager-add").hidden = !owner;
+    $("risma-team-rebuild").disabled = !period || (rismaDetail.scores || []).length < 3;
+    $("risma-coupon-add").disabled = !period;
+    renderRismaHistory();
+    renderRismaScores();
+    renderRismaWeeks();
+    renderRismaCoupons();
+    renderRismaTeams();
+    renderRismaSettings();
+    renderManagerList($("risma-manager-list"), rismaDetail.managers, { remove: removeRismaManager });
+    switchRismaTab(activeRismaTab);
+  }
+
+  function renderRismaHistory() {
+    const wrap = $("risma-period-history"); wrap.replaceChildren();
+    const periods = rismaDetail?.periods || [];
+    if (!periods.length) { wrap.appendChild(emptyBox("Belum ada riwayat periode Ramadan.")); return; }
+    for (const row of periods.slice(0,6)) {
+      const card = document.createElement("article"); card.className = "mini-stat-card";
+      const title = document.createElement("strong"); title.textContent = `Ramadan ${row.hijriYear} H`;
+      const meta = document.createElement("span"); meta.textContent = row.status === "active" ? "Aktif" : "Selesai";
+      card.append(title,meta); wrap.appendChild(card);
+    }
+  }
+
+  function participantWeekSummary(row) {
+    const parts=[];
+    for(let week=1;week<=4;week++) {
+      const data=row.weeks?.[week];
+      parts.push(`M${week}: ${data ? data.attendance : "–"}`);
+    }
+    return parts.join(" · ");
+  }
+
+  function renderRismaScores() {
+    const full=$("risma-score-list"), top=$("risma-top-list"); full.replaceChildren(); top.replaceChildren();
+    const rows=rismaDetail?.scores || [];
+    if(!rows.length){ full.appendChild(emptyBox("Belum ada peserta RISMA Poin.")); top.appendChild(emptyBox("Belum ada peringkat.")); return; }
+    rows.forEach((row,index)=>{
+      const make=(compact=false)=>{
+        const card=document.createElement("article"); card.className="item-card risma-score-card";
+        const head=document.createElement("div"); head.className="item-top";
+        const info=document.createElement("div"); const title=document.createElement("strong"); title.textContent=`${index+1}. ${row.name}`;
+        const meta=document.createElement("div"); meta.className="item-meta"; meta.textContent=`ID ${row.id}${compact?"":` · ${participantWeekSummary(row)}`}`; info.append(title,meta);
+        const pts=document.createElement("span"); pts.className="score-pill"; pts.textContent=`${number.format(row.totalPoints || 0)} poin`; head.append(info,pts); card.append(head);
+        if(!compact){ const actions=document.createElement("div"); actions.className="item-actions"; actions.append(button("Edit nama","ghost",()=>openRismaParticipant(row)),button("Hapus","danger-soft",()=>deleteRismaParticipant(row))); card.append(actions); }
+        return card;
+      };
+      full.appendChild(make(false)); if(index<5) top.appendChild(make(true));
+    });
+  }
+
+  function renderRismaWeeks() {
+    const wrap=$("risma-week-grid"); wrap.replaceChildren();
+    const period=rismaDetail?.activePeriod;
+    for(let week=1;week<=4;week++){
+      const data=(rismaDetail?.weeks||[]).find(row=>Number(row.week)===week);
+      const card=document.createElement("article"); card.className="week-card";
+      const top=document.createElement("div"); const title=document.createElement("strong"); title.textContent=`Minggu ${week}`; const meta=document.createElement("span"); meta.textContent=data?`${data.entryCount || 0} peserta tercatat`:(period?"Belum diinput":"Tidak ada periode aktif"); top.append(title,meta);
+      const action=button(data?"Edit":"Input",data?"ghost compact":"primary compact",()=>openRismaWeek(week)); action.disabled=!period || (week>1 && !(rismaDetail.weeks||[]).some(x=>Number(x.week)===1)); card.append(top,action); wrap.appendChild(card);
+    }
+  }
+
+  function openRismaWeek(week) {
+    const existing=(rismaDetail?.weeks||[]).find(row=>Number(row.week)===Number(week));
+    $("risma-week-number").value=String(week); $("risma-week-title").textContent=`${existing?"Edit":"Input"} Minggu ${week}`;
+    if(existing){
+      const nameMap=new Map((rismaDetail.scores||[]).map(x=>[String(x.id),x.name]));
+      $("risma-week-text").value=(existing.entries||[]).map(e=>`${e.participantId} ${Number(e.attendance||0)}`).join("\n");
+    } else $("risma-week-text").value="";
+    setStatus($("risma-week-status")); $("risma-week-dialog").showModal();
+  }
+
+  function openRismaParticipant(row){ $("risma-participant-id").value=row.id; $("risma-participant-name").value=row.name||""; setStatus($("risma-participant-status")); $("risma-participant-dialog").showModal(); }
+  async function deleteRismaParticipant(row){ if(!confirm(`Hapus ${row.name} dari peserta RISMA Poin? Data poin peserta ini ikut dibersihkan.`))return; await api(`/api/risma/participant/${encodeURIComponent(row.id)}`,{method:"DELETE",body:"{}"}); await loadRisma(); }
+
+  function activeCouponGroup(){ return (rismaDetail?.couponTypes||[]).find(row=>row.type===rismaCouponType) || null; }
+  function renderRismaCoupons(){
+    const group=activeCouponGroup() || (rismaDetail?.couponTypes||[])[0];
+    if(group){ rismaCouponType=group.type; $("risma-coupon-type").value=group.type; }
+    const summary=$("risma-coupon-summary"), list=$("risma-coupon-list"); summary.replaceChildren(); list.replaceChildren();
+    if(!group){ summary.appendChild(emptyBox("Aktifkan periode untuk mengelola kupon.")); return; }
+    for(const [label,value] of [["Penerima",group.stats.recipients],["Kupon",group.stats.coupons],["Sudah dibagi",group.stats.done],["Menunggu",group.stats.pending]]){
+      const card=document.createElement("article"); card.className="metric-card"; card.innerHTML=`<span>${label}</span><b>${wholeNumber.format(value||0)}</b>`; summary.appendChild(card);
+    }
+    if(!(group.rows||[]).length){ list.appendChild(emptyBox("Belum ada penerima kupon.")); return; }
+    for(const row of group.rows){
+      const card=document.createElement("article"); card.className="item-card"; const head=document.createElement("div"); head.className="item-top";
+      const info=document.createElement("div"); const title=document.createElement("strong"); title.textContent=`${String(row.no).padStart(2,"0")} · ${row.name}`; const meta=document.createElement("div"); meta.className="item-meta"; meta.textContent=`${row.count} kupon · ${row.status==="done"?"Sudah dibagikan":"Menunggu"}`; info.append(title,meta);
+      const badge=document.createElement("span"); badge.className=row.status==="done"?"status-chip done":"status-chip pending"; badge.textContent=row.status==="done"?"Selesai":"Pending"; head.append(info,badge); card.append(head);
+      const actions=document.createElement("div"); actions.className="item-actions"; actions.append(button(row.status==="done"?"Batalkan selesai":"Tandai selesai",row.status==="done"?"ghost":"success-soft",()=>toggleRismaCoupon(row)),button("Edit","ghost",()=>openRismaCouponEdit(row)),button("Hapus","danger-soft",()=>deleteRismaCoupon(row))); card.append(actions); list.appendChild(card);
+    }
+  }
+  async function toggleRismaCoupon(row){ await api(`/api/risma/coupon/${encodeURIComponent(rismaCouponType)}/${row.no}`,{method:"PATCH",body:JSON.stringify({done:row.status!=="done"})}); await loadRisma(); }
+  function openRismaCouponEdit(row){ $("risma-coupon-edit-no").value=row.no; $("risma-coupon-edit-name").value=row.name; $("risma-coupon-edit-count").value=String(row.count||1); setStatus($("risma-coupon-edit-status")); $("risma-coupon-edit-dialog").showModal(); }
+  async function deleteRismaCoupon(row){ if(!confirm(`Hapus ${row.name} dari ${activeCouponGroup()?.label || "Kupon THR"}?`))return; await api(`/api/risma/coupon/${encodeURIComponent(rismaCouponType)}/${row.no}`,{method:"DELETE",body:"{}"}); await loadRisma(); }
+
+  function renderRismaTeams(){
+    const list=$("risma-team-list"); list.replaceChildren(); const rows=rismaDetail?.teams||[];
+    if(!rows.length){ list.appendChild(emptyBox("Tim belum disusun. Tim dapat dibuat setelah peserta tersedia.")); return; }
+    rows.forEach((row,index)=>{ const card=document.createElement("article"); card.className="team-card"; const title=document.createElement("strong"); title.textContent=`${index+1}. ${row.name}`; const score=document.createElement("span"); score.textContent=`Rata-rata ${number.format(row.averagePoints||0)} · Total ${number.format(row.totalPoints||0)}`; const members=document.createElement("p"); members.textContent=(row.members||[]).map(x=>x.name).join(" · ")||"Belum ada anggota"; card.append(title,score,members); list.appendChild(card); });
+  }
+
+  function syncRismaTemplateForm(){
+    const settings=rismaDetail?.settings; const type=$("risma-template-type").value || "ngaji"; const tpl=settings?.couponTemplates?.[type] || {};
+    $("risma-template-title").value=tpl.title||""; $("risma-template-slogan").value=tpl.slogan||""; $("risma-template-footer").value=tpl.footer||""; $("risma-template-palette").value=tpl.palette||"hijau";
+  }
+
+  function renderRismaSettings(){
+    const settings=rismaDetail?.settings; const owner=rismaDetail?.role==="owner"; const period=rismaDetail?.activePeriod;
+    const form=$("risma-settings-form"), template=$("risma-template-form");
+    for(const el of [...form.elements,...template.elements]) el.disabled=!owner || !period;
+    $("risma-template-reset").disabled=!owner || !period;
+    if(!settings){ $("risma-setting-rank").value="10"; $("risma-setting-team").value="3"; $("risma-setting-ngaji").checked=true; $("risma-setting-taraweh").checked=true; $("risma-setting-tadarus").checked=true; syncRismaTemplateForm(); return; }
+    $("risma-setting-rank").value=String(settings.individualWinnerCount||10); $("risma-setting-team").value=String(settings.teamWinnerCount||3);
+    $("risma-setting-ngaji").checked=settings.couponEnabled?.ngaji!==false; $("risma-setting-taraweh").checked=settings.couponEnabled?.taraweh!==false; $("risma-setting-tadarus").checked=settings.couponEnabled?.tadarus!==false;
+    syncRismaTemplateForm();
+  }
+
+  async function saveRismaSettings(event){ event.preventDefault(); setStatus($("risma-settings-status"),"Menyimpan pengaturan…"); try{ const data=await api("/api/risma/settings",{method:"PUT",body:JSON.stringify({individualWinnerCount:Number($("risma-setting-rank").value),teamWinnerCount:Number($("risma-setting-team").value),couponEnabled:{ngaji:$("risma-setting-ngaji").checked,taraweh:$("risma-setting-taraweh").checked,tadarus:$("risma-setting-tadarus").checked}})}); rismaDetail=data.risma; renderRisma(); setStatus($("risma-settings-status"),"Pengaturan tersimpan.","success"); }catch(error){setStatus($("risma-settings-status"),error.message,"error");} }
+  async function saveRismaTemplate(event){ event.preventDefault(); const type=$("risma-template-type").value; setStatus($("risma-template-status"),"Menyimpan template…"); try{const data=await api(`/api/risma/coupon-template/${encodeURIComponent(type)}`,{method:"PUT",body:JSON.stringify({title:$("risma-template-title").value,slogan:$("risma-template-slogan").value,footer:$("risma-template-footer").value,palette:$("risma-template-palette").value})});rismaDetail=data.risma;renderRisma();setStatus($("risma-template-status"),"Template tersimpan.","success");}catch(error){setStatus($("risma-template-status"),error.message,"error");}}
+  async function resetRismaTemplate(){ const type=$("risma-template-type").value;if(!confirm("Kembalikan template kupon ini ke desain bawaan?"))return;setStatus($("risma-template-status"),"Mengembalikan template…");try{const data=await api(`/api/risma/coupon-template/${encodeURIComponent(type)}`,{method:"POST",body:"{}"});rismaDetail=data.risma;renderRisma();setStatus($("risma-template-status"),"Template kembali ke default.","success");}catch(error){setStatus($("risma-template-status"),error.message,"error");}}
+
+  function openRismaManager(){ $("risma-manager-form").reset(); setStatus($("risma-manager-status")); $("risma-manager-dialog").showModal(); }
+  async function removeRismaManager(person){ if(!confirm(`Hapus ${person.name} dari Admin RISMA?`))return; await api(`/api/risma/admin/${encodeURIComponent(person.ref)}`,{method:"DELETE",body:"{}"}); await loadRisma(); }
+
+  // ---------- TERNAK ----------
+  async function loadTernakIndex(forceDetail=false){
+    const data=await api("/api/ternak"); ternakList=data.ternak||[]; ternakJenis=data.jenis||[];
+    fillSelect($("ternak-select"),ternakList,row=>`${row.nama} · ${row.jenis} · ${row.role}`);
+    $("ternak-create").hidden=!me?.isOwner; $("ternak-kind-create").hidden=!(data.canCreateJenis ?? me?.isOwner);
+    if(!ternakList.length){ activeTernak=""; ternakDetail=null; $("ternak-content").hidden=true; return; }
+    const wanted=activeTernak && ternakList.some(x=>x.id===activeTernak)?activeTernak:ternakList[0].id;
+    $("ternak-select").value=wanted;
+    if(forceDetail || !ternakDetail || activeTernak!==wanted) await loadTernak(wanted); else renderTernak();
+  }
+
+  async function loadTernak(id){ activeTernak=id; $("ternak-select").value=id; const data=await api(`/api/ternak/${encodeURIComponent(id)}`); ternakDetail=data.ternak; $("ternak-content").hidden=false; renderTernak(); }
+
+  function switchTernakTab(tab){ activeTernakTab=["populasi","aktivitas","keuangan","reproduksi","pengelola"].includes(tab)?tab:"populasi"; document.querySelectorAll("[data-ternak-tab]").forEach(el=>el.classList.toggle("active",el.dataset.ternakTab===activeTernakTab)); for(const name of ["populasi","aktivitas","keuangan","reproduksi","pengelola"]) $("ternak-"+name+"-panel").hidden=name!==activeTernakTab; }
+
+  function renderTernak(){
+    if(!ternakDetail)return; const d=ternakDetail; $("ternak-name").textContent=d.nama; $("ternak-kind").textContent=d.jenisNama||"Ternak"; $("ternak-mode").textContent=`${d.mode==="individu"?"Pencatatan per ekor":"Pencatatan kelompok/batch"} · ${d.grup||0} grup`; $("ternak-role").textContent=d.role;
+    $("ternak-active").textContent=wholeNumber.format(d.stats?.totalAktif||0); $("ternak-income").textContent=rupiah.format(d.finance?.totalMasuk||0); $("ternak-expense").textContent=rupiah.format(d.finance?.totalKeluar||0); $("ternak-profit").textContent=rupiah.format(d.finance?.selisih||0);
+    $("ternak-pop-title").textContent=d.mode==="individu"?"Ternak per ekor":"Batch/populasi"; $("ternak-feed-total").textContent=rupiah.format(d.activity?.pakan?.totalBiaya||0); $("ternak-health-total").textContent=rupiah.format(d.activity?.kesehatan?.totalBiaya||0); $("ternak-manager-add").hidden=d.role!=="owner";
+    renderTernakItems(); renderTernakActivities(); renderTernakFinance(); renderTernakReproduction(); renderManagerList($("ternak-manager-list"),d.managers,{remove:removeTernakManager}); switchTernakTab(activeTernakTab);
+  }
+
+  function renderManagerList(list, managers, {remove}={}){
+    list.replaceChildren(); if(!managers){list.appendChild(emptyBox("Data pengelola belum tersedia."));return;}
+    const rows=[{...(managers.owner||{}),roleLabel:"Owner",owner:true},...(managers.admins||[]).map(x=>({...x,roleLabel:"Admin",owner:false}))];
+    for(const person of rows){ const card=document.createElement("article"); card.className="manager-card"; const avatar=document.createElement("div"); avatar.className="manager-avatar"; avatar.textContent=String(person.name||"P").slice(0,1).toUpperCase(); const meta=document.createElement("div"); meta.className="manager-meta"; const name=document.createElement("strong"); name.textContent=person.name||"Pengguna PROxyz"; const detail=document.createElement("span"); detail.textContent=`${person.roleLabel}${person.phone?` · +${person.phone}`:""}`; meta.append(name,detail); card.append(avatar,meta); if(managers.role==="owner"&&!person.owner&&remove){ const actions=document.createElement("div"); actions.className="manager-actions"; actions.append(button("Hapus","danger-soft compact",()=>remove(person))); card.append(actions); } list.appendChild(card); }
+    if(!(managers.admins||[]).length){ const note=document.createElement("div"); note.className="empty"; note.textContent="Belum ada Admin tambahan."; list.appendChild(note); }
+  }
+
+  function itemLabel(item){ return `ID ${item.kode}${item.nama?` · ${item.nama}`:""}`; }
+  function renderTernakItems(){ const list=$("ternak-item-list"); list.replaceChildren(); const q=String(ternakSearch||"").toLowerCase(); let rows=(ternakDetail?.items||[]).filter(x=>[x.kode,x.nama,x.fungsi,x.status].some(v=>String(v||"").toLowerCase().includes(q))); rows.sort((a,b)=>Number(b.jumlahAktif>0)-Number(a.jumlahAktif>0)||Number(a.kode)-Number(b.kode)); if(!rows.length){list.appendChild(emptyBox("Data populasi tidak ditemukan."));return;} for(const item of rows){ const card=document.createElement("article"); card.className="item-card ternak-item-card"; const head=document.createElement("div"); head.className="item-top"; const info=document.createElement("div"); const title=document.createElement("strong"); title.textContent=itemLabel(item); const meta=document.createElement("div"); meta.className="item-meta"; meta.textContent=`${item.fungsi||"Belum ditentukan"} · ${item.tipe==="batch"?`${wholeNumber.format(item.jumlahAktif||0)} aktif`:(item.kelamin||"—")} · ${item.status||"aktif"}`; info.append(title,meta); const badge=document.createElement("span"); badge.className=Number(item.jumlahAktif||0)>0&&item.status==="aktif"?"status-chip done":"status-chip pending"; badge.textContent=item.tipe==="batch"?wholeNumber.format(item.jumlahAktif||0):(item.status||"aktif"); head.append(info,badge); card.append(head); if((item.status==="aktif"||Number(item.jumlahAktif||0)>0)){ const actions=document.createElement("div"); actions.className="item-actions"; actions.append(button("Edit","ghost",()=>openTernakEdit(item)),button("Jual","success-soft",()=>openTernakSale(item)),button("Status","ghost",()=>openTernakStatus(item))); card.append(actions); } list.appendChild(card); } }
+
+  function renderRecordCard(row,type){ const card=document.createElement("article"); card.className="item-card"; const head=document.createElement("div"); head.className="item-top"; const info=document.createElement("div"); const title=document.createElement("strong"); title.textContent=type==="feed"?(row.namaPakan||"Pakan"):(row.kategori||"Kesehatan"); const meta=document.createElement("div"); meta.className="item-meta"; const target=row.targetNama||row.kode?` · ${row.targetNama||`ID ${row.kode}`}`:""; meta.textContent=`${row.tanggal||"—"}${target}${type==="feed"&&row.jumlah?` · ${number.format(row.jumlah)} ${row.satuan||""}`:""}`; info.append(title,meta); const cost=document.createElement("span"); cost.className="amount out"; cost.textContent=rupiah.format(row.biaya||0); head.append(info,cost); card.append(head); if(type==="health"&&row.keterangan){ const note=document.createElement("p"); note.className="muted small record-note"; note.textContent=row.keterangan; card.append(note); } return card; }
+  function renderTernakActivities(){ const feed=$("ternak-feed-list"),health=$("ternak-health-list"); feed.replaceChildren(); health.replaceChildren(); const fr=ternakDetail?.feed||[],hr=ternakDetail?.health||[]; if(!fr.length)feed.appendChild(emptyBox("Belum ada catatan pakan.")); else fr.forEach(x=>feed.appendChild(renderRecordCard(x,"feed"))); if(!hr.length)health.appendChild(emptyBox("Belum ada catatan kesehatan.")); else hr.forEach(x=>health.appendChild(renderRecordCard(x,"health"))); }
+  function renderTernakFinance(){ const metrics=$("ternak-finance-metrics"),list=$("ternak-finance-list"); metrics.replaceChildren(); list.replaceChildren(); const f=ternakDetail?.finance||{}; for(const [label,value,kind] of [["Pemasukan",f.totalMasuk,"in"],["Pengeluaran",f.totalKeluar,"out"],["Selisih",f.selisih,(f.selisih||0)>=0?"in":"out"],["Bulan ini",f.selisihBulan,(f.selisihBulan||0)>=0?"in":"out"]]){ const card=document.createElement("article"); card.className="metric-card"; const l=document.createElement("span");l.textContent=label;const b=document.createElement("b");b.className=`amount ${kind}`;b.textContent=rupiah.format(value||0);card.append(l,b);metrics.appendChild(card); } const rows=ternakDetail?.financeRows||[]; if(!rows.length){list.appendChild(emptyBox("Belum ada transaksi keuangan."));return;} for(const row of rows){ const card=document.createElement("article");card.className="item-card";const head=document.createElement("div");head.className="item-top";const info=document.createElement("div");const t=document.createElement("strong");t.textContent=row.kategori||"Keuangan";const m=document.createElement("div");m.className="item-meta";m.textContent=`${row.tanggal||"—"} · ${row.keterangan||""}`;info.append(t,m);const a=document.createElement("span");a.className=`amount ${row.arah==="masuk"?"in":"out"}`;a.textContent=`${row.arah==="masuk"?"+":"−"}${rupiah.format(row.nominal||0)}`;head.append(info,a);card.append(head);list.appendChild(card); } }
+  function renderTernakReproduction(){ const summary=$("ternak-repro-summary"),list=$("ternak-repro-list"); summary.replaceChildren(); list.replaceChildren(); const r=ternakDetail?.reproduction||{}; const st=r.stats||{}; if(r.mode==="individu"){ for(const [label,value] of [["Dikawinkan",st.dikawinkan||0],["Bunting",st.bunting||0],["Menyusui",st.menyusui||0],["Kosong",st.kosong||0],["Lahir tahun ini",st.lahirTahunIni||0]]){const c=document.createElement("article");c.className="metric-card";c.innerHTML=`<span>${label}</span><b>${wholeNumber.format(value)}</b>`;summary.appendChild(c);} } else if(st){ const entries=st.type==="ayam"?[["Indukan",st.indukanAktif],["Anak/DOC",st.anakAktif],["Menetas",st.menetas],["Kejadian",st.events]]:[["Indukan",st.indukanAktif],["Benih aktif",st.benihAktif],["Benih lahir",st.benih],["Kejadian",st.events]]; for(const [label,value] of entries){const c=document.createElement("article");c.className="metric-card";c.innerHTML=`<span>${label}</span><b>${wholeNumber.format(value||0)}</b>`;summary.appendChild(c);} } else summary.appendChild(emptyBox("Reproduksi batch belum tersedia untuk jenis ini.")); const rows=r.recent||[]; if(!rows.length){list.appendChild(emptyBox("Belum ada riwayat reproduksi."));return;} for(const row of rows){ const card=document.createElement("article");card.className="item-card";const title=document.createElement("strong");title.textContent=row.aksi?String(row.aksi).replace(/_/g," "):row.jenis||"Reproduksi";const meta=document.createElement("div");meta.className="item-meta";meta.textContent=`${row.tanggal||"—"} · ID ${row.sumberBatchKode||row.indukKode||row.kode||"—"}`;card.append(title,meta);list.appendChild(card);} }
+
+  function fillSelectOptions(select, rows, labeler=x=>x){ select.replaceChildren(); rows.forEach((row,index)=>{const o=document.createElement("option");o.value=typeof row==="string"?row:(row.value??row.id??row.kode??index);o.textContent=labeler(row,index);select.appendChild(o);}); }
+  function openTernakKind(){ $("ternak-kind-form").reset(); setStatus($("ternak-kind-status")); $("ternak-kind-dialog").showModal(); }
+  function syncTernakEditFunctions(){ if(!ternakDetail)return; const sex=$("ternak-edit-sex").value; fillSelectOptions($("ternak-edit-function"),sex==="jantan"?ternakDetail.options.maleFunctions:ternakDetail.options.femaleFunctions); }
+  function openTernakEdit(item){ if(!ternakDetail)return; $("ternak-edit-form").reset(); $("ternak-edit-code").value=item.kode; $("ternak-edit-title").textContent=`Edit ${itemLabel(item)}`; const individual=item.tipe==="individu"; $("ternak-edit-individual").hidden=!individual; $("ternak-edit-batch").hidden=individual; if(individual){ $("ternak-edit-name").value=item.nama||""; $("ternak-edit-sex").value=String(item.kelamin||"betina").toLowerCase(); syncTernakEditFunctions(); $("ternak-edit-function").value=item.fungsi||$("ternak-edit-function").value; } else { $("ternak-edit-batch-name").value=item.nama||""; fillSelectOptions($("ternak-edit-batch-function"),ternakDetail.options.batchFunctions||[]); $("ternak-edit-batch-function").value=item.fungsi||$("ternak-edit-batch-function").value; } $("ternak-edit-origin").value=item.asal==="Menetas/Lahir"?"Lahir":(item.asal||"Beli"); $("ternak-edit-date").value=String(item.tanggalMasuk||"").match(/^\d{4}-\d{2}-\d{2}$/)?item.tanggalMasuk:todayJakarta(); $("ternak-edit-cost").value=String(individual?(item.hargaBeli||0):(item.modalAwal||0)); setStatus($("ternak-edit-status")); $("ternak-edit-dialog").showModal(); }
+
+  function openTernakCreate(){ $("ternak-create-form").reset(); fillSelectOptions($("ternak-create-kind"),ternakJenis,row=>`${row.emoji||"🐾"} ${row.label} · ${row.mode==="individu"?"per ekor":"batch"}`); setStatus($("ternak-create-status")); $("ternak-create-dialog").showModal(); }
+  function syncTernakItemFunctions(){ if(!ternakDetail)return; const sex=$("ternak-item-sex").value; const rows=sex==="jantan"?ternakDetail.options.maleFunctions:ternakDetail.options.femaleFunctions; fillSelectOptions($("ternak-item-function"),rows); }
+  function openTernakItem(){ if(!ternakDetail)return; $("ternak-item-form").reset(); const individual=ternakDetail.mode==="individu"; $("ternak-item-individual").hidden=!individual; $("ternak-item-batch").hidden=individual; $("ternak-item-title").textContent=individual?"Tambah ternak":"Tambah batch"; $("ternak-item-date").value=todayJakarta(); if(individual)syncTernakItemFunctions(); else fillSelectOptions($("ternak-batch-function"),ternakDetail.options.batchFunctions||[]); setStatus($("ternak-item-status")); $("ternak-item-dialog").showModal(); }
+  function activityTargetOptions(){ return [{kode:"0",nama:"Seluruh ternak"},...(ternakDetail?.items||[]).filter(x=>x.status==="aktif"&&Number(x.jumlahAktif||0)>0)]; }
+  function openTernakActivity(type){ $("ternak-activity-form").reset(); $("ternak-activity-type").value=type; const feed=type==="feed"; $("ternak-feed-fields").hidden=!feed; $("ternak-health-fields").hidden=feed; $("ternak-activity-eyebrow").textContent=feed?"Pakan":"Kesehatan"; $("ternak-activity-title").textContent=feed?"Catat pakan":"Catat kesehatan"; fillSelectOptions($("ternak-activity-target"),activityTargetOptions(),row=>row.kode==="0"?row.nama:`ID ${row.kode}${row.nama?` · ${row.nama}`:""}`); if(!feed)fillSelectOptions($("ternak-health-category"),ternakDetail.options.healthCategories||[]); $("ternak-activity-date").value=todayJakarta(); setStatus($("ternak-activity-status")); $("ternak-activity-dialog").showModal(); }
+  function syncTernakFinanceCategories(){ const direction=$("ternak-finance-direction").value; const rows=direction==="masuk"?ternakDetail.options.financeIncome:ternakDetail.options.financeExpense; fillSelectOptions($("ternak-finance-category"),rows); $("ternak-finance-custom-wrap").hidden=$("ternak-finance-category").value!=="Lainnya"; }
+  function openTernakFinance(){ $("ternak-finance-form").reset(); $("ternak-finance-date").value=todayJakarta(); syncTernakFinanceCategories(); setStatus($("ternak-finance-status")); $("ternak-finance-dialog").showModal(); }
+  function openTernakSale(item){ $("ternak-sale-form").reset(); $("ternak-sale-code").value=item.kode; $("ternak-sale-title").textContent=`Jual ${itemLabel(item)}`; $("ternak-sale-count-wrap").hidden=item.tipe!=="batch"; $("ternak-sale-count").max=String(item.jumlahAktif||1); $("ternak-sale-count").value="1"; $("ternak-sale-date").value=todayJakarta(); setStatus($("ternak-sale-status")); $("ternak-sale-dialog").showModal(); }
+  function openTernakStatus(item){ $("ternak-status-form").reset(); $("ternak-status-code").value=item.kode; $("ternak-status-title").textContent=`Status ${itemLabel(item)}`; $("ternak-status-count-wrap").hidden=item.tipe!=="batch"; $("ternak-status-count").max=String(item.jumlahAktif||1); $("ternak-status-count").value="1"; setStatus($("ternak-status-status")); $("ternak-status-dialog").showModal(); }
+  function openTernakReproduction(){ if(!ternakDetail)return; $("ternak-repro-form").reset(); $("ternak-repro-date").value=todayJakarta(); const individual=ternakDetail.mode==="individu"; let actions; if(individual)actions=[{value:"kawin",label:"Perkawinan"},{value:"bunting",label:"Konfirmasi bunting"},{value:"lahir",label:"Kelahiran"},{value:"sapih",label:"Penyapihan"}]; else if(ternakDetail.jenis==="ayam")actions=[{value:"tetas",label:"Penetasan"}]; else if(["lele","nila"].includes(ternakDetail.jenis))actions=[{value:"pijah",label:"Pemijahan"}]; else actions=[]; if(!actions.length){showError(new Error("Jenis ternak ini belum memiliki alur reproduksi khusus."));return;} fillSelectOptions($("ternak-repro-action"),actions,row=>row.label); syncTernakReproFields(); setStatus($("ternak-repro-status")); $("ternak-repro-dialog").showModal(); }
+  function syncTernakReproFields(){ const action=$("ternak-repro-action").value; const items=ternakDetail?.items||[]; let targets=[]; if(["kawin","bunting","lahir"].includes(action))targets=items.filter(x=>x.tipe==="individu"&&x.status==="aktif"&&String(x.kelamin||"").toLowerCase()==="betina"&&x.fungsi==="Induk"); else if(action==="sapih")targets=items.filter(x=>x.tipe==="individu"&&x.status==="aktif"&&x.fungsi==="Anak"&&!x.disapih); else targets=items.filter(x=>x.tipe==="batch"&&x.status==="aktif"&&Number(x.jumlahAktif||0)>0&&String(x.fungsi||"").toLowerCase()==="indukan"); fillSelectOptions($("ternak-repro-target"),targets,row=>itemLabel(row)); const male=action==="kawin"; $("ternak-repro-male-wrap").hidden=!male; if(male)fillSelectOptions($("ternak-repro-male"),items.filter(x=>x.tipe==="individu"&&x.status==="aktif"&&String(x.kelamin||"").toLowerCase()==="jantan"&&x.fungsi==="Pejantan"),row=>itemLabel(row)); $("ternak-repro-birth-wrap").hidden=action!=="lahir"; $("ternak-repro-hatch-wrap").hidden=action!=="tetas"; $("ternak-repro-spawn-wrap").hidden=action!=="pijah"; $("ternak-repro-name-wrap").hidden=!["tetas","pijah"].includes(action); }
+  function openTernakManager(){ $("ternak-manager-form").reset(); setStatus($("ternak-manager-status")); $("ternak-manager-dialog").showModal(); }
+  async function removeTernakManager(person){ if(!confirm(`Hapus ${person.name} dari Admin ${ternakDetail?.nama}?`))return; await api(`/api/ternak/${encodeURIComponent(activeTernak)}/admin/${encodeURIComponent(person.ref)}`,{method:"DELETE",body:"{}"}); await loadTernak(activeTernak); }
+
   // ---------- GALERI ----------
   async function loadGallery(id) {
     if (activeGallery && activeGallery !== id) {
@@ -1781,21 +2011,45 @@
   async function loadGalleryAdmins() {
     const data = await api(`/api/galeri/${encodeURIComponent(activeGallery)}/admin`);
     const list = $("gallery-admin-list"); list.replaceChildren();
-    const owner = document.createElement("div"); owner.className = "admin-row"; const om = document.createElement("div"); om.className = "admin-meta"; const os = document.createElement("strong"); os.textContent = data.owner?.label || "Owner"; const or = document.createElement("span"); or.textContent = "Owner Galeri"; om.append(os,or); owner.appendChild(om); list.appendChild(owner);
-    for (const admin of data.admins || []) {
-      const row = document.createElement("div"); row.className = "admin-row"; const meta = document.createElement("div"); meta.className = "admin-meta"; const strong = document.createElement("strong"); strong.textContent = admin.label || admin.phone || "Admin"; const role = document.createElement("span"); role.textContent = "Admin Galeri"; meta.append(strong, role); row.appendChild(meta);
-      if (data.role === "owner") row.appendChild(button("Hapus", "danger-soft compact", () => removeGalleryAdmin(admin)));
+    const rows = [{ ...data.owner, roleLabel:"Owner Galeri", owner:true }, ...(data.admins || []).map(row => ({ ...row, roleLabel:"Admin Galeri", owner:false }))];
+    for (const person of rows) {
+      const row = document.createElement("article"); row.className = "manager-card";
+      const avatar = document.createElement("div"); avatar.className = "manager-avatar"; avatar.textContent = String(person.name || "P").trim().slice(0,1).toUpperCase();
+      const meta = document.createElement("div"); meta.className = "manager-meta";
+      const name = document.createElement("strong"); name.textContent = person.name || person.label || "Pengguna PROxyz";
+      const detail = document.createElement("span"); detail.textContent = `${person.roleLabel}${person.phone ? ` · +${person.phone}` : ""}`;
+      meta.append(name,detail); row.append(avatar,meta);
+      if (data.role === "owner") {
+        const actions = document.createElement("div"); actions.className = "manager-actions";
+        actions.append(button("Nama", "ghost compact", () => openGalleryManagerName(person)));
+        if (!person.owner) actions.append(button("Hapus", "danger-soft compact", () => removeGalleryAdmin(person)));
+        row.append(actions);
+      }
       list.appendChild(row);
     }
     if (!(data.admins || []).length) { const note = document.createElement("div"); note.className = "empty"; note.textContent = "Belum ada Admin Galeri tambahan."; list.appendChild(note); }
   }
 
+  function openGalleryAdminDialog() {
+    $("gallery-admin-form").reset();
+    setStatus($("gallery-admin-status"));
+    $("gallery-admin-dialog").showModal();
+    setTimeout(() => $("gallery-admin-phone").focus(), 80);
+  }
+
+  function openGalleryManagerName(person) {
+    $("gallery-manager-name-ref").value = person.ref || "";
+    $("gallery-manager-name-input").value = person.name && !String(person.name).startsWith("+") ? person.name : "";
+    setStatus($("gallery-manager-name-status"));
+    $("gallery-manager-name-dialog").showModal();
+    setTimeout(() => $("gallery-manager-name-input").focus(), 80);
+  }
+
   async function removeGalleryAdmin(admin) {
-    if (!confirm(`Hapus ${admin.label || admin.phone} dari Admin Galeri?`)) return;
+    if (!confirm(`Hapus ${admin.name || admin.label || admin.phone} dari Admin Galeri?`)) return;
     await api(`/api/galeri/${encodeURIComponent(activeGallery)}/admin/${encodeURIComponent(admin.ref)}`, { method: "DELETE", body: "{}" });
     await loadGalleryAdmins();
   }
-
 
 
   function setGalleryVideoFormLocked(locked) {
@@ -2617,6 +2871,62 @@
     } catch (error) { setStatus($("bt-form-status"), error.message, "error"); }
   });
 
+
+  // RISMA events
+  document.querySelectorAll("[data-risma-tab]").forEach(el => el.addEventListener("click", () => switchRismaTab(el.dataset.rismaTab)));
+  $("risma-refresh").addEventListener("click", () => loadRisma().catch(showError));
+  $("risma-period-new").addEventListener("click", () => { $("risma-period-form").reset(); setStatus($("risma-period-status")); $("risma-period-dialog").showModal(); });
+  $("risma-period-close").addEventListener("click", async () => { if(!rismaDetail?.activePeriod || !confirm(`Tutup periode Ramadan ${rismaDetail.activePeriod.hijriYear} H? Data tetap tersimpan.`))return; try{ await api(`/api/risma/period/${encodeURIComponent(rismaDetail.activePeriod.id)}/close`,{method:"POST",body:"{}"}); await loadRisma(); }catch(error){showError(error);} });
+  $("close-risma-period").addEventListener("click",()=>$("risma-period-dialog").close());
+  $("risma-period-form").addEventListener("submit",async event=>{event.preventDefault();setStatus($("risma-period-status"),"Membuat periode…");try{await api("/api/risma/period",{method:"POST",body:JSON.stringify({hijriYear:$("risma-period-year").value})});$("risma-period-dialog").close();await loadRisma();}catch(error){setStatus($("risma-period-status"),error.message,"error");}});
+  $("close-risma-week").addEventListener("click",()=>$("risma-week-dialog").close());
+  $("risma-week-form").addEventListener("submit",async event=>{event.preventDefault();const week=$("risma-week-number").value;setStatus($("risma-week-status"),"Menyimpan poin…");try{await api(`/api/risma/week/${week}`,{method:"PUT",body:JSON.stringify({text:$("risma-week-text").value})});$("risma-week-dialog").close();await loadRisma();}catch(error){setStatus($("risma-week-status"),error.message,"error");}});
+  $("close-risma-participant").addEventListener("click",()=>$("risma-participant-dialog").close());
+  $("risma-participant-form").addEventListener("submit",async event=>{event.preventDefault();setStatus($("risma-participant-status"),"Menyimpan…");try{await api(`/api/risma/participant/${encodeURIComponent($("risma-participant-id").value)}`,{method:"PATCH",body:JSON.stringify({name:$("risma-participant-name").value})});$("risma-participant-dialog").close();await loadRisma();}catch(error){setStatus($("risma-participant-status"),error.message,"error");}});
+  $("risma-coupon-type").addEventListener("change",()=>{rismaCouponType=$("risma-coupon-type").value;renderRismaCoupons();});
+  $("risma-coupon-add").addEventListener("click",()=>{$("risma-coupon-add-form").reset();setStatus($("risma-coupon-add-status"));$("risma-coupon-add-dialog").showModal();});
+  $("close-risma-coupon-add").addEventListener("click",()=>$("risma-coupon-add-dialog").close());
+  $("risma-coupon-add-form").addEventListener("submit",async event=>{event.preventDefault();let allowSimilar=false;while(true){setStatus($("risma-coupon-add-status"),"Memeriksa penerima…");try{const data=await api(`/api/risma/coupon/${encodeURIComponent(rismaCouponType)}`,{method:"POST",body:JSON.stringify({text:$("risma-coupon-add-text").value,allowSimilar})});if(data.needsConfirmation&&!allowSimilar){const names=(data.similar||[]).map(x=>x.input?.name).filter(Boolean).join(", ");if(!confirm(`Ada nama yang mirip${names?`: ${names}`:""}. Tetap tambahkan?`))return;allowSimilar=true;continue;}$("risma-coupon-add-dialog").close();await loadRisma();break;}catch(error){setStatus($("risma-coupon-add-status"),error.message,"error");break;}}});
+  $("close-risma-coupon-edit").addEventListener("click",()=>$("risma-coupon-edit-dialog").close());
+  $("risma-coupon-edit-form").addEventListener("submit",async event=>{event.preventDefault();const no=$("risma-coupon-edit-no").value;setStatus($("risma-coupon-edit-status"),"Menyimpan…");try{await api(`/api/risma/coupon/${encodeURIComponent(rismaCouponType)}/${no}`,{method:"PATCH",body:JSON.stringify({name:$("risma-coupon-edit-name").value,count:Number($("risma-coupon-edit-count").value),allowSimilar:true})});$("risma-coupon-edit-dialog").close();await loadRisma();}catch(error){setStatus($("risma-coupon-edit-status"),error.message,"error");}});
+  $("risma-team-rebuild").addEventListener("click",async()=>{if(!confirm("Susun ulang tim agar lebih seimbang berdasarkan poin terbaru?"))return;try{await api("/api/risma/teams/rebuild",{method:"POST",body:"{}"});await loadRisma();}catch(error){showError(error);}});
+  $("risma-settings-form").addEventListener("submit",saveRismaSettings);
+  $("risma-template-type").addEventListener("change",syncRismaTemplateForm);
+  $("risma-template-form").addEventListener("submit",saveRismaTemplate);
+  $("risma-template-reset").addEventListener("click",resetRismaTemplate);
+  $("risma-manager-add").addEventListener("click",openRismaManager);
+  $("close-risma-manager").addEventListener("click",()=>$("risma-manager-dialog").close());
+  $("risma-manager-form").addEventListener("submit",async event=>{event.preventDefault();setStatus($("risma-manager-status"),"Menambahkan Admin…");try{await api("/api/risma/admin",{method:"POST",body:JSON.stringify({phone:$("risma-manager-phone").value,name:$("risma-manager-name").value})});$("risma-manager-dialog").close();await loadRisma();}catch(error){setStatus($("risma-manager-status"),error.message,"error");}});
+
+  // Ternak events
+  document.querySelectorAll("[data-ternak-tab]").forEach(el=>el.addEventListener("click",()=>switchTernakTab(el.dataset.ternakTab)));
+  $("ternak-select").addEventListener("change",()=>loadTernak($("ternak-select").value).catch(showError));
+  $("ternak-refresh").addEventListener("click",()=>loadTernak(activeTernak).catch(showError));
+  $("ternak-search").addEventListener("input",()=>{ternakSearch=$("ternak-search").value.trim();renderTernakItems();});
+  $("ternak-kind-create").addEventListener("click",openTernakKind); $("close-ternak-kind").addEventListener("click",()=>$("ternak-kind-dialog").close());
+  $("ternak-kind-form").addEventListener("submit",async event=>{event.preventDefault();setStatus($("ternak-kind-status"),"Menambahkan jenis…");try{const data=await api("/api/ternak/jenis",{method:"POST",body:JSON.stringify({label:$("ternak-kind-name").value,usahaPrefix:$("ternak-kind-prefix").value,mode:$("ternak-kind-mode").value})});ternakJenis=data.daftar||ternakJenis;$("ternak-kind-dialog").close();await loadTernakIndex(false);}catch(error){setStatus($("ternak-kind-status"),error.message,"error");}});
+  $("ternak-create").addEventListener("click",openTernakCreate); $("close-ternak-create").addEventListener("click",()=>$("ternak-create-dialog").close());
+  $("ternak-create-form").addEventListener("submit",async event=>{event.preventDefault();setStatus($("ternak-create-status"),"Membuat usaha…");try{const data=await api("/api/ternak",{method:"POST",body:JSON.stringify({jenis:$("ternak-create-kind").value,nama:$("ternak-create-name").value})});$("ternak-create-dialog").close();activeTernak=data.ternak.id;const meData=await api("/api/me");me=meData.user;await loadTernakIndex(true);}catch(error){setStatus($("ternak-create-status"),error.message,"error");}});
+  $("ternak-add-item").addEventListener("click",openTernakItem); $("close-ternak-item").addEventListener("click",()=>$("ternak-item-dialog").close()); $("ternak-item-sex").addEventListener("change",syncTernakItemFunctions);
+  $("ternak-item-form").addEventListener("submit",async event=>{event.preventDefault();const d=ternakDetail;const body=d.mode==="individu"?{nama:$("ternak-item-name").value||"-",kelamin:$("ternak-item-sex").value,fungsi:$("ternak-item-function").value,asal:$("ternak-item-origin").value,tanggalMasuk:$("ternak-item-date").value,hargaBeli:parseNominalText($("ternak-item-cost").value)}:{nama:$("ternak-batch-name").value,fungsi:$("ternak-batch-function").value,jumlahAwal:Number($("ternak-batch-count").value),asal:$("ternak-item-origin").value,tanggalMasuk:$("ternak-item-date").value,modalAwal:parseNominalText($("ternak-item-cost").value)};setStatus($("ternak-item-status"),"Menyimpan populasi…");try{await api(`/api/ternak/${encodeURIComponent(activeTernak)}/item`,{method:"POST",body:JSON.stringify(body)});$("ternak-item-dialog").close();await loadTernak(activeTernak);}catch(error){setStatus($("ternak-item-status"),error.message,"error");}});
+  $("close-ternak-edit").addEventListener("click",()=>$("ternak-edit-dialog").close()); $("ternak-edit-sex").addEventListener("change",syncTernakEditFunctions);
+  $("ternak-edit-form").addEventListener("submit",async event=>{event.preventDefault();const item=(ternakDetail?.items||[]).find(x=>String(x.kode)===String($("ternak-edit-code").value));if(!item)return;const individual=item.tipe==="individu";const body=individual?{nama:$("ternak-edit-name").value||"-",kelamin:$("ternak-edit-sex").value,fungsi:$("ternak-edit-function").value,asal:$("ternak-edit-origin").value,tanggalMasuk:$("ternak-edit-date").value,hargaBeli:parseNominalText($("ternak-edit-cost").value)}:{nama:$("ternak-edit-batch-name").value,fungsi:$("ternak-edit-batch-function").value,asal:$("ternak-edit-origin").value,tanggalMasuk:$("ternak-edit-date").value,modalAwal:parseNominalText($("ternak-edit-cost").value)};setStatus($("ternak-edit-status"),"Menyimpan perubahan…");try{await api(`/api/ternak/${encodeURIComponent(activeTernak)}/item/${encodeURIComponent(item.kode)}`,{method:"PATCH",body:JSON.stringify(body)});$("ternak-edit-dialog").close();await loadTernak(activeTernak);}catch(error){setStatus($("ternak-edit-status"),error.message,"error");}});
+  $("ternak-add-feed").addEventListener("click",()=>openTernakActivity("feed")); $("ternak-add-health").addEventListener("click",()=>openTernakActivity("health")); $("close-ternak-activity").addEventListener("click",()=>$("ternak-activity-dialog").close());
+  $("ternak-activity-form").addEventListener("submit",async event=>{event.preventDefault();const type=$("ternak-activity-type").value;const body=type==="feed"?{target:$("ternak-activity-target").value,namaPakan:$("ternak-feed-name").value,quantity:$("ternak-feed-quantity").value||"-",biaya:parseNominalText($("ternak-activity-cost").value),tanggal:$("ternak-activity-date").value}:{target:$("ternak-activity-target").value,kategori:$("ternak-health-category").value,keterangan:$("ternak-health-description").value,biaya:parseNominalText($("ternak-activity-cost").value),tanggal:$("ternak-activity-date").value};setStatus($("ternak-activity-status"),"Menyimpan aktivitas…");try{await api(`/api/ternak/${encodeURIComponent(activeTernak)}/${type==="feed"?"feed":"health"}`,{method:"POST",body:JSON.stringify(body)});$("ternak-activity-dialog").close();await loadTernak(activeTernak);}catch(error){setStatus($("ternak-activity-status"),error.message,"error");}});
+  $("ternak-add-finance").addEventListener("click",openTernakFinance); $("close-ternak-finance").addEventListener("click",()=>$("ternak-finance-dialog").close()); $("ternak-finance-direction").addEventListener("change",syncTernakFinanceCategories); $("ternak-finance-category").addEventListener("change",()=>$("ternak-finance-custom-wrap").hidden=$("ternak-finance-category").value!=="Lainnya");
+  $("ternak-finance-form").addEventListener("submit",async event=>{event.preventDefault();const body={direction:$("ternak-finance-direction").value,category:$("ternak-finance-category").value,rawCategory:$("ternak-finance-custom").value,description:$("ternak-finance-description").value,amount:parseNominalText($("ternak-finance-amount").value),tanggal:$("ternak-finance-date").value};setStatus($("ternak-finance-status"),"Menyimpan transaksi…");try{await api(`/api/ternak/${encodeURIComponent(activeTernak)}/finance`,{method:"POST",body:JSON.stringify(body)});$("ternak-finance-dialog").close();await loadTernak(activeTernak);}catch(error){setStatus($("ternak-finance-status"),error.message,"error");}});
+  $("close-ternak-sale").addEventListener("click",()=>$("ternak-sale-dialog").close()); $("ternak-sale-form").addEventListener("submit",async event=>{event.preventDefault();const code=$("ternak-sale-code").value;setStatus($("ternak-sale-status"),"Menyimpan penjualan…");try{await api(`/api/ternak/${encodeURIComponent(activeTernak)}/item/${encodeURIComponent(code)}/sale`,{method:"POST",body:JSON.stringify({jumlah:Number($("ternak-sale-count").value||1),totalHarga:parseNominalText($("ternak-sale-price").value),tanggal:$("ternak-sale-date").value})});$("ternak-sale-dialog").close();await loadTernak(activeTernak);}catch(error){setStatus($("ternak-sale-status"),error.message,"error");}});
+  $("close-ternak-status").addEventListener("click",()=>$("ternak-status-dialog").close()); $("ternak-status-form").addEventListener("submit",async event=>{event.preventDefault();const code=$("ternak-status-code").value;setStatus($("ternak-status-status"),"Menyimpan status…");try{await api(`/api/ternak/${encodeURIComponent(activeTernak)}/item/${encodeURIComponent(code)}/status`,{method:"POST",body:JSON.stringify({status:$("ternak-status-value").value,jumlah:Number($("ternak-status-count").value||1)})});$("ternak-status-dialog").close();await loadTernak(activeTernak);}catch(error){setStatus($("ternak-status-status"),error.message,"error");}});
+  $("ternak-repro-add").addEventListener("click",openTernakReproduction); $("close-ternak-repro").addEventListener("click",()=>$("ternak-repro-dialog").close()); $("ternak-repro-action").addEventListener("change",syncTernakReproFields);
+  $("ternak-repro-form").addEventListener("submit",async event=>{event.preventDefault();const action=$("ternak-repro-action").value;const body={action,target:$("ternak-repro-target").value,male:$("ternak-repro-male").value,jantan:Number($("ternak-repro-male-count").value||0),betina:Number($("ternak-repro-female-count").value||0),jumlahTelur:$("ternak-repro-eggs").value?Number($("ternak-repro-eggs").value):null,jumlahMenetas:Number($("ternak-repro-hatched").value||0),jumlahBenih:Number($("ternak-repro-seeds").value||0),nama:$("ternak-repro-child-name").value,tanggal:$("ternak-repro-date").value};setStatus($("ternak-repro-status"),"Menyimpan reproduksi…");try{await api(`/api/ternak/${encodeURIComponent(activeTernak)}/reproduction`,{method:"POST",body:JSON.stringify(body)});$("ternak-repro-dialog").close();await loadTernak(activeTernak);}catch(error){setStatus($("ternak-repro-status"),error.message,"error");}});
+  $("ternak-manager-add").addEventListener("click",openTernakManager); $("close-ternak-manager").addEventListener("click",()=>$("ternak-manager-dialog").close()); $("ternak-manager-form").addEventListener("submit",async event=>{event.preventDefault();setStatus($("ternak-manager-status"),"Menambahkan Admin…");try{await api(`/api/ternak/${encodeURIComponent(activeTernak)}/admin`,{method:"POST",body:JSON.stringify({phone:$("ternak-manager-phone").value,name:$("ternak-manager-name").value})});$("ternak-manager-dialog").close();await loadTernak(activeTernak);}catch(error){setStatus($("ternak-manager-status"),error.message,"error");}});
+
+  // Gallery manager dialogs
+  $("close-gallery-admin").addEventListener("click",()=>$("gallery-admin-dialog").close());
+  $("gallery-admin-form").addEventListener("submit",async event=>{event.preventDefault();setStatus($("gallery-admin-status"),"Menambahkan Admin…");try{await api(`/api/galeri/${encodeURIComponent(activeGallery)}/admin`,{method:"POST",body:JSON.stringify({phone:$("gallery-admin-phone").value,name:$("gallery-admin-name").value})});$("gallery-admin-dialog").close();await loadGalleryAdmins();}catch(error){setStatus($("gallery-admin-status"),error.message,"error");}});
+  $("close-gallery-manager-name").addEventListener("click",()=>$("gallery-manager-name-dialog").close());
+  $("gallery-manager-name-form").addEventListener("submit",async event=>{event.preventDefault();setStatus($("gallery-manager-name-status"),"Menyimpan nama…");try{await api(`/api/galeri/${encodeURIComponent(activeGallery)}/admin/${encodeURIComponent($("gallery-manager-name-ref").value)}/name`,{method:"PATCH",body:JSON.stringify({name:$("gallery-manager-name-input").value})});$("gallery-manager-name-dialog").close();await loadGalleryAdmins();}catch(error){setStatus($("gallery-manager-name-status"),error.message,"error");}});
+
   // Galeri events
   document.querySelectorAll("[data-gallery-tab]").forEach(el => el.addEventListener("click", () => switchGalleryTab(el.dataset.galleryTab)));
   $("gallery-video-form").addEventListener("submit", submitGalleryVideo);
@@ -2626,7 +2936,8 @@
   $("gallery-video-clear-all").addEventListener("click", () => { galleryVideoSelected.clear(); updateGalleryVideoSelection(); });
   $("gallery-video-publish").addEventListener("click", publishGalleryVideoSelection);
   $("gallery-select").addEventListener("change", () => loadGallery($("gallery-select").value).catch(showError)); $("refresh-gallery").addEventListener("click", () => loadGallery(activeGallery).catch(showError));
-  $("rename-gallery").addEventListener("click", async () => { const next = prompt("Nama Galeri baru:", galleryDetail?.nama || ""); if (next === null || !next.trim()) return; try { await api(`/api/galeri/${encodeURIComponent(activeGallery)}`, { method: "PUT", body: JSON.stringify({ nama: next.trim() }) }); const meData = await api("/api/me"); me = meData.user; fillSelect($("gallery-select"), me.galeri || [], row => `${row.nama} · ${row.role}`); await loadGallery(activeGallery); } catch (error) { showError(error); } });
+  $("rename-gallery").addEventListener("click", async () => { const next = prompt("Nama Galeri baru:", galleryDetail?.nama || ""); if (next === null || !next.trim()) return; try { await api(`/api/galeri/${encodeURIComponent(activeGallery)}`, { method: "PUT", body: JSON.stringify({ nama: next.trim() }) }); const meData = await api("/api/me"); me = meData.user; fillSelect($("gallery-select"), me.galeri || [], row => `${row.nama} · ${row.role}`);
+    fillSelect($("ternak-select"), me.ternak || [], row => `${row.nama} · ${row.jenis || "Ternak"} · ${row.role}`); await loadGallery(activeGallery); } catch (error) { showError(error); } });
   $("gallery-access").addEventListener("click", openGalleryAccessDialog);
   $("gallery-access-visibility").addEventListener("change", syncGalleryAccessOptions);
   $("close-gallery-access").addEventListener("click", () => $("gallery-access-dialog").close());
@@ -2642,7 +2953,7 @@
       await loadGallery(activeGallery);
     } catch (error) { setStatus($("gallery-access-status"), error.message, "error"); }
   });
-  $("add-gallery-admin").addEventListener("click", async () => { const phone = prompt("Nomor WhatsApp Admin Galeri:", "08"); if (phone === null || !phone.trim()) return; try { await api(`/api/galeri/${encodeURIComponent(activeGallery)}/admin`, { method: "POST", body: JSON.stringify({ phone: phone.trim() }) }); await loadGalleryAdmins(); } catch (error) { showError(error); } });
+  $("add-gallery-admin").addEventListener("click", openGalleryAdminDialog);
   $("gallery-upload-open").addEventListener("click", openGalleryPhotoUpload);
   $("close-gallery-upload").addEventListener("click", () => $("gallery-upload-dialog").close());
   $("gallery-upload-form").addEventListener("submit", submitGalleryPhotoUpload);

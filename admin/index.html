@@ -9,7 +9,7 @@
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
   <title>Admin PROxyz</title>
-  <link rel="stylesheet" href="./admin.css?v=0.7.1">
+  <link rel="stylesheet" href="./admin.css?v=0.7.4">
 </head>
 <body>
   <main class="shell">
@@ -18,7 +18,7 @@
         <div class="auth-icon">P</div>
         <p class="eyebrow">Admin PROxyz</p>
         <h1>Masuk dengan WhatsApp</h1>
-        <p class="muted">Satu login untuk Multi Kas, Bertunas, dan Galeri sesuai hak akses Anda.</p>
+        <p class="muted">Satu login untuk Multi Kas, Bertunas, Galeri, RISMA, dan Ternak sesuai hak akses Anda.</p>
         <p class="session-note">Kode OTP dikirim oleh bot PROxyz. Sesi berakhir setelah 24 jam tanpa aktivitas.</p>
         <form id="phone-form" class="stack">
           <label>Nomor WhatsApp
@@ -54,6 +54,8 @@
         <button id="tab-kas" class="app-tab" type="button" data-view="kas">Kas</button>
         <button id="tab-bertunas" class="app-tab" type="button" data-view="bertunas">Bertunas</button>
         <button id="tab-galeri" class="app-tab" type="button" data-view="galeri">Galeri</button>
+        <button id="tab-risma" class="app-tab" type="button" data-view="risma" hidden>RISMA</button>
+        <button id="tab-ternak" class="app-tab" type="button" data-view="ternak" hidden>Ternak</button>
         <button id="tab-users" class="app-tab" type="button" data-view="users" hidden>Pengguna</button>
       </nav>
 
@@ -214,7 +216,10 @@
             <a id="gallery-public-link" class="hero-link" href="#" target="_blank" rel="noopener">Buka galeri publik ↗</a>
           </section>
           <section class="panel actions three gallery-main-actions"><button id="rename-gallery" class="ghost" type="button">Ganti nama</button><button id="gallery-access" class="ghost" type="button">Atur akses</button><button id="refresh-gallery" class="ghost" type="button">Muat ulang</button></section>
-          <section class="panel"><div class="section-head"><div><p class="eyebrow">Pengelola</p><h2>Admin Galeri</h2></div><button id="add-gallery-admin" class="primary compact" type="button">+ Admin</button></div><div id="gallery-admin-list" class="admin-list"></div></section>
+          <section class="panel gallery-manager-panel">
+            <div class="section-head"><div><p class="eyebrow">Pengelola</p><h2>Owner & Admin Galeri</h2><p class="muted small">Nama pengelola memakai <b>Nama Pengguna PROxyz</b> yang sama di seluruh aplikasi. Nomor WhatsApp hanya menjadi identitas akun.</p></div><button id="add-gallery-admin" class="primary compact" type="button">+ Admin</button></div>
+            <div id="gallery-admin-list" class="manager-list"></div>
+          </section>
           <nav class="subtabs gallery-subtabs" aria-label="Media Galeri">
             <button class="subtab active" type="button" data-gallery-tab="foto">Foto</button>
             <button class="subtab" type="button" data-gallery-tab="video">Video → Foto</button>
@@ -360,6 +365,109 @@
           </section>
         </section>
       </section>
+
+      <section id="risma-view" class="app-section" hidden>
+        <section id="risma-content">
+          <section class="hero hero-risma">
+            <div class="hero-head"><div><p class="eyebrow light">Program Ramadan</p><h2 id="risma-name">RISMA</h2><p id="risma-period" class="hero-sub">Belum ada periode aktif</p></div><span id="risma-role" class="role-pill">—</span></div>
+            <div class="summary-grid four"><div><span>Peserta</span><b id="risma-participants">0</b></div><div><span>Minggu</span><b id="risma-weeks">0/4</b></div><div><span>Tim</span><b id="risma-teams">0</b></div><div><span>Kupon</span><b id="risma-coupons">0</b></div></div>
+          </section>
+          <section class="panel actions three risma-main-actions"><button id="risma-period-new" class="primary" type="button">+ Periode</button><button id="risma-period-close" class="danger-soft" type="button">Tutup periode</button><button id="risma-refresh" class="ghost" type="button">Muat ulang</button></section>
+          <nav class="subtabs" aria-label="Fitur RISMA"><button class="subtab active" type="button" data-risma-tab="ringkasan">Ringkasan</button><button class="subtab" type="button" data-risma-tab="poin">Poin</button><button class="subtab" type="button" data-risma-tab="kupon">Kupon THR</button><button class="subtab" type="button" data-risma-tab="tim">Tim</button><button class="subtab" type="button" data-risma-tab="pengaturan">Pengaturan</button><button class="subtab" type="button" data-risma-tab="pengelola">Pengelola</button></nav>
+
+          <section id="risma-ringkasan-panel" class="risma-panel panel">
+            <div class="section-head"><div><p class="eyebrow">Dashboard Ramadan</p><h2>Ringkasan</h2></div><span id="risma-total-points" class="feature-pill">0 poin</span></div>
+            <div id="risma-period-history" class="mini-card-grid"></div>
+            <div class="section-head compact-head"><div><p class="eyebrow">Peringkat</p><h3>Top peserta</h3></div></div>
+            <div id="risma-top-list" class="list-stack"></div>
+          </section>
+
+          <section id="risma-poin-panel" class="risma-panel panel" hidden>
+            <div class="section-head"><div><p class="eyebrow">RISMA Poin</p><h2>Input & peringkat</h2><p class="muted small">Web dapat menginput atau mengoreksi satu minggu secara massal tanpa wizard chat.</p></div></div>
+            <div id="risma-week-grid" class="week-grid"></div>
+            <div class="section-head compact-head"><div><p class="eyebrow">Semua peserta</p><h3>Peringkat lengkap</h3></div></div>
+            <div id="risma-score-list" class="list-stack"></div>
+          </section>
+
+          <section id="risma-kupon-panel" class="risma-panel panel" hidden>
+            <div class="section-head"><div><p class="eyebrow">Kupon THR</p><h2>Penerima & pembagian</h2></div><button id="risma-coupon-add" class="primary compact" type="button">+ Penerima</button></div>
+            <label>Jenis kupon<select id="risma-coupon-type"><option value="ngaji">Kupon Ngaji</option><option value="taraweh">Kupon Taraweh</option><option value="tadarus">Kupon Tadarus</option></select></label>
+            <div id="risma-coupon-summary" class="metric-grid"></div>
+            <div id="risma-coupon-list" class="list-stack"></div>
+          </section>
+
+          <section id="risma-tim-panel" class="risma-panel panel" hidden>
+            <div class="section-head"><div><p class="eyebrow">Tim RISMA</p><h2>Pembagian & ranking</h2><p class="muted small">Tim disusun seimbang berdasarkan poin peserta.</p></div><button id="risma-team-rebuild" class="primary compact" type="button">Susun ulang</button></div>
+            <div id="risma-team-list" class="team-grid"></div>
+          </section>
+
+          <section id="risma-pengaturan-panel" class="risma-panel panel" hidden>
+            <div class="section-head"><div><p class="eyebrow">Owner RISMA</p><h2>Pengaturan Program</h2><p class="muted small">Pengaturan yang di WA tersebar di beberapa perintah disatukan di sini.</p></div></div>
+            <form id="risma-settings-form" class="settings-stack">
+              <div class="context-grid"><label>Jumlah Rank Poin<input id="risma-setting-rank" type="number" min="1" max="100" required></label><label>Jumlah Rank Tim<input id="risma-setting-team" type="number" min="1" max="50" required></label></div>
+              <fieldset class="toggle-fieldset"><legend>Kupon THR aktif</legend><label class="check-row"><input id="risma-setting-ngaji" type="checkbox"> Kupon Ngaji</label><label class="check-row"><input id="risma-setting-taraweh" type="checkbox"> Kupon Taraweh</label><label class="check-row"><input id="risma-setting-tadarus" type="checkbox"> Kupon Tadarus</label></fieldset>
+              <p id="risma-settings-status" class="status"></p><button class="primary full" type="submit">Simpan pengaturan</button>
+            </form>
+            <div class="section-head compact-head"><div><p class="eyebrow">Desain kupon</p><h3>Template Kupon THR</h3></div></div>
+            <form id="risma-template-form" class="settings-stack">
+              <label>Jenis kupon<select id="risma-template-type"><option value="ngaji">Ngaji</option><option value="taraweh">Taraweh</option><option value="tadarus">Tadarus</option></select></label>
+              <label>Judul<input id="risma-template-title" maxlength="60" required></label>
+              <label>Slogan<input id="risma-template-slogan" maxlength="100" required></label>
+              <label>Catatan bawah<textarea id="risma-template-footer" rows="3" maxlength="240" required></textarea></label>
+              <label>Warna<select id="risma-template-palette"><option value="hijau">Hijau</option><option value="biru">Biru</option><option value="emas">Emas</option><option value="ungu">Ungu</option><option value="merah">Merah</option><option value="toska">Toska</option></select></label>
+              <div class="actions two"><button id="risma-template-reset" class="ghost" type="button">Kembalikan default</button><button class="primary" type="submit">Simpan template</button></div><p id="risma-template-status" class="status"></p>
+            </form>
+          </section>
+
+          <section id="risma-pengelola-panel" class="risma-panel panel" hidden>
+            <div class="section-head"><div><p class="eyebrow">Akses RISMA</p><h2>Pengelola</h2><p class="muted small">Nama Owner/Admin mengikuti direktori Pengguna PROxyz.</p></div><button id="risma-manager-add" class="primary compact" type="button">+ Admin</button></div>
+            <div id="risma-manager-list" class="manager-list"></div>
+          </section>
+        </section>
+      </section>
+
+      <section id="ternak-view" class="app-section" hidden>
+        <section class="panel compact-panel ternak-picker">
+          <div class="selector-with-action"><label class="field-title" for="ternak-select">Pilih usaha ternak<select id="ternak-select"></select></label><div class="inline-actions"><button id="ternak-kind-create" class="ghost compact" type="button">+ Jenis</button><button id="ternak-create" class="ghost compact" type="button">+ Usaha</button></div></div>
+        </section>
+        <section id="ternak-content" hidden>
+          <section class="hero hero-ternak">
+            <div class="hero-head"><div><p class="eyebrow light" id="ternak-kind">Ternak</p><h2 id="ternak-name">—</h2><p id="ternak-mode" class="hero-sub">—</p></div><span id="ternak-role" class="role-pill">—</span></div>
+            <div class="summary-grid four"><div><span>Aktif</span><b id="ternak-active">0</b></div><div><span>Masuk</span><b id="ternak-income">Rp0</b></div><div><span>Keluar</span><b id="ternak-expense">Rp0</b></div><div><span>Selisih</span><b id="ternak-profit">Rp0</b></div></div>
+          </section>
+          <section class="quick-actions ternak-actions"><button id="ternak-add-item" class="quick-card" type="button"><b>+ Ternak</b><span>Tambah populasi</span></button><button id="ternak-add-feed" class="quick-card" type="button"><b>+ Pakan</b><span>Catat pemberian</span></button><button id="ternak-add-health" class="quick-card" type="button"><b>+ Kesehatan</b><span>Obat/vaksin</span></button><button id="ternak-add-finance" class="quick-card" type="button"><b>+ Keuangan</b><span>Kas usaha</span></button></section>
+          <nav class="subtabs" aria-label="Fitur Ternak"><button class="subtab active" type="button" data-ternak-tab="populasi">Populasi</button><button class="subtab" type="button" data-ternak-tab="aktivitas">Aktivitas</button><button class="subtab" type="button" data-ternak-tab="keuangan">Keuangan</button><button class="subtab" type="button" data-ternak-tab="reproduksi">Reproduksi</button><button class="subtab" type="button" data-ternak-tab="pengelola">Pengelola</button></nav>
+
+          <section id="ternak-populasi-panel" class="ternak-panel panel">
+            <div class="section-head"><div><p class="eyebrow">Populasi</p><h2 id="ternak-pop-title">Ternak aktif</h2></div><button id="ternak-refresh" class="ghost compact" type="button">Muat ulang</button></div>
+            <input id="ternak-search" type="search" placeholder="Cari ID, nama, fungsi…">
+            <div id="ternak-item-list" class="list-stack"></div>
+          </section>
+
+          <section id="ternak-aktivitas-panel" class="ternak-panel" hidden>
+            <section class="panel"><div class="section-head"><div><p class="eyebrow">Pakan</p><h2>Riwayat pakan</h2></div><span id="ternak-feed-total" class="feature-pill">Rp0</span></div><div id="ternak-feed-list" class="list-stack"></div></section>
+            <section class="panel"><div class="section-head"><div><p class="eyebrow">Kesehatan</p><h2>Riwayat kesehatan</h2></div><span id="ternak-health-total" class="feature-pill">Rp0</span></div><div id="ternak-health-list" class="list-stack"></div></section>
+          </section>
+
+          <section id="ternak-keuangan-panel" class="ternak-panel panel" hidden>
+            <div class="section-head"><div><p class="eyebrow">Usaha ternak</p><h2>Keuangan lengkap</h2></div></div>
+            <div id="ternak-finance-metrics" class="metric-grid"></div>
+            <div id="ternak-finance-list" class="list-stack"></div>
+          </section>
+
+          <section id="ternak-reproduksi-panel" class="ternak-panel panel" hidden>
+            <div class="section-head"><div><p class="eyebrow">Breeding</p><h2>Reproduksi</h2></div><button id="ternak-repro-add" class="primary compact" type="button">+ Catat</button></div>
+            <div id="ternak-repro-summary" class="metric-grid"></div>
+            <div id="ternak-repro-list" class="list-stack"></div>
+          </section>
+
+          <section id="ternak-pengelola-panel" class="ternak-panel panel" hidden>
+            <div class="section-head"><div><p class="eyebrow">Akses Ternak</p><h2>Pengelola</h2><p class="muted small">Nama pengelola terhubung ke direktori Pengguna PROxyz.</p></div><button id="ternak-manager-add" class="primary compact" type="button">+ Admin</button></div>
+            <div id="ternak-manager-list" class="manager-list"></div>
+          </section>
+        </section>
+      </section>
+
       <section id="users-view" class="app-section" hidden>
         <section class="panel">
           <div class="section-head">
@@ -374,6 +482,30 @@
 
     </section>
   </main>
+
+
+  <dialog id="gallery-admin-dialog"><form id="gallery-admin-form" class="dialog-form"><div class="section-head"><div><p class="eyebrow">Pengelola Galeri</p><h2>Tambah Admin</h2></div><button id="close-gallery-admin" class="icon-button" type="button">×</button></div><label>Nomor WhatsApp<input id="gallery-admin-phone" inputmode="tel" placeholder="08xxxxxxxxxx" required></label><label>Nama pengelola<input id="gallery-admin-name" maxlength="60" placeholder="Contoh: Riswadi" required></label><p class="muted small">Nama ini otomatis menjadi Nama Pengguna PROxyz dan dipakai di Kas, Galeri, RISMA, Ternak, serta fitur lain.</p><p id="gallery-admin-status" class="status"></p><button class="primary full" type="submit">Tambah Admin</button></form></dialog>
+  <dialog id="gallery-manager-name-dialog"><form id="gallery-manager-name-form" class="dialog-form"><div class="section-head"><div><p class="eyebrow">Nama Pengguna</p><h2>Edit nama pengelola</h2></div><button id="close-gallery-manager-name" class="icon-button" type="button">×</button></div><input id="gallery-manager-name-ref" type="hidden"><label>Nama<input id="gallery-manager-name-input" maxlength="60" required></label><p class="muted small">Perubahan nama berlaku di seluruh PROxyz.</p><p id="gallery-manager-name-status" class="status"></p><button class="primary full" type="submit">Simpan nama</button></form></dialog>
+
+  <dialog id="risma-period-dialog"><form id="risma-period-form" class="dialog-form"><div class="section-head"><div><p class="eyebrow">Program Ramadan</p><h2>Periode baru</h2></div><button id="close-risma-period" class="icon-button" type="button">×</button></div><label>Tahun Hijriah<input id="risma-period-year" inputmode="numeric" maxlength="4" placeholder="1448" required></label><p id="risma-period-status" class="status"></p><button class="primary full" type="submit">Aktifkan periode</button></form></dialog>
+  <dialog id="risma-week-dialog"><form id="risma-week-form" class="dialog-form"><div class="section-head"><div><p class="eyebrow" id="risma-week-eyebrow">RISMA Poin</p><h2 id="risma-week-title">Minggu 1</h2></div><button id="close-risma-week" class="icon-button" type="button">×</button></div><input id="risma-week-number" type="hidden"><label>Data kehadiran<textarea id="risma-week-text" rows="10" placeholder="Minggu 1:&#10;Ahmad 7&#10;Budi 5&#10;&#10;Minggu berikutnya boleh:&#10;01 6&#10;02 7" required></textarea></label><p class="muted small">Satu baris satu peserta: <b>Nama/ID jumlah-hadir</b>. Untuk Minggu 1, peserta baru otomatis dibuat. Web dapat mengoreksi data yang sudah ada.</p><p id="risma-week-status" class="status"></p><button class="primary full" type="submit">Simpan minggu</button></form></dialog>
+  <dialog id="risma-participant-dialog"><form id="risma-participant-form" class="dialog-form"><div class="section-head"><div><p class="eyebrow">Peserta RISMA</p><h2>Edit nama</h2></div><button id="close-risma-participant" class="icon-button" type="button">×</button></div><input id="risma-participant-id" type="hidden"><label>Nama peserta<input id="risma-participant-name" maxlength="80" required></label><p id="risma-participant-status" class="status"></p><button class="primary full" type="submit">Simpan peserta</button></form></dialog>
+  <dialog id="risma-coupon-add-dialog"><form id="risma-coupon-add-form" class="dialog-form"><div class="section-head"><div><p class="eyebrow">Kupon THR</p><h2>Tambah penerima</h2></div><button id="close-risma-coupon-add" class="icon-button" type="button">×</button></div><label>Nama penerima<textarea id="risma-coupon-add-text" rows="8" placeholder="Paijo&#10;Dimas 2&#10;Alif 3" required></textarea></label><p class="muted small">Tanpa angka = 1 kupon. Tambahkan angka 2 atau 3 untuk jumlah kupon penerima.</p><p id="risma-coupon-add-status" class="status"></p><button class="primary full" type="submit">Tambah penerima</button></form></dialog>
+  <dialog id="risma-coupon-edit-dialog"><form id="risma-coupon-edit-form" class="dialog-form"><div class="section-head"><div><p class="eyebrow">Kupon THR</p><h2>Edit penerima</h2></div><button id="close-risma-coupon-edit" class="icon-button" type="button">×</button></div><input id="risma-coupon-edit-no" type="hidden"><label>Nama<input id="risma-coupon-edit-name" maxlength="80" required></label><label>Jumlah kupon<select id="risma-coupon-edit-count"><option value="1">1 kupon</option><option value="2">2 kupon</option><option value="3">3 kupon</option></select></label><p id="risma-coupon-edit-status" class="status"></p><button class="primary full" type="submit">Simpan penerima</button></form></dialog>
+  <dialog id="risma-manager-dialog"><form id="risma-manager-form" class="dialog-form"><div class="section-head"><div><p class="eyebrow">Pengelola RISMA</p><h2>Tambah Admin</h2></div><button id="close-risma-manager" class="icon-button" type="button">×</button></div><label>Nomor WhatsApp<input id="risma-manager-phone" inputmode="tel" placeholder="08xxxxxxxxxx" required></label><label>Nama<input id="risma-manager-name" maxlength="60" required placeholder="Nama Admin"></label><p id="risma-manager-status" class="status"></p><button class="primary full" type="submit">Tambah Admin</button></form></dialog>
+
+  <dialog id="ternak-kind-dialog"><form id="ternak-kind-form" class="dialog-form"><div class="section-head"><div><p class="eyebrow">Jenis Ternak</p><h2>Tambah jenis baru</h2></div><button id="close-ternak-kind" class="icon-button" type="button">×</button></div><label>Nama jenis<input id="ternak-kind-name" maxlength="30" placeholder="Contoh: Domba" required></label><label>Kode ID usaha<input id="ternak-kind-prefix" maxlength="3" pattern="[A-Za-z][A-Za-z0-9]{0,2}" placeholder="Contoh: d" required></label><label>Mode pencatatan<select id="ternak-kind-mode"><option value="individu">Per ekor / individu</option><option value="batch">Kelompok / batch</option></select></label><p class="muted small">Jenis baru otomatis tersedia saat membuat usaha Ternak, termasuk dari WA.</p><p id="ternak-kind-status" class="status"></p><button class="primary full" type="submit">Tambah jenis</button></form></dialog>
+
+  <dialog id="ternak-create-dialog"><form id="ternak-create-form" class="dialog-form"><div class="section-head"><div><p class="eyebrow">Ternak PROxyz</p><h2>Buat usaha ternak</h2></div><button id="close-ternak-create" class="icon-button" type="button">×</button></div><label>Jenis ternak<select id="ternak-create-kind"></select></label><label>Nama usaha/kandang<input id="ternak-create-name" maxlength="60" placeholder="Contoh: Kandang Kambing 01" required></label><p id="ternak-create-status" class="status"></p><button class="primary full" type="submit">Buat usaha</button></form></dialog>
+  <dialog id="ternak-item-dialog"><form id="ternak-item-form" class="dialog-form"><div class="section-head"><div><p class="eyebrow">Populasi Ternak</p><h2 id="ternak-item-title">Tambah ternak</h2></div><button id="close-ternak-item" class="icon-button" type="button">×</button></div><div id="ternak-item-individual" class="stack"><label>Nama <span class="muted">(opsional)</span><input id="ternak-item-name" maxlength="60" placeholder="Kosongkan jika tanpa nama"></label><label>Kelamin<select id="ternak-item-sex"><option value="betina">Betina</option><option value="jantan">Jantan</option></select></label><label>Fungsi<select id="ternak-item-function"></select></label></div><div id="ternak-item-batch" class="stack" hidden><label>Nama batch<input id="ternak-batch-name" maxlength="60"></label><label>Fungsi<select id="ternak-batch-function"></select></label><label>Jumlah awal<input id="ternak-batch-count" type="number" inputmode="numeric" min="1"></label></div><label>Asal<select id="ternak-item-origin"><option value="Beli">Beli</option><option value="Lahir">Lahir/Menetas</option><option value="Pindahan">Pindahan</option><option value="Lainnya">Lainnya</option></select></label><label>Tanggal masuk<input id="ternak-item-date" type="date" required></label><label id="ternak-item-cost-wrap">Harga beli / modal<input id="ternak-item-cost" inputmode="numeric" placeholder="0"></label><p id="ternak-item-status" class="status"></p><button class="primary full" type="submit">Simpan populasi</button></form></dialog>
+  <dialog id="ternak-edit-dialog"><form id="ternak-edit-form" class="dialog-form"><div class="section-head"><div><p class="eyebrow">Populasi Ternak</p><h2 id="ternak-edit-title">Edit ternak</h2></div><button id="close-ternak-edit" class="icon-button" type="button">×</button></div><input id="ternak-edit-code" type="hidden"><div id="ternak-edit-individual" class="stack"><label>Nama <span class="muted">(opsional)</span><input id="ternak-edit-name" maxlength="60"></label><label>Kelamin<select id="ternak-edit-sex"><option value="betina">Betina</option><option value="jantan">Jantan</option></select></label><label>Fungsi<select id="ternak-edit-function"></select></label></div><div id="ternak-edit-batch" class="stack" hidden><label>Nama batch<input id="ternak-edit-batch-name" maxlength="60"></label><label>Fungsi<select id="ternak-edit-batch-function"></select></label></div><label>Asal<select id="ternak-edit-origin"><option value="Beli">Beli</option><option value="Lahir">Lahir/Menetas</option><option value="Pindahan">Pindahan</option><option value="Lainnya">Lainnya</option></select></label><label>Tanggal masuk<input id="ternak-edit-date" type="date" required></label><label>Harga beli / modal<input id="ternak-edit-cost" inputmode="numeric" placeholder="0"></label><p id="ternak-edit-status" class="status"></p><button class="primary full" type="submit">Simpan perubahan</button></form></dialog>
+
+  <dialog id="ternak-activity-dialog"><form id="ternak-activity-form" class="dialog-form"><div class="section-head"><div><p class="eyebrow" id="ternak-activity-eyebrow">Aktivitas</p><h2 id="ternak-activity-title">Catat pakan</h2></div><button id="close-ternak-activity" class="icon-button" type="button">×</button></div><input id="ternak-activity-type" type="hidden"><label>Target<select id="ternak-activity-target"></select></label><div id="ternak-feed-fields" class="stack"><label>Nama pakan<input id="ternak-feed-name" maxlength="80"></label><label>Jumlah<input id="ternak-feed-quantity" placeholder="Contoh: 50 kg atau -"></label></div><div id="ternak-health-fields" class="stack" hidden><label>Kategori<select id="ternak-health-category"></select></label><label>Keterangan<input id="ternak-health-description" maxlength="120"></label></div><label>Biaya<input id="ternak-activity-cost" inputmode="numeric" placeholder="0"></label><label>Tanggal<input id="ternak-activity-date" type="date" required></label><p id="ternak-activity-status" class="status"></p><button class="primary full" type="submit">Simpan aktivitas</button></form></dialog>
+  <dialog id="ternak-finance-dialog"><form id="ternak-finance-form" class="dialog-form"><div class="section-head"><div><p class="eyebrow">Keuangan Ternak</p><h2>Tambah transaksi</h2></div><button id="close-ternak-finance" class="icon-button" type="button">×</button></div><label>Jenis<select id="ternak-finance-direction"><option value="masuk">Pemasukan</option><option value="keluar">Pengeluaran</option></select></label><label>Kategori<select id="ternak-finance-category"></select></label><label id="ternak-finance-custom-wrap" hidden>Kategori lainnya<input id="ternak-finance-custom" maxlength="50"></label><label>Keterangan<input id="ternak-finance-description" maxlength="120" required></label><label>Nominal<input id="ternak-finance-amount" inputmode="numeric" required></label><label>Tanggal<input id="ternak-finance-date" type="date" required></label><p id="ternak-finance-status" class="status"></p><button class="primary full" type="submit">Simpan keuangan</button></form></dialog>
+  <dialog id="ternak-sale-dialog"><form id="ternak-sale-form" class="dialog-form"><div class="section-head"><div><p class="eyebrow">Penjualan</p><h2 id="ternak-sale-title">Jual ternak</h2></div><button id="close-ternak-sale" class="icon-button" type="button">×</button></div><input id="ternak-sale-code" type="hidden"><label id="ternak-sale-count-wrap">Jumlah<input id="ternak-sale-count" type="number" inputmode="numeric" min="1" value="1"></label><label>Total harga<input id="ternak-sale-price" inputmode="numeric" required></label><label>Tanggal<input id="ternak-sale-date" type="date" required></label><p id="ternak-sale-status" class="status"></p><button class="primary full" type="submit">Simpan penjualan</button></form></dialog>
+  <dialog id="ternak-status-dialog"><form id="ternak-status-form" class="dialog-form"><div class="section-head"><div><p class="eyebrow">Status Populasi</p><h2 id="ternak-status-title">Ubah status</h2></div><button id="close-ternak-status" class="icon-button" type="button">×</button></div><input id="ternak-status-code" type="hidden"><label>Status<select id="ternak-status-value"><option value="mati">Mati</option><option value="afkir">Afkir</option><option value="dipindahkan">Dipindahkan</option></select></label><label id="ternak-status-count-wrap">Jumlah<input id="ternak-status-count" type="number" inputmode="numeric" min="1" value="1"></label><p id="ternak-status-status" class="status"></p><button class="primary full" type="submit">Simpan status</button></form></dialog>
+  <dialog id="ternak-repro-dialog"><form id="ternak-repro-form" class="dialog-form"><div class="section-head"><div><p class="eyebrow">Reproduksi</p><h2>Catat reproduksi</h2></div><button id="close-ternak-repro" class="icon-button" type="button">×</button></div><label>Aksi<select id="ternak-repro-action"></select></label><label>Target / induk<select id="ternak-repro-target"></select></label><div id="ternak-repro-male-wrap" hidden><label>Pejantan<select id="ternak-repro-male"></select></label></div><div id="ternak-repro-birth-wrap" class="context-grid" hidden><label>Anak jantan<input id="ternak-repro-male-count" type="number" min="0" value="0"></label><label>Anak betina<input id="ternak-repro-female-count" type="number" min="0" value="0"></label></div><div id="ternak-repro-hatch-wrap" class="stack" hidden><label>Jumlah telur <span class="muted">(opsional)</span><input id="ternak-repro-eggs" type="number" min="1"></label><label>Jumlah menetas<input id="ternak-repro-hatched" type="number" min="1"></label></div><div id="ternak-repro-spawn-wrap" hidden><label>Jumlah benih<input id="ternak-repro-seeds" type="number" min="1"></label></div><label id="ternak-repro-name-wrap" hidden>Nama batch anak <span class="muted">(opsional)</span><input id="ternak-repro-child-name" maxlength="60"></label><label>Tanggal<input id="ternak-repro-date" type="date" required></label><p id="ternak-repro-status" class="status"></p><button class="primary full" type="submit">Simpan reproduksi</button></form></dialog>
+  <dialog id="ternak-manager-dialog"><form id="ternak-manager-form" class="dialog-form"><div class="section-head"><div><p class="eyebrow">Pengelola Ternak</p><h2>Tambah Admin</h2></div><button id="close-ternak-manager" class="icon-button" type="button">×</button></div><label>Nomor WhatsApp<input id="ternak-manager-phone" inputmode="tel" placeholder="08xxxxxxxxxx" required></label><label>Nama<input id="ternak-manager-name" maxlength="60" required></label><p id="ternak-manager-status" class="status"></p><button class="primary full" type="submit">Tambah Admin</button></form></dialog>
 
   <dialog id="user-name-dialog">
     <form id="user-name-form" class="dialog-form">
@@ -481,6 +613,6 @@
   <dialog id="gallery-bulk-dialog"><form id="gallery-bulk-form" method="dialog" class="dialog-form"><div class="section-head"><div><p class="eyebrow">Edit beberapa foto</p><h2>Kelompokkan kejadian</h2></div><button id="close-gallery-bulk" class="icon-button" type="button">×</button></div><p class="muted small"><b id="gallery-bulk-dialog-count">0 foto</b> akan dijadikan satu kelompok di galeri publik.</p><label>Judul kejadian<input id="gallery-bulk-caption" maxlength="160" placeholder="Contoh: Makan Kerupuk Agustusan 2024" required></label><label>Tanggal dokumentasi<input id="gallery-bulk-date" type="date" required></label><p class="muted small">Semua foto terpilih akan memakai satu judul dan satu tanggal. Foto tidak dihapus atau diunggah ulang ke penyimpanan Galeri.</p><p id="gallery-bulk-status" class="status"></p><button class="primary full" type="submit">Simpan & kelompokkan</button></form></dialog>
 
   <script src="./config.js?v=242"></script>
-  <script src="./admin.js?v=0.7.3" defer></script>
+  <script src="./admin.js?v=0.7.4" defer></script>
 </body>
 </html>
