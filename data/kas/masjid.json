@@ -6,11 +6,31 @@
   "saldo": {
     "awal": 0,
     "masuk": 15304500,
-    "keluar": 11567000,
-    "akhir": 3737500
+    "keluar": 11597000,
+    "akhir": 3707500
   },
-  "jumlahTransaksi": 140,
+  "jumlahTransaksi": 142,
   "transactions": [
+    {
+      "id": "masjid-260827-002",
+      "nomor": "142",
+      "tanggal": 1787806800000,
+      "jenis": "keluar",
+      "kategori": "konsumsi",
+      "keterangan": "Pasang plafon",
+      "nominal": 20000,
+      "label": []
+    },
+    {
+      "id": "masjid-260827-001",
+      "nomor": "141",
+      "tanggal": 1787806800000,
+      "jenis": "keluar",
+      "kategori": "pemeliharaan",
+      "keterangan": "Paku",
+      "nominal": 10000,
+      "label": []
+    },
     {
       "id": "masjid-260821-002",
       "nomor": "140",
@@ -1636,5 +1656,5 @@
       ]
     }
   ],
-  "updatedAt": 1787500301674
+  "updatedAt": 1787808143816
 }
