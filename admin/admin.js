@@ -1,7 +1,7 @@
 (() => {
   "use strict";
 
-  const ADMIN_BUILD = "0.8.0";
+  const ADMIN_BUILD = "0.8.2";
   const config = window.PROXYZ_ADMIN_CONFIG || {};
 
   async function checkAdminBuild() {
@@ -91,6 +91,8 @@
   let rismaWeekDraft = [];
   let rismaWeekEditIndex = -1;
   let rismaWeekNewParticipantMode = true;
+  let rismaPublicationPreviewKind = "";
+  let rismaLogs = [];
 
   // Ternak
   let activeTernak = "";
@@ -1583,16 +1585,23 @@
   }
 
   function switchRismaTab(tab) {
-    activeRismaTab = ["rank","poin","kupon","pengaturan","pengelola"].includes(tab) ? tab : "rank";
+    const owner = rismaDetail?.role === "owner";
+    const allowed = ["rank","poin","kupon","publikasi","pengaturan","pengelola","log"];
+    activeRismaTab = allowed.includes(tab) ? tab : "rank";
+    if (activeRismaTab === "log" && !owner) activeRismaTab = "rank";
     document.querySelectorAll("[data-risma-tab]").forEach(el => el.classList.toggle("active", el.dataset.rismaTab === activeRismaTab));
-    for (const name of ["rank","poin","kupon","pengaturan","pengelola"]) $("risma-"+name+"-panel").hidden = name !== activeRismaTab;
+    for (const name of allowed) $("risma-"+name+"-panel").hidden = name !== activeRismaTab;
+    if (activeRismaTab === "log" && owner) loadRismaLogs().catch(error => setStatus($("risma-log-status"), error.message, "error"));
   }
 
   function renderRisma() {
     if (!rismaDetail) return;
     const period = rismaDetail.activePeriod;
+    const hasScores = Boolean((rismaDetail.scores || []).length);
+    const owner = rismaDetail.role === "owner";
+    const simulation = Boolean(period?.isSimulation);
     $("risma-name").textContent = rismaDetail.nama || "RISMA";
-    $("risma-period").textContent = period ? `Ramadan ${period.hijriYear} H${period.isSimulation ? " · Simulasi" : ""}` : "Belum ada periode aktif";
+    $("risma-period").textContent = period ? `Ramadan ${period.hijriYear} H${simulation ? " · Simulasi" : ""}` : "Belum ada periode aktif";
     $("risma-role").textContent = rismaDetail.role || "admin";
     $("risma-participants").textContent = wholeNumber.format(rismaDetail.summary?.participants || 0);
     $("risma-weeks").textContent = `${rismaDetail.summary?.weeks || 0}/4`;
@@ -1600,13 +1609,41 @@
     $("risma-coupons").textContent = wholeNumber.format(rismaDetail.summary?.coupons || 0);
     $("risma-total-points").textContent = `${number.format(rismaDetail.summary?.totalPoints || 0)} poin`;
 
-    const owner = rismaDetail.role === "owner";
-    $("risma-period-new").hidden = !owner || Boolean(period);
-    $("risma-period-close").hidden = !owner || !period || Boolean(period?.isSimulation);
+    // Pengaturan periode dipindah ke tab Pengaturan agar hero tetap bersih.
+    $("risma-period-new").hidden = true;
+    $("risma-period-close").hidden = true;
     $("risma-manager-add").hidden = !owner;
+    $("risma-log-tab").hidden = !owner;
+    $("risma-owner-period-box").hidden = !owner;
+    $("risma-owner-simulation-box").hidden = !owner;
     $("risma-coupon-add").disabled = !period;
-    $("risma-publish-rank").disabled = !period || !(rismaDetail.scores || []).length || Boolean(period?.isSimulation);
+
+    const groupBlocked = simulation;
+    $("risma-publish-rank-preview").disabled = !period || !hasScores;
+    $("risma-publish-rank").disabled = !period || !hasScores || groupBlocked;
+    $("risma-publish-rank-pdf").disabled = !period || !hasScores;
+    $("risma-publish-rules-preview").disabled = !period;
+    $("risma-publish-rules-send").disabled = !period || groupBlocked;
+    $("risma-publish-rules-pdf").disabled = !period;
+    for (const id of ["risma-publish-announce-send","risma-publish-invite-send"]) $(id).disabled = groupBlocked;
     $("risma-publish-footnote").textContent = `> Dikirim dari PROxyz web${me?.name ? ` oleh ${me.name}` : ""}`;
+
+    if (owner) {
+      $("risma-owner-period-year").value = period && !simulation ? String(period.hijriYear || "") : String((rismaDetail.periods || []).find(x => !x.isSimulation && x.status === "active")?.hijriYear || "");
+      $("risma-owner-simulation-year").value = simulation ? String(period.hijriYear || "") : String(period?.hijriYear || "");
+      $("risma-owner-period-note").textContent = simulation
+        ? `Simulasi Ramadan ${period.hijriYear} H sedang aktif. Selesaikan simulasi untuk kembali ke periode asli.`
+        : period ? `Periode aktif: Ramadan ${period.hijriYear} H.` : "Belum ada periode asli aktif.";
+      $("risma-owner-period-create").disabled = Boolean(period);
+      $("risma-owner-period-close").disabled = !period || simulation;
+      $("risma-owner-simulation-note").textContent = simulation
+        ? `Mode simulasi Ramadan ${period.hijriYear} H aktif. Data asli aman dan publikasi grup diblokir.`
+        : "Coba seluruh alur tanpa menyentuh data asli. Publikasi ke grup diblokir selama simulasi.";
+      $("risma-simulation-start").disabled = simulation;
+      $("risma-simulation-seed").disabled = false;
+      $("risma-simulation-reset").disabled = !simulation;
+      $("risma-simulation-end").disabled = !simulation;
+    }
 
     renderRismaRankings();
     renderRismaScores();
@@ -1680,17 +1717,17 @@
     const rows=rismaDetail?.scores || [];
     if(!rows.length){ full.appendChild(emptyBox("Belum ada peserta RISMA Poin.")); return; }
     rows.forEach((row,index)=>{
-      const card=document.createElement("article"); card.className="item-card risma-score-card";
-      const head=document.createElement("div"); head.className="item-top";
-      const info=document.createElement("div");
+      const card=document.createElement("article"); card.className="item-card risma-score-card compact";
+      const top=document.createElement("div"); top.className="risma-compact-row";
+      const info=document.createElement("div"); info.className="risma-compact-info";
       const title=document.createElement("strong"); title.textContent=`${index+1}. ${row.name}`;
       const meta=document.createElement("div"); meta.className="item-meta"; meta.textContent=participantWeekSummary(row);
       info.append(title,meta);
+      const side=document.createElement("div"); side.className="risma-compact-side";
       const pts=document.createElement("span"); pts.className="score-pill"; pts.textContent=`${number.format(row.totalPoints || 0)} poin`;
-      head.append(info,pts); card.append(head);
-      const actions=document.createElement("div"); actions.className="item-actions";
-      actions.append(button("Edit nama","ghost",()=>openRismaParticipant(row)),button("Hapus","danger-soft",()=>deleteRismaParticipant(row)));
-      card.append(actions); full.appendChild(card);
+      const actions=document.createElement("div"); actions.className="item-actions compact-inline";
+      actions.append(button("Edit","ghost compact",()=>openRismaParticipant(row)),button("Hapus","danger-soft compact",()=>deleteRismaParticipant(row)));
+      side.append(pts,actions); top.append(info,side); card.append(top); full.appendChild(card);
     });
   }
 
@@ -1739,14 +1776,14 @@
       rismaWeekNewParticipantMode = true;
       nameInput.hidden = false; select.hidden = true; toggle.hidden = true;
       label.firstChild.textContent = "Nama peserta\n            ";
-      $("risma-week-entry-hint").textContent = "Minggu 1 hanya menerima nama peserta. ID tetap khusus untuk input WhatsApp.";
+      $("risma-week-entry-hint").textContent = "Minggu 1 hanya menerima nama peserta. Poin akan dijelaskan setelah peserta ditambahkan ke daftar input.";
     } else {
       toggle.hidden = false;
       if (rismaWeekNewParticipantMode) {
         nameInput.hidden = false; select.hidden = true;
         toggle.textContent = "Pilih peserta lama";
         label.firstChild.textContent = "Nama peserta baru\n            ";
-        $("risma-week-entry-hint").textContent = "Peserta baru akan otomatis mendapat ID setelah minggu disimpan.";
+        $("risma-week-entry-hint").textContent = "Peserta baru akan otomatis mendapat ID setelah minggu disimpan. Peserta baru tampil di bagian atas daftar input.";
       } else {
         nameInput.hidden = true; select.hidden = false;
         toggle.textContent = "+ Peserta baru";
@@ -1833,7 +1870,7 @@
 
     const item={participantId,name,attendance,isNew};
     if(rismaWeekEditIndex>=0) rismaWeekDraft.splice(rismaWeekEditIndex,1,item);
-    else rismaWeekDraft.push(item);
+    else rismaWeekDraft.unshift(item);
     setStatus($("risma-week-status"));
     resetRismaWeekBuilder();
     renderRismaWeekDraft();
@@ -1883,15 +1920,19 @@
     }
     if(!(group.rows||[]).length){ list.appendChild(emptyBox("Belum ada penerima kupon.")); return; }
     for(const row of group.rows){
-      const card=document.createElement("article"); card.className="item-card risma-coupon-card";
-      const head=document.createElement("div"); head.className="item-top";
-      const info=document.createElement("div"); const title=document.createElement("strong"); title.textContent=`${String(row.no).padStart(2,"0")} · ${row.name}`;
+      const card=document.createElement("article"); card.className="item-card risma-coupon-card compact";
+      const top=document.createElement("div"); top.className="risma-compact-row";
+      const info=document.createElement("div"); info.className="risma-compact-info";
+      const title=document.createElement("strong"); title.textContent=`${String(row.no).padStart(2,"0")} · ${row.name}`;
       const meta=document.createElement("div"); meta.className="item-meta"; meta.textContent=row.status==="done"?"Sudah dibagikan":"Menunggu pembagian"; info.append(title,meta);
+      const side=document.createElement("div"); side.className="risma-compact-side";
       const badges=document.createElement("div"); badges.className="risma-coupon-badges";
       const count=document.createElement("span"); count.className="risma-coupon-count"; count.innerHTML=`<b>${wholeNumber.format(row.count||1)}</b><small>kupon</small>`;
       const badge=document.createElement("span"); badge.className=row.status==="done"?"status-chip done":"status-chip pending"; badge.textContent=row.status==="done"?"Selesai":"Pending";
-      badges.append(count,badge); head.append(info,badges); card.append(head);
-      const actions=document.createElement("div"); actions.className="item-actions"; actions.append(button(row.status==="done"?"Batalkan selesai":"Tandai selesai",row.status==="done"?"ghost":"success-soft",()=>toggleRismaCoupon(row)),button("Edit","ghost",()=>openRismaCouponEdit(row)),button("Hapus","danger-soft",()=>deleteRismaCoupon(row))); card.append(actions); list.appendChild(card);
+      badges.append(count,badge);
+      const actions=document.createElement("div"); actions.className="item-actions compact-inline";
+      actions.append(button(row.status==="done"?"Batal":"Selesai",row.status==="done"?"ghost compact":"success-soft compact",()=>toggleRismaCoupon(row)),button("Edit","ghost compact",()=>openRismaCouponEdit(row)),button("Hapus","danger-soft compact",()=>deleteRismaCoupon(row)));
+      side.append(badges,actions); top.append(info,side); card.append(top); list.appendChild(card);
     }
   }
   async function toggleRismaCoupon(row){ await api(`/api/risma/coupon/${encodeURIComponent(rismaCouponType)}/${row.no}`,{method:"PATCH",body:JSON.stringify({done:row.status!=="done"})}); await loadRisma(); }
@@ -1921,12 +1962,155 @@
     syncRismaTemplateForm();
   }
 
+  function rismaPublicationPayload(kind){
+    if(kind==="announcement") return { title:$("risma-publish-announce-title").value, body:$("risma-publish-announce-body").value };
+    if(kind==="invitation") return { recipient:$("risma-publish-invite-recipient").value, event:$("risma-publish-invite-event").value, date:$("risma-publish-invite-date").value, time:$("risma-publish-invite-time").value, place:$("risma-publish-invite-place").value, note:$("risma-publish-invite-note").value };
+    return {};
+  }
+
+  function showRismaPublicationPreview(title, text, kind=""){
+    rismaPublicationPreviewKind = kind || "";
+    $("risma-publication-preview-title").textContent = title || "Pratinjau publikasi";
+    $("risma-publication-preview-text").value = String(text || "").trim();
+    $("risma-publication-copy").disabled = !String(text || "").trim();
+  }
+
+  async function previewRismaPublication(kind, statusId){
+    const el = statusId ? $(statusId) : $("risma-publication-preview-status");
+    setStatus(el, "Membuat pratinjau…");
+    setStatus($("risma-publication-preview-status"), "Membuat pratinjau…");
+    try {
+      const data = await api("/api/risma/publication/preview", { method:"POST", body:JSON.stringify({ kind, data: rismaPublicationPayload(kind) }) });
+      showRismaPublicationPreview(data.title, data.text, kind);
+      setStatus(el, "Pratinjau siap.", "success");
+      setStatus($("risma-publication-preview-status"), `${data.title || "Publikasi"} siap ditinjau.`, "success");
+      switchRismaTab("publikasi");
+    } catch (error) {
+      setStatus(el, error.message, "error");
+      setStatus($("risma-publication-preview-status"), error.message, "error");
+    }
+  }
+
+  async function sendRismaPublication(kind, statusId, confirmText){
+    if(confirmText && !confirm(confirmText)) return;
+    const el = statusId ? $(statusId) : $("risma-publication-preview-status");
+    setStatus(el, "Mengirim ke grup…");
+    try {
+      const data = await api("/api/risma/publication/send", { method:"POST", body:JSON.stringify({ kind, data: rismaPublicationPayload(kind) }) });
+      showRismaPublicationPreview(data.title, data.text, kind);
+      setStatus(el, data.message || "Publikasi berhasil dikirim.", "success");
+      setStatus($("risma-publication-preview-status"), data.message || "Publikasi berhasil dikirim.", "success");
+    } catch (error) {
+      setStatus(el, error.message, "error");
+      setStatus($("risma-publication-preview-status"), error.message, "error");
+    }
+  }
+
   async function publishRismaRank(){
     if(!rismaDetail?.activePeriod)return;
-    if(!confirm("Kirim ranking lengkap peserta dan tim ke semua grup yang terinstal RISMA?"))return;
-    const el=$("risma-publish-status"); setStatus(el,"Mengirim rank ke grup…");
-    try{ const data=await api("/api/risma/publish-rank",{method:"POST",body:"{}"}); setStatus(el,data.message||"Rank berhasil dikirim.","success"); }
-    catch(error){ setStatus(el,error.message,"error"); }
+    await sendRismaPublication("rank", "risma-publish-status", "Kirim ranking lengkap peserta dan tim ke semua grup yang terinstal RISMA?");
+  }
+
+  async function sendRismaPublicationPdf(kind, statusId){
+    const el = statusId ? $(statusId) : $("risma-publication-preview-status");
+    setStatus(el, "Membuat PDF dan mengirim ke WhatsApp Anda…");
+    try {
+      const data = await api("/api/risma/publication/pdf-self", { method:"POST", body:JSON.stringify({ kind, data: rismaPublicationPayload(kind) }) });
+      showRismaPublicationPreview(data.title, data.text, kind);
+      setStatus(el, data.message || "PDF berhasil dikirim ke WhatsApp Anda.", "success");
+      setStatus($("risma-publication-preview-status"), `${data.fileName || "PDF"} berhasil dikirim.`, "success");
+    } catch (error) {
+      setStatus(el, error.message, "error");
+      setStatus($("risma-publication-preview-status"), error.message, "error");
+    }
+  }
+
+  async function rismaOwnerCreatePeriod(){
+    const year = Number($("risma-owner-period-year").value);
+    if(!Number.isInteger(year) || year < 1400 || year > 1600){setStatus($("risma-owner-period-status"),"Tahun Hijriah harus 1400-1600.","error");return;}
+    if(!confirm(`Aktifkan periode Ramadan ${year} H?`))return;
+    setStatus($("risma-owner-period-status"),"Membuat periode…");
+    try{const data=await api("/api/risma/period",{method:"POST",body:JSON.stringify({hijriYear:year})});rismaDetail=data.risma;renderRisma();setStatus($("risma-owner-period-status"),`Ramadan ${year} H aktif.`,"success");}
+    catch(error){setStatus($("risma-owner-period-status"),error.message,"error");}
+  }
+
+  async function rismaOwnerClosePeriod(){
+    const period=rismaDetail?.activePeriod;
+    if(!period || period.isSimulation)return;
+    if(!confirm(`Tutup periode Ramadan ${period.hijriYear} H? Data tetap tersimpan.`))return;
+    setStatus($("risma-owner-period-status"),"Menutup periode…");
+    try{const data=await api(`/api/risma/period/${encodeURIComponent(period.id)}/close`,{method:"POST",body:"{}"});rismaDetail=data.risma;renderRisma();setStatus($("risma-owner-period-status"),"Periode ditutup. Data tetap tersimpan.","success");}
+    catch(error){setStatus($("risma-owner-period-status"),error.message,"error");}
+  }
+
+  async function rismaSimulationAction(action){
+    const year = Number($("risma-owner-simulation-year").value || rismaDetail?.activePeriod?.hijriYear || 1448);
+    const labels={start:"Memulai simulasi…",seed:"Mengisi data contoh…",reset:"Mereset simulasi…",end:"Mengakhiri simulasi…"};
+    const endpoint={start:"start",seed:"seed",reset:"reset",end:"end"}[action];
+    if(!endpoint)return;
+    if(action==="reset" && !confirm("Kosongkan seluruh data simulasi? Data asli tidak berubah."))return;
+    if(action==="end" && !confirm("Selesaikan simulasi dan kembali ke data asli?"))return;
+    setStatus($("risma-owner-simulation-status"),labels[action]||"Memproses…");
+    try{
+      const body=["start","seed"].includes(action)?JSON.stringify({hijriYear:year}):"{}";
+      const data=await api(`/api/risma/simulation/${endpoint}`,{method:"POST",body});
+      rismaDetail=data.risma;
+      renderRisma();
+      const message=action==="start"?`Simulasi Ramadan ${year} H aktif.`:action==="seed"?"Data contoh simulasi berhasil dibuat.":action==="reset"?"Data simulasi sudah dikosongkan.":"Simulasi selesai. Kembali ke data asli.";
+      setStatus($("risma-owner-simulation-status"),message,"success");
+    }catch(error){setStatus($("risma-owner-simulation-status"),error.message,"error");}
+  }
+
+  async function loadRismaLogs(){
+    if(rismaDetail?.role!=="owner")return;
+    setStatus($("risma-log-status"),"Memuat aktivitas…");
+    const data=await api("/api/risma/logs?limit=120");
+    rismaLogs=data.logs||[];
+    renderRismaLogs();
+    setStatus($("risma-log-status"),rismaLogs.length?`${rismaLogs.length} aktivitas terbaru.`:"Belum ada aktivitas Web RISMA.");
+  }
+
+  function rismaLogIcon(action){
+    if(action.includes("delete"))return "fa-trash-can";
+    if(action.includes("restore"))return "fa-rotate-left";
+    if(action.includes("publication"))return "fa-paper-plane";
+    if(action.includes("week"))return "fa-star";
+    if(action.includes("coupon"))return "fa-ticket";
+    if(action.includes("simulation"))return "fa-flask";
+    if(action.includes("period"))return "fa-calendar-days";
+    if(action.includes("settings"))return "fa-sliders";
+    return "fa-clock-rotate-left";
+  }
+
+  function renderRismaLogs(){
+    const list=$("risma-log-list"); list.replaceChildren();
+    if(!rismaLogs.length){list.appendChild(emptyBox("Belum ada aktivitas Admin Web RISMA."));return;}
+    for(const row of rismaLogs){
+      const card=document.createElement("article"); card.className="risma-log-card";
+      const icon=document.createElement("span"); icon.className="risma-log-icon"; icon.innerHTML=`<i class="fa-solid ${rismaLogIcon(row.action||"")}"></i>`;
+      const info=document.createElement("div"); info.className="risma-log-info";
+      const title=document.createElement("strong"); title.textContent=row.label||"Aktivitas RISMA";
+      const meta=document.createElement("span"); meta.textContent=`${row.actorName||"Admin"} · ${row.dibuatPada?dateTimeFmt.format(new Date(row.dibuatPada)):"—"}`;
+      const detail=document.createElement("p"); detail.textContent=row.detail||"";
+      info.append(title,meta); if(row.detail)info.append(detail);
+      card.append(icon,info);
+      const side=document.createElement("div"); side.className="risma-log-side";
+      if(row.dipulihkanPada){const chip=document.createElement("span");chip.className="status-chip done";chip.textContent="Dipulihkan";side.appendChild(chip);}
+      else if(row.reversible){const restore=button("Pulihkan","ghost compact",()=>restoreRismaLog(row));restore.innerHTML='<i class="fa-solid fa-rotate-left"></i> Pulihkan';side.appendChild(restore);}
+      card.appendChild(side);list.appendChild(card);
+    }
+  }
+
+  async function restoreRismaLog(row){
+    if(!confirm(`Pulihkan aktivitas ini?
+
+${row.label}`))return;
+    setStatus($("risma-log-status"),"Memulihkan aktivitas…");
+    try{
+      const data=await api(`/api/risma/logs/${encodeURIComponent(row.id)}/restore`,{method:"POST",body:"{}"});
+      rismaLogs=data.logs||[]; rismaDetail=data.risma||rismaDetail; renderRisma(); renderRismaLogs();
+      setStatus($("risma-log-status"),"Aktivitas berhasil dipulihkan.","success");
+    }catch(error){setStatus($("risma-log-status"),error.message,"error");}
   }
 
   async function saveRismaSettings(event){ event.preventDefault(); setStatus($("risma-settings-status"),"Menyimpan pengaturan…"); try{ const data=await api("/api/risma/settings",{method:"PUT",body:JSON.stringify({individualWinnerCount:Number($("risma-setting-rank").value),teamWinnerCount:Number($("risma-setting-team").value),couponEnabled:{ngaji:$("risma-setting-ngaji").checked,taraweh:$("risma-setting-taraweh").checked,tadarus:$("risma-setting-tadarus").checked}})}); rismaDetail=data.risma; renderRisma(); setStatus($("risma-settings-status"),"Pengaturan tersimpan.","success"); }catch(error){setStatus($("risma-settings-status"),error.message,"error");} }
@@ -3138,7 +3322,27 @@
   $("close-risma-coupon-edit").addEventListener("click",()=>$("risma-coupon-edit-dialog").close());
   $("risma-coupon-edit-form").addEventListener("submit",async event=>{event.preventDefault();const no=$("risma-coupon-edit-no").value;setStatus($("risma-coupon-edit-status"),"Menyimpan…");try{await api(`/api/risma/coupon/${encodeURIComponent(rismaCouponType)}/${no}`,{method:"PATCH",body:JSON.stringify({name:$("risma-coupon-edit-name").value,count:Number($("risma-coupon-edit-count").value),allowSimilar:true})});$("risma-coupon-edit-dialog").close();await loadRisma();}catch(error){setStatus($("risma-coupon-edit-status"),error.message,"error");}});
 
+  $("risma-publish-rank-preview").addEventListener("click",()=>previewRismaPublication("rank","risma-publish-status"));
   $("risma-publish-rank").addEventListener("click",publishRismaRank);
+  $("risma-publish-rank-pdf").addEventListener("click",()=>sendRismaPublicationPdf("rank","risma-publish-status"));
+  $("risma-publish-rules-preview").addEventListener("click",()=>previewRismaPublication("rules","risma-publish-rules-status"));
+  $("risma-publish-rules-send").addEventListener("click",()=>sendRismaPublication("rules","risma-publish-rules-status","Kirim Pengumuman Program Ramadan ke semua grup yang terinstal RISMA?"));
+  $("risma-publish-rules-pdf").addEventListener("click",()=>sendRismaPublicationPdf("rules","risma-publish-rules-status"));
+  $("risma-publish-announce-preview").addEventListener("click",()=>previewRismaPublication("announcement","risma-publish-announce-status"));
+  $("risma-publish-announce-send").addEventListener("click",()=>sendRismaPublication("announcement","risma-publish-announce-status","Kirim pengumuman ini ke semua grup yang terinstal RISMA?"));
+  $("risma-publish-announce-pdf").addEventListener("click",()=>sendRismaPublicationPdf("announcement","risma-publish-announce-status"));
+  $("risma-publish-invite-preview").addEventListener("click",()=>previewRismaPublication("invitation","risma-publish-invite-status"));
+  $("risma-publish-invite-send").addEventListener("click",()=>sendRismaPublication("invitation","risma-publish-invite-status","Kirim undangan ini ke semua grup yang terinstal RISMA?"));
+  $("risma-publish-invite-pdf").addEventListener("click",()=>sendRismaPublicationPdf("invitation","risma-publish-invite-status"));
+  $("risma-publication-copy").addEventListener("click",async()=>{const text=$("risma-publication-preview-text").value.trim(); if(!text){setStatus($("risma-publication-preview-status"),"Belum ada teks untuk disalin.","error"); return;} try{await navigator.clipboard.writeText(text); setStatus($("risma-publication-preview-status"),"Teks publikasi berhasil disalin.","success");}catch(error){setStatus($("risma-publication-preview-status"),"Gagal menyalin teks.","error");}});
+  $("risma-publication-clear").addEventListener("click",()=>{showRismaPublicationPreview("Pratinjau publikasi","",""); setStatus($("risma-publication-preview-status"));});
+  $("risma-owner-period-create").addEventListener("click",rismaOwnerCreatePeriod);
+  $("risma-owner-period-close").addEventListener("click",rismaOwnerClosePeriod);
+  $("risma-simulation-start").addEventListener("click",()=>rismaSimulationAction("start"));
+  $("risma-simulation-seed").addEventListener("click",()=>rismaSimulationAction("seed"));
+  $("risma-simulation-reset").addEventListener("click",()=>rismaSimulationAction("reset"));
+  $("risma-simulation-end").addEventListener("click",()=>rismaSimulationAction("end"));
+  $("risma-log-refresh").addEventListener("click",()=>loadRismaLogs().catch(error=>setStatus($("risma-log-status"),error.message,"error")));
   $("risma-team-rebuild").addEventListener("click",async()=>{if(!confirm("Acak ulang tim berdasarkan poin terbaru? Setelah Minggu 2 diinput fitur ini akan terkunci."))return;setStatus($("risma-team-rebuild-status"),"Menyusun ulang tim…");try{const data=await api("/api/risma/teams/rebuild",{method:"POST",body:"{}"});rismaDetail=data.risma;renderRisma();setStatus($("risma-team-rebuild-status"),"Tim berhasil diacak ulang.","success");}catch(error){setStatus($("risma-team-rebuild-status"),error.message,"error");}});
   $("risma-settings-form").addEventListener("submit",saveRismaSettings);
   $("risma-template-type").addEventListener("change",syncRismaTemplateForm);

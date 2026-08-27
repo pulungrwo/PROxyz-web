@@ -9,7 +9,8 @@
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
   <title>Admin PROxyz</title>
-  <link rel="stylesheet" href="./admin.css?v=0.8.0">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+  <link rel="stylesheet" href="./admin.css?v=0.8.2">
 </head>
 <body>
   <main class="shell">
@@ -384,8 +385,8 @@
               <div><span>Kupon</span><b id="risma-coupons">0</b></div>
             </div>
             <div class="risma-hero-tools">
-              <button id="risma-period-new" class="hero-tool" type="button">+ Periode</button>
-              <button id="risma-period-close" class="hero-tool danger" type="button">Tutup periode</button>
+              <button id="risma-period-new" class="hero-tool" type="button" hidden>+ Periode</button>
+              <button id="risma-period-close" class="hero-tool danger" type="button" hidden>Tutup periode</button>
               <button id="risma-refresh" class="hero-tool" type="button">↻ Muat ulang</button>
             </div>
           </section>
@@ -393,14 +394,16 @@
           <nav class="subtabs risma-subtabs" aria-label="Fitur RISMA">
             <button class="subtab active" type="button" data-risma-tab="rank">Rank</button>
             <button class="subtab" type="button" data-risma-tab="poin">Poin</button>
-            <button class="subtab" type="button" data-risma-tab="kupon">Kupon THR</button>
+            <button class="subtab" type="button" data-risma-tab="kupon">Kupon</button>
+            <button class="subtab" type="button" data-risma-tab="publikasi">Publikasi</button>
             <button class="subtab" type="button" data-risma-tab="pengaturan">Pengaturan</button>
             <button class="subtab" type="button" data-risma-tab="pengelola">Pengelola</button>
+            <button id="risma-log-tab" class="subtab" type="button" data-risma-tab="log" hidden>Log</button>
           </nav>
 
           <section id="risma-rank-panel" class="risma-panel panel risma-rank-panel">
             <div class="section-head risma-section-head">
-              <div><p class="eyebrow">Peringkat terbaru</p><h2>Rank RISMA Poin</h2></div>
+              <div class="risma-rank-headline"><p class="eyebrow">Peringkat terbaru RISMA Poin</p><h2>Peringkat terbaru RISMA Poin</h2><p class="muted small">Peserta dan tim otomatis diperbarui dari input mingguan terbaru.</p></div>
               <span id="risma-total-points" class="feature-pill">0 poin</span>
             </div>
 
@@ -413,22 +416,11 @@
               <div class="risma-rank-title"><div><span>Tim</span><strong>Semua tim</strong></div><span id="risma-rank-team-count" class="risma-count-pill">0</span></div>
               <div id="risma-rank-teams" class="risma-rank-list"></div>
             </section>
-
-            <section class="risma-publish-box">
-              <div>
-                <p class="eyebrow">Publikasi</p>
-                <h3>Kirim rank terbaru</h3>
-                <p class="muted small">Mengirim ranking lengkap peserta dan tim ke semua grup WhatsApp yang terinstal RISMA.</p>
-              </div>
-              <button id="risma-publish-rank" class="primary full" type="button">Kirim rank ke grup</button>
-              <p id="risma-publish-status" class="status"></p>
-              <p id="risma-publish-footnote" class="risma-web-footnote">&gt; Dikirim dari PROxyz web</p>
-            </section>
           </section>
 
           <section id="risma-poin-panel" class="risma-panel panel" hidden>
             <div class="section-head risma-section-head">
-              <div><p class="eyebrow">RISMA Poin</p><h2>Input mingguan</h2><p class="muted small">Tambah peserta satu per satu. Nilai kehadiran otomatis dikonversi menjadi RISMA Poin.</p></div>
+              <div><p class="eyebrow">RISMA Poin</p><h2>Input mingguan</h2><p class="muted small">Input peserta satu per satu agar tetap rapi, ringan, dan mudah dicek.</p></div>
             </div>
             <div id="risma-week-grid" class="week-grid risma-week-grid"></div>
             <div class="risma-info-strip">Minggu 1 memakai <b>nama peserta</b>. Mulai Minggu 2, pilih peserta yang sudah terdaftar atau tambahkan peserta baru.</div>
@@ -439,7 +431,7 @@
 
           <section id="risma-kupon-panel" class="risma-panel panel" hidden>
             <div class="section-head risma-section-head">
-              <div><p class="eyebrow">Kupon THR</p><h2>Penerima & pembagian</h2><p class="muted small">Tambahkan satu penerima setiap kali agar lebih mudah dicek.</p></div>
+              <div><p class="eyebrow">Kupon</p><h2>Penerima & pembagian</h2><p class="muted small">Tambah penerima satu per satu agar pembagian kupon lebih rapi dan mudah dipantau.</p></div>
               <button id="risma-coupon-add" class="primary compact" type="button">+ Penerima</button>
             </div>
             <label>Jenis kupon<select id="risma-coupon-type"><option value="ngaji">Kupon Ngaji</option><option value="taraweh">Kupon Taraweh</option><option value="tadarus">Kupon Tadarus</option></select></label>
@@ -447,8 +439,104 @@
             <div id="risma-coupon-list" class="list-stack"></div>
           </section>
 
+          <section id="risma-publikasi-panel" class="risma-panel panel" hidden>
+            <div class="section-head risma-section-head">
+              <div><p class="eyebrow">Publikasi RISMA</p><h2>Publikasi & PDF</h2><p class="muted small">Format WhatsApp dan PDF memakai desain RISMA yang sama seperti alur bot. Publikasi grup selalu mencantumkan nama Admin Web.</p></div>
+            </div>
+
+            <div class="risma-pub-menu">
+              <details class="risma-pub-item" open>
+                <summary>
+                  <span class="risma-pub-icon"><i class="fa-solid fa-envelope-open-text"></i></span>
+                  <span><strong>Buat Undangan</strong><small>Template undangan RISMA yang sopan dan siap dibagikan.</small></span>
+                  <i class="fa-solid fa-chevron-down risma-pub-chevron"></i>
+                </summary>
+                <div class="risma-pub-body">
+                  <div class="context-grid">
+                    <label>Penerima<input id="risma-publish-invite-recipient" maxlength="100" placeholder="Contoh: Seluruh anggota RISMA"></label>
+                    <label>Kegiatan<input id="risma-publish-invite-event" maxlength="120" placeholder="Contoh: Buka bersama"></label>
+                    <label>Tanggal<input id="risma-publish-invite-date" maxlength="80" placeholder="Contoh: Sabtu, 10 Ramadan 1448 H"></label>
+                    <label>Waktu<input id="risma-publish-invite-time" maxlength="80" placeholder="Contoh: Ba'da Ashar"></label>
+                  </div>
+                  <label>Tempat<input id="risma-publish-invite-place" maxlength="120" placeholder="Contoh: Masjid Al-Huda"></label>
+                  <label>Catatan <span class="muted">(opsional)</span><textarea id="risma-publish-invite-note" rows="3" maxlength="500" placeholder="Catatan tambahan..."></textarea></label>
+                  <div class="risma-pub-actions">
+                    <button id="risma-publish-invite-send" class="primary" type="button"><i class="fa-brands fa-whatsapp"></i> Kirim grup</button>
+                    <button id="risma-publish-invite-pdf" class="ghost" type="button"><i class="fa-solid fa-file-pdf"></i> PDF ke saya</button>
+                    <button id="risma-publish-invite-preview" class="ghost icon-only" type="button" title="Pratinjau"><i class="fa-solid fa-eye"></i></button>
+                  </div>
+                  <p id="risma-publish-invite-status" class="status"></p>
+                </div>
+              </details>
+
+              <details class="risma-pub-item">
+                <summary>
+                  <span class="risma-pub-icon"><i class="fa-solid fa-bullhorn"></i></span>
+                  <span><strong>Buat Pengumuman</strong><small>Pengumuman umum RISMA dengan versi WhatsApp dan PDF.</small></span>
+                  <i class="fa-solid fa-chevron-down risma-pub-chevron"></i>
+                </summary>
+                <div class="risma-pub-body">
+                  <label>Judul pengumuman<input id="risma-publish-announce-title" maxlength="120" placeholder="Contoh: Jadwal pembagian hadiah"></label>
+                  <label>Isi pengumuman<textarea id="risma-publish-announce-body" rows="5" maxlength="1200" placeholder="Tulis isi pengumuman di sini..."></textarea></label>
+                  <div class="risma-pub-actions">
+                    <button id="risma-publish-announce-send" class="primary" type="button"><i class="fa-brands fa-whatsapp"></i> Kirim grup</button>
+                    <button id="risma-publish-announce-pdf" class="ghost" type="button"><i class="fa-solid fa-file-pdf"></i> PDF ke saya</button>
+                    <button id="risma-publish-announce-preview" class="ghost icon-only" type="button" title="Pratinjau"><i class="fa-solid fa-eye"></i></button>
+                  </div>
+                  <p id="risma-publish-announce-status" class="status"></p>
+                </div>
+              </details>
+
+              <article class="risma-pub-item static">
+                <div class="risma-pub-static-head">
+                  <span class="risma-pub-icon"><i class="fa-solid fa-moon"></i></span>
+                  <span><strong>Pengumuman Program Ramadan</strong><small>Aturan RISMA Poin, sistem rank, tim, dan Kupon THR seperti di bot WhatsApp.</small></span>
+                </div>
+                <div class="risma-pub-actions">
+                  <button id="risma-publish-rules-send" class="primary" type="button"><i class="fa-brands fa-whatsapp"></i> Kirim grup</button>
+                  <button id="risma-publish-rules-pdf" class="ghost" type="button"><i class="fa-solid fa-file-pdf"></i> PDF ke saya</button>
+                  <button id="risma-publish-rules-preview" class="ghost icon-only" type="button" title="Pratinjau"><i class="fa-solid fa-eye"></i></button>
+                </div>
+                <p id="risma-publish-rules-status" class="status"></p>
+              </article>
+
+              <article class="risma-pub-item static rank-pub">
+                <div class="risma-pub-static-head">
+                  <span class="risma-pub-icon"><i class="fa-solid fa-ranking-star"></i></span>
+                  <span><strong>Rank terbaru</strong><small>Semua peserta dan semua tim. PDF siap cetak menandai batas juara perorangan dan tim.</small></span>
+                </div>
+                <div class="risma-pub-actions">
+                  <button id="risma-publish-rank" class="primary" type="button"><i class="fa-brands fa-whatsapp"></i> Kirim grup</button>
+                  <button id="risma-publish-rank-pdf" class="ghost" type="button"><i class="fa-solid fa-file-pdf"></i> PDF ke saya</button>
+                  <button id="risma-publish-rank-preview" class="ghost icon-only" type="button" title="Pratinjau"><i class="fa-solid fa-eye"></i></button>
+                </div>
+                <p id="risma-publish-status" class="status"></p>
+              </article>
+            </div>
+
+            <section class="risma-pub-preview-box">
+              <div class="risma-draft-head"><strong id="risma-publication-preview-title">Pratinjau publikasi</strong><span id="risma-publish-footnote" class="risma-web-footnote">&gt; Dikirim dari PROxyz web</span></div>
+              <textarea id="risma-publication-preview-text" rows="12" readonly placeholder="Tekan ikon mata untuk melihat pratinjau format WhatsApp."></textarea>
+              <div class="actions two risma-pub-preview-actions"><button id="risma-publication-copy" class="ghost" type="button"><i class="fa-regular fa-copy"></i> Salin teks</button><button id="risma-publication-clear" class="ghost" type="button">Kosongkan</button></div>
+              <p id="risma-publication-preview-status" class="status"></p>
+            </section>
+          </section>
+
           <section id="risma-pengaturan-panel" class="risma-panel panel" hidden>
             <div class="section-head risma-section-head"><div><p class="eyebrow">Owner RISMA</p><h2>Pengaturan Program</h2><p class="muted small">Pengaturan penting disatukan di satu tempat. Admin selain Owner hanya dapat melihat.</p></div></div>
+            <section id="risma-owner-period-box" class="risma-owner-control" hidden>
+              <div class="risma-owner-control-head"><span class="risma-pub-icon"><i class="fa-regular fa-calendar-days"></i></span><div><h3>Periode RISMA</h3><p id="risma-owner-period-note" class="muted small">Atur periode Ramadan aktif seperti di bot WhatsApp.</p></div></div>
+              <div class="risma-owner-inline"><label>Tahun Hijriah<input id="risma-owner-period-year" type="number" min="1400" max="1600" placeholder="1448"></label><button id="risma-owner-period-create" class="primary" type="button">Buat periode</button><button id="risma-owner-period-close" class="danger-soft" type="button">Tutup periode</button></div>
+              <p id="risma-owner-period-status" class="status"></p>
+            </section>
+
+            <section id="risma-owner-simulation-box" class="risma-owner-control simulation" hidden>
+              <div class="risma-owner-control-head"><span class="risma-pub-icon"><i class="fa-solid fa-flask"></i></span><div><h3>Simulasi RISMA</h3><p id="risma-owner-simulation-note" class="muted small">Coba seluruh alur tanpa menyentuh data asli dan tanpa mengirim publikasi ke grup.</p></div></div>
+              <div class="risma-owner-inline"><label>Tahun simulasi<input id="risma-owner-simulation-year" type="number" min="1400" max="1600" placeholder="1448"></label><button id="risma-simulation-start" class="ghost" type="button">Mulai kosong</button><button id="risma-simulation-seed" class="ghost" type="button">Data contoh</button></div>
+              <div class="actions two"><button id="risma-simulation-reset" class="ghost" type="button">Reset simulasi</button><button id="risma-simulation-end" class="danger-soft" type="button">Selesai simulasi</button></div>
+              <p id="risma-owner-simulation-status" class="status"></p>
+            </section>
+
             <form id="risma-settings-form" class="settings-stack">
               <div class="context-grid"><label>Jumlah Rank Poin<input id="risma-setting-rank" type="number" min="1" max="100" required></label><label>Jumlah Rank Tim<input id="risma-setting-team" type="number" min="1" max="50" required></label></div>
               <fieldset class="toggle-fieldset"><legend>Kupon THR aktif</legend><label class="check-row"><input id="risma-setting-ngaji" type="checkbox"> Kupon Ngaji</label><label class="check-row"><input id="risma-setting-taraweh" type="checkbox"> Kupon Taraweh</label><label class="check-row"><input id="risma-setting-tadarus" type="checkbox"> Kupon Tadarus</label></fieldset>
@@ -475,6 +563,12 @@
           <section id="risma-pengelola-panel" class="risma-panel panel" hidden>
             <div class="section-head risma-section-head"><div><p class="eyebrow">Akses RISMA</p><h2>Pengelola</h2><p class="muted small">Nama Owner/Admin mengikuti direktori Pengguna PROxyz.</p></div><button id="risma-manager-add" class="primary compact" type="button">+ Admin</button></div>
             <div id="risma-manager-list" class="manager-list"></div>
+          </section>
+          <section id="risma-log-panel" class="risma-panel panel" hidden>
+            <div class="section-head risma-section-head"><div><p class="eyebrow">Owner RISMA</p><h2>Log aktivitas</h2><p class="muted small">Pantau perubahan dari Admin Web. Aktivitas tertentu dapat dipulihkan tanpa menghapus log aslinya.</p></div><button id="risma-log-refresh" class="ghost compact" type="button"><i class="fa-solid fa-rotate"></i> Muat ulang</button></div>
+            <div class="risma-log-legend"><span><i class="fa-solid fa-shield-halved"></i> Hanya Owner</span><span><i class="fa-solid fa-rotate-left"></i> Pulihkan tersedia bila aman</span></div>
+            <div id="risma-log-list" class="risma-log-list"></div>
+            <p id="risma-log-status" class="status"></p>
           </section>
         </section>
       </section>
@@ -555,14 +649,14 @@
           </label>
           <label>Nilai hadir
             <select id="risma-week-attendance">
-              <option value="0">0x = 0 poin</option>
-              <option value="1">1x = 1 poin</option>
-              <option value="2">2x = 2 poin</option>
-              <option value="3">3x = 3 poin</option>
-              <option value="4">4x = 4 poin</option>
-              <option value="5">5x = 6 poin</option>
-              <option value="6">6x = 7,5 poin</option>
-              <option value="7">7x = 9 poin</option>
+              <option value="0">0x hadir</option>
+              <option value="1">1x hadir</option>
+              <option value="2">2x hadir</option>
+              <option value="3">3x hadir</option>
+              <option value="4">4x hadir</option>
+              <option value="5">5x hadir</option>
+              <option value="6">6x hadir</option>
+              <option value="7">7x hadir</option>
             </select>
           </label>
         </div>
@@ -584,7 +678,7 @@
 
   <dialog id="risma-coupon-add-dialog">
     <form id="risma-coupon-add-form" class="dialog-form">
-      <div class="section-head"><div><p class="eyebrow">Kupon THR</p><h2>Tambah penerima</h2></div><button id="close-risma-coupon-add" class="icon-button" type="button">×</button></div>
+      <div class="section-head"><div><p class="eyebrow">Kupon</p><h2>Tambah penerima</h2></div><button id="close-risma-coupon-add" class="icon-button" type="button">×</button></div>
       <div class="risma-coupon-entry-grid">
         <label>Nama penerima<input id="risma-coupon-add-name" maxlength="80" autocomplete="off" placeholder="Contoh: Ibu Siti" required></label>
         <label>Jumlah kupon<select id="risma-coupon-add-count"><option value="1" selected>1 kupon</option><option value="2">2 kupon</option><option value="3">3 kupon</option></select></label>
@@ -715,6 +809,6 @@
   <dialog id="gallery-bulk-dialog"><form id="gallery-bulk-form" method="dialog" class="dialog-form"><div class="section-head"><div><p class="eyebrow">Edit beberapa foto</p><h2>Kelompokkan kejadian</h2></div><button id="close-gallery-bulk" class="icon-button" type="button">×</button></div><p class="muted small"><b id="gallery-bulk-dialog-count">0 foto</b> akan dijadikan satu kelompok di galeri publik.</p><label>Judul kejadian<input id="gallery-bulk-caption" maxlength="160" placeholder="Contoh: Makan Kerupuk Agustusan 2024" required></label><label>Tanggal dokumentasi<input id="gallery-bulk-date" type="date" required></label><p class="muted small">Semua foto terpilih akan memakai satu judul dan satu tanggal. Foto tidak dihapus atau diunggah ulang ke penyimpanan Galeri.</p><p id="gallery-bulk-status" class="status"></p><button class="primary full" type="submit">Simpan & kelompokkan</button></form></dialog>
 
   <script src="./config.js?v=242"></script>
-  <script src="./admin.js?v=0.8.0" defer></script>
+  <script src="./admin.js?v=0.8.2" defer></script>
 </body>
 </html>
