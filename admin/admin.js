@@ -1,7 +1,7 @@
 (() => {
   "use strict";
 
-  const ADMIN_BUILD = "0.7.2";
+  const ADMIN_BUILD = "0.7.3";
   const config = window.PROXYZ_ADMIN_CONFIG || {};
 
   async function checkAdminBuild() {
@@ -435,6 +435,7 @@
     $("kas-select").value = id;
     const data = await api(`/api/kas/${encodeURIComponent(id)}`);
     activeKasDetail = data.kas;
+    updateKasReportTargetButtons();
     $("kas-name").textContent = data.kas.nama;
     $("kas-balance").textContent = rupiah.format(data.kas.saldo.akhir || 0);
     $("kas-in").textContent = wholeNumber.format(data.kas.saldo.masuk || 0);
@@ -629,9 +630,24 @@
     }
   }
 
+  function kasReportIsPrivate() {
+    return activeKasDetail?.webAccess?.visibility === "private";
+  }
+
+  function updateKasReportTargetButtons() {
+    const isPrivate = kasReportIsPrivate();
+    const pdfTarget = $("kas-report-wa-pdf-target");
+    const complete = $("kas-report-wa-complete");
+    const simple = $("kas-report-wa-simple");
+    if (pdfTarget) pdfTarget.textContent = isPrivate ? "Kirim PDF ke pengakses web" : "Kirim PDF ke grup";
+    if (complete) complete.textContent = isPrivate ? "Kirim laporan lengkap ke pengakses web" : "Kirim laporan lengkap ke grup";
+    if (simple) simple.textContent = isPrivate ? "Kirim laporan singkat ke pengakses web" : "Kirim laporan singkat ke grup";
+  }
+
   function kasReportActionButtons() {
     return [
       $("kas-report-wa-pdf"),
+      $("kas-report-wa-pdf-target"),
       $("kas-report-wa-complete"),
       $("kas-report-wa-simple")
     ].filter(Boolean);
@@ -643,10 +659,13 @@
     const end = $("kas-report-end").value;
     if (!start || !end) return alert("Buat laporan terlebih dahulu.");
 
+    const isPrivate = kasReportIsPrivate();
+    const destination = isPrivate ? "pengakses web" : "grup";
     const labels = {
       pdf_self: "Mengirim PDF ke WhatsApp Anda…",
-      complete_group: "Mengirim laporan lengkap ke grup…",
-      simple_group: "Mengirim laporan singkat ke grup…"
+      pdf_group: `Mengirim PDF ke ${destination}…`,
+      complete_group: `Mengirim laporan lengkap ke ${destination}…`,
+      simple_group: `Mengirim laporan singkat ke ${destination}…`
     };
     const buttons = kasReportActionButtons();
     buttons.forEach(button => { button.disabled = true; });
@@ -2507,6 +2526,7 @@
   $("kas-report-year-select").addEventListener("change", updateKasReportShortcutLabels);
   $("kas-report-load").addEventListener("click", () => loadKasReport().catch(showError));
   $("kas-report-wa-pdf").addEventListener("click", () => sendKasReportWhatsApp("pdf_self").catch(showError));
+  $("kas-report-wa-pdf-target").addEventListener("click", () => sendKasReportWhatsApp("pdf_group").catch(showError));
   $("kas-report-wa-complete").addEventListener("click", () => sendKasReportWhatsApp("complete_group").catch(showError));
   $("kas-report-wa-simple").addEventListener("click", () => sendKasReportWhatsApp("simple_group").catch(showError));
   $("kas-schedule-add").addEventListener("click", () => openKasScheduleDialog());
