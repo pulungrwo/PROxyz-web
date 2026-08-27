@@ -387,3 +387,46 @@ dialog{max-height:min(92dvh,760px);overflow:hidden}
   .risma-rank-row-card .risma-mini-action{padding:4px!important}
   .risma-rank-row-card .risma-rank-points{font-size:8.8px;padding:4px 5px}
 }
+
+/* RISMA Web V0.8.6 — finalisasi Rank & daftar input */
+.risma-rank-row-card{
+  grid-template-columns:34px minmax(0,1fr) auto!important;
+  align-items:start!important;
+  column-gap:8px!important;
+  row-gap:4px!important;
+}
+.risma-rank-row-card .risma-rank-info{display:grid;gap:4px;min-width:0;padding-top:1px}
+.risma-rank-name-line{display:flex;align-items:center;gap:7px;min-width:0;flex-wrap:nowrap}
+.risma-rank-name-line strong{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.risma-rank-name-line .risma-rank-points{flex:0 0 auto}
+.risma-rank-actions{display:flex;align-items:flex-start;justify-content:flex-end;gap:5px;align-self:start;justify-self:end;margin-top:-1px}
+.risma-rank-row-card .risma-rank-number{align-self:start}
+
+/* Nama tetap di kiri, Ubah/Hapus di kanan atas; hadir/poin menjadi keterangan di bawah nama. */
+.risma-week-draft-card{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) auto!important;
+  align-items:start!important;
+  gap:8px!important;
+}
+.risma-week-draft-card>div:first-child{min-width:0}
+.risma-draft-actions{justify-self:end!important;align-self:start!important;justify-content:flex-end!important;flex-wrap:nowrap!important}
+
+@media(max-width:640px){
+  .risma-rank-row-card{grid-template-columns:31px minmax(0,1fr) auto!important;padding:9px!important;gap:6px!important}
+  .risma-rank-name-line{gap:5px}
+  .risma-rank-actions{gap:3px}
+  .risma-rank-row-card .risma-mini-action{padding:5px!important}
+  .risma-week-draft-card{grid-template-columns:minmax(0,1fr) auto!important}
+}
+@media(max-width:410px){
+  .risma-rank-row-card{grid-template-columns:28px minmax(0,1fr) auto!important;gap:5px!important}
+  .risma-rank-name-line{gap:4px}
+  .risma-rank-row-card .risma-rank-info strong{font-size:11.8px}
+  .risma-rank-row-card .risma-rank-info span{font-size:8.7px}
+  .risma-rank-row-card .risma-rank-points{font-size:8.8px;padding:4px 5px}
+  .risma-rank-actions{gap:2px}
+  .risma-rank-actions .risma-mini-action{padding:4px!important;min-height:28px}
+  .risma-week-draft-card{display:grid!important;grid-template-columns:minmax(0,1fr) auto!important}
+  .risma-draft-actions{justify-self:end!important;justify-content:flex-end!important}
+}

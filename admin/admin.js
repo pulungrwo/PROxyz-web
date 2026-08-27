@@ -1,7 +1,7 @@
 (() => {
   "use strict";
 
-  const ADMIN_BUILD = "0.8.5";
+  const ADMIN_BUILD = "0.8.6";
   const config = window.PROXYZ_ADMIN_CONFIG || {};
 
   async function checkAdminBuild() {
@@ -1707,15 +1707,19 @@
       card.className = "risma-rank-card participant risma-rank-row-card";
       const rank = document.createElement("span"); rank.className = "risma-rank-number"; rank.textContent = rismaRankMark(index);
       const info = document.createElement("div"); info.className = "risma-rank-info";
+      const headline = document.createElement("div"); headline.className = "risma-rank-name-line";
       const title = document.createElement("strong"); title.textContent = row.name;
-      const meta = document.createElement("span"); meta.textContent = participantWeekSummary(row);
-      info.append(title,meta);
       const points = document.createElement("b"); points.className = "risma-rank-points"; points.textContent = `${number.format(row.totalPoints || 0)} poin`;
+      headline.append(title,points);
+      const meta = document.createElement("span"); meta.textContent = participantWeekSummary(row);
+      info.append(headline,meta);
+      const actions=document.createElement("div"); actions.className="risma-rank-actions";
       const edit=rismaIconButton("Ubah","fa-pen","ghost compact risma-mini-action",()=>openRismaParticipant(row));
       const del=rismaIconButton("Hapus","fa-trash-can","danger-soft compact risma-mini-action",()=>deleteRismaParticipant(row));
       edit.disabled=masterLocked;del.disabled=masterLocked;
       if(masterLocked){edit.title="Dikunci setelah Minggu 2. Hanya Owner yang dapat mengubah.";del.title=edit.title;}
-      card.append(rank,info,points,edit,del);
+      actions.append(edit,del);
+      card.append(rank,info,actions);
       participantList.appendChild(card);
     });
 
