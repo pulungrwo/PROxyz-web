@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#101828">
   <meta name="description" content="Dashboard Kas Ramadan">
   <title>Kas Ramadan · Multi Kas PROxyz</title>
-  <link rel="stylesheet" href="../assets/dashboard.css">
+  <link rel="stylesheet" href="../assets/dashboard.css?v=3">
 </head>
 <body data-kas-id="ramadan" data-kas-visibility="public">
   <main class="app-shell">
@@ -16,18 +16,28 @@
     </header>
 
     <section id="unlock-panel" class="unlock-panel" hidden>
-      <div class="lock-icon" aria-hidden="true">🔒</div>
-      <p class="eyebrow">Dashboard privat</p>
+      <div class="lock-icon" aria-hidden="true">🔐</div>
+      <p class="eyebrow">Kas privat</p>
       <h1>Kas Ramadan</h1>
-      <p class="unlock-copy">Masukkan sandi untuk membuka saldo dan riwayat transaksi kas ini.</p>
-      <form id="unlock-form" class="unlock-form" autocomplete="off">
-        <label for="kas-password">Sandi</label>
+      <p class="unlock-copy">Masuk dengan nomor WhatsApp yang sudah didaftarkan oleh Owner Kas. Owner dan Admin Kas otomatis dapat masuk.</p>
+
+      <form id="kas-phone-form" class="unlock-form" autocomplete="on">
+        <label for="kas-phone">Nomor WhatsApp</label>
         <div class="password-row">
-          <input id="kas-password" type="password" autocomplete="current-password" required placeholder="Masukkan sandi">
-          <button id="unlock-button" type="submit">Buka</button>
+          <input id="kas-phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="08xxxxxxxxxx" required>
+          <button id="kas-send-otp" type="submit">Kirim OTP</button>
         </div>
-        <p id="unlock-error" class="unlock-error" aria-live="polite"></p>
       </form>
+
+      <form id="kas-otp-form" class="unlock-form" autocomplete="one-time-code" hidden>
+        <label for="kas-otp">Kode OTP</label>
+        <div class="password-row">
+          <input id="kas-otp" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]{6}" placeholder="6 digit" required>
+          <button id="kas-verify-otp" type="submit">Masuk</button>
+        </div>
+        <button id="kas-change-phone" class="text-button" type="button">Ganti nomor</button>
+      </form>
+      <p id="kas-auth-status" class="unlock-error" aria-live="polite"></p>
     </section>
 
     <div id="dashboard-content">
@@ -39,60 +49,29 @@
       </section>
 
       <section class="summary-grid" aria-label="Ringkasan kas">
-        <article class="summary-card">
-          <span>Total pemasukan</span>
-          <strong id="total-masuk">—</strong>
-        </article>
-        <article class="summary-card">
-          <span>Total pengeluaran</span>
-          <strong id="total-keluar">—</strong>
-        </article>
-        <article class="summary-card wide">
-          <span>Bulan ini</span>
-          <div class="month-summary">
-            <span><small>Masuk</small><strong id="bulan-masuk">—</strong></span>
-            <span><small>Keluar</small><strong id="bulan-keluar">—</strong></span>
-          </div>
-        </article>
+        <article class="summary-card"><span>Total pemasukan</span><strong id="total-masuk">—</strong></article>
+        <article class="summary-card"><span>Total pengeluaran</span><strong id="total-keluar">—</strong></article>
+        <article class="summary-card wide"><span>Bulan ini</span><div class="month-summary"><span><small>Masuk</small><strong id="bulan-masuk">—</strong></span><span><small>Keluar</small><strong id="bulan-keluar">—</strong></span></div></article>
       </section>
 
       <section class="transactions-section">
-        <div class="section-heading">
-          <div>
-            <p class="eyebrow">Riwayat</p>
-            <h2>Riwayat transaksi</h2>
-          </div>
-          <span class="count" id="transaction-count">0 transaksi</span>
-        </div>
-
+        <div class="section-heading"><div><p class="eyebrow">Riwayat</p><h2>Riwayat transaksi</h2></div><span class="count" id="transaction-count">0 transaksi</span></div>
         <div class="filters">
-          <label class="search-field">
-            <span class="sr-only">Cari transaksi</span>
-            <input id="search" type="search" placeholder="Cari keterangan atau kategori…" autocomplete="off">
-          </label>
+          <label class="search-field"><span class="sr-only">Cari transaksi</span><input id="search" type="search" placeholder="Cari keterangan atau kategori…" autocomplete="off"></label>
           <div class="filter-row">
-            <select id="month-filter" aria-label="Filter bulan">
-              <option value="all">Semua bulan</option>
-            </select>
-            <select id="type-filter" aria-label="Filter jenis transaksi">
-              <option value="all">Semua jenis</option>
-              <option value="masuk">Pemasukan</option>
-              <option value="keluar">Pengeluaran</option>
-            </select>
+            <select id="month-filter" aria-label="Filter bulan"><option value="all">Semua bulan</option></select>
+            <select id="type-filter" aria-label="Filter jenis transaksi"><option value="all">Semua jenis</option><option value="masuk">Pemasukan</option><option value="keluar">Pengeluaran</option></select>
           </div>
         </div>
-
         <div id="transaction-list" class="transaction-list" aria-live="polite"></div>
         <button id="load-more" class="load-more" type="button" hidden>Muat lainnya</button>
       </section>
     </div>
 
-    <footer>
-      <span>Multi Kas PROxyz</span>
-      <span>Data bersifat baca-saja</span>
-    </footer>
+    <footer><span>Multi Kas PROxyz</span><span>Data bersifat baca-saja</span></footer>
   </main>
 
-  <script src="../assets/dashboard.js" defer></script>
+  <script src="../../admin/config.js"></script>
+  <script src="../assets/dashboard.js?v=3" defer></script>
 </body>
 </html>

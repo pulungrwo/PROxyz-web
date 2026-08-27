@@ -154,3 +154,31 @@ dialog{max-height:min(92dvh,760px);overflow:hidden}
   .dialog-form{padding-left:12px;padding-right:12px}
   #tx-dialog .nominal-entry button{min-width:58px}
 }
+
+/* PROxyz Admin V0.7.2 — laporan, kategori dan akses Web Kas */
+.kas-report-note-field{display:grid;gap:6px;padding:12px;border:1px solid #e4e7ec;border-radius:13px;background:#f8fafc;color:#344054;font-weight:760}
+.kas-report-note-field textarea{min-height:82px;background:#fff;resize:vertical;line-height:1.45}
+.kas-report-note-hint{margin:-3px 2px 2px;line-height:1.45}
+.kas-web-access-card{margin:12px 0 16px;padding:14px;border:1px solid #e4e7ec;border-radius:16px;background:#f8fafc}
+.kas-web-access-card>label{margin-bottom:9px}
+.kas-web-access-card>.full{margin-bottom:9px}
+.kas-viewer-head,.kas-admin-head{margin:15px 0 8px}
+.kas-viewer-head h3,.kas-admin-head h3{font-size:15px}
+.status-badge{display:inline-flex;align-items:center;padding:5px 9px;border-radius:999px;border:1px solid;font-size:10.5px;font-weight:850;line-height:1}
+.status-badge.public{color:#067647;background:#ecfdf3;border-color:#abefc6}
+.status-badge.private{color:#b54708;background:#fffaeb;border-color:#fedf89}
+.viewer-card{background:#fff}
+.viewer-role{color:#175cd3;background:#eff8ff;border-color:#b2ddff}
+.category-order{min-width:34px;padding-left:8px!important;padding-right:8px!important;font-size:15px!important;font-weight:900;line-height:1}
+.category-order:disabled{opacity:.28;cursor:default}
+
+@media(max-width:640px){
+  .kas-report-note-field{padding:11px}.kas-report-note-field textarea{font-size:16px;min-height:88px}
+  .kas-web-access-card{padding:12px;border-radius:14px}
+  .kas-viewer-head,.kas-admin-head{align-items:center}
+  .category-row{align-items:flex-start;flex-wrap:wrap;padding:11px 12px}
+  .category-copy{flex:1 1 150px;padding-top:3px}
+  .category-actions{flex:1 0 100%;justify-content:flex-start;border-top:1px solid #f0f2f5;padding-top:8px}
+  .category-actions button{min-height:34px}
+  .category-order{min-width:38px;font-size:17px!important}
+}

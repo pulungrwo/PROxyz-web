@@ -17,6 +17,7 @@
       "tanggal": 1775019600000,
       "jenis": "masuk",
       "kategori": "hasil usaha",
+      "kategoriNama": "Hasil Usaha",
       "keterangan": "Panen Timun",
       "nominal": 620000,
       "label": []
@@ -27,6 +28,7 @@
       "tanggal": 1774069200000,
       "jenis": "keluar",
       "kategori": "hadiah",
+      "kategoriNama": "Hadiah",
       "keterangan": "THR 1447H",
       "nominal": 620000,
       "label": [
@@ -34,5 +36,5 @@
       ]
     }
   ],
-  "updatedAt": 1787670351095
+  "updatedAt": 1787816947666
 }

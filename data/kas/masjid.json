@@ -17,6 +17,7 @@
       "tanggal": 1787806800000,
       "jenis": "keluar",
       "kategori": "konsumsi",
+      "kategoriNama": "Konsumsi",
       "keterangan": "Air Minum",
       "nominal": 7000,
       "label": []
@@ -27,6 +28,7 @@
       "tanggal": 1787806800000,
       "jenis": "keluar",
       "kategori": "konsumsi",
+      "kategoriNama": "Konsumsi",
       "keterangan": "Gula Kopi",
       "nominal": 19000,
       "label": []
@@ -37,6 +39,7 @@
       "tanggal": 1787806800000,
       "jenis": "keluar",
       "kategori": "konsumsi",
+      "kategoriNama": "Konsumsi",
       "keterangan": "Pasang plafon",
       "nominal": 20000,
       "label": []
@@ -47,6 +50,7 @@
       "tanggal": 1787806800000,
       "jenis": "keluar",
       "kategori": "pemeliharaan",
+      "kategoriNama": "Pemeliharaan",
       "keterangan": "Paku",
       "nominal": 10000,
       "label": []
@@ -57,6 +61,7 @@
       "tanggal": 1787295487856,
       "jenis": "masuk",
       "kategori": "infak",
+      "kategoriNama": "Infak",
       "keterangan": "Infak Jumat",
       "nominal": 33000,
       "label": []
@@ -67,6 +72,7 @@
       "tanggal": 1787288400000,
       "jenis": "keluar",
       "kategori": "operasional",
+      "kategoriNama": "Operasional",
       "keterangan": "Marbot",
       "nominal": 25000,
       "label": [
@@ -79,6 +85,7 @@
       "tanggal": 1786698648521,
       "jenis": "keluar",
       "kategori": "operasional",
+      "kategoriNama": "Operasional",
       "keterangan": "Marbot",
       "nominal": 25000,
       "label": [
@@ -91,6 +98,7 @@
       "tanggal": 1786686723028,
       "jenis": "masuk",
       "kategori": "infak",
+      "kategoriNama": "Infak",
       "keterangan": "Infak Jumat",
       "nominal": 17000,
       "label": []
@@ -101,6 +109,7 @@
       "tanggal": 1786078800000,
       "jenis": "masuk",
       "kategori": "infak",
+      "kategoriNama": "Infak",
       "keterangan": "Infak Jumat",
       "nominal": 26000,
       "label": []
@@ -111,6 +120,7 @@
       "tanggal": 1786078800000,
       "jenis": "keluar",
       "kategori": "operasional",
+      "kategoriNama": "Operasional",
       "keterangan": "Marbot",
       "nominal": 25000,
       "label": [
@@ -123,6 +133,7 @@
       "tanggal": 1785474000000,
       "jenis": "masuk",
       "kategori": "infak",
+      "kategoriNama": "Infak",
       "keterangan": "Infak Jumat",
       "nominal": 30000,
       "label": []
@@ -133,6 +144,7 @@
       "tanggal": 1785474000000,
       "jenis": "keluar",
       "kategori": "operasional",
+      "kategoriNama": "Operasional",
       "keterangan": "Marbot",
       "nominal": 25000,
       "label": [
@@ -145,6 +157,7 @@
       "tanggal": 1784869200000,
       "jenis": "masuk",
       "kategori": "infak",
+      "kategoriNama": "Infak",
       "keterangan": "Infak Jumat",
       "nominal": 30000,
       "label": []
@@ -155,6 +168,7 @@
       "tanggal": 1784869200000,
       "jenis": "keluar",
       "kategori": "operasional",
+      "kategoriNama": "Operasional",
       "keterangan": "Marbot",
       "nominal": 25000,
       "label": [
@@ -167,6 +181,7 @@
       "tanggal": 1784264400000,
       "jenis": "keluar",
       "kategori": "operasional",
+      "kategoriNama": "Operasional",
       "keterangan": "Marbot",
       "nominal": 25000,
       "label": [
@@ -179,6 +194,7 @@
       "tanggal": 1783832400000,
       "jenis": "keluar",
       "kategori": "acara/kegiatan",
+      "kategoriNama": "Acara/Kegiatan",
       "keterangan": "Pengajian Annisa",
       "nominal": 300000,
       "label": []
@@ -189,6 +205,7 @@
       "tanggal": 1783832400000,
       "jenis": "masuk",
       "kategori": "infak",
+      "kategoriNama": "Infak",
       "keterangan": "Infak ibu²",
       "nominal": 1370000,
       "label": []
@@ -199,6 +216,7 @@
       "tanggal": 1783659600000,
       "jenis": "masuk",
       "kategori": "infak",
+      "kategoriNama": "Infak",
       "keterangan": "Infak Jumat",
       "nominal": 25000,
       "label": []
@@ -209,6 +227,7 @@
       "tanggal": 1783054800000,
       "jenis": "masuk",
       "kategori": "infak",
+      "kategoriNama": "Infak",
       "keterangan": "Infak Jumat",
       "nominal": 33000,
       "label": []
@@ -219,6 +238,7 @@
       "tanggal": 1783054800000,
       "jenis": "keluar",
       "kategori": "operasional",
+      "kategoriNama": "Operasional",
       "keterangan": "Marbot",
       "nominal": 25000,
       "label": [
@@ -231,6 +251,7 @@
       "tanggal": 1782450000000,
       "jenis": "masuk",
       "kategori": "infak",
+      "kategoriNama": "Infak",
       "keterangan": "Infak Jumat",
       "nominal": 22000,
       "label": []
@@ -241,6 +262,7 @@
       "tanggal": 1782450000000,
       "jenis": "keluar",
       "kategori": "operasional",
+      "kategoriNama": "Operasional",
       "keterangan": "Marbot",
       "nominal": 25000,
       "label": [
@@ -253,6 +275,7 @@
       "tanggal": 1781845200000,
       "jenis": "masuk",
       "kategori": "infak",
+      "kategoriNama": "Infak",
       "keterangan": "Infak Jumat",
       "nominal": 20000,
       "label": []
@@ -263,6 +286,7 @@
       "tanggal": 1781240400000,
       "jenis": "masuk",
       "kategori": "infak",
+      "kategoriNama": "Infak",
       "keterangan": "Infak Jumat",
       "nominal": 20000,
       "label": []
@@ -273,6 +297,7 @@
       "tanggal": 1780635600000,
       "jenis": "keluar",
       "kategori": "konsumsi",
+      "kategoriNama": "Konsumsi",
       "keterangan": "Konsumsi Kirim Doa",
       "nominal": 73000,
       "label": []
@@ -283,6 +308,7 @@
       "tanggal": 1780635600000,
       "jenis": "masuk",
       "kategori": "infak",
+      "kategoriNama": "Infak",
       "keterangan": "Infak Jumat",
       "nominal": 30000,
       "label": []
@@ -293,6 +319,7 @@
       "tanggal": 1780635600000,
       "jenis": "masuk",
       "kategori": "donatur",
+      "kategoriNama": "Donatur",
       "keterangan": "Mbah Giarti",
       "nominal": 1000000,
       "label": []
@@ -303,6 +330,7 @@
       "tanggal": 1780030800000,
       "jenis": "masuk",
       "kategori": "infak",
+      "kategoriNama": "Infak",
       "keterangan": "Infak Jumat",
       "nominal": 32000,
       "label": []
@@ -313,6 +341,7 @@
       "tanggal": 1779858000000,
       "jenis": "masuk",
       "kategori": "acara/kegiatan",
+      "kategoriNama": "Acara/Kegiatan",
       "keterangan": "Idul Adha",
       "nominal": 480000,
       "label": []
@@ -323,6 +352,7 @@
       "tanggal": 1779858000000,
       "jenis": "masuk",
       "kategori": "infak",
+      "kategoriNama": "Infak",
       "keterangan": "Infak Karet",
       "nominal": 320000,
       "label": []
@@ -333,6 +363,7 @@
       "tanggal": 1779858000000,
       "jenis": "keluar",
       "kategori": "konsumsi",
+      "kategoriNama": "Konsumsi",
       "keterangan": "Konsumsi Kurban",
       "nominal": 57000,
       "label": []
@@ -343,6 +374,7 @@
       "tanggal": 1779598800000,
       "jenis": "keluar",
       "kategori": "acara/kegiatan",
+      "kategoriNama": "Acara/Kegiatan",
       "keterangan": "Gotong Royong",
       "nominal": 90000,
       "label": []
@@ -353,6 +385,7 @@
       "tanggal": 1779426000000,
       "jenis": "masuk",
       "kategori": "infak",
+      "kategoriNama": "Infak",
       "keterangan": "Infak Jumat",
       "nominal": 25000,
       "label": []
@@ -363,6 +396,7 @@
       "tanggal": 1778821200000,
       "jenis": "masuk",
       "kategori": "infak",
+      "kategoriNama": "Infak",
       "keterangan": "Infak Jumat",
       "nominal": 25000,
       "label": []
@@ -373,6 +407,7 @@
       "tanggal": 1778216400000,
       "jenis": "masuk",
       "kategori": "infak",
+      "kategoriNama": "Infak",
       "keterangan": "Infak Jumat",
       "nominal": 50000,
       "label": []
@@ -383,6 +418,7 @@
       "tanggal": 1777611600000,
       "jenis": "masuk",
       "kategori": "infak",
+      "kategoriNama": "Infak",
       "keterangan": "Infak Jumat",
       "nominal": 12000,
       "label": []
@@ -393,6 +429,7 @@
       "tanggal": 1777006800000,
       "jenis": "masuk",
       "kategori": "infak",
+      "kategoriNama": "Infak",
       "keterangan": "Infak Jumat",
       "nominal": 10000,
       "label": []
@@ -403,6 +440,7 @@
       "tanggal": 1776402000000,
       "jenis": "masuk",
       "kategori": "infak",
+      "kategoriNama": "Infak",
       "keterangan": "Infak Jumat",
       "nominal": 25000,
       "label": []
@@ -413,6 +451,7 @@
       "tanggal": 1775797200000,
       "jenis": "masuk",
       "kategori": "infak",
+      "kategoriNama": "Infak",
       "keterangan": "Infak Jumat",
       "nominal": 19000,
       "label": []
@@ -423,6 +462,7 @@
       "tanggal": 1775192400000,
       "jenis": "masuk",
       "kategori": "infak",
+      "kategoriNama": "Infak",
       "keterangan": "Infak Jumat",
       "nominal": 64000,
       "label": []
@@ -433,6 +473,7 @@
       "tanggal": 1774069200000,
       "jenis": "masuk",
       "kategori": "acara/kegiatan",
+      "kategoriNama": "Acara/Kegiatan",
       "keterangan": "Idul Fitri",
       "nominal": 609500,
       "label": [
@@ -445,6 +486,7 @@
       "tanggal": 1773982800000,
       "jenis": "masuk",
       "kategori": "infak",
+      "kategoriNama": "Infak",
       "keterangan": "Infak Jumat",
       "nominal": 45000,
       "label": [
@@ -457,6 +499,7 @@
       "tanggal": 1773896400000,
       "jenis": "masuk",
       "kategori": "donatur",
+      "kategoriNama": "Donatur",
       "keterangan": "Bu Tari",
       "nominal": 100000,
       "label": [
@@ -469,6 +512,7 @@
       "tanggal": 1773896400000,
       "jenis": "keluar",
       "kategori": "konsumsi",
+      "kategoriNama": "Konsumsi",
       "keterangan": "Konsumsi Ngecat",
       "nominal": 25000,
       "label": [
@@ -481,6 +525,7 @@
       "tanggal": 1773810000000,
       "jenis": "keluar",
       "kategori": "konsumsi",
+      "kategoriNama": "Konsumsi",
       "keterangan": "Gula Kopi",
       "nominal": 25000,
       "label": [
@@ -493,6 +538,7 @@
       "tanggal": 1773723600000,
       "jenis": "keluar",
       "kategori": "pemeliharaan",
+      "kategoriNama": "Pemeliharaan",
       "keterangan": "Tiner",
       "nominal": 20000,
       "label": [
@@ -505,6 +551,7 @@
       "tanggal": 1773723600000,
       "jenis": "keluar",
       "kategori": "perlengkapan",
+      "kategoriNama": "Perlengkapan",
       "keterangan": "Kuas",
       "nominal": 10000,
       "label": [
@@ -517,6 +564,7 @@
       "tanggal": 1773723600000,
       "jenis": "keluar",
       "kategori": "pemeliharaan",
+      "kategoriNama": "Pemeliharaan",
       "keterangan": "Cat Emas",
       "nominal": 100000,
       "label": [
@@ -529,6 +577,7 @@
       "tanggal": 1773723600000,
       "jenis": "keluar",
       "kategori": "konsumsi",
+      "kategoriNama": "Konsumsi",
       "keterangan": "Konsumsi Ngecat",
       "nominal": 83000,
       "label": [
@@ -541,6 +590,7 @@
       "tanggal": 1773723600000,
       "jenis": "keluar",
       "kategori": "perlengkapan",
+      "kategoriNama": "Perlengkapan",
       "keterangan": "Gembok",
       "nominal": 10000,
       "label": [
@@ -553,6 +603,7 @@
       "tanggal": 1773723600000,
       "jenis": "keluar",
       "kategori": "pemeliharaan",
+      "kategoriNama": "Pemeliharaan",
       "keterangan": "Cat Putih 5kg",
       "nominal": 100000,
       "label": [
@@ -565,6 +616,7 @@
       "tanggal": 1773637200000,
       "jenis": "keluar",
       "kategori": "pemeliharaan",
+      "kategoriNama": "Pemeliharaan",
       "keterangan": "Obat Rumput",
       "nominal": 60000,
       "label": [
@@ -577,6 +629,7 @@
       "tanggal": 1773637200000,
       "jenis": "keluar",
       "kategori": "pemeliharaan",
+      "kategoriNama": "Pemeliharaan",
       "keterangan": "Cat Emas",
       "nominal": 100000,
       "label": [
@@ -589,6 +642,7 @@
       "tanggal": 1773637200000,
       "jenis": "keluar",
       "kategori": "perlengkapan",
+      "kategoriNama": "Perlengkapan",
       "keterangan": "Kuas",
       "nominal": 12000,
       "label": [
@@ -601,6 +655,7 @@
       "tanggal": 1773637200000,
       "jenis": "keluar",
       "kategori": "pemeliharaan",
+      "kategoriNama": "Pemeliharaan",
       "keterangan": "Tiner",
       "nominal": 10000,
       "label": [
@@ -613,6 +668,7 @@
       "tanggal": 1773637200000,
       "jenis": "keluar",
       "kategori": "pemeliharaan",
+      "kategoriNama": "Pemeliharaan",
       "keterangan": "Paku",
       "nominal": 10000,
       "label": [
@@ -625,6 +681,7 @@
       "tanggal": 1773637200000,
       "jenis": "keluar",
       "kategori": "konsumsi",
+      "kategoriNama": "Konsumsi",
       "keterangan": "Air Minum",
       "nominal": 7000,
       "label": [
@@ -637,6 +694,7 @@
       "tanggal": 1773637200000,
       "jenis": "keluar",
       "kategori": "peralatan",
+      "kategoriNama": "Peralatan",
       "keterangan": "Lampu",
       "nominal": 70000,
       "label": [
@@ -649,6 +707,7 @@
       "tanggal": 1773550800000,
       "jenis": "keluar",
       "kategori": "pemeliharaan",
+      "kategoriNama": "Pemeliharaan",
       "keterangan": "Cat Biru 20kg",
       "nominal": 500000,
       "label": [
@@ -661,6 +720,7 @@
       "tanggal": 1773550800000,
       "jenis": "keluar",
       "kategori": "perlengkapan",
+      "kategoriNama": "Perlengkapan",
       "keterangan": "Kuas",
       "nominal": 50000,
       "label": [
@@ -673,6 +733,7 @@
       "tanggal": 1773550800000,
       "jenis": "keluar",
       "kategori": "konsumsi",
+      "kategoriNama": "Konsumsi",
       "keterangan": "Konsumsi Ngecat",
       "nominal": 97000,
       "label": [
@@ -685,6 +746,7 @@
       "tanggal": 1773464400000,
       "jenis": "keluar",
       "kategori": "perlengkapan",
+      "kategoriNama": "Perlengkapan",
       "keterangan": "Double Tape",
       "nominal": 30000,
       "label": [
@@ -697,6 +759,7 @@
       "tanggal": 1773464400000,
       "jenis": "keluar",
       "kategori": "perlengkapan",
+      "kategoriNama": "Perlengkapan",
       "keterangan": "Sendok",
       "nominal": 12000,
       "label": [
@@ -709,6 +772,7 @@
       "tanggal": 1773464400000,
       "jenis": "keluar",
       "kategori": "konsumsi",
+      "kategoriNama": "Konsumsi",
       "keterangan": "Gula Kopi",
       "nominal": 35000,
       "label": [
@@ -721,6 +785,7 @@
       "tanggal": 1773378000000,
       "jenis": "masuk",
       "kategori": "infak",
+      "kategoriNama": "Infak",
       "keterangan": "Infak Jumat",
       "nominal": 33000,
       "label": [
@@ -733,6 +798,7 @@
       "tanggal": 1773378000000,
       "jenis": "keluar",
       "kategori": "peralatan",
+      "kategoriNama": "Peralatan",
       "keterangan": "Kaligrafi Al-Baqarah 153",
       "nominal": 77000,
       "label": [
@@ -745,6 +811,7 @@
       "tanggal": 1773378000000,
       "jenis": "keluar",
       "kategori": "konsumsi",
+      "kategoriNama": "Konsumsi",
       "keterangan": "Konsumsi Khataman",
       "nominal": 25000,
       "label": [
@@ -757,6 +824,7 @@
       "tanggal": 1773291600000,
       "jenis": "keluar",
       "kategori": "perlengkapan",
+      "kategoriNama": "Perlengkapan",
       "keterangan": "Spidol",
       "nominal": 10000,
       "label": [
@@ -769,6 +837,7 @@
       "tanggal": 1773291600000,
       "jenis": "keluar",
       "kategori": "peralatan",
+      "kategoriNama": "Peralatan",
       "keterangan": "Kaligrafi Allah Muhammad",
       "nominal": 87000,
       "label": [
@@ -781,6 +850,7 @@
       "tanggal": 1773205200000,
       "jenis": "keluar",
       "kategori": "peralatan",
+      "kategoriNama": "Peralatan",
       "keterangan": "Kotak Amal",
       "nominal": 68000,
       "label": [
@@ -793,6 +863,7 @@
       "tanggal": 1772859600000,
       "jenis": "keluar",
       "kategori": "konsumsi",
+      "kategoriNama": "Konsumsi",
       "keterangan": "Air Minum",
       "nominal": 7000,
       "label": [
@@ -805,6 +876,7 @@
       "tanggal": 1772773200000,
       "jenis": "masuk",
       "kategori": "infak",
+      "kategoriNama": "Infak",
       "keterangan": "Infak Jumat",
       "nominal": 16000,
       "label": [
@@ -817,6 +889,7 @@
       "tanggal": 1772514000000,
       "jenis": "keluar",
       "kategori": "acara/kegiatan",
+      "kategoriNama": "Acara/Kegiatan",
       "keterangan": "Rompi Kurban",
       "nominal": 477000,
       "label": [
@@ -829,6 +902,7 @@
       "tanggal": 1772514000000,
       "jenis": "keluar",
       "kategori": "operasional",
+      "kategoriNama": "Operasional",
       "keterangan": "Listrik + Air",
       "nominal": 50000,
       "label": [
@@ -841,6 +915,7 @@
       "tanggal": 1772168400000,
       "jenis": "masuk",
       "kategori": "infak",
+      "kategoriNama": "Infak",
       "keterangan": "Infak Jumat",
       "nominal": 30000,
       "label": [
@@ -853,6 +928,7 @@
       "tanggal": 1772082000000,
       "jenis": "keluar",
       "kategori": "konsumsi",
+      "kategoriNama": "Konsumsi",
       "keterangan": "Gula Kopi",
       "nominal": 17000,
       "label": [
@@ -865,6 +941,7 @@
       "tanggal": 1772082000000,
       "jenis": "keluar",
       "kategori": "peralatan",
+      "kategoriNama": "Peralatan",
       "keterangan": "Papan Tulis",
       "nominal": 214000,
       "label": [
@@ -877,6 +954,7 @@
       "tanggal": 1771995600000,
       "jenis": "keluar",
       "kategori": "peralatan",
+      "kategoriNama": "Peralatan",
       "keterangan": "Galon",
       "nominal": 48000,
       "label": [
@@ -889,6 +967,7 @@
       "tanggal": 1771995600000,
       "jenis": "keluar",
       "kategori": "peralatan",
+      "kategoriNama": "Peralatan",
       "keterangan": "Pompa Galon",
       "nominal": 30000,
       "label": [
@@ -901,6 +980,7 @@
       "tanggal": 1771995600000,
       "jenis": "keluar",
       "kategori": "konsumsi",
+      "kategoriNama": "Konsumsi",
       "keterangan": "Gula Kopi",
       "nominal": 52500,
       "label": [
@@ -913,6 +993,7 @@
       "tanggal": 1771909200000,
       "jenis": "keluar",
       "kategori": "peralatan",
+      "kategoriNama": "Peralatan",
       "keterangan": "Teko Listrik",
       "nominal": 96000,
       "label": [
@@ -925,6 +1006,7 @@
       "tanggal": 1771650000000,
       "jenis": "keluar",
       "kategori": "peralatan",
+      "kategoriNama": "Peralatan",
       "keterangan": "Clip On",
       "nominal": 257000,
       "label": [
@@ -937,6 +1019,7 @@
       "tanggal": 1771650000000,
       "jenis": "keluar",
       "kategori": "pemeliharaan",
+      "kategoriNama": "Pemeliharaan",
       "keterangan": "Instalasi Lampu",
       "nominal": 50000,
       "label": [
@@ -949,6 +1032,7 @@
       "tanggal": 1771563600000,
       "jenis": "masuk",
       "kategori": "hasil usaha",
+      "kategoriNama": "Hasil Usaha",
       "keterangan": "Panen Jagung",
       "nominal": 5000000,
       "label": [
@@ -961,6 +1045,7 @@
       "tanggal": 1771563600000,
       "jenis": "keluar",
       "kategori": "pemeliharaan",
+      "kategoriNama": "Pemeliharaan",
       "keterangan": "Pasang Kaca",
       "nominal": 1500000,
       "label": [
@@ -973,6 +1058,7 @@
       "tanggal": 1771563600000,
       "jenis": "keluar",
       "kategori": "konsumsi",
+      "kategoriNama": "Konsumsi",
       "keterangan": "Utang Makan2",
       "nominal": 330000,
       "label": [
@@ -985,6 +1071,7 @@
       "tanggal": 1771563600000,
       "jenis": "masuk",
       "kategori": "infak",
+      "kategoriNama": "Infak",
       "keterangan": "Infak Jumat",
       "nominal": 57000,
       "label": [
@@ -997,6 +1084,7 @@
       "tanggal": 1771563600000,
       "jenis": "keluar",
       "kategori": "perlengkapan",
+      "kategoriNama": "Perlengkapan",
       "keterangan": "Keset",
       "nominal": 66000,
       "label": [
@@ -1009,6 +1097,7 @@
       "tanggal": 1771563600000,
       "jenis": "keluar",
       "kategori": "perlengkapan",
+      "kategoriNama": "Perlengkapan",
       "keterangan": "Sapu",
       "nominal": 20000,
       "label": [
@@ -1021,6 +1110,7 @@
       "tanggal": 1771563600000,
       "jenis": "keluar",
       "kategori": "perlengkapan",
+      "kategoriNama": "Perlengkapan",
       "keterangan": "Gelas",
       "nominal": 13000,
       "label": [
@@ -1033,6 +1123,7 @@
       "tanggal": 1771563600000,
       "jenis": "keluar",
       "kategori": "perlengkapan",
+      "kategoriNama": "Perlengkapan",
       "keterangan": "Sikat WC",
       "nominal": 11000,
       "label": [
@@ -1045,6 +1136,7 @@
       "tanggal": 1771563600000,
       "jenis": "keluar",
       "kategori": "peralatan",
+      "kategoriNama": "Peralatan",
       "keterangan": "Kipas Angin",
       "nominal": 410000,
       "label": [
@@ -1057,6 +1149,7 @@
       "tanggal": 1771477200000,
       "jenis": "keluar",
       "kategori": "konsumsi",
+      "kategoriNama": "Konsumsi",
       "keterangan": "Gula Kopi",
       "nominal": 10000,
       "label": [
@@ -1069,6 +1162,7 @@
       "tanggal": 1771390800000,
       "jenis": "keluar",
       "kategori": "konsumsi",
+      "kategoriNama": "Konsumsi",
       "keterangan": "Air Minum",
       "nominal": 38000,
       "label": [
@@ -1081,6 +1175,7 @@
       "tanggal": 1771390800000,
       "jenis": "keluar",
       "kategori": "konsumsi",
+      "kategoriNama": "Konsumsi",
       "keterangan": "Gula Kopi",
       "nominal": 20000,
       "label": [
@@ -1093,6 +1188,7 @@
       "tanggal": 1771131600000,
       "jenis": "keluar",
       "kategori": "acara/kegiatan",
+      "kategoriNama": "Acara/Kegiatan",
       "keterangan": "Gotong Royong",
       "nominal": 16000,
       "label": [
@@ -1105,6 +1201,7 @@
       "tanggal": 1771131600000,
       "jenis": "keluar",
       "kategori": "peralatan",
+      "kategoriNama": "Peralatan",
       "keterangan": "Lampu",
       "nominal": 146000,
       "label": [
@@ -1117,6 +1214,7 @@
       "tanggal": 1770958800000,
       "jenis": "masuk",
       "kategori": "infak",
+      "kategoriNama": "Infak",
       "keterangan": "Infak Jumat",
       "nominal": 5000,
       "label": [
@@ -1129,6 +1227,7 @@
       "tanggal": 1770872400000,
       "jenis": "keluar",
       "kategori": "peralatan",
+      "kategoriNama": "Peralatan",
       "keterangan": "Clip On",
       "nominal": 95000,
       "label": [
@@ -1141,6 +1240,7 @@
       "tanggal": 1770526800000,
       "jenis": "keluar",
       "kategori": "pemeliharaan",
+      "kategoriNama": "Pemeliharaan",
       "keterangan": "Obat Rumput",
       "nominal": 45000,
       "label": [
@@ -1153,6 +1253,7 @@
       "tanggal": 1770440400000,
       "jenis": "keluar",
       "kategori": "perlengkapan",
+      "kategoriNama": "Perlengkapan",
       "keterangan": "Ember",
       "nominal": 16000,
       "label": [
@@ -1165,6 +1266,7 @@
       "tanggal": 1770440400000,
       "jenis": "keluar",
       "kategori": "perlengkapan",
+      "kategoriNama": "Perlengkapan",
       "keterangan": "Stop Kran",
       "nominal": 15000,
       "label": [
@@ -1177,6 +1279,7 @@
       "tanggal": 1770440400000,
       "jenis": "keluar",
       "kategori": "pemeliharaan",
+      "kategoriNama": "Pemeliharaan",
       "keterangan": "Lem Pipa",
       "nominal": 10000,
       "label": [
@@ -1189,6 +1292,7 @@
       "tanggal": 1770354000000,
       "jenis": "masuk",
       "kategori": "infak",
+      "kategoriNama": "Infak",
       "keterangan": "Infak Jumat",
       "nominal": 10000,
       "label": [
@@ -1201,6 +1305,7 @@
       "tanggal": 1769749200000,
       "jenis": "masuk",
       "kategori": "infak",
+      "kategoriNama": "Infak",
       "keterangan": "Infak Jumat",
       "nominal": 12000,
       "label": [
@@ -1213,6 +1318,7 @@
       "tanggal": 1769576400000,
       "jenis": "keluar",
       "kategori": "perlengkapan",
+      "kategoriNama": "Perlengkapan",
       "keterangan": "Batu Jam",
       "nominal": 15000,
       "label": [
@@ -1225,6 +1331,7 @@
       "tanggal": 1769490000000,
       "jenis": "keluar",
       "kategori": "sosial",
+      "kategoriNama": "Sosial",
       "keterangan": "Ambulance Fania❤️",
       "nominal": 150000,
       "label": [
@@ -1237,6 +1344,7 @@
       "tanggal": 1769144400000,
       "jenis": "masuk",
       "kategori": "infak",
+      "kategoriNama": "Infak",
       "keterangan": "Infak Jumat",
       "nominal": 17000,
       "label": [
@@ -1249,6 +1357,7 @@
       "tanggal": 1768539600000,
       "jenis": "masuk",
       "kategori": "infak",
+      "kategoriNama": "Infak",
       "keterangan": "Infak Jumat",
       "nominal": 20000,
       "label": [
@@ -1261,6 +1370,7 @@
       "tanggal": 1767934800000,
       "jenis": "masuk",
       "kategori": "infak",
+      "kategoriNama": "Infak",
       "keterangan": "Infak Jumat",
       "nominal": 65000,
       "label": [
@@ -1273,6 +1383,7 @@
       "tanggal": 1766725200000,
       "jenis": "masuk",
       "kategori": "infak",
+      "kategoriNama": "Infak",
       "keterangan": "Infak Jumat",
       "nominal": 25000,
       "label": [
@@ -1285,6 +1396,7 @@
       "tanggal": 1766120400000,
       "jenis": "masuk",
       "kategori": "infak",
+      "kategoriNama": "Infak",
       "keterangan": "Infak Jumat",
       "nominal": 15000,
       "label": [
@@ -1297,6 +1409,7 @@
       "tanggal": 1765515600000,
       "jenis": "masuk",
       "kategori": "hasil usaha",
+      "kategoriNama": "Hasil Usaha",
       "keterangan": "Jual Kayu",
       "nominal": 50000,
       "label": [
@@ -1309,6 +1422,7 @@
       "tanggal": 1765515600000,
       "jenis": "masuk",
       "kategori": "infak",
+      "kategoriNama": "Infak",
       "keterangan": "Infak Jumat",
       "nominal": 17000,
       "label": [
@@ -1321,6 +1435,7 @@
       "tanggal": 1764910800000,
       "jenis": "masuk",
       "kategori": "infak",
+      "kategoriNama": "Infak",
       "keterangan": "Infak Jumat",
       "nominal": 20000,
       "label": [
@@ -1333,6 +1448,7 @@
       "tanggal": 1763701200000,
       "jenis": "masuk",
       "kategori": "infak",
+      "kategoriNama": "Infak",
       "keterangan": "Infak Jumat",
       "nominal": 15000,
       "label": [
@@ -1345,6 +1461,7 @@
       "tanggal": 1763096400000,
       "jenis": "masuk",
       "kategori": "hasil usaha",
+      "kategoriNama": "Hasil Usaha",
       "keterangan": "Jual Kayu",
       "nominal": 215000,
       "label": [
@@ -1357,6 +1474,7 @@
       "tanggal": 1763096400000,
       "jenis": "masuk",
       "kategori": "infak",
+      "kategoriNama": "Infak",
       "keterangan": "Infak Jumat",
       "nominal": 12000,
       "label": [
@@ -1369,6 +1487,7 @@
       "tanggal": 1762491600000,
       "jenis": "masuk",
       "kategori": "infak",
+      "kategoriNama": "Infak",
       "keterangan": "Infak Jumat",
       "nominal": 5000,
       "label": [
@@ -1381,6 +1500,7 @@
       "tanggal": 1762059600000,
       "jenis": "keluar",
       "kategori": "pemeliharaan",
+      "kategoriNama": "Pemeliharaan",
       "keterangan": "Obat Rumput",
       "nominal": 65000,
       "label": [
@@ -1393,6 +1513,7 @@
       "tanggal": 1761886800000,
       "jenis": "masuk",
       "kategori": "infak",
+      "kategoriNama": "Infak",
       "keterangan": "Infak Jumat",
       "nominal": 14000,
       "label": [
@@ -1405,6 +1526,7 @@
       "tanggal": 1761282000000,
       "jenis": "masuk",
       "kategori": "infak",
+      "kategoriNama": "Infak",
       "keterangan": "Infak Jumat",
       "nominal": 30000,
       "label": [
@@ -1417,6 +1539,7 @@
       "tanggal": 1760677200000,
       "jenis": "masuk",
       "kategori": "infak",
+      "kategoriNama": "Infak",
       "keterangan": "Infak Jumat",
       "nominal": 12000,
       "label": [
@@ -1429,6 +1552,7 @@
       "tanggal": 1760072400000,
       "jenis": "masuk",
       "kategori": "infak",
+      "kategoriNama": "Infak",
       "keterangan": "Infak Jumat",
       "nominal": 5000,
       "label": [
@@ -1441,6 +1565,7 @@
       "tanggal": 1759554000000,
       "jenis": "keluar",
       "kategori": "pemeliharaan",
+      "kategoriNama": "Pemeliharaan",
       "keterangan": "Servis Ampli",
       "nominal": 100000,
       "label": [
@@ -1453,6 +1578,7 @@
       "tanggal": 1759467600000,
       "jenis": "masuk",
       "kategori": "infak",
+      "kategoriNama": "Infak",
       "keterangan": "Infak Jumat",
       "nominal": 15000,
       "label": [
@@ -1465,6 +1591,7 @@
       "tanggal": 1759035600000,
       "jenis": "keluar",
       "kategori": "acara/kegiatan",
+      "kategoriNama": "Acara/Kegiatan",
       "keterangan": "Pengajian Annisa",
       "nominal": 400000,
       "label": [
@@ -1477,6 +1604,7 @@
       "tanggal": 1758862800000,
       "jenis": "masuk",
       "kategori": "infak",
+      "kategoriNama": "Infak",
       "keterangan": "Infak Jumat",
       "nominal": 15000,
       "label": [
@@ -1489,6 +1617,7 @@
       "tanggal": 1758430800000,
       "jenis": "keluar",
       "kategori": "perlengkapan",
+      "kategoriNama": "Perlengkapan",
       "keterangan": "Alat Kebersihan",
       "nominal": 35000,
       "label": [
@@ -1501,6 +1630,7 @@
       "tanggal": 1758430800000,
       "jenis": "keluar",
       "kategori": "acara/kegiatan",
+      "kategoriNama": "Acara/Kegiatan",
       "keterangan": "Gotong Royong",
       "nominal": 17500,
       "label": [
@@ -1513,6 +1643,7 @@
       "tanggal": 1758258000000,
       "jenis": "masuk",
       "kategori": "infak",
+      "kategoriNama": "Infak",
       "keterangan": "Infak Jumat",
       "nominal": 12000,
       "label": [
@@ -1525,6 +1656,7 @@
       "tanggal": 1758258000000,
       "jenis": "keluar",
       "kategori": "konsumsi",
+      "kategoriNama": "Konsumsi",
       "keterangan": "Konsumsi Rapat",
       "nominal": 53000,
       "label": [
@@ -1537,6 +1669,7 @@
       "tanggal": 1757998800000,
       "jenis": "keluar",
       "kategori": "pemeliharaan",
+      "kategoriNama": "Pemeliharaan",
       "keterangan": "Obat Rumput",
       "nominal": 70000,
       "label": [
@@ -1549,6 +1682,7 @@
       "tanggal": 1757653200000,
       "jenis": "masuk",
       "kategori": "infak",
+      "kategoriNama": "Infak",
       "keterangan": "Infak Jumat",
       "nominal": 35000,
       "label": [
@@ -1561,6 +1695,7 @@
       "tanggal": 1756443600000,
       "jenis": "masuk",
       "kategori": "infak",
+      "kategoriNama": "Infak",
       "keterangan": "Infak Jumat",
       "nominal": 15000,
       "label": [
@@ -1573,6 +1708,7 @@
       "tanggal": 1755925200000,
       "jenis": "keluar",
       "kategori": "peralatan",
+      "kategoriNama": "Peralatan",
       "keterangan": "Amplifier",
       "nominal": 514000,
       "label": [
@@ -1585,6 +1721,7 @@
       "tanggal": 1755838800000,
       "jenis": "masuk",
       "kategori": "infak",
+      "kategoriNama": "Infak",
       "keterangan": "Infak Jumat",
       "nominal": 35000,
       "label": [
@@ -1597,6 +1734,7 @@
       "tanggal": 1755838800000,
       "jenis": "keluar",
       "kategori": "peralatan",
+      "kategoriNama": "Peralatan",
       "keterangan": "Mic Toa",
       "nominal": 235000,
       "label": [
@@ -1609,6 +1747,7 @@
       "tanggal": 1755234000000,
       "jenis": "masuk",
       "kategori": "infak",
+      "kategoriNama": "Infak",
       "keterangan": "Infak Jumat",
       "nominal": 30000,
       "label": [
@@ -1621,6 +1760,7 @@
       "tanggal": 1755234000000,
       "jenis": "masuk",
       "kategori": "infak",
+      "kategoriNama": "Infak",
       "keterangan": "Infak Karet",
       "nominal": 150000,
       "label": [
@@ -1633,6 +1773,7 @@
       "tanggal": 1754629200000,
       "jenis": "masuk",
       "kategori": "hasil usaha",
+      "kategoriNama": "Hasil Usaha",
       "keterangan": "Panen Jagung",
       "nominal": 4000000,
       "label": [
@@ -1645,6 +1786,7 @@
       "tanggal": 1754629200000,
       "jenis": "masuk",
       "kategori": "lainnya",
+      "kategoriNama": "Lainnya",
       "keterangan": "Saldo Awal",
       "nominal": 825000,
       "label": [
@@ -1657,6 +1799,7 @@
       "tanggal": 1754629200000,
       "jenis": "keluar",
       "kategori": "pemeliharaan",
+      "kategoriNama": "Pemeliharaan",
       "keterangan": "Pasang Kaca",
       "nominal": 3000000,
       "label": [
@@ -1669,6 +1812,7 @@
       "tanggal": 1754629200000,
       "jenis": "keluar",
       "kategori": "sosial",
+      "kategoriNama": "Sosial",
       "keterangan": "Untuk RISMA",
       "nominal": 500000,
       "label": [
@@ -1676,5 +1820,5 @@
       ]
     }
   ],
-  "updatedAt": 1787810291352
+  "updatedAt": 1787816947608
 }

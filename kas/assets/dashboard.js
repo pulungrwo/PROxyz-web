@@ -4,43 +4,27 @@
   const body = document.body;
   const idKas = String(body.dataset.kasId || "").trim().toLowerCase();
   const visibility = String(body.dataset.kasVisibility || "public").trim().toLowerCase();
+  const API = String(window.PROXYZ_ADMIN_CONFIG?.apiBase || "").replace(/\/$/, "");
   const PAGE_SIZE = 30;
+  const SESSION_TOKEN_KEY = "proxyz_admin_session_token";
+  const OTP_KEY = `proxyz_kas_otp:${idKas}`;
 
-  const rupiah = new Intl.NumberFormat("id-ID", {
-    style: "currency",
-    currency: "IDR",
-    maximumFractionDigits: 0
-  });
-
-  const dateLong = new Intl.DateTimeFormat("id-ID", {
-    timeZone: "Asia/Jakarta",
-    day: "numeric",
-    month: "long",
-    year: "numeric"
-  });
-
-  const dateTime = new Intl.DateTimeFormat("id-ID", {
-    timeZone: "Asia/Jakarta",
-    day: "numeric",
-    month: "short",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit"
-  });
-
-  const monthLabel = new Intl.DateTimeFormat("id-ID", {
-    timeZone: "Asia/Jakarta",
-    month: "long",
-    year: "numeric"
-  });
+  const rupiah = new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", maximumFractionDigits: 0 });
+  const dateLong = new Intl.DateTimeFormat("id-ID", { timeZone: "Asia/Jakarta", day: "numeric", month: "long", year: "numeric" });
+  const dateTime = new Intl.DateTimeFormat("id-ID", { timeZone: "Asia/Jakarta", day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" });
+  const monthLabel = new Intl.DateTimeFormat("id-ID", { timeZone: "Asia/Jakarta", month: "long", year: "numeric" });
 
   const els = {
     content: document.getElementById("dashboard-content"),
     unlockPanel: document.getElementById("unlock-panel"),
-    unlockForm: document.getElementById("unlock-form"),
-    password: document.getElementById("kas-password"),
-    unlockButton: document.getElementById("unlock-button"),
-    unlockError: document.getElementById("unlock-error"),
+    phoneForm: document.getElementById("kas-phone-form"),
+    phone: document.getElementById("kas-phone"),
+    sendOtp: document.getElementById("kas-send-otp"),
+    otpForm: document.getElementById("kas-otp-form"),
+    otp: document.getElementById("kas-otp"),
+    verifyOtp: document.getElementById("kas-verify-otp"),
+    changePhone: document.getElementById("kas-change-phone"),
+    authStatus: document.getElementById("kas-auth-status"),
     title: document.getElementById("kas-title"),
     saldo: document.getElementById("saldo-akhir"),
     totalMasuk: document.getElementById("total-masuk"),
@@ -58,34 +42,71 @@
 
   let all = [];
   let visibleLimit = PAGE_SIZE;
+  let challengeId = "";
+  let challengeExpiresAt = 0;
 
   function number(value) {
     const n = Number(value);
     return Number.isFinite(n) ? n : 0;
   }
 
+  function storedToken() {
+    try { return String(localStorage.getItem(SESSION_TOKEN_KEY) || "").trim(); } catch (_) { return ""; }
+  }
+
+  function saveToken(token) {
+    try {
+      if (token) localStorage.setItem(SESSION_TOKEN_KEY, String(token));
+      else localStorage.removeItem(SESSION_TOKEN_KEY);
+    } catch (_) {}
+  }
+
+  function authHeaders(extra = {}) {
+    const headers = { ...extra };
+    const token = storedToken();
+    if (token) headers.Authorization = `Bearer ${token}`;
+    return headers;
+  }
+
+  function setAuthStatus(message = "", type = "") {
+    if (!els.authStatus) return;
+    els.authStatus.textContent = message;
+    els.authStatus.className = `unlock-error ${type}`.trim();
+  }
+
+  async function api(path, options = {}) {
+    if (!API) throw new Error("Alamat API PROxyz belum dikonfigurasi.");
+    let response;
+    try {
+      response = await fetch(`${API}${path}`, {
+        ...options,
+        headers: authHeaders({ "Content-Type": "application/json", ...(options.headers || {}) }),
+        credentials: "include",
+        cache: "no-store"
+      });
+    } catch (_) {
+      const error = new Error("PROxyz belum dapat dihubungi. Pastikan bot dan tunnel aktif.");
+      error.status = 0;
+      throw error;
+    }
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok) {
+      const error = new Error(data.error || `Permintaan gagal (${response.status}).`);
+      error.status = response.status;
+      if (response.status === 401) saveToken("");
+      throw error;
+    }
+    return data;
+  }
+
   function dateParts(timestamp) {
-    const parts = new Intl.DateTimeFormat("en-CA", {
-      timeZone: "Asia/Jakarta",
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit"
-    }).formatToParts(new Date(number(timestamp)));
+    const parts = new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Jakarta", year: "numeric", month: "2-digit", day: "2-digit" }).formatToParts(new Date(number(timestamp)));
     const map = Object.fromEntries(parts.map(part => [part.type, part.value]));
-    return {
-      day: `${map.year}-${map.month}-${map.day}`,
-      month: `${map.year}-${map.month}`
-    };
+    return { day: `${map.year}-${map.month}-${map.day}`, month: `${map.year}-${map.month}` };
   }
 
-  function currentJakartaMonth() {
-    return dateParts(Date.now()).month;
-  }
-
-  function formatAmount(tx) {
-    const sign = tx.jenis === "keluar" ? "−" : "+";
-    return `${sign}${rupiah.format(number(tx.nominal))}`;
-  }
+  function currentJakartaMonth() { return dateParts(Date.now()).month; }
+  function formatAmount(tx) { return `${tx.jenis === "keluar" ? "−" : "+"}${rupiah.format(number(tx.nominal))}`; }
 
   function monthSummary(transactions) {
     const current = currentJakartaMonth();
@@ -108,10 +129,7 @@
 
   function populateMonths(transactions) {
     while (els.month.options.length > 1) els.month.remove(1);
-    const months = [...new Set(
-      transactions.map(tx => dateParts(tx.tanggal).month).filter(Boolean)
-    )].sort().reverse();
-
+    const months = [...new Set(transactions.map(tx => dateParts(tx.tanggal).month).filter(Boolean))].sort().reverse();
     for (const value of months) {
       const [year, month] = value.split("-").map(Number);
       const date = new Date(Date.UTC(year, month - 1, 1, 12));
@@ -126,18 +144,12 @@
     const query = String(els.search.value || "").trim().toLocaleLowerCase("id-ID");
     const month = els.month.value;
     const type = els.type.value;
-
     return all.filter(tx => {
       if (month !== "all" && dateParts(tx.tanggal).month !== month) return false;
       if (type !== "all" && tx.jenis !== type) return false;
       if (!query) return true;
-      const haystack = [
-        tx.keterangan,
-        tx.kategori,
-        tx.nomor,
-        ...(Array.isArray(tx.label) ? tx.label : [])
-      ].join(" ").toLocaleLowerCase("id-ID");
-      return haystack.includes(query);
+      return [tx.keterangan, tx.kategoriNama, tx.kategori, tx.nomor, ...(Array.isArray(tx.label) ? tx.label : [])]
+        .join(" ").toLocaleLowerCase("id-ID").includes(query);
     });
   }
 
@@ -147,7 +159,7 @@
     els.list.replaceChildren();
     els.count.textContent = `${filtered.length.toLocaleString("id-ID")} transaksi`;
 
-    if (shown.length === 0) {
+    if (!shown.length) {
       els.list.appendChild(create("div", "empty-state", "Tidak ada transaksi yang cocok."));
       els.loadMore.hidden = true;
       return;
@@ -155,7 +167,6 @@
 
     let currentDay = "";
     let currentGroup = null;
-
     for (const tx of shown) {
       const day = dateParts(tx.tanggal).day;
       if (day !== currentDay) {
@@ -168,32 +179,23 @@
       const row = create("article", `transaction ${tx.jenis}`);
       const main = create("div", "transaction-main");
       main.appendChild(create("p", "transaction-title", tx.keterangan || "Tanpa keterangan"));
-
       const meta = create("div", "transaction-meta");
-      meta.appendChild(create("span", "", tx.kategori || "lainnya"));
+      meta.appendChild(create("span", "", tx.kategoriNama || tx.kategori || "Lainnya"));
       if (tx.nomor) meta.appendChild(create("span", "", `No. ${tx.nomor}`));
       main.appendChild(meta);
-
       if (Array.isArray(tx.label) && tx.label.length) {
         const tags = create("div", "tags");
-        tx.label.slice(0, 5).forEach(label => {
-          tags.appendChild(create("span", "tag", `#${String(label).replace(/^#/, "")}`));
-        });
+        tx.label.slice(0, 5).forEach(label => tags.appendChild(create("span", "tag", `#${String(label).replace(/^#/, "")}`)));
         main.appendChild(tags);
       }
-
       row.appendChild(main);
       row.appendChild(create("div", "transaction-amount", formatAmount(tx)));
       currentGroup.appendChild(row);
     }
-
     els.loadMore.hidden = filtered.length <= visibleLimit;
   }
 
-  function resetAndRender() {
-    visibleLimit = PAGE_SIZE;
-    renderTransactions();
-  }
+  function resetAndRender() { visibleLimit = PAGE_SIZE; renderTransactions(); }
 
   function showDashboard(data) {
     all = Array.isArray(data.transactions) ? data.transactions : [];
@@ -202,130 +204,136 @@
     els.saldo.textContent = rupiah.format(number(data.saldo?.akhir));
     els.totalMasuk.textContent = rupiah.format(number(data.saldo?.masuk));
     els.totalKeluar.textContent = rupiah.format(number(data.saldo?.keluar));
-
     const bulan = monthSummary(all);
     els.bulanMasuk.textContent = rupiah.format(bulan.masuk);
     els.bulanKeluar.textContent = rupiah.format(bulan.keluar);
     els.updated.textContent = `Diperbarui ${dateTime.format(new Date(number(data.updatedAt) || Date.now()))} WIB`;
-
     populateMonths(all);
     renderTransactions();
-    els.unlockPanel.hidden = true;
+    if (els.unlockPanel) els.unlockPanel.hidden = true;
     els.content.hidden = false;
   }
 
-  function b64ToBytes(value) {
-    const raw = atob(value);
-    const out = new Uint8Array(raw.length);
-    for (let i = 0; i < raw.length; i += 1) out[i] = raw.charCodeAt(i);
-    return out;
-  }
-
-  async function decryptPayload(envelope, password) {
-    if (!window.crypto?.subtle) {
-      throw new Error("Browser ini tidak mendukung pembukaan dashboard privat.");
-    }
-
-    const salt = b64ToBytes(envelope.kdf?.salt || "");
-    const iv = b64ToBytes(envelope.cipher?.iv || "");
-    const ciphertext = b64ToBytes(envelope.data || "");
-    const iterations = Number(envelope.kdf?.iterations) || 210000;
-
-    const passwordKey = await crypto.subtle.importKey(
-      "raw",
-      new TextEncoder().encode(password),
-      "PBKDF2",
-      false,
-      ["deriveKey"]
-    );
-
-    const key = await crypto.subtle.deriveKey(
-      {
-        name: "PBKDF2",
-        salt,
-        iterations,
-        hash: "SHA-256"
-      },
-      passwordKey,
-      { name: "AES-GCM", length: 256 },
-      false,
-      ["decrypt"]
-    );
-
-    const plaintext = await crypto.subtle.decrypt(
-      { name: "AES-GCM", iv, tagLength: 128 },
-      key,
-      ciphertext
-    );
-
-    return JSON.parse(new TextDecoder().decode(plaintext));
-  }
-
-  async function fetchJson(url) {
-    const response = await fetch(url, { cache: "no-store" });
-    if (!response.ok) {
-      throw new Error(response.status === 404
-        ? "Data dashboard belum tersedia."
-        : "Data dashboard gagal dimuat.");
-    }
+  async function fetchPublicJson() {
+    const response = await fetch(`../../data/kas/${encodeURIComponent(idKas)}.json`, { cache: "no-store" });
+    if (!response.ok) throw new Error(response.status === 404 ? "Data dashboard belum tersedia." : "Data dashboard gagal dimuat.");
     return response.json();
   }
 
-  async function unlock(password) {
-    els.unlockError.textContent = "";
-    els.unlockButton.disabled = true;
-    els.unlockButton.textContent = "Membuka…";
+  function showLogin(message = "") {
+    els.content.hidden = true;
+    if (els.unlockPanel) els.unlockPanel.hidden = false;
+    if (message) setAuthStatus(message, "error");
+  }
 
+  function resetOtpForm() {
+    challengeId = "";
+    challengeExpiresAt = 0;
+    try { sessionStorage.removeItem(OTP_KEY); } catch (_) {}
+    if (els.phoneForm) els.phoneForm.hidden = false;
+    if (els.otpForm) els.otpForm.hidden = true;
+    if (els.otp) els.otp.value = "";
+  }
+
+  function saveOtpState(phone) {
+    try { sessionStorage.setItem(OTP_KEY, JSON.stringify({ challengeId, expiresAt: challengeExpiresAt, phone })); } catch (_) {}
+  }
+
+  function restoreOtpState() {
     try {
-      const envelope = await fetchJson(`../../data/kas/${encodeURIComponent(idKas)}.enc.json`);
-      const data = await decryptPayload(envelope, password);
-      sessionStorage.setItem(`proxyz-kas-pass:${idKas}`, password);
-      showDashboard(data);
+      const row = JSON.parse(sessionStorage.getItem(OTP_KEY) || "null");
+      if (!row?.challengeId || Number(row.expiresAt) <= Date.now()) return false;
+      challengeId = String(row.challengeId);
+      challengeExpiresAt = Number(row.expiresAt);
+      if (row.phone && els.phone) els.phone.value = row.phone;
+      if (els.phoneForm) els.phoneForm.hidden = true;
+      if (els.otpForm) els.otpForm.hidden = false;
+      return true;
+    } catch (_) { return false; }
+  }
+
+  async function loadPrivate() {
+    try {
+      const result = await api(`/api/public/kas/${encodeURIComponent(idKas)}/data`);
+      showDashboard(result.data);
+      return true;
     } catch (error) {
-      sessionStorage.removeItem(`proxyz-kas-pass:${idKas}`);
-      els.unlockError.textContent = error.name === "OperationError"
-        ? "Sandi salah. Silakan coba lagi."
-        : error.message;
-      els.password.focus();
-    } finally {
-      els.unlockButton.disabled = false;
-      els.unlockButton.textContent = "Buka";
+      showLogin(error.status === 403
+        ? "Sesi ditemukan, tetapi nomor ini belum memiliki akses ke Kas ini. Masuk dengan nomor lain yang terdaftar."
+        : error.status === 401
+          ? "Silakan masuk dengan nomor WhatsApp yang terdaftar."
+          : error.message);
+      return false;
     }
   }
 
-  async function loadPublic() {
-    const data = await fetchJson(`../../data/kas/${encodeURIComponent(idKas)}.json`);
-    showDashboard(data);
+  async function requestOtp(event) {
+    event.preventDefault();
+    const phone = String(els.phone?.value || "").trim();
+    if (!phone) return;
+    els.sendOtp.disabled = true;
+    els.sendOtp.textContent = "Mengirim…";
+    setAuthStatus("Mengirim kode OTP…");
+    try {
+      const result = await api("/api/auth/request", { method: "POST", body: JSON.stringify({ phone, kasId: idKas }) });
+      challengeId = result.challengeId;
+      challengeExpiresAt = Number(result.expiresAt) || Date.now() + 5 * 60 * 1000;
+      saveOtpState(phone);
+      els.phoneForm.hidden = true;
+      els.otpForm.hidden = false;
+      setAuthStatus("Kode OTP sudah dikirim ke WhatsApp Anda.", "success");
+      els.otp?.focus();
+    } catch (error) {
+      setAuthStatus(error.message, "error");
+    } finally {
+      els.sendOtp.disabled = false;
+      els.sendOtp.textContent = "Kirim OTP";
+    }
   }
 
-  els.search.addEventListener("input", resetAndRender);
-  els.month.addEventListener("change", resetAndRender);
-  els.type.addEventListener("change", resetAndRender);
-  els.loadMore.addEventListener("click", () => {
-    visibleLimit += PAGE_SIZE;
-    renderTransactions();
-  });
+  async function verifyOtp(event) {
+    event.preventDefault();
+    if (!challengeId || challengeExpiresAt <= Date.now()) {
+      resetOtpForm();
+      return setAuthStatus("Kode OTP sudah berakhir. Kirim kode baru.", "error");
+    }
+    const code = String(els.otp?.value || "").replace(/\D/g, "");
+    if (code.length !== 6) return setAuthStatus("Masukkan 6 digit kode OTP.", "error");
 
-  if (els.unlockForm) {
-    els.unlockForm.addEventListener("submit", event => {
-      event.preventDefault();
-      const password = String(els.password.value || "");
-      if (!password) return;
-      unlock(password);
-    });
+    els.verifyOtp.disabled = true;
+    els.verifyOtp.textContent = "Masuk…";
+    try {
+      const result = await api("/api/auth/verify", { method: "POST", body: JSON.stringify({ challengeId, code }) });
+      saveToken(result.token);
+      resetOtpForm();
+      setAuthStatus("");
+      await loadPrivate();
+    } catch (error) {
+      setAuthStatus(error.message, "error");
+    } finally {
+      els.verifyOtp.disabled = false;
+      els.verifyOtp.textContent = "Masuk";
+    }
   }
+
+  els.search?.addEventListener("input", resetAndRender);
+  els.month?.addEventListener("change", resetAndRender);
+  els.type?.addEventListener("change", resetAndRender);
+  els.loadMore?.addEventListener("click", () => { visibleLimit += PAGE_SIZE; renderTransactions(); });
+  els.phoneForm?.addEventListener("submit", requestOtp);
+  els.otpForm?.addEventListener("submit", verifyOtp);
+  els.changePhone?.addEventListener("click", () => { resetOtpForm(); setAuthStatus(""); els.phone?.focus(); });
 
   if (!idKas) {
-    if (els.updated) els.updated.textContent = "ID kas tidak ditemukan";
+    if (els.updated) els.updated.textContent = "ID Kas tidak ditemukan";
     return;
   }
 
   if (visibility === "private") {
-    const saved = sessionStorage.getItem(`proxyz-kas-pass:${idKas}`);
-    if (saved) unlock(saved);
-    else els.password?.focus();
+    restoreOtpState();
+    loadPrivate();
   } else {
-    loadPublic().catch(error => {
+    fetchPublicJson().then(showDashboard).catch(error => {
       els.updated.textContent = "Data tidak dapat dimuat";
       els.list.replaceChildren(create("div", "empty-state error-state", error.message));
       els.loadMore.hidden = true;

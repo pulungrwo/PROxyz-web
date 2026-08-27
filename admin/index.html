@@ -110,6 +110,10 @@
             <button id="kas-report-load" class="primary full" type="button">Buat laporan</button>
             <p id="kas-report-status" class="status"></p>
             <div id="kas-report-actions" class="kas-report-actions" hidden>
+              <label class="kas-report-note-field">Catatan laporan <span class="muted">(opsional)</span>
+                <textarea id="kas-report-note" rows="3" maxlength="1000" placeholder="Contoh: Pengeluaran konsumsi sudah termasuk perlombaan dan persiapan."></textarea>
+              </label>
+              <p class="muted small kas-report-note-hint">Jika diisi, catatan tampil di bawah Saldo Akhir. Laporan dari Web juga otomatis mencantumkan nama Admin pengirim.</p>
               <button id="kas-report-wa-pdf" class="ghost" type="button">Kirim PDF ke saya</button>
               <button id="kas-report-wa-complete" class="primary" type="button">Kirim laporan lengkap ke grup</button>
               <button id="kas-report-wa-simple" class="ghost" type="button">Kirim laporan singkat ke grup</button>
@@ -132,7 +136,7 @@
 
           <section id="kas-kategori-panel" class="kas-panel panel" hidden>
             <div class="section-head"><div><p class="eyebrow">Pengaturan per Kas</p><h2>Kategori</h2></div><button id="kas-category-add" class="primary compact" type="button">+ Kategori</button></div>
-            <p class="muted small">Setiap Kas memiliki kategori sendiri. Nama kategori disimpan sebagai kode pencatatan, sedangkan <b>nama tampilan</b> digunakan pada laporan dan detail transaksi.</p>
+            <p class="muted small">Setiap Kas memiliki kategori sendiri. <b>Nama tampilan bersifat opsional</b>; jika dikosongkan otomatis mengikuti nama kategori. Owner juga dapat mengatur urutannya dengan tombol ↑ dan ↓.</p>
             <div id="kas-category-owner-note" class="session-note" hidden>Hanya Owner Kas yang dapat mengubah kategori. Admin tetap dapat melihat pengaturannya.</div>
             <div class="kas-category-columns">
               <section><div class="mini-section-title"><span>Pemasukan</span><b id="kas-category-in-count">0</b></div><div id="kas-category-in-list" class="category-list"></div></section>
@@ -142,8 +146,24 @@
 
           <section id="kas-pengelola-panel" class="kas-panel panel" hidden>
             <div class="section-head"><div><p class="eyebrow">Akses Kas</p><h2>Pengelola</h2></div><button id="kas-manager-add" class="primary compact" type="button">+ Admin</button></div>
-            <p class="muted small">Owner dapat menambah atau menghapus Admin Kas. Hak akses transaksi tetap mengikuti peran Kas.</p>
-            <div id="kas-manager-owner-note" class="session-note" hidden>Hanya Owner Kas yang dapat mengubah daftar Admin.</div>
+            <p class="muted small">Owner dan Admin mengelola transaksi. Pengakses Web hanya dapat melihat dashboard Kas privat dan tidak mendapatkan akses Admin Web.</p>
+            <div id="kas-manager-owner-note" class="session-note" hidden>Hanya Owner Kas yang dapat mengubah Admin, status Web, dan daftar pengakses.</div>
+
+            <section class="kas-web-access-card">
+              <div class="mini-section-title"><span>Web Kas</span><b id="kas-web-access-badge">Umum</b></div>
+              <label>Status akses
+                <select id="kas-web-visibility">
+                  <option value="public">Umum · siapa pun dengan link dapat melihat</option>
+                  <option value="private">Privat · wajib login WhatsApp</option>
+                </select>
+              </label>
+              <button id="kas-web-access-save" class="ghost full" type="button">Simpan status Web Kas</button>
+              <p class="muted small">Untuk Kas privat, Owner dan Admin Kas otomatis dapat melihat. Nomor lain dapat didaftarkan sebagai <b>Pengakses Web</b> tanpa menjadi Admin.</p>
+              <div class="section-head kas-viewer-head"><div><p class="eyebrow">Hanya lihat</p><h3>Pengakses Web</h3></div><button id="kas-viewer-add" class="ghost compact" type="button">+ Pengakses</button></div>
+              <div id="kas-viewer-list" class="list-stack"></div>
+            </section>
+
+            <div class="section-head kas-admin-head"><div><p class="eyebrow">Pengelola transaksi</p><h3>Owner & Admin</h3></div></div>
             <div id="kas-manager-list" class="list-stack"></div>
           </section>
         </section>
@@ -393,14 +413,25 @@
     </form>
   </dialog>
 
+  <dialog id="kas-viewer-dialog">
+    <form id="kas-viewer-form" class="dialog-form">
+      <div class="section-head"><div><p class="eyebrow">Web Kas Privat</p><h2>Tambah Pengakses</h2></div><button id="close-kas-viewer" class="icon-button" type="button">×</button></div>
+      <label>Nomor WhatsApp<input id="kas-viewer-phone" inputmode="tel" placeholder="08xxxxxxxxxx" required></label>
+      <label>Nama <span class="muted">(opsional)</span><input id="kas-viewer-name" maxlength="60" placeholder="Nama pengakses"></label>
+      <p class="muted small">Pengakses hanya dapat login dan melihat <b>Kas ini</b>. Ia tidak dapat membuka /admin/ kecuali juga menjadi Owner/Admin aplikasi PROxyz.</p>
+      <p id="kas-viewer-status" class="status"></p>
+      <button class="primary full" type="submit">Tambah pengakses</button>
+    </form>
+  </dialog>
+
   <dialog id="kas-category-dialog">
     <form id="kas-category-form" class="dialog-form">
       <div class="section-head"><div><p class="eyebrow">Kategori Kas</p><h2 id="kas-category-dialog-title">Tambah kategori</h2></div><button id="close-kas-category" class="icon-button" type="button">×</button></div>
       <input id="kas-category-original-id" type="hidden">
       <label>Jenis<select id="kas-category-type"><option value="masuk">Pemasukan</option><option value="keluar">Pengeluaran</option></select></label>
       <label>Nama kategori<input id="kas-category-id" maxlength="50" placeholder="Contoh: konsumsi" required></label>
-      <label>Nama tampilan<input id="kas-category-label" maxlength="80" placeholder="Contoh: Konsumsi &amp; Akomodasi" required></label>
-      <p class="muted small">Nama kategori dipakai sebagai kode pencatatan. Nama tampilan yang lebih rapi akan muncul di laporan dan detail transaksi.</p>
+      <label>Nama tampilan <span class="muted">(opsional)</span><input id="kas-category-label" maxlength="80" placeholder="Kosongkan agar sama dengan nama kategori"></label>
+      <p class="muted small">Nama kategori dipakai sebagai kode pencatatan. Jika Nama tampilan dikosongkan, PROxyz otomatis menggunakan nama kategori yang dirapikan.</p>
       <p id="kas-category-status" class="status"></p>
       <button class="primary full" type="submit">Simpan kategori</button>
     </form>
@@ -449,6 +480,6 @@
   <dialog id="gallery-bulk-dialog"><form id="gallery-bulk-form" method="dialog" class="dialog-form"><div class="section-head"><div><p class="eyebrow">Edit beberapa foto</p><h2>Kelompokkan kejadian</h2></div><button id="close-gallery-bulk" class="icon-button" type="button">×</button></div><p class="muted small"><b id="gallery-bulk-dialog-count">0 foto</b> akan dijadikan satu kelompok di galeri publik.</p><label>Judul kejadian<input id="gallery-bulk-caption" maxlength="160" placeholder="Contoh: Makan Kerupuk Agustusan 2024" required></label><label>Tanggal dokumentasi<input id="gallery-bulk-date" type="date" required></label><p class="muted small">Semua foto terpilih akan memakai satu judul dan satu tanggal. Foto tidak dihapus atau diunggah ulang ke penyimpanan Galeri.</p><p id="gallery-bulk-status" class="status"></p><button class="primary full" type="submit">Simpan & kelompokkan</button></form></dialog>
 
   <script src="./config.js?v=242"></script>
-  <script src="./admin.js?v=0.7.1" defer></script>
+  <script src="./admin.js?v=0.7.2" defer></script>
 </body>
 </html>

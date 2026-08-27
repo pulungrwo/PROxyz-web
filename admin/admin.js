@@ -1,7 +1,7 @@
 (() => {
   "use strict";
 
-  const ADMIN_BUILD = "0.7.1";
+  const ADMIN_BUILD = "0.7.2";
   const config = window.PROXYZ_ADMIN_CONFIG || {};
 
   async function checkAdminBuild() {
@@ -120,7 +120,9 @@
     const data = await response.json().catch(() => ({}));
     if (!response.ok) {
       if (response.status === 401 && !path.includes("/auth/")) { saveSessionToken(""); clearSession(); }
-      throw new Error(data.error || `Permintaan gagal (${response.status}).`);
+      const error = new Error(data.error || `Permintaan gagal (${response.status}).`);
+      error.status = response.status;
+      throw error;
     }
     return data;
   }
@@ -253,9 +255,14 @@
       const data = await api("/api/me");
       me = data.user;
       renderMe();
-    } catch (_) {
-      clearSession();
-      setStatus($("auth-status"));
+    } catch (error) {
+      if (error?.status !== 403) clearSession();
+      else {
+        me = null;
+        $("login-view").hidden = false;
+        $("app-view").hidden = true;
+      }
+      setStatus($("auth-status"), error?.message || "Sesi Admin belum tersedia.", "error");
     }
   }
 
@@ -422,7 +429,9 @@
 
   // ---------- KAS ----------
   async function loadKas(id) {
+    const previousKas = activeKas;
     activeKas = id;
+    if (previousKas && previousKas !== id && $("kas-report-note")) $("kas-report-note").value = "";
     $("kas-select").value = id;
     const data = await api(`/api/kas/${encodeURIComponent(id)}`);
     activeKasDetail = data.kas;
@@ -649,7 +658,8 @@
         body: JSON.stringify({
           mulai: dateToTimestamp(start),
           selesai: dateToTimestamp(end),
-          action
+          action,
+          catatan: $("kas-report-note")?.value.trim() || ""
         })
       });
       setStatus($("kas-report-status"), result.message || "Laporan berhasil dikirim.", "success");
@@ -751,15 +761,45 @@
     const canEdit = Boolean(data.canEdit);
     $("kas-manager-add").hidden = !canEdit;
     $("kas-manager-owner-note").hidden = canEdit;
+
+    const web = data.webAccess || { visibility: "public", viewers: [] };
+    const visibility = web.visibility === "private" ? "private" : "public";
+    $("kas-web-visibility").value = visibility;
+    $("kas-web-visibility").disabled = !canEdit;
+    $("kas-web-access-save").hidden = !canEdit;
+    $("kas-web-access-badge").textContent = visibility === "private" ? "Privat" : "Umum";
+    $("kas-web-access-badge").className = visibility === "private" ? "status-badge private" : "status-badge public";
+    $("kas-viewer-add").hidden = !canEdit;
+
+    const viewerList = $("kas-viewer-list"); viewerList.replaceChildren();
+    const viewers = Array.isArray(web.viewers) ? web.viewers : [];
+    if (!viewers.length) viewerList.appendChild(emptyBox(visibility === "private" ? "Belum ada Pengakses Web tambahan. Owner/Admin Kas tetap dapat masuk." : "Pengakses tambahan hanya diperlukan jika Kas dibuat privat."));
+    for (const row of viewers) {
+      const card = document.createElement("article"); card.className = "item-card manager-card viewer-card";
+      const top = document.createElement("div"); top.className = "item-top";
+      const info = document.createElement("div");
+      const title = document.createElement("h3"); title.textContent = row.name || "Pengakses Kas";
+      const meta = document.createElement("div"); meta.className = "item-meta"; meta.textContent = "Pengakses Web · hanya lihat";
+      info.append(title, meta); top.appendChild(info);
+      const badge = document.createElement("span"); badge.className = "role-pill viewer-role"; badge.textContent = "Viewer"; top.appendChild(badge);
+      card.appendChild(top);
+      if (canEdit) {
+        const actions = document.createElement("div"); actions.className = "item-actions";
+        actions.append(button("Hapus akses", "danger-soft", () => removeKasViewer(row)));
+        card.appendChild(actions);
+      }
+      viewerList.appendChild(card);
+    }
+
     const manager = data.pengelola || {};
     const rows = [manager.owner, ...(manager.admins || [])].filter(Boolean);
-    if (!rows.length) return list.appendChild(emptyBox("Belum ada data pengelola."));
+    if (!rows.length) list.appendChild(emptyBox("Belum ada data pengelola."));
     for (const row of rows) {
       const card = document.createElement("article"); card.className = "item-card manager-card";
       const top = document.createElement("div"); top.className = "item-top";
       const info = document.createElement("div");
       const title = document.createElement("h3"); title.textContent = row.name || (row.role === "owner" ? "Owner" : "Admin");
-      const meta = document.createElement("div"); meta.className = "item-meta"; meta.textContent = row.role === "owner" ? "Owner Kas" : "Admin Kas";
+      const meta = document.createElement("div"); meta.className = "item-meta"; meta.textContent = row.role === "owner" ? "Owner Kas · otomatis dapat melihat Web Kas privat" : "Admin Kas · otomatis dapat melihat Web Kas privat";
       info.append(title, meta); top.appendChild(info);
       if (row.role === "owner") {
         const badge = document.createElement("span"); badge.className = "role-pill manager-role"; badge.textContent = "Owner"; top.appendChild(badge);
@@ -786,6 +826,51 @@
     await loadKasManagers();
   }
 
+  async function saveKasWebAccess() {
+    const visibility = $("kas-web-visibility").value;
+    const control = $("kas-web-access-save");
+    const original = control.textContent;
+    control.disabled = true;
+    control.textContent = "Menyimpan…";
+    try {
+      await api(`/api/kas/${encodeURIComponent(activeKas)}/web-access`, { method: "PUT", body: JSON.stringify({ visibility }) });
+      await loadKasManagers();
+      await loadKas(activeKas);
+    } catch (error) {
+      alert(error.message);
+    } finally {
+      control.disabled = false;
+      control.textContent = original;
+    }
+  }
+
+  function openKasViewerDialog() {
+    $("kas-viewer-form").reset();
+    setStatus($("kas-viewer-status"));
+    $("kas-viewer-dialog").showModal();
+  }
+
+  async function removeKasViewer(row) {
+    if (!confirm(`Hapus akses lihat Web Kas untuk ${row.name || "pengguna ini"}?`)) return;
+    await api(`/api/kas/${encodeURIComponent(activeKas)}/web-access/viewer/${encodeURIComponent(row.id)}`, { method: "DELETE", body: "{}" });
+    await loadKasManagers();
+  }
+
+  async function submitKasViewer(event) {
+    event.preventDefault();
+    setStatus($("kas-viewer-status"), "Menambahkan pengakses…");
+    try {
+      await api(`/api/kas/${encodeURIComponent(activeKas)}/web-access/viewer`, {
+        method: "POST",
+        body: JSON.stringify({ phone: $("kas-viewer-phone").value.trim(), name: $("kas-viewer-name").value.trim() })
+      });
+      $("kas-viewer-dialog").close();
+      await loadKasManagers();
+    } catch (error) {
+      setStatus($("kas-viewer-status"), error.message, "error");
+    }
+  }
+
   function renderKasCategories() {
     if (!activeKasDetail) return;
     const isOwner = activeKasDetail.role === "owner";
@@ -795,22 +880,43 @@
       const rows = kasCategoryRows(type, true);
       $(countId).textContent = String(rows.filter(row => row.aktif !== false).length);
       const list = $(listId); list.replaceChildren();
-      for (const row of rows) {
+      rows.forEach((row, index) => {
         const card = document.createElement("div"); card.className = `category-row${row.aktif === false ? " category-inactive" : ""}`;
         const info = document.createElement("div"); info.className = "category-copy";
         const label = document.createElement("strong"); label.textContent = row.nama;
-        const meta = document.createElement("span"); meta.textContent = `${row.id}${row.bawaan ? " · bawaan" : " · tambahan"}${row.aktif === false ? " · nonaktif" : ""}`;
+        const meta = document.createElement("span"); meta.textContent = `${index + 1}. ${row.id}${row.bawaan ? " · bawaan" : " · tambahan"}${row.aktif === false ? " · nonaktif" : ""}`;
         info.append(label, meta); card.appendChild(info);
         if (isOwner) {
           const actions = document.createElement("div"); actions.className = "category-actions";
-          actions.append(button("Edit", "ghost compact", () => openKasCategoryDialog(type, row)), button(row.aktif === false ? "Aktifkan" : "Nonaktifkan", row.aktif === false ? "success-soft compact" : "danger-soft compact", () => toggleKasCategory(type, row)));
+          const up = button("↑", "ghost compact category-order", () => moveKasCategory(type, index, -1));
+          const down = button("↓", "ghost compact category-order", () => moveKasCategory(type, index, 1));
+          up.disabled = index === 0;
+          down.disabled = index === rows.length - 1;
+          up.title = "Naikkan posisi";
+          down.title = "Turunkan posisi";
+          actions.append(up, down, button("Edit", "ghost compact", () => openKasCategoryDialog(type, row)), button(row.aktif === false ? "Aktifkan" : "Nonaktifkan", row.aktif === false ? "success-soft compact" : "danger-soft compact", () => toggleKasCategory(type, row)));
           card.appendChild(actions);
         }
         list.appendChild(card);
-      }
+      });
     };
     renderType("masuk", "kas-category-in-list", "kas-category-in-count");
     renderType("keluar", "kas-category-out-list", "kas-category-out-count");
+  }
+
+  async function moveKasCategory(type, index, direction) {
+    const rows = kasCategoryRows(type, true);
+    const target = index + direction;
+    if (target < 0 || target >= rows.length) return;
+    const ids = rows.map(row => row.id);
+    [ids[index], ids[target]] = [ids[target], ids[index]];
+    await api(`/api/kas/${encodeURIComponent(activeKas)}/kategori/${type}/urutan`, { method: "PUT", body: JSON.stringify({ ids }) });
+    await loadKas(activeKas);
+    setKasTab("kategori", false);
+  }
+
+  function categoryDefaultLabel(id) {
+    return String(id || "").split(/([ /&.-]+)/).map(part => /[a-z0-9]/i.test(part) ? part.charAt(0).toUpperCase() + part.slice(1) : part).join("");
   }
 
   function openKasCategoryDialog(type = "keluar", row = null) {
@@ -822,7 +928,7 @@
     $("kas-category-type").disabled = Boolean(row);
     $("kas-category-id").value = row?.id || "";
     $("kas-category-id").disabled = Boolean(row);
-    $("kas-category-label").value = row?.nama || "";
+    $("kas-category-label").value = row && row.nama !== categoryDefaultLabel(row.id) ? row.nama : "";
     $("kas-category-dialog").showModal();
   }
 
@@ -2410,6 +2516,10 @@
   $("kas-manager-add").addEventListener("click", openKasManagerDialog);
   $("close-kas-manager").addEventListener("click", () => $("kas-manager-dialog").close());
   $("kas-manager-form").addEventListener("submit", submitKasManager);
+  $("kas-web-access-save").addEventListener("click", () => saveKasWebAccess().catch(showError));
+  $("kas-viewer-add").addEventListener("click", openKasViewerDialog);
+  $("close-kas-viewer").addEventListener("click", () => $("kas-viewer-dialog").close());
+  $("kas-viewer-form").addEventListener("submit", submitKasViewer);
   $("kas-category-add").addEventListener("click", () => openKasCategoryDialog("keluar"));
   $("close-kas-category").addEventListener("click", () => { kasCategoryEditing = null; $("kas-category-dialog").close(); });
   $("kas-category-form").addEventListener("submit", submitKasCategory);

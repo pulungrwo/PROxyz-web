@@ -48,9 +48,7 @@
           text.appendChild(create(
             "p",
             "",
-            item.configured === false
-              ? "🔒 Privat · sandi belum dikonfigurasi"
-              : "🔒 Privat · masukkan sandi untuk melihat"
+            "🔐 Privat · login WhatsApp untuk melihat"
           ));
         } else {
           text.appendChild(create(

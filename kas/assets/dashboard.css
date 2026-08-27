@@ -250,3 +250,24 @@ footer {
   .password-row { grid-template-columns: 1fr; }
   .password-row button { width: 100%; }
 }
+
+/* V3 — Kas privat login WhatsApp */
+.unlock-error.success { color: #067647; }
+.unlock-error.error { color: var(--negative); }
+.text-button {
+  display: inline-flex;
+  margin: 10px auto 0;
+  padding: 6px 4px;
+  border: 0;
+  background: transparent;
+  color: #475467;
+  font-size: 12px;
+  font-weight: 750;
+  cursor: pointer;
+}
+.text-button:active { color: #101828; }
+#kas-otp { letter-spacing: .18em; font-weight: 800; text-align: center; }
+@media (max-width: 420px) {
+  .unlock-panel { margin-top: 16px; padding: 24px 16px; }
+  .unlock-copy { font-size: 12.5px; }
+}
