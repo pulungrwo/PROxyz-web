@@ -124,3 +124,33 @@
   .kas-report-period-picker{grid-template-columns:1fr 1fr}.kas-report-actions{grid-template-columns:1fr}
   .nominal-entry button{min-width:66px;padding-left:10px;padding-right:10px}
 }
+
+/* PROxyz Admin V0.7.1 — dialog ramah HP */
+body:has(dialog[open]){overflow:hidden}
+dialog{max-height:min(92dvh,760px);overflow:hidden}
+.dialog-form{max-height:min(92dvh,760px);overflow-y:auto;overscroll-behavior:contain;scrollbar-gutter:stable}
+.dialog-form .section-head{min-width:0}
+.dialog-form .section-head>div{min-width:0}
+.dialog-form .section-head h2{overflow-wrap:anywhere}
+#tx-note{resize:vertical;overflow:auto}
+
+@media(max-width:640px){
+  dialog{width:100%;max-width:none;max-height:calc(100dvh - 6px);margin:auto 0 0;border-radius:20px 20px 0 0}
+  dialog::backdrop{background:rgba(15,23,42,.54);backdrop-filter:none;-webkit-backdrop-filter:none}
+  .dialog-form{gap:10px;max-height:calc(100dvh - 6px);padding:15px 14px max(16px,env(safe-area-inset-bottom))}
+  .dialog-form .section-head{position:sticky;top:-15px;z-index:5;margin:-15px 0 1px;padding:15px 0 10px;background:#fff;border-bottom:1px solid #f1f3f6}
+  .dialog-form .section-head h2{font-size:18px;line-height:1.2}
+  .dialog-form .eyebrow{margin-bottom:4px}
+  .dialog-form label{gap:5px;font-size:12.5px}
+  .dialog-form input,.dialog-form select,.dialog-form textarea{min-height:43px;padding:10px 11px;border-radius:10px;font-size:16px}
+  .dialog-form textarea{line-height:1.35}
+  #tx-note{min-height:72px;max-height:130px}
+  #tx-dialog .nominal-entry{gap:7px}
+  #tx-dialog .nominal-entry button{min-width:62px;height:43px;padding:8px 9px;font-size:12px}
+  #tx-dialog .primary.full[type="submit"]{min-height:44px;margin-top:1px}
+}
+
+@media(max-width:380px){
+  .dialog-form{padding-left:12px;padding-right:12px}
+  #tx-dialog .nominal-entry button{min-width:58px}
+}
