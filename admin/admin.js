@@ -1,7 +1,7 @@
 (() => {
   "use strict";
 
-  const ADMIN_BUILD = "0.8.4";
+  const ADMIN_BUILD = "0.8.5";
   const config = window.PROXYZ_ADMIN_CONFIG || {};
 
   async function checkAdminBuild() {
@@ -1615,7 +1615,8 @@
     $("risma-participants").textContent = wholeNumber.format(rismaDetail.summary?.participants || 0);
     $("risma-weeks").textContent = `${rismaDetail.summary?.weeks || 0}/4`;
     $("risma-teams").textContent = wholeNumber.format(rismaDetail.summary?.teams || 0);
-    $("risma-coupons").textContent = wholeNumber.format(rismaDetail.summary?.coupons || 0);
+    const couponParts=(rismaDetail.summary?.couponBreakdown||[]).map(row=>Number(row.coupons||0)).filter(value=>value>0);
+    $("risma-coupons").textContent = couponParts.length ? couponParts.map(value=>wholeNumber.format(value)).join(" + ") : "0";
     $("risma-total-points").textContent = `${number.format(rismaDetail.summary?.totalPoints || 0)} poin`;
 
     // Pengaturan periode dipindah ke tab Pengaturan agar hero tetap bersih.
@@ -1674,7 +1675,9 @@
     const parts=[];
     for(let week=1;week<=4;week++) {
       const data=row.weeks?.[week];
-      parts.push(`M${week}: ${data ? data.attendance : "–"}`);
+      if(!data){parts.push(`M${week}: –`);continue;}
+      const bonus=Number(data.excused||0);
+      parts.push(`M${week}: ${data.attendance}${bonus?` +${bonus}`:""}`);
     }
     return parts.join(" · ");
   }
@@ -1692,26 +1695,31 @@
     participantList.replaceChildren();
     teamList.replaceChildren();
 
-    const scores = rismaDetail?.scores || [];
+    const scores = (rismaDetail?.scores || []).filter(row=>!row.disqualified);
     const teams = rismaDetail?.teams || [];
+    const masterLocked = rismaDetail?.role !== "owner" && (rismaDetail?.weeks || []).some(row=>Number(row.week)>=2);
     $("risma-rank-participant-count").textContent = wholeNumber.format(scores.length);
     $("risma-rank-team-count").textContent = wholeNumber.format(teams.length);
 
-    if (!scores.length) participantList.appendChild(emptyBox("Belum ada peserta RISMA Poin."));
+    if (!scores.length) participantList.appendChild(emptyBox("Belum ada peserta yang masuk peringkat."));
     else scores.forEach((row,index) => {
       const card = document.createElement("article");
-      card.className = "risma-rank-card participant";
+      card.className = "risma-rank-card participant risma-rank-row-card";
       const rank = document.createElement("span"); rank.className = "risma-rank-number"; rank.textContent = rismaRankMark(index);
       const info = document.createElement("div"); info.className = "risma-rank-info";
       const title = document.createElement("strong"); title.textContent = row.name;
       const meta = document.createElement("span"); meta.textContent = participantWeekSummary(row);
       info.append(title,meta);
       const points = document.createElement("b"); points.className = "risma-rank-points"; points.textContent = `${number.format(row.totalPoints || 0)} poin`;
-      card.append(rank,info,points);
+      const edit=rismaIconButton("Ubah","fa-pen","ghost compact risma-mini-action",()=>openRismaParticipant(row));
+      const del=rismaIconButton("Hapus","fa-trash-can","danger-soft compact risma-mini-action",()=>deleteRismaParticipant(row));
+      edit.disabled=masterLocked;del.disabled=masterLocked;
+      if(masterLocked){edit.title="Dikunci setelah Minggu 2. Hanya Owner yang dapat mengubah.";del.title=edit.title;}
+      card.append(rank,info,points,edit,del);
       participantList.appendChild(card);
     });
 
-    if (!teams.length) teamList.appendChild(emptyBox("Tim belum disusun. Tim otomatis terbentuk setelah input Minggu 1."));
+    if (!teams.length) teamList.appendChild(emptyBox("Tim belum disusun. Tim awal dibuat setelah input Minggu 1."));
     else teams.forEach((row,index) => {
       const card = document.createElement("article");
       card.className = "risma-rank-card team";
@@ -1731,16 +1739,19 @@
     const full=$("risma-score-list");
     full.replaceChildren();
     const rows=rismaDetail?.scores || [];
+    const masterLocked = rismaDetail?.role !== "owner" && (rismaDetail?.weeks || []).some(row=>Number(row.week)>=2);
     if(!rows.length){ full.appendChild(emptyBox("Belum ada peserta RISMA Poin.")); return; }
     rows.forEach((row,index)=>{
-      const card=document.createElement("article"); card.className="item-card risma-score-card compact";
+      const card=document.createElement("article"); card.className=`item-card risma-score-card compact${row.disqualified?" disqualified":""}`;
       const line=document.createElement("div"); line.className="risma-score-line";
       const name=document.createElement("strong"); name.className="risma-row-name"; name.textContent=`${index+1}. ${row.name}`;
-      const pts=document.createElement("span"); pts.className="score-pill"; pts.textContent=`${number.format(row.totalPoints || 0)} poin`;
-      const edit=rismaIconButton("Edit","fa-pen","ghost compact risma-mini-action",()=>openRismaParticipant(row));
+      const pts=document.createElement("span"); pts.className="score-pill"; pts.textContent=row.disqualified?"DISKUALIFIKASI":`${number.format(row.totalPoints || 0)} poin`;
+      const edit=rismaIconButton("Ubah","fa-pen","ghost compact risma-mini-action",()=>openRismaParticipant(row));
       const del=rismaIconButton("Hapus","fa-trash-can","danger-soft compact risma-mini-action",()=>deleteRismaParticipant(row));
+      edit.disabled=masterLocked;del.disabled=masterLocked;
+      if(masterLocked){edit.title="Data peserta dikunci setelah Minggu 2. Hanya Owner yang dapat mengubah.";del.title=edit.title;}
       line.append(name,pts,edit,del);
-      const meta=document.createElement("div"); meta.className="item-meta risma-row-meta"; meta.textContent=participantWeekSummary(row);
+      const meta=document.createElement("div"); meta.className="item-meta risma-row-meta"; meta.textContent=`${participantWeekSummary(row)}${row.gender?` · ${row.gender}`:""}${row.excusedUsed?` · kelonggaran ${row.excusedUsed}/7 hari`:""}`;
       card.append(line,meta); full.appendChild(card);
     });
   }
@@ -1748,15 +1759,18 @@
   function renderRismaWeeks() {
     const wrap=$("risma-week-grid"); wrap.replaceChildren();
     const period=rismaDetail?.activePeriod;
+    const latest=(rismaDetail?.weeks||[]).reduce((m,row)=>Math.max(m,Number(row.week)||0),0);
+    const owner=rismaDetail?.role==="owner";
     for(let week=1;week<=4;week++){
       const data=(rismaDetail?.weeks||[]).find(row=>Number(row.week)===week);
-      const card=document.createElement("article"); card.className=`week-card${data ? " done" : ""}`;
+      const locked=Boolean(data) && latest>week && !owner;
+      const card=document.createElement("article"); card.className=`week-card${data ? " done" : ""}${locked?" locked":""}`;
       const top=document.createElement("div");
       const title=document.createElement("strong"); title.textContent=`Minggu ${week}`;
-      const meta=document.createElement("span"); meta.textContent=data?`${data.entryCount || 0} peserta · tersimpan`:(period?"Belum diinput":"Tidak ada periode aktif");
+      const meta=document.createElement("span"); meta.textContent=locked?`Terkunci · Minggu ${latest} sudah diinput`:data?`${data.entryCount || 0} peserta · tersimpan`:(period?"Belum diinput":"Tidak ada periode aktif");
       top.append(title,meta);
-      const action=rismaIconButton(data?"Edit":"Input",data?"fa-pen":"fa-plus",data?"ghost compact":"primary compact",()=>openRismaWeek(week));
-      action.disabled=!period || (week>1 && !(rismaDetail.weeks||[]).some(x=>Number(x.week)===1));
+      const action=rismaIconButton(locked?"Terkunci":data?"Edit":"Input",locked?"fa-lock":data?"fa-pen":"fa-plus",locked?"ghost compact":""+(data?"ghost compact":"primary compact"),()=>openRismaWeek(week));
+      action.disabled=!period || locked || (week>1 && !(rismaDetail.weeks||[]).some(x=>Number(x.week)===1));
       card.append(top,action); wrap.appendChild(card);
     }
   }
@@ -1776,6 +1790,8 @@
     if (!keepMode) rismaWeekNewParticipantMode = week === 1;
     $("risma-week-person-name").value = "";
     $("risma-week-attendance").value = "0";
+    $("risma-week-gender").value = "";
+    $("risma-week-excused").value = "0";
     syncRismaWeekBuilder();
   }
 
@@ -1785,41 +1801,60 @@
     const select = $("risma-week-person-select");
     const toggle = $("risma-week-new-toggle");
     const label = $("risma-week-person-label");
+    const genderWrap=$("risma-week-gender-wrap");
+    const excusedWrap=$("risma-week-excused-wrap");
+    let selectedParticipant=null;
 
     if (week === 1) {
       rismaWeekNewParticipantMode = true;
       nameInput.hidden = false; select.hidden = true; toggle.hidden = true;
+      genderWrap.hidden=false;
+      const editing=rismaWeekEditIndex>=0?rismaWeekDraft[rismaWeekEditIndex]:null;
+      selectedParticipant=editing?.participantId?rismaParticipantById(editing.participantId):null;
+      excusedWrap.hidden=String(selectedParticipant?.gender||editing?.gender||"")!=="perempuan" || !editing?.participantId;
       label.firstChild.textContent = "Nama peserta\n            ";
-      $("risma-week-entry-hint").textContent = "Masukkan nama dan jumlah hadir. Poin akan terlihat setelah ditambahkan.";
+      $("risma-week-entry-hint").textContent = excusedWrap.hidden
+        ? "Masukkan nama, jenis peserta, dan jumlah hadir. Kelonggaran dapat diatur setelah peserta tersimpan."
+        : "Peserta perempuan. Anda dapat menambahkan hari kelonggaran berhalangan.";
     } else {
       toggle.hidden = false;
       if (rismaWeekNewParticipantMode) {
-        nameInput.hidden = false; select.hidden = true;
+        nameInput.hidden = false; select.hidden = true; genderWrap.hidden=false; excusedWrap.hidden=true;
         toggle.textContent = "Pilih peserta lama";
         label.firstChild.textContent = "Nama peserta baru\n            ";
-        $("risma-week-entry-hint").textContent = "Masukkan nama peserta baru dan jumlah hadir. Peserta baru tampil paling atas.";
+        $("risma-week-entry-hint").textContent = "Peserta baru akan dibuatkan tim baru agar tim lama tidak berubah.";
       } else {
-        nameInput.hidden = true; select.hidden = false;
+        nameInput.hidden = true; select.hidden = false; genderWrap.hidden=true;
         toggle.textContent = "+ Peserta baru";
         label.firstChild.textContent = "Pilih peserta\n            ";
         fillRismaWeekParticipantSelect();
-        $("risma-week-entry-hint").textContent = "Pilih nama peserta, lalu pilih jumlah hadir.";
+        selectedParticipant=rismaParticipantById(select.value);
+        excusedWrap.hidden=String(selectedParticipant?.gender||"")!=="perempuan";
+        $("risma-week-entry-hint").textContent = excusedWrap.hidden
+          ? "Pilih nama peserta, lalu pilih jumlah hadir."
+          : `Peserta perempuan. Kelonggaran tersisa ${Math.max(0,7-Number(selectedParticipant?.excusedUsed||0))} hari.`;
       }
+    }
+    if(!excusedWrap.hidden){
+      const oldExcused=rismaWeekEditIndex>=0?Number(rismaWeekDraft[rismaWeekEditIndex]?.excused||0):0;
+      const remaining=Math.max(0,7-(Number(selectedParticipant?.excusedUsed||0)-oldExcused));
+      [...$("risma-week-excused").options].forEach(opt=>opt.disabled=Number(opt.value)>remaining);
+      if(Number($("risma-week-excused").value)>remaining) $("risma-week-excused").value="0";
     }
     $("risma-week-add-entry").innerHTML = rismaWeekEditIndex >= 0 ? `<i class="fa-solid fa-floppy-disk"></i> Simpan` : `<i class="fa-solid fa-plus"></i> Tambahkan`;
   }
 
   function fillRismaWeekParticipantSelect() {
     const select = $("risma-week-person-select");
-    const current = rismaWeekEditIndex >= 0 ? rismaWeekDraft[rismaWeekEditIndex]?.participantId : "";
+    const current = rismaWeekEditIndex >= 0 ? rismaWeekDraft[rismaWeekEditIndex]?.participantId : select.value;
     const used = new Set(rismaWeekDraft.map((row,index) => index === rismaWeekEditIndex ? "" : String(row.participantId || "")).filter(Boolean));
     select.replaceChildren();
     const placeholder = document.createElement("option"); placeholder.value=""; placeholder.textContent="Pilih peserta…"; select.appendChild(placeholder);
-    for (const row of (rismaDetail?.scores || [])) {
+    for (const row of (rismaDetail?.scores || []).filter(row=>!row.disqualified)) {
       if (used.has(String(row.id))) continue;
       const option=document.createElement("option"); option.value=String(row.id); option.textContent=row.name; select.appendChild(option);
     }
-    if (current) select.value=String(current);
+    if (current && [...select.options].some(opt=>opt.value===String(current))) select.value=String(current);
   }
 
   function renderRismaWeekDraft() {
@@ -1830,7 +1865,8 @@
       const card=document.createElement("article"); card.className="risma-week-draft-card";
       const info=document.createElement("div");
       const title=document.createElement("strong"); title.textContent=row.name;
-      const meta=document.createElement("span"); meta.textContent=`${row.attendance}x hadir → ${number.format(rismaPointForAttendance(row.attendance))} poin${row.isNew ? " · peserta baru" : ""}`;
+      const effective=Math.min(7,Number(row.attendance||0)+Number(row.excused||0));
+      const meta=document.createElement("span"); meta.textContent=`${row.attendance}x hadir${row.excused?` + ${row.excused} hari kelonggaran`:""} → ${number.format(rismaPointForAttendance(effective))} poin${row.isNew ? " · peserta baru" : ""}`;
       info.append(title,meta);
       const actions=document.createElement("div"); actions.className="risma-draft-actions";
       actions.append(rismaIconButton("Ubah","fa-pen","ghost compact",()=>editRismaWeekDraft(index)),rismaIconButton("Hapus","fa-trash-can","danger-soft compact",()=>removeRismaWeekDraft(index)));
@@ -1840,6 +1876,10 @@
 
   function openRismaWeek(week) {
     const existing=(rismaDetail?.weeks||[]).find(row=>Number(row.week)===Number(week));
+    const latest=(rismaDetail?.weeks||[]).reduce((m,row)=>Math.max(m,Number(row.week)||0),0);
+    if(existing && latest>Number(week) && rismaDetail?.role!=="owner"){
+      alert(`Minggu ${week} sudah dikunci karena Minggu ${latest} sudah diinput. Hanya Owner yang dapat memperbaikinya.`);return;
+    }
     $("risma-week-number").value=String(week);
     $("risma-week-title").textContent=`${existing?"Edit":"Input"} Minggu ${week}`;
     $("risma-week-submit-number").textContent=String(week);
@@ -1851,7 +1891,7 @@
     if(existing){
       rismaWeekDraft=(existing.entries||[]).map(entry=>{
         const participant=rismaParticipantById(entry.participantId);
-        return { participantId:String(entry.participantId||""), name:participant?.name || `Peserta ${entry.participantId}`, attendance:Number(entry.attendance||0), isNew:false };
+        return { participantId:String(entry.participantId||""), name:participant?.name || `Peserta ${entry.participantId}`, attendance:Number(entry.attendance||0), excused:Number(entry.excused||0), gender:participant?.gender||"", isNew:false };
       });
     }
     setStatus($("risma-week-status"));
@@ -1863,7 +1903,7 @@
   function addRismaWeekDraft() {
     const week=Number($("risma-week-number").value||1);
     const attendance=Number($("risma-week-attendance").value);
-    let participantId="", name="", isNew=false;
+    let participantId="", name="", isNew=false, gender="", excused=0;
 
     if(week===1 || rismaWeekNewParticipantMode){
       name=String($("risma-week-person-name").value||"").trim().replace(/\s+/g," ");
@@ -1872,17 +1912,22 @@
       participantId=known?.id || "";
       if(known) name=known.name;
       isNew=!known;
+      gender=known?.gender || $("risma-week-gender").value || "";
+      if(rismaWeekEditIndex>=0 && participantId && String(gender)==="perempuan") excused=Number($("risma-week-excused").value||0);
     } else {
       participantId=String($("risma-week-person-select").value||"");
       const participant=rismaParticipantById(participantId);
       if(!participant){ setStatus($("risma-week-status"),"Pilih peserta terlebih dahulu.","error"); return; }
-      name=participant.name;
+      name=participant.name;gender=participant.gender||"";
+      excused=String(gender)==="perempuan"?Number($("risma-week-excused").value||0):0;
+      const remaining=Math.max(0,7-Number(participant.excusedUsed||0)+Number(rismaWeekDraft[rismaWeekEditIndex]?.excused||0));
+      if(excused>remaining){setStatus($("risma-week-status"),`Kelonggaran ${name} tersisa ${remaining} hari.`,"error");return;}
     }
 
     const duplicate=rismaWeekDraft.findIndex((row,index)=>index!==rismaWeekEditIndex && ((participantId && String(row.participantId)===participantId) || row.name.trim().toLowerCase()===name.toLowerCase()));
     if(duplicate>=0){ setStatus($("risma-week-status"),`${name} sudah ada di daftar input.`,"error"); return; }
 
-    const item={participantId,name,attendance,isNew};
+    const item={participantId,name,attendance,excused,gender,isNew};
     if(rismaWeekEditIndex>=0) rismaWeekDraft.splice(rismaWeekEditIndex,1,item);
     else rismaWeekDraft.unshift(item);
     setStatus($("risma-week-status"));
@@ -1895,11 +1940,13 @@
     const week=Number($("risma-week-number").value||1);
     rismaWeekEditIndex=index;
     $("risma-week-attendance").value=String(row.attendance);
+    $("risma-week-excused").value=String(row.excused||0);
+    $("risma-week-gender").value=row.gender||"";
     if(week===1){ rismaWeekNewParticipantMode=true; $("risma-week-person-name").value=row.name; }
     else if(row.participantId && !row.isNew){ rismaWeekNewParticipantMode=false; }
     else { rismaWeekNewParticipantMode=true; $("risma-week-person-name").value=row.name; }
     syncRismaWeekBuilder();
-    if(!rismaWeekNewParticipantMode && row.participantId) $("risma-week-person-select").value=String(row.participantId);
+    if(!rismaWeekNewParticipantMode && row.participantId){ $("risma-week-person-select").value=String(row.participantId); syncRismaWeekBuilder(); $("risma-week-excused").value=String(row.excused||0); }
     if(rismaWeekNewParticipantMode) $("risma-week-person-name").value=row.name;
   }
 
@@ -1914,13 +1961,24 @@
   function rismaWeekPayloadEntries() {
     const week=Number($("risma-week-number").value||1);
     return rismaWeekDraft.map(row => week === 1
-      ? { name:row.name, attendance:Number(row.attendance) }
+      ? { name:row.name, attendance:Number(row.attendance), excused:Number(row.excused||0), gender:row.gender||"" }
       : (row.participantId && !row.isNew
-          ? { participantId:row.participantId, attendance:Number(row.attendance) }
-          : { name:row.name, attendance:Number(row.attendance) }));
+          ? { participantId:row.participantId, attendance:Number(row.attendance), excused:Number(row.excused||0), gender:row.gender||"" }
+          : { name:row.name, attendance:Number(row.attendance), excused:Number(row.excused||0), gender:row.gender||"" }));
   }
 
-  function openRismaParticipant(row){ $("risma-participant-id").value=row.id; $("risma-participant-name").value=row.name||""; setStatus($("risma-participant-status")); $("risma-participant-dialog").showModal(); }
+  function openRismaParticipant(row){
+    $("risma-participant-id").value=row.id;
+    $("risma-participant-name").value=row.name||"";
+    $("risma-participant-gender").value=row.gender||"";
+    const owner=rismaDetail?.role==="owner";
+    $("risma-participant-dq-box").hidden=!owner;
+    $("risma-participant-disqualified").checked=Boolean(row.disqualified);
+    $("risma-participant-dq-reason").value=row.disqualifiedReason||"";
+    $("risma-participant-dq-reason-wrap").hidden=!owner || !row.disqualified;
+    setStatus($("risma-participant-status"));
+    $("risma-participant-dialog").showModal();
+  }
   async function deleteRismaParticipant(row){ if(!confirm(`Hapus ${row.name} dari peserta RISMA Poin? Data poin peserta ini ikut dibersihkan.`))return; await api(`/api/risma/participant/${encodeURIComponent(row.id)}`,{method:"DELETE",body:"{}"}); await loadRisma(); }
 
   function activeCouponGroup(){ return (rismaDetail?.couponTypes||[]).find(row=>row.type===rismaCouponType) || null; }
@@ -1936,7 +1994,7 @@
     for(const row of group.rows){
       const card=document.createElement("article"); card.className="item-card risma-coupon-card compact";
       const line=document.createElement("div"); line.className="risma-coupon-line";
-      const name=document.createElement("strong"); name.className="risma-row-name"; name.textContent=`${String(row.no).padStart(2,"0")} · ${row.name}`;
+      const name=document.createElement("strong"); name.className="risma-row-name"; name.textContent=`${row.no} · ${row.name}`;
       const count=document.createElement("span"); count.className=`risma-coupon-count-inline ${row.status==="done"?"done":"pending"}`; count.textContent=`${wholeNumber.format(row.count||1)} kupon`;
       const done=rismaIconButton(row.status==="done"?"Batal":"Selesai",row.status==="done"?"fa-rotate-left":"fa-check",row.status==="done"?"ghost compact risma-mini-action":"success-soft compact risma-mini-action",()=>toggleRismaCoupon(row));
       const edit=rismaIconButton("Edit","fa-pen","ghost compact risma-mini-action",()=>openRismaCouponEdit(row));
@@ -1979,11 +2037,22 @@
     return {};
   }
 
-  function showRismaPublicationPreview(title, text, kind=""){
+  function placeRismaPublicationPreview(anchor){
+    const box=$("risma-publication-preview-box");
+    if(!box)return;
+    const item=anchor?.closest?.(".risma-pub-item,.risma-archive-card");
+    if(item) item.insertAdjacentElement("afterend",box);
+    box.hidden=false;
+    setTimeout(()=>{try{box.scrollIntoView({behavior:"smooth",block:"nearest"});}catch(_){ }},60);
+  }
+
+  function showRismaPublicationPreview(title, text, kind="", anchor=null){
     rismaPublicationPreviewKind = kind || "";
     $("risma-publication-preview-title").textContent = title || "Pratinjau publikasi";
     $("risma-publication-preview-text").value = String(text || "").trim();
     $("risma-publication-copy").disabled = !String(text || "").trim();
+    if(anchor) placeRismaPublicationPreview(anchor);
+    else $("risma-publication-preview-box").hidden=false;
   }
 
   async function previewRismaPublication(kind, statusId){
@@ -1992,7 +2061,7 @@
     setStatus($("risma-publication-preview-status"), "Membuat pratinjau…");
     try {
       const data = await api("/api/risma/publication/preview", { method:"POST", body:JSON.stringify({ kind, data: rismaPublicationPayload(kind) }) });
-      showRismaPublicationPreview(data.title, data.text, kind);
+      showRismaPublicationPreview(data.title, data.text, kind, el);
       setStatus(el, "Pratinjau siap.", "success");
       setStatus($("risma-publication-preview-status"), `${data.title || "Publikasi"} siap ditinjau.`, "success");
       switchRismaTab("publikasi");
@@ -2127,20 +2196,38 @@
       const meta=document.createElement("span");meta.textContent=`${row.hijriYear?`Ramadan ${row.hijriYear} H · `:""}${row.dibuatPada?dateTimeFmt.format(new Date(row.dibuatPada)):"—"}`;
       info.append(title,meta);
       const actions=document.createElement("div");actions.className="risma-archive-actions";
-      const preview=button("Lihat","ghost compact",()=>rismaArchiveAction(row,"preview"));preview.innerHTML='<i class="fa-solid fa-eye"></i> Lihat';
-      const send=button("Kirim","ghost compact",()=>rismaArchiveAction(row,"send"));send.innerHTML='<i class="fa-brands fa-whatsapp"></i> Kirim';
-      const pdf=button("PDF","ghost compact",()=>rismaArchiveAction(row,"pdf-self"));pdf.innerHTML='<i class="fa-solid fa-file-pdf"></i> PDF';
-      actions.append(preview,send,pdf);card.append(icon,info,actions);list.appendChild(card);
+      const preview=button("Lihat","ghost compact",()=>rismaArchiveAction(row,"preview",card));preview.innerHTML='<i class="fa-solid fa-eye"></i> Lihat';
+      const send=button("Kirim","ghost compact",()=>rismaArchiveAction(row,"send",card));send.innerHTML='<i class="fa-brands fa-whatsapp"></i> Kirim';
+      const pdf=button("PDF","ghost compact",()=>rismaArchiveAction(row,"pdf-self",card));pdf.innerHTML='<i class="fa-solid fa-file-pdf"></i> PDF';
+      actions.append(preview,send,pdf);
+      if(rismaDetail?.role==="owner" && row.kind==="undangan"){
+        const del=button("Hapus","danger-soft compact",()=>deleteRismaArchive(row));del.innerHTML='<i class="fa-solid fa-trash-can"></i> Hapus';actions.append(del);
+      }
+      card.append(icon,info,actions);list.appendChild(card);
     }
   }
 
-  async function rismaArchiveAction(row,action){
+  async function rismaArchiveAction(row,action,anchor=null){
     if(action==="send"&&!confirm(`Kirim ulang arsip ini ke semua grup RISMA?\n\n${row.title}`))return;
     setStatus($("risma-archive-status"),action==="preview"?"Membuka arsip…":action==="send"?"Mengirim ulang arsip…":"Membuat PDF arsip…");
     try{
       const data=await api(`/api/risma/publications/${encodeURIComponent(row.id)}/${action}`,{method:"POST",body:"{}"});
-      if(data.text)showRismaPublicationPreview(data.title,data.text,"archive");
+      if(data.text)showRismaPublicationPreview(data.title,data.text,"archive",anchor);
       setStatus($("risma-archive-status"),data.message||"Arsip siap.","success");
+    }catch(error){setStatus($("risma-archive-status"),error.message,"error");}
+  }
+
+  async function deleteRismaArchive(row){
+    if(!confirm(`Hapus arsip undangan ini?
+
+${row.title}
+
+Nomor surat yang terhapus dapat dipakai kembali jika menjadi nomor terakhir.`))return;
+    setStatus($("risma-archive-status"),"Menghapus arsip undangan…");
+    try{
+      const data=await api(`/api/risma/publications/${encodeURIComponent(row.id)}`,{method:"DELETE",body:"{}"});
+      await loadRismaArchives();
+      setStatus($("risma-archive-status"),data.message||"Arsip undangan dihapus.","success");
     }catch(error){setStatus($("risma-archive-status"),error.message,"error");}
   }
 
@@ -3417,6 +3504,7 @@ ${row.label}`))return;
   }
   keepRismaInputVisible("risma-week-dialog");
   keepRismaInputVisible("risma-coupon-add-dialog");
+  keepRismaInputVisible("risma-participant-dialog");
 
   // RISMA events
   document.querySelectorAll("[data-risma-tab]").forEach(el => el.addEventListener("click", () => switchRismaTab(el.dataset.rismaTab)));
@@ -3428,6 +3516,8 @@ ${row.label}`))return;
 
   $("close-risma-week").addEventListener("click",()=>$("risma-week-dialog").close());
   $("risma-week-new-toggle").addEventListener("click",()=>{rismaWeekNewParticipantMode=!rismaWeekNewParticipantMode;rismaWeekEditIndex=-1;$("risma-week-person-name").value="";syncRismaWeekBuilder();});
+  $("risma-week-person-select").addEventListener("change",()=>{$("risma-week-excused").value="0";syncRismaWeekBuilder();});
+  $("risma-week-gender").addEventListener("change",syncRismaWeekBuilder);
   $("risma-week-add-entry").addEventListener("click",addRismaWeekDraft);
   $("risma-week-form").addEventListener("submit",async event=>{
     event.preventDefault();
@@ -3450,7 +3540,19 @@ ${row.label}`))return;
   });
 
   $("close-risma-participant").addEventListener("click",()=>$("risma-participant-dialog").close());
-  $("risma-participant-form").addEventListener("submit",async event=>{event.preventDefault();setStatus($("risma-participant-status"),"Menyimpan…");try{await api(`/api/risma/participant/${encodeURIComponent($("risma-participant-id").value)}`,{method:"PATCH",body:JSON.stringify({name:$("risma-participant-name").value})});$("risma-participant-dialog").close();await loadRisma();}catch(error){setStatus($("risma-participant-status"),error.message,"error");}});
+  $("risma-participant-disqualified").addEventListener("change",()=>{$("risma-participant-dq-reason-wrap").hidden=!$("risma-participant-disqualified").checked;});
+  $("risma-participant-form").addEventListener("submit",async event=>{
+    event.preventDefault();setStatus($("risma-participant-status"),"Menyimpan…");
+    try{
+      await api(`/api/risma/participant/${encodeURIComponent($("risma-participant-id").value)}`,{method:"PATCH",body:JSON.stringify({
+        name:$("risma-participant-name").value,
+        gender:$("risma-participant-gender").value,
+        disqualified:rismaDetail?.role==="owner"?$("risma-participant-disqualified").checked:undefined,
+        disqualifiedReason:$("risma-participant-dq-reason").value
+      })});
+      $("risma-participant-dialog").close();await loadRisma();
+    }catch(error){setStatus($("risma-participant-status"),error.message,"error");}
+  });
 
   $("risma-coupon-type").addEventListener("change",()=>{rismaCouponType=$("risma-coupon-type").value;renderRismaCoupons();});
   $("risma-coupon-add").addEventListener("click",()=>{$("risma-coupon-add-form").reset();$("risma-coupon-add-count").value="1";setStatus($("risma-coupon-add-status"));$("risma-coupon-add-dialog").showModal();});
@@ -3485,7 +3587,7 @@ ${row.label}`))return;
   $("risma-publish-invite-send").addEventListener("click",()=>sendRismaPublication("invitation","risma-publish-invite-status","Kirim undangan ini ke semua grup yang terinstal RISMA?"));
   $("risma-publish-invite-pdf").addEventListener("click",()=>sendRismaPublicationPdf("invitation","risma-publish-invite-status"));
   $("risma-publication-copy").addEventListener("click",async()=>{const text=$("risma-publication-preview-text").value.trim(); if(!text){setStatus($("risma-publication-preview-status"),"Belum ada teks untuk disalin.","error"); return;} try{await navigator.clipboard.writeText(text); setStatus($("risma-publication-preview-status"),"Teks publikasi berhasil disalin.","success");}catch(error){setStatus($("risma-publication-preview-status"),"Gagal menyalin teks.","error");}});
-  $("risma-publication-clear").addEventListener("click",()=>{showRismaPublicationPreview("Pratinjau publikasi","",""); setStatus($("risma-publication-preview-status"));});
+  $("risma-publication-clear").addEventListener("click",()=>{showRismaPublicationPreview("Pratinjau publikasi","",""); $("risma-publication-preview-box").hidden=true; setStatus($("risma-publication-preview-status"));});
   $("risma-owner-period-create").addEventListener("click",rismaOwnerCreatePeriod);
   $("risma-owner-period-close").addEventListener("click",rismaOwnerClosePeriod);
   $("risma-simulation-start").addEventListener("click",()=>rismaSimulationAction("start"));
