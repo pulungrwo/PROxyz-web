@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": 1787821606808,
+  "generatedAt": 1787827947438,
   "id": "01",
   "nama": "Lahan 300 m²",
   "lokasi": "",
@@ -34,12 +34,21 @@
   "summary": {
     "weightKg": 0,
     "harvestCount": 0,
-    "activityCount": 3,
+    "activityCount": 4,
     "pendingScheduleCount": 4
   },
   "financeVisible": false,
   "recentHarvest": [],
   "recentActivities": [
+    {
+      "date": "2026-08-27",
+      "cropId": "01",
+      "komoditas": "Cabai",
+      "category": "Penyemprotan",
+      "description": "Spray 15ml Agus + 8ml regent + 10g vitaflex + 30ml ambition",
+      "note": "",
+      "hst": 14
+    },
     {
       "date": "2026-08-24",
       "cropId": "01",
@@ -118,5 +127,5 @@
       "status": "pending"
     }
   ],
-  "updatedAt": 1787821606808
+  "updatedAt": 1787827947438
 }
