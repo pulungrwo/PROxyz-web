@@ -6,11 +6,31 @@
   "saldo": {
     "awal": 0,
     "masuk": 15304500,
-    "keluar": 11597000,
-    "akhir": 3707500
+    "keluar": 11623000,
+    "akhir": 3681500
   },
-  "jumlahTransaksi": 142,
+  "jumlahTransaksi": 144,
   "transactions": [
+    {
+      "id": "masjid-260827-004",
+      "nomor": "144",
+      "tanggal": 1787806800000,
+      "jenis": "keluar",
+      "kategori": "konsumsi",
+      "keterangan": "Air Minum",
+      "nominal": 7000,
+      "label": []
+    },
+    {
+      "id": "masjid-260827-003",
+      "nomor": "143",
+      "tanggal": 1787806800000,
+      "jenis": "keluar",
+      "kategori": "konsumsi",
+      "keterangan": "Gula Kopi",
+      "nominal": 19000,
+      "label": []
+    },
     {
       "id": "masjid-260827-002",
       "nomor": "142",
@@ -1656,5 +1676,5 @@
       ]
     }
   ],
-  "updatedAt": 1787808143816
+  "updatedAt": 1787808277626
 }
