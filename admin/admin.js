@@ -1,7 +1,7 @@
 (() => {
   "use strict";
 
-  const ADMIN_BUILD = "0.8.3";
+  const ADMIN_BUILD = "0.8.4";
   const config = window.PROXYZ_ADMIN_CONFIG || {};
 
   async function checkAdminBuild() {
@@ -240,6 +240,12 @@
     el.className = className;
     el.textContent = text;
     el.addEventListener("click", onClick);
+    return el;
+  }
+
+  function rismaIconButton(text, icon, className, onClick) {
+    const el = button(text, className, onClick);
+    el.innerHTML = `<i class="fa-solid ${icon}"></i><span>${text}</span>`;
     return el;
   }
 
@@ -1638,13 +1644,13 @@
       $("risma-owner-period-year").value = period && !simulation ? String(period.hijriYear || "") : String((rismaDetail.periods || []).find(x => !x.isSimulation && x.status === "active")?.hijriYear || "");
       $("risma-owner-simulation-year").value = simulation ? String(period.hijriYear || "") : String(period?.hijriYear || "");
       $("risma-owner-period-note").textContent = simulation
-        ? `Simulasi Ramadan ${period.hijriYear} H sedang aktif. Selesaikan simulasi untuk kembali ke periode asli.`
-        : period ? `Periode aktif: Ramadan ${period.hijriYear} H.` : "Belum ada periode asli aktif.";
+        ? `Simulasi Ramadan ${period.hijriYear} H sedang aktif. Akhiri simulasi untuk kembali ke data asli.`
+        : period ? `Periode aktif: Ramadan ${period.hijriYear} H.` : "Belum ada periode Ramadan aktif.";
       $("risma-owner-period-create").disabled = Boolean(period);
       $("risma-owner-period-close").disabled = !period || simulation;
       $("risma-owner-simulation-note").textContent = simulation
-        ? `Mode simulasi Ramadan ${period.hijriYear} H aktif. Data asli aman dan publikasi grup diblokir.`
-        : "Coba seluruh alur tanpa menyentuh data asli. Publikasi ke grup diblokir selama simulasi.";
+        ? `Simulasi Ramadan ${period.hijriYear} H aktif. Data asli tidak berubah dan pesan ke grup tidak dikirim.`
+        : "Coba semua menu tanpa mengubah data asli. Pesan ke grup tidak dikirim selama simulasi.";
       $("risma-simulation-start").disabled = simulation;
       $("risma-simulation-seed").disabled = false;
       $("risma-simulation-reset").disabled = !simulation;
@@ -1728,16 +1734,14 @@
     if(!rows.length){ full.appendChild(emptyBox("Belum ada peserta RISMA Poin.")); return; }
     rows.forEach((row,index)=>{
       const card=document.createElement("article"); card.className="item-card risma-score-card compact";
-      const top=document.createElement("div"); top.className="risma-compact-row";
-      const info=document.createElement("div"); info.className="risma-compact-info";
-      const title=document.createElement("strong"); title.textContent=`${index+1}. ${row.name}`;
-      const meta=document.createElement("div"); meta.className="item-meta"; meta.textContent=participantWeekSummary(row);
-      info.append(title,meta);
-      const side=document.createElement("div"); side.className="risma-compact-side";
+      const line=document.createElement("div"); line.className="risma-score-line";
+      const name=document.createElement("strong"); name.className="risma-row-name"; name.textContent=`${index+1}. ${row.name}`;
       const pts=document.createElement("span"); pts.className="score-pill"; pts.textContent=`${number.format(row.totalPoints || 0)} poin`;
-      const actions=document.createElement("div"); actions.className="item-actions compact-inline";
-      actions.append(button("Edit","ghost compact",()=>openRismaParticipant(row)),button("Hapus","danger-soft compact",()=>deleteRismaParticipant(row)));
-      side.append(pts,actions); top.append(info,side); card.append(top); full.appendChild(card);
+      const edit=rismaIconButton("Edit","fa-pen","ghost compact risma-mini-action",()=>openRismaParticipant(row));
+      const del=rismaIconButton("Hapus","fa-trash-can","danger-soft compact risma-mini-action",()=>deleteRismaParticipant(row));
+      line.append(name,pts,edit,del);
+      const meta=document.createElement("div"); meta.className="item-meta risma-row-meta"; meta.textContent=participantWeekSummary(row);
+      card.append(line,meta); full.appendChild(card);
     });
   }
 
@@ -1751,7 +1755,7 @@
       const title=document.createElement("strong"); title.textContent=`Minggu ${week}`;
       const meta=document.createElement("span"); meta.textContent=data?`${data.entryCount || 0} peserta · tersimpan`:(period?"Belum diinput":"Tidak ada periode aktif");
       top.append(title,meta);
-      const action=button(data?"Edit":"Input",data?"ghost compact":"primary compact",()=>openRismaWeek(week));
+      const action=rismaIconButton(data?"Edit":"Input",data?"fa-pen":"fa-plus",data?"ghost compact":"primary compact",()=>openRismaWeek(week));
       action.disabled=!period || (week>1 && !(rismaDetail.weeks||[]).some(x=>Number(x.week)===1));
       card.append(top,action); wrap.appendChild(card);
     }
@@ -1786,23 +1790,23 @@
       rismaWeekNewParticipantMode = true;
       nameInput.hidden = false; select.hidden = true; toggle.hidden = true;
       label.firstChild.textContent = "Nama peserta\n            ";
-      $("risma-week-entry-hint").textContent = "Minggu 1 hanya menerima nama peserta. Poin akan dijelaskan setelah peserta ditambahkan ke daftar input.";
+      $("risma-week-entry-hint").textContent = "Masukkan nama dan jumlah hadir. Poin akan terlihat setelah ditambahkan.";
     } else {
       toggle.hidden = false;
       if (rismaWeekNewParticipantMode) {
         nameInput.hidden = false; select.hidden = true;
         toggle.textContent = "Pilih peserta lama";
         label.firstChild.textContent = "Nama peserta baru\n            ";
-        $("risma-week-entry-hint").textContent = "Peserta baru akan otomatis mendapat ID setelah minggu disimpan. Peserta baru tampil di bagian atas daftar input.";
+        $("risma-week-entry-hint").textContent = "Masukkan nama peserta baru dan jumlah hadir. Peserta baru tampil paling atas.";
       } else {
         nameInput.hidden = true; select.hidden = false;
         toggle.textContent = "+ Peserta baru";
         label.firstChild.textContent = "Pilih peserta\n            ";
         fillRismaWeekParticipantSelect();
-        $("risma-week-entry-hint").textContent = "Pilih peserta yang sudah terdaftar, lalu tentukan jumlah hadir.";
+        $("risma-week-entry-hint").textContent = "Pilih nama peserta, lalu pilih jumlah hadir.";
       }
     }
-    $("risma-week-add-entry").textContent = rismaWeekEditIndex >= 0 ? "Simpan perubahan" : "+ Tambahkan";
+    $("risma-week-add-entry").innerHTML = rismaWeekEditIndex >= 0 ? `<i class="fa-solid fa-floppy-disk"></i> Simpan` : `<i class="fa-solid fa-plus"></i> Tambahkan`;
   }
 
   function fillRismaWeekParticipantSelect() {
@@ -1829,7 +1833,7 @@
       const meta=document.createElement("span"); meta.textContent=`${row.attendance}x hadir → ${number.format(rismaPointForAttendance(row.attendance))} poin${row.isNew ? " · peserta baru" : ""}`;
       info.append(title,meta);
       const actions=document.createElement("div"); actions.className="risma-draft-actions";
-      actions.append(button("Ubah","ghost compact",()=>editRismaWeekDraft(index)),button("Hapus","danger-soft compact",()=>removeRismaWeekDraft(index)));
+      actions.append(rismaIconButton("Ubah","fa-pen","ghost compact",()=>editRismaWeekDraft(index)),rismaIconButton("Hapus","fa-trash-can","danger-soft compact",()=>removeRismaWeekDraft(index)));
       card.append(info,actions); list.appendChild(card);
     });
   }
@@ -1931,18 +1935,15 @@
     if(!(group.rows||[]).length){ list.appendChild(emptyBox("Belum ada penerima kupon.")); return; }
     for(const row of group.rows){
       const card=document.createElement("article"); card.className="item-card risma-coupon-card compact";
-      const top=document.createElement("div"); top.className="risma-compact-row";
-      const info=document.createElement("div"); info.className="risma-compact-info";
-      const title=document.createElement("strong"); title.textContent=`${String(row.no).padStart(2,"0")} · ${row.name}`;
-      const meta=document.createElement("div"); meta.className="item-meta"; meta.textContent=row.status==="done"?"Sudah dibagikan":"Menunggu pembagian"; info.append(title,meta);
-      const side=document.createElement("div"); side.className="risma-compact-side";
-      const badges=document.createElement("div"); badges.className="risma-coupon-badges";
-      const count=document.createElement("span"); count.className="risma-coupon-count"; count.innerHTML=`<b>${wholeNumber.format(row.count||1)}</b><small>kupon</small>`;
-      const badge=document.createElement("span"); badge.className=row.status==="done"?"status-chip done":"status-chip pending"; badge.textContent=row.status==="done"?"Selesai":"Pending";
-      badges.append(count,badge);
-      const actions=document.createElement("div"); actions.className="item-actions compact-inline";
-      actions.append(button(row.status==="done"?"Batal":"Selesai",row.status==="done"?"ghost compact":"success-soft compact",()=>toggleRismaCoupon(row)),button("Edit","ghost compact",()=>openRismaCouponEdit(row)),button("Hapus","danger-soft compact",()=>deleteRismaCoupon(row)));
-      side.append(badges,actions); top.append(info,side); card.append(top); list.appendChild(card);
+      const line=document.createElement("div"); line.className="risma-coupon-line";
+      const name=document.createElement("strong"); name.className="risma-row-name"; name.textContent=`${String(row.no).padStart(2,"0")} · ${row.name}`;
+      const count=document.createElement("span"); count.className=`risma-coupon-count-inline ${row.status==="done"?"done":"pending"}`; count.textContent=`${wholeNumber.format(row.count||1)} kupon`;
+      const done=rismaIconButton(row.status==="done"?"Batal":"Selesai",row.status==="done"?"fa-rotate-left":"fa-check",row.status==="done"?"ghost compact risma-mini-action":"success-soft compact risma-mini-action",()=>toggleRismaCoupon(row));
+      const edit=rismaIconButton("Edit","fa-pen","ghost compact risma-mini-action",()=>openRismaCouponEdit(row));
+      const del=rismaIconButton("Hapus","fa-trash-can","danger-soft compact risma-mini-action",()=>deleteRismaCoupon(row));
+      line.append(name,count,done,edit,del);
+      const meta=document.createElement("div"); meta.className="item-meta risma-row-meta"; meta.textContent=row.status==="done"?"Sudah dibagikan":"Belum dibagikan";
+      card.append(line,meta); list.appendChild(card);
     }
   }
   async function toggleRismaCoupon(row){ await api(`/api/risma/coupon/${encodeURIComponent(rismaCouponType)}/${row.no}`,{method:"PATCH",body:JSON.stringify({done:row.status!=="done"})}); await loadRisma(); }
@@ -2190,7 +2191,7 @@
     else(period.teamRows||[]).forEach((row,index)=>{const card=document.createElement("article");card.className="risma-history-team-row";const names=(row.members||[]).map(x=>x.name).join(" · ");card.innerHTML=`<b>${index+1}. ${row.name}</b><span>Rata-rata ${number.format(row.averagePoints||0)} · Total ${number.format(row.totalPoints||0)}</span><small>${names}</small>`;teams.appendChild(card);});
     const coupons=$("risma-period-summary-coupons");coupons.replaceChildren();
     for(const row of period.couponTypes||[]){const card=document.createElement("article");card.className="metric-card";card.innerHTML=`<span>${row.label}</span><b>${wholeNumber.format(row.stats?.coupons||0)}</b><small>${wholeNumber.format(row.stats?.recipients||0)} penerima</small>`;coupons.appendChild(card);}
-    setStatus($("risma-period-summary-status"),period.status==="active"?"Periode ini masih aktif.":"Rekap dibaca dari arsip periode. Tidak ada data yang diaktifkan atau diubah.");
+    setStatus($("risma-period-summary-status"),period.status==="active"?"Periode ini masih aktif.":"Data lama hanya ditampilkan dan tidak diubah.");
   }
 
   async function loadRismaLogs(){
@@ -2199,7 +2200,7 @@
     const data=await api("/api/risma/logs?limit=120");
     rismaLogs=data.logs||[];
     renderRismaLogs();
-    setStatus($("risma-log-status"),rismaLogs.length?`${rismaLogs.length} aktivitas WA + Web terbaru.`:"Belum ada aktivitas RISMA yang tercatat.");
+    setStatus($("risma-log-status"),rismaLogs.length?`${rismaLogs.length} perubahan terbaru.`:"Belum ada perubahan yang tercatat.");
   }
 
   function rismaLogIcon(action){
@@ -2217,7 +2218,7 @@
   function renderRismaLogs(){
     const list=$("risma-log-list"); list.replaceChildren();
     const rows=rismaLogs.filter(row=>rismaLogSourceFilter==="all"||String(row.source||"web")==rismaLogSourceFilter);
-    if(!rows.length){list.appendChild(emptyBox(rismaLogs.length?"Tidak ada aktivitas dari sumber ini.":"Belum ada aktivitas RISMA."));return;}
+    if(!rows.length){list.appendChild(emptyBox(rismaLogs.length?"Tidak ada perubahan dari pilihan ini.":"Belum ada perubahan RISMA."));return;}
     for(const row of rows){
       const card=document.createElement("article"); card.className="risma-log-card";
       const icon=document.createElement("span"); icon.className="risma-log-icon"; icon.innerHTML=`<i class="fa-solid ${rismaLogIcon(row.action||"")}"></i>`;
@@ -3402,6 +3403,20 @@ ${row.label}`))return;
     } catch (error) { setStatus($("bt-form-status"), error.message, "error"); }
   });
 
+
+  function keepRismaInputVisible(dialogId) {
+    const dialog=$(dialogId);
+    if(!dialog)return;
+    dialog.addEventListener("focusin",event=>{
+      const target=event.target;
+      if(!target?.matches?.("input,select,textarea"))return;
+      setTimeout(()=>{
+        try{ target.scrollIntoView({block:"center",behavior:"smooth"}); }catch(_){ }
+      },180);
+    });
+  }
+  keepRismaInputVisible("risma-week-dialog");
+  keepRismaInputVisible("risma-coupon-add-dialog");
 
   // RISMA events
   document.querySelectorAll("[data-risma-tab]").forEach(el => el.addEventListener("click", () => switchRismaTab(el.dataset.rismaTab)));
