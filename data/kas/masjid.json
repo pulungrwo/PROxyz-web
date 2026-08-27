@@ -6,11 +6,22 @@
   "saldo": {
     "awal": 0,
     "masuk": 15304500,
-    "keluar": 11623000,
-    "akhir": 3681500
+    "keluar": 11653000,
+    "akhir": 3651500
   },
-  "jumlahTransaksi": 144,
+  "jumlahTransaksi": 145,
   "transactions": [
+    {
+      "id": "masjid-260827-005",
+      "nomor": "145",
+      "tanggal": 1787806800000,
+      "jenis": "keluar",
+      "kategori": "perlengkapan",
+      "kategoriNama": "Perlengkapan",
+      "keterangan": "Alat pel lantai",
+      "nominal": 30000,
+      "label": []
+    },
     {
       "id": "masjid-260827-004",
       "nomor": "144",
@@ -1820,5 +1831,5 @@
       ]
     }
   ],
-  "updatedAt": 1787816947608
+  "updatedAt": 1787846747478
 }
