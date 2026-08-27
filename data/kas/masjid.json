@@ -1212,7 +1212,7 @@
       "nomor": "039",
       "tanggal": 1769576400000,
       "jenis": "keluar",
-      "kategori": "peralatan",
+      "kategori": "perlengkapan",
       "keterangan": "Batu Jam",
       "nominal": 15000,
       "label": [
@@ -1676,5 +1676,5 @@
       ]
     }
   ],
-  "updatedAt": 1787808277626
+  "updatedAt": 1787810291352
 }
