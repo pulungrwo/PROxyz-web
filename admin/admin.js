@@ -1,7 +1,7 @@
 (() => {
   "use strict";
 
-  const ADMIN_BUILD = "0.8.2";
+  const ADMIN_BUILD = "0.8.3";
   const config = window.PROXYZ_ADMIN_CONFIG || {};
 
   async function checkAdminBuild() {
@@ -93,6 +93,8 @@
   let rismaWeekNewParticipantMode = true;
   let rismaPublicationPreviewKind = "";
   let rismaLogs = [];
+  let rismaArchives = [];
+  let rismaLogSourceFilter = "all";
 
   // Ternak
   let activeTernak = "";
@@ -1592,6 +1594,7 @@
     document.querySelectorAll("[data-risma-tab]").forEach(el => el.classList.toggle("active", el.dataset.rismaTab === activeRismaTab));
     for (const name of allowed) $("risma-"+name+"-panel").hidden = name !== activeRismaTab;
     if (activeRismaTab === "log" && owner) loadRismaLogs().catch(error => setStatus($("risma-log-status"), error.message, "error"));
+    if (activeRismaTab === "publikasi" && !rismaArchives.length) loadRismaArchives().catch(error => setStatus($("risma-archive-status"), error.message, "error"));
   }
 
   function renderRisma() {
@@ -1616,7 +1619,10 @@
     $("risma-log-tab").hidden = !owner;
     $("risma-owner-period-box").hidden = !owner;
     $("risma-owner-simulation-box").hidden = !owner;
+    $("risma-signature-box").hidden = !owner;
+    $("risma-period-history-box").hidden = !owner;
     $("risma-coupon-add").disabled = !period;
+    $("risma-print-coupon-pdf").disabled = !period;
 
     const groupBlocked = simulation;
     $("risma-publish-rank-preview").disabled = !period || !hasScores;
@@ -1643,7 +1649,11 @@
       $("risma-simulation-seed").disabled = false;
       $("risma-simulation-reset").disabled = !simulation;
       $("risma-simulation-end").disabled = !simulation;
+      $("risma-signature-chair").value = rismaDetail.signatures?.chair?.name || "";
+      $("risma-signature-secretary").value = rismaDetail.signatures?.secretary?.name || "";
+      renderRismaPeriodHistory();
     }
+    updateRismaCouponPrintSummary();
 
     renderRismaRankings();
     renderRismaScores();
@@ -2061,13 +2071,135 @@
     }catch(error){setStatus($("risma-owner-simulation-status"),error.message,"error");}
   }
 
+  function updateRismaCouponPrintSummary(){
+    const group = rismaDetail?.couponTypes || [];
+    const selector = $("risma-print-coupon-type")?.value || "semua";
+    const perPage = Number($("risma-print-coupon-layout")?.value || 6);
+    const sheets = Math.max(1, Number($("risma-print-coupon-sheets")?.value || 1));
+    const activeTypes = selector === "semua" ? group.filter(x=>x.enabled) : group.filter(x=>x.type===selector && x.enabled);
+    const pages = activeTypes.length * sheets;
+    const total = pages * perPage;
+    const dataCount = activeTypes.reduce((sum,row)=>sum+Number(row.stats?.coupons||0),0);
+    if ($("risma-print-coupon-summary")) $("risma-print-coupon-summary").textContent = activeTypes.length
+      ? `${activeTypes.map(x=>x.label).join(" · ")} • ${pages} lembar A4 • ${perPage} kupon/lembar • ${total} kupon kosong. Data penerima saat ini: ${dataCount} kupon.`
+      : "Jenis kupon ini sedang tidak aktif pada periode sekarang.";
+  }
+
+  async function printRismaCouponsPdf(){
+    const selector=$("risma-print-coupon-type").value;
+    const perPage=Number($("risma-print-coupon-layout").value||6);
+    const sheets=Number($("risma-print-coupon-sheets").value||1);
+    if(!Number.isInteger(sheets)||sheets<1||sheets>100){setStatus($("risma-print-coupon-status"),"Jumlah lembar harus 1-100.","error");return;}
+    setStatus($("risma-print-coupon-status"),"Membuat PDF Kupon THR…");
+    try{
+      const data=await api("/api/risma/coupon-print/pdf-self",{method:"POST",body:JSON.stringify({selector,perPage,sheets})});
+      setStatus($("risma-print-coupon-status"),`${data.message} ${data.totalSheets||0} lembar · ${data.totalCoupons||0} kupon.`,"success");
+    }catch(error){setStatus($("risma-print-coupon-status"),error.message,"error");}
+  }
+
+  async function loadRismaArchives(){
+    setStatus($("risma-archive-status"),"Memuat arsip…");
+    const data=await api("/api/risma/publications?limit=30");
+    rismaArchives=data.archives||[];
+    renderRismaArchives();
+    setStatus($("risma-archive-status"),rismaArchives.length?`${rismaArchives.length} arsip terbaru.`:"Belum ada publikasi yang diarsipkan.");
+  }
+
+  function rismaArchiveIcon(kind){
+    if(kind==="undangan")return "fa-envelope-open-text";
+    if(kind==="pengumuman")return "fa-bullhorn";
+    if(kind==="poin_rules")return "fa-moon";
+    if(["poin","poin_full"].includes(kind))return "fa-ranking-star";
+    if(kind.includes("coupon"))return "fa-ticket";
+    return "fa-file-lines";
+  }
+
+  function renderRismaArchives(){
+    const list=$("risma-archive-list"); list.replaceChildren();
+    $("risma-archive-count").textContent=`${rismaArchives.length} arsip`;
+    if(!rismaArchives.length){list.appendChild(emptyBox("Belum ada arsip publikasi."));return;}
+    for(const row of rismaArchives){
+      const card=document.createElement("article");card.className="risma-archive-card";
+      const icon=document.createElement("span");icon.className="risma-log-icon";icon.innerHTML=`<i class="fa-solid ${rismaArchiveIcon(row.kind||"")}"></i>`;
+      const info=document.createElement("div");info.className="risma-archive-info";
+      const title=document.createElement("strong");title.textContent=row.title||"Publikasi RISMA";
+      const meta=document.createElement("span");meta.textContent=`${row.hijriYear?`Ramadan ${row.hijriYear} H · `:""}${row.dibuatPada?dateTimeFmt.format(new Date(row.dibuatPada)):"—"}`;
+      info.append(title,meta);
+      const actions=document.createElement("div");actions.className="risma-archive-actions";
+      const preview=button("Lihat","ghost compact",()=>rismaArchiveAction(row,"preview"));preview.innerHTML='<i class="fa-solid fa-eye"></i> Lihat';
+      const send=button("Kirim","ghost compact",()=>rismaArchiveAction(row,"send"));send.innerHTML='<i class="fa-brands fa-whatsapp"></i> Kirim';
+      const pdf=button("PDF","ghost compact",()=>rismaArchiveAction(row,"pdf-self"));pdf.innerHTML='<i class="fa-solid fa-file-pdf"></i> PDF';
+      actions.append(preview,send,pdf);card.append(icon,info,actions);list.appendChild(card);
+    }
+  }
+
+  async function rismaArchiveAction(row,action){
+    if(action==="send"&&!confirm(`Kirim ulang arsip ini ke semua grup RISMA?\n\n${row.title}`))return;
+    setStatus($("risma-archive-status"),action==="preview"?"Membuka arsip…":action==="send"?"Mengirim ulang arsip…":"Membuat PDF arsip…");
+    try{
+      const data=await api(`/api/risma/publications/${encodeURIComponent(row.id)}/${action}`,{method:"POST",body:"{}"});
+      if(data.text)showRismaPublicationPreview(data.title,data.text,"archive");
+      setStatus($("risma-archive-status"),data.message||"Arsip siap.","success");
+    }catch(error){setStatus($("risma-archive-status"),error.message,"error");}
+  }
+
+  async function saveRismaSignatures(){
+    const chair=$("risma-signature-chair").value.trim();
+    const secretary=$("risma-signature-secretary").value.trim();
+    setStatus($("risma-signature-status"),"Menyimpan penandatangan…");
+    try{
+      const data=await api("/api/risma/signatures",{method:"PUT",body:JSON.stringify({chair,secretary})});
+      rismaDetail=data.risma;renderRisma();setStatus($("risma-signature-status"),"Penandatangan PDF tersimpan.","success");
+    }catch(error){setStatus($("risma-signature-status"),error.message,"error");}
+  }
+
+  function renderRismaPeriodHistory(){
+    const list=$("risma-period-history-list"); if(!list)return; list.replaceChildren();
+    const rows=(rismaDetail?.periodHistory||[]).slice().sort((a,b)=>Number(b.hijriYear||0)-Number(a.hijriYear||0));
+    if(!rows.length){list.appendChild(emptyBox("Belum ada riwayat periode Ramadan."));return;}
+    for(const row of rows){
+      const card=document.createElement("article");card.className="risma-period-history-card";
+      const info=document.createElement("div");info.className="risma-period-history-info";
+      const title=document.createElement("strong");title.textContent=`Ramadan ${row.hijriYear} H`;
+      const meta=document.createElement("span");meta.textContent=`${row.status==="active"?"Aktif":"Ditutup"} · ${row.participants||0} peserta · ${row.weeks||0}/4 minggu · ${row.coupons||0} kupon`;
+      info.append(title,meta);
+      const side=document.createElement("div");side.className="risma-period-history-side";
+      const chip=document.createElement("span");chip.className=row.status==="active"?"status-chip done":"status-chip pending";chip.textContent=row.status==="active"?"Aktif":"Arsip";
+      const view=button("Lihat rekap","ghost compact",()=>openRismaPeriodHistory(row));view.innerHTML='<i class="fa-solid fa-chart-simple"></i> Lihat rekap';
+      side.append(chip,view);card.append(info,side);list.appendChild(card);
+    }
+  }
+
+  async function openRismaPeriodHistory(row){
+    setStatus($("risma-period-history-status"),"Memuat rekap periode…");
+    try{
+      const data=await api(`/api/risma/periods/${encodeURIComponent(row.id)}/summary`);
+      renderRismaHistoricalSummary(data.period);$("risma-period-summary-dialog").showModal();setStatus($("risma-period-history-status"));
+    }catch(error){setStatus($("risma-period-history-status"),error.message,"error");}
+  }
+
+  function renderRismaHistoricalSummary(period){
+    $("risma-period-summary-title").textContent=`Ramadan ${period.hijriYear} H`;
+    const metrics=$("risma-period-summary-metrics");metrics.replaceChildren();
+    for(const [label,value] of [["Peserta",period.participants],["Minggu",`${period.weeks}/4`],["Tim",period.teams],["Kupon",period.coupons]]){const card=document.createElement("article");card.className="metric-card";card.innerHTML=`<span>${label}</span><b>${value}</b>`;metrics.appendChild(card);}
+    const participants=$("risma-period-summary-participants");participants.replaceChildren();
+    if(!(period.scores||[]).length)participants.appendChild(emptyBox("Belum ada data peserta."));
+    else(period.scores||[]).forEach((row,index)=>{const card=document.createElement("article");card.className="risma-history-rank-row";card.innerHTML=`<b>${index+1}. ${row.name}</b><span>${participantWeekSummary(row)}</span><strong>${number.format(row.totalPoints||0)} poin</strong>`;participants.appendChild(card);});
+    const teams=$("risma-period-summary-teams");teams.replaceChildren();
+    if(!(period.teamRows||[]).length)teams.appendChild(emptyBox("Belum ada data tim."));
+    else(period.teamRows||[]).forEach((row,index)=>{const card=document.createElement("article");card.className="risma-history-team-row";const names=(row.members||[]).map(x=>x.name).join(" · ");card.innerHTML=`<b>${index+1}. ${row.name}</b><span>Rata-rata ${number.format(row.averagePoints||0)} · Total ${number.format(row.totalPoints||0)}</span><small>${names}</small>`;teams.appendChild(card);});
+    const coupons=$("risma-period-summary-coupons");coupons.replaceChildren();
+    for(const row of period.couponTypes||[]){const card=document.createElement("article");card.className="metric-card";card.innerHTML=`<span>${row.label}</span><b>${wholeNumber.format(row.stats?.coupons||0)}</b><small>${wholeNumber.format(row.stats?.recipients||0)} penerima</small>`;coupons.appendChild(card);}
+    setStatus($("risma-period-summary-status"),period.status==="active"?"Periode ini masih aktif.":"Rekap dibaca dari arsip periode. Tidak ada data yang diaktifkan atau diubah.");
+  }
+
   async function loadRismaLogs(){
     if(rismaDetail?.role!=="owner")return;
     setStatus($("risma-log-status"),"Memuat aktivitas…");
     const data=await api("/api/risma/logs?limit=120");
     rismaLogs=data.logs||[];
     renderRismaLogs();
-    setStatus($("risma-log-status"),rismaLogs.length?`${rismaLogs.length} aktivitas terbaru.`:"Belum ada aktivitas Web RISMA.");
+    setStatus($("risma-log-status"),rismaLogs.length?`${rismaLogs.length} aktivitas WA + Web terbaru.`:"Belum ada aktivitas RISMA yang tercatat.");
   }
 
   function rismaLogIcon(action){
@@ -2084,13 +2216,16 @@
 
   function renderRismaLogs(){
     const list=$("risma-log-list"); list.replaceChildren();
-    if(!rismaLogs.length){list.appendChild(emptyBox("Belum ada aktivitas Admin Web RISMA."));return;}
-    for(const row of rismaLogs){
+    const rows=rismaLogs.filter(row=>rismaLogSourceFilter==="all"||String(row.source||"web")==rismaLogSourceFilter);
+    if(!rows.length){list.appendChild(emptyBox(rismaLogs.length?"Tidak ada aktivitas dari sumber ini.":"Belum ada aktivitas RISMA."));return;}
+    for(const row of rows){
       const card=document.createElement("article"); card.className="risma-log-card";
       const icon=document.createElement("span"); icon.className="risma-log-icon"; icon.innerHTML=`<i class="fa-solid ${rismaLogIcon(row.action||"")}"></i>`;
       const info=document.createElement("div"); info.className="risma-log-info";
       const title=document.createElement("strong"); title.textContent=row.label||"Aktivitas RISMA";
-      const meta=document.createElement("span"); meta.textContent=`${row.actorName||"Admin"} · ${row.dibuatPada?dateTimeFmt.format(new Date(row.dibuatPada)):"—"}`;
+      const meta=document.createElement("span");
+      const source=String(row.source||"web")==="wa"?"WhatsApp":"Web";
+      meta.textContent=`${source} · ${row.actorName||"Admin"} · ${row.dibuatPada?dateTimeFmt.format(new Date(row.dibuatPada)):"—"}`;
       const detail=document.createElement("p"); detail.textContent=row.detail||"";
       info.append(title,meta); if(row.detail)info.append(detail);
       card.append(icon,info);
@@ -3342,6 +3477,14 @@ ${row.label}`))return;
   $("risma-simulation-seed").addEventListener("click",()=>rismaSimulationAction("seed"));
   $("risma-simulation-reset").addEventListener("click",()=>rismaSimulationAction("reset"));
   $("risma-simulation-end").addEventListener("click",()=>rismaSimulationAction("end"));
+  $("risma-print-coupon-type").addEventListener("change",updateRismaCouponPrintSummary);
+  $("risma-print-coupon-layout").addEventListener("change",updateRismaCouponPrintSummary);
+  $("risma-print-coupon-sheets").addEventListener("input",updateRismaCouponPrintSummary);
+  $("risma-print-coupon-pdf").addEventListener("click",printRismaCouponsPdf);
+  $("risma-archive-refresh").addEventListener("click",()=>loadRismaArchives().catch(error=>setStatus($("risma-archive-status"),error.message,"error")));
+  $("risma-signature-save").addEventListener("click",saveRismaSignatures);
+  $("close-risma-period-summary").addEventListener("click",()=>$("risma-period-summary-dialog").close());
+  $("risma-log-source-filter").addEventListener("change",()=>{rismaLogSourceFilter=$("risma-log-source-filter").value;renderRismaLogs();});
   $("risma-log-refresh").addEventListener("click",()=>loadRismaLogs().catch(error=>setStatus($("risma-log-status"),error.message,"error")));
   $("risma-team-rebuild").addEventListener("click",async()=>{if(!confirm("Acak ulang tim berdasarkan poin terbaru? Setelah Minggu 2 diinput fitur ini akan terkunci."))return;setStatus($("risma-team-rebuild-status"),"Menyusun ulang tim…");try{const data=await api("/api/risma/teams/rebuild",{method:"POST",body:"{}"});rismaDetail=data.risma;renderRisma();setStatus($("risma-team-rebuild-status"),"Tim berhasil diacak ulang.","success");}catch(error){setStatus($("risma-team-rebuild-status"),error.message,"error");}});
   $("risma-settings-form").addEventListener("submit",saveRismaSettings);
