@@ -5,11 +5,11 @@
   "status": "aktif",
   "saldo": {
     "awal": 0,
-    "masuk": 15304500,
+    "masuk": 15338500,
     "keluar": 11703000,
-    "akhir": 3601500
+    "akhir": 3635500
   },
-  "jumlahTransaksi": 147,
+  "jumlahTransaksi": 148,
   "transactions": [
     {
       "id": "masjid-260828-002",
@@ -31,6 +31,17 @@
       "kategoriNama": "Operasional",
       "keterangan": "Marbot",
       "nominal": 25000,
+      "label": []
+    },
+    {
+      "id": "masjid-260828-003",
+      "nomor": "148",
+      "tanggal": 1787893200000,
+      "jenis": "masuk",
+      "kategori": "infak",
+      "kategoriNama": "Infak",
+      "keterangan": "Infak Jumat",
+      "nominal": 34000,
       "label": []
     },
     {
@@ -1853,5 +1864,5 @@
       ]
     }
   ],
-  "updatedAt": 1787897366788
+  "updatedAt": 1787897540316
 }
