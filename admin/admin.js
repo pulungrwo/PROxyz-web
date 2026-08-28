@@ -1,7 +1,7 @@
 (() => {
   "use strict";
 
-  const ADMIN_BUILD = "0.9.0";
+  const ADMIN_BUILD = "0.9.1";
   const config = window.PROXYZ_ADMIN_CONFIG || {};
 
   async function checkAdminBuild() {
@@ -336,6 +336,37 @@
     } catch (_) { return false; }
   }
 
+  function restoreWhatsAppLoginLink() {
+    const incomingChallenge = String(deepLinkParams.get("login") || "").trim();
+    if (!incomingChallenge) return false;
+
+    const incomingExpiresAt = Number(deepLinkParams.get("expires") || 0);
+    const validChallenge = /^[a-f0-9]{36}$/i.test(incomingChallenge);
+    const validExpiry = Number.isFinite(incomingExpiresAt) && incomingExpiresAt > Date.now();
+
+    // Challenge dari URL langsung dipindahkan ke sessionStorage lalu dibuang
+    // dari address bar agar tidak ikut tersalin/terkirim sebagai referrer.
+    const cleanUrl = new URL(window.location.href);
+    cleanUrl.searchParams.delete("login");
+    cleanUrl.searchParams.delete("expires");
+    window.history.replaceState({}, "", cleanUrl.toString());
+
+    if (!validChallenge || !validExpiry) {
+      setStatus($("auth-status"), "Link login sudah tidak valid atau kedaluwarsa. Ketik login lagi di WhatsApp.", "error");
+      return false;
+    }
+
+    challengeId = incomingChallenge;
+    challengeExpiresAt = incomingExpiresAt;
+    saveOtpChallenge("");
+    $("phone-form").hidden = true;
+    $("otp-form").hidden = false;
+    $("otp").value = "";
+    setStatus($("auth-status"), "Masukkan kode OTP yang dikirim bot PROxyz ke WhatsApp kamu.", "success");
+    setTimeout(() => $("otp")?.focus(), 80);
+    return true;
+  }
+
   async function bootstrapSession() {
     try {
       const data = await api("/api/me");
@@ -348,7 +379,12 @@
         $("login-view").hidden = false;
         $("app-view").hidden = true;
       }
-      setStatus($("auth-status"), error?.message || "Sesi Admin belum tersedia.", "error");
+
+      if (challengeId && challengeExpiresAt > Date.now()) {
+        setStatus($("auth-status"), "Masukkan kode OTP yang dikirim bot PROxyz ke WhatsApp kamu.", "success");
+      } else {
+        setStatus($("auth-status"), error?.message || "Sesi Admin belum tersedia.", "error");
+      }
     }
   }
 
@@ -3962,7 +3998,7 @@ ${row.label}`))return;
     }
   });
 
-  restoreOtpChallenge();
+  if (!restoreWhatsAppLoginLink()) restoreOtpChallenge();
   bootstrapSession();
   setTimeout(checkAdminBuild, 1500);
   window.addEventListener("pageshow", event => { if (event.persisted) checkAdminBuild(); });
