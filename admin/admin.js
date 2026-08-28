@@ -336,6 +336,33 @@
     } catch (_) { return false; }
   }
 
+  async function consumeWhatsAppLoginLink() {
+    const token = String(deepLinkParams.get("wa_login") || "").trim();
+    if (!token) return false;
+
+    const incomingExpiresAt = Number(deepLinkParams.get("expires") || 0);
+    const cleanUrl = new URL(window.location.href);
+    cleanUrl.searchParams.delete("wa_login");
+    cleanUrl.searchParams.delete("expires");
+    window.history.replaceState({}, "", cleanUrl.toString());
+
+    if (!/^[a-f0-9]{64}$/i.test(token) || !Number.isFinite(incomingExpiresAt) || incomingExpiresAt <= Date.now()) {
+      setStatus($("auth-status"), "Link login sudah tidak valid atau kedaluwarsa. Ketik login lagi di WhatsApp.", "error");
+      return true;
+    }
+
+    setStatus($("auth-status"), "Membuka sesi Admin PROxyz…");
+    try {
+      const result = await api("/api/auth/whatsapp-link", { method: "POST", body: JSON.stringify({ token }) });
+      saveSessionToken(result.token || "");
+      clearOtpChallenge();
+      setStatus($("auth-status"), "Login berhasil. Membuka Admin PROxyz…", "success");
+    } catch (error) {
+      setStatus($("auth-status"), error.message || "Link login tidak dapat digunakan.", "error");
+    }
+    return true;
+  }
+
   function restoreWhatsAppLoginLink() {
     const incomingChallenge = String(deepLinkParams.get("login") || "").trim();
     if (!incomingChallenge) return false;
@@ -3998,8 +4025,11 @@ ${row.label}`))return;
     }
   });
 
-  if (!restoreWhatsAppLoginLink()) restoreOtpChallenge();
-  bootstrapSession();
+  (async () => {
+    const usedWhatsAppLink = await consumeWhatsAppLoginLink();
+    if (!usedWhatsAppLink && !restoreWhatsAppLoginLink()) restoreOtpChallenge();
+    await bootstrapSession();
+  })();
   setTimeout(checkAdminBuild, 1500);
   window.addEventListener("pageshow", event => { if (event.persisted) checkAdminBuild(); });
   document.addEventListener("visibilitychange", () => { if (!document.hidden) checkAdminBuild(); });

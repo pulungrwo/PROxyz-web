@@ -1,11 +1,11 @@
 {
-  "version": "0.9.1",
-  "updatedAt": "2026-08-28T23:30:00+07:00",
+  "version": "0.9.2",
+  "updatedAt": "2026-08-28T23:45:00+07:00",
   "uiBase": "PROxyz-SOURCE-20260828-2325",
   "features": [
-    "admin-v0.9.1",
+    "admin-v0.9.2",
     "whatsapp-login-global",
-    "otp-login-deeplink",
+    "whatsapp-one-click-login",
     "risma-v0.8.8",
     "kompetisi-web"
   ]
