@@ -36,7 +36,7 @@
   let me = null;
   let challengeId = "";
   let challengeExpiresAt = 0;
-  let activeView = ["kas", "bertunas", "galeri", "risma", "ternak", "users"].includes(adminDeepLink.view) ? adminDeepLink.view : "";
+  let activeView = ["kas", "bertunas", "galeri", "risma", "ternak", "kompetisi", "users"].includes(adminDeepLink.view) ? adminDeepLink.view : "";
   let deepLinkHandled = false;
 
   // Kas
@@ -95,7 +95,12 @@
   let rismaLogs = [];
   let rismaArchives = [];
   let rismaLogSourceFilter = "all";
-  let rismaPendingPublishWeek = 0;
+
+  // Kompetisi
+  let activeCompetition = "";
+  let competitionDetail = null;
+  let competitionRows = [];
+  let activeCompetitionTab = "peserta";
 
   // Ternak
   let activeTernak = "";
@@ -235,31 +240,11 @@
     return div;
   }
 
-  const ADMIN_BUTTON_ICONS = [
-    [/^\+?\s*Bukti\b/i, "fa-paperclip"], [/^Edit$/i, "fa-pen"], [/^Ubah$/i, "fa-pen"], [/^Beri nama$/i, "fa-user-pen"], [/^Nama$/i, "fa-user-pen"],
-    [/^Hapus(?:\s|$)/i, "fa-trash-can"], [/^Bayar$/i, "fa-circle-check"], [/^Selesai$/i, "fa-circle-check"], [/^Lewati$/i, "fa-forward-step"],
-    [/^Aktifkan$/i, "fa-toggle-on"], [/^Nonaktifkan$/i, "fa-toggle-off"], [/^Jual$/i, "fa-money-bill-transfer"], [/^Status$/i, "fa-pen-to-square"],
-    [/^Pilih(?:\s|$)/i, "fa-check-double"], [/^Kosongkan/i, "fa-eraser"], [/^Ganti nama$/i, "fa-pen"], [/^Proses ulang$/i, "fa-rotate-right"],
-    [/^Cek status$/i, "fa-rotate"], [/^Lihat(?:\s|$)/i, "fa-eye"], [/^Pulihkan$/i, "fa-rotate-left"], [/^Kirim(?:\s|$)/i, "fa-paper-plane"],
-    [/^PDF$/i, "fa-file-pdf"], [/^↑$/, "fa-arrow-up"], [/^↓$/, "fa-arrow-down"]
-  ];
-
-  function decorateButtonIcon(el, text) {
-    const label = String(text || "").trim();
-    const match = ADMIN_BUTTON_ICONS.find(([pattern]) => pattern.test(label));
-    if (!match) return el;
-    const icon = match[1];
-    el.classList.add("has-fa");
-    el.innerHTML = `<i class="fa-solid ${icon}" aria-hidden="true"></i><span>${escapeText(label)}</span>`;
-    return el;
-  }
-
   function button(text, className, onClick) {
     const el = document.createElement("button");
     el.type = "button";
     el.className = className;
     el.textContent = text;
-    decorateButtonIcon(el, text);
     el.addEventListener("click", onClick);
     return el;
   }
@@ -268,39 +253,6 @@
     const el = button(text, className, onClick);
     el.innerHTML = `<i class="fa-solid ${icon}"></i><span>${text}</span>`;
     return el;
-  }
-
-  const STATIC_ADMIN_ICONS = new Map([
-    ["refresh","fa-rotate"],["load-more","fa-angles-down"],["kas-report-load","fa-chart-pie"],["kas-schedule-add","fa-calendar-plus"],
-    ["kas-category-add","fa-tags"],["kas-manager-add","fa-user-plus"],["kas-viewer-add","fa-user-plus"],["kas-web-access-save","fa-floppy-disk"],
-    ["bt-refresh","fa-rotate"],["rename-gallery","fa-pen"],["gallery-access","fa-lock"],["refresh-gallery","fa-rotate"],["add-gallery-admin","fa-user-plus"],
-    ["gallery-upload-open","fa-image"],["gallery-bulk-toggle","fa-check-double"],["gallery-bulk-select-loaded","fa-check-double"],["gallery-bulk-clear","fa-eraser"],
-    ["gallery-bulk-edit","fa-layer-group"],["gallery-load-more","fa-angles-down"],["gallery-video-submit","fa-cloud-arrow-up"],["gallery-video-refresh","fa-rotate"],
-    ["gallery-video-close-review","fa-xmark"],["gallery-video-select-all","fa-check-double"],["gallery-video-clear-all","fa-eraser"],["gallery-video-publish","fa-floppy-disk"],
-    ["ternak-refresh","fa-rotate"],["ternak-repro-add","fa-plus"],["ternak-manager-add","fa-user-plus"],["users-refresh","fa-rotate"],
-    ["risma-week-new-toggle","fa-user-plus"],["risma-week-publish-skip","fa-xmark"]
-  ]);
-
-  function hydrateAdminIcons() {
-    document.querySelectorAll(".icon-button").forEach(el => {
-      if (el.querySelector("i")) return;
-      el.innerHTML = '<i class="fa-solid fa-xmark" aria-hidden="true"></i>';
-      el.setAttribute("aria-label", el.getAttribute("aria-label") || "Tutup");
-    });
-    for (const [id, icon] of STATIC_ADMIN_ICONS.entries()) {
-      const el = $(id);
-      if (!el || el.querySelector("i")) continue;
-      const label = String(el.textContent || "").trim();
-      el.classList.add("has-fa");
-      el.innerHTML = `<i class="fa-solid ${icon}" aria-hidden="true"></i><span>${escapeText(label)}</span>`;
-    }
-    document.querySelectorAll('button[type="submit"].primary:not(.risma-mini-action)').forEach(el => {
-      if (el.querySelector("i")) return;
-      const label = String(el.textContent || "").trim();
-      if (!label) return;
-      el.classList.add("has-fa");
-      el.innerHTML = `<i class="fa-solid fa-floppy-disk" aria-hidden="true"></i><span>${escapeText(label)}</span>`;
-    });
   }
 
   function clearOtpChallenge() {
@@ -356,7 +308,8 @@
       (me.bertunas || []).length ? `${me.bertunas.length} Bertunas` : "",
       (me.galeri || []).length ? `${me.galeri.length} Galeri` : "",
       (me.risma || []).length ? "RISMA" : "",
-      (me.ternak || []).length ? `${me.ternak.length} Ternak` : ""
+      (me.ternak || []).length ? `${me.ternak.length} Ternak` : "",
+      (me.kompetisi || []).length ? `${me.kompetisi.length} Kompetisi` : ""
     ].filter(Boolean);
     $("access-summary").textContent = counts.join(" · ") || "Tidak ada akses aplikasi.";
 
@@ -366,6 +319,7 @@
       galeri: (me.galeri || []).length > 0,
       risma: (me.risma || []).length > 0 || Boolean(me.isOwner),
       ternak: (me.ternak || []).length > 0 || Boolean(me.isOwner),
+      kompetisi: (me.kompetisi || []).length > 0 || Boolean(me.isOwner),
       users: Boolean(me.isOwner)
     };
     for (const [name, available] of Object.entries(availability)) $("tab-" + name).hidden = !available;
@@ -374,6 +328,7 @@
     fillSelect($("bertunas-select"), me.bertunas || [], row => `${row.nama} · ${row.role}`);
     fillSelect($("gallery-select"), me.galeri || [], row => `${row.nama} · ${row.role}`);
     fillSelect($("ternak-select"), me.ternak || [], row => `${row.nama} · ${row.jenis || "Ternak"} · ${row.role}`);
+    fillSelect($("competition-select"), me.kompetisi || [], row => `${row.nama} · ${row.cabang || "Kompetisi"} · ${row.role}`);
 
     const requestedGallery = adminDeepLink.gallery && (me.galeri || []).some(row => row.id === adminDeepLink.gallery)
       ? adminDeepLink.gallery
@@ -384,7 +339,7 @@
     }
 
     const preferred = activeView && availability[activeView] ? activeView : "";
-    const first = preferred || ["kas", "bertunas", "galeri", "risma", "ternak", "users"].find(name => availability[name]);
+    const first = preferred || ["kas", "bertunas", "galeri", "risma", "ternak", "kompetisi", "users"].find(name => availability[name]);
     if (first) switchView(first);
 
     if (requestedGallery && first === "galeri") {
@@ -402,45 +357,18 @@
     }
   }
 
-  function appDockTopPx() {
-    const raw = getComputedStyle(document.documentElement).getPropertyValue("--admin-dock-top").trim();
-    const parsed = Number.parseFloat(raw);
-    return Number.isFinite(parsed) ? parsed : 8;
-  }
-
-  function syncAppDockFloating() {
-    const dock = $("app-tabs");
-    const sentinel = $("app-tabs-sentinel");
-    const toggle = $("app-tabs-toggle");
-    if (!dock || !sentinel || !toggle || $("app-view")?.hidden) return;
-    const floating = sentinel.getBoundingClientRect().top <= appDockTopPx() + 1 && window.scrollY > 0;
-    dock.classList.toggle("is-floating", floating);
-    toggle.hidden = !floating;
-    if (!floating) dock.classList.remove("is-expanded");
-    toggle.setAttribute("aria-expanded", String(floating && dock.classList.contains("is-expanded")));
-  }
-
-  function collapseAppDock() {
-    const dock = $("app-tabs");
-    const toggle = $("app-tabs-toggle");
-    if (!dock) return;
-    dock.classList.remove("is-expanded");
-    if (toggle) toggle.setAttribute("aria-expanded", "false");
-  }
-
   function switchView(view) {
     activeView = view;
-    for (const name of ["kas", "bertunas", "galeri", "risma", "ternak", "users"]) {
+    for (const name of ["kas", "bertunas", "galeri", "risma", "ternak", "kompetisi", "users"]) {
       $(`${name}-view`).hidden = name !== view;
       $("tab-" + name).classList.toggle("active", name === view);
     }
-    collapseAppDock();
-    requestAnimationFrame(syncAppDockFloating);
     if (view === "kas" && !activeKas && me.kas?.length) loadKas(me.kas[0].id).catch(showError);
     if (view === "bertunas" && !activeBertunas && me.bertunas?.length) loadBertunas(me.bertunas[0].id).catch(showError);
     if (view === "galeri" && !activeGallery && me.galeri?.length) loadGallery(me.galeri[0].id).catch(showError);
     if (view === "risma") loadRisma().catch(showError);
     if (view === "ternak") loadTernakIndex().catch(showError);
+    if (view === "kompetisi") loadCompetitionIndex().catch(showError);
     if (view === "users" && me.isOwner) loadUsers().catch(showError);
   }
 
@@ -474,6 +402,85 @@
   }
 
   function showError(error) { alert(error?.message || String(error)); }
+
+  // ---------- KOMPETISI ----------
+  const COMPETITION_FORMATS = [
+    ["round_robin","Round Robin / Liga"],
+    ["groups_knockout","Grup → Sistem Gugur"],
+    ["single_elimination","Sistem Gugur"],
+    ["double_elimination","Double Elimination"],
+    ["swiss","Swiss System / League Phase"],
+    ["custom","Campuran / Custom"]
+  ];
+  const COMPETITION_SPORTS = [
+    ["voli","Voli"],["takraw","Sepak Takraw"],["badminton","Badminton"],["sepakbola","Sepak Bola"],["futsal","Futsal"],["tenismeja","Tenis Meja"],["esport","E-Sport"],["tradisional","Permainan Tradisional"],["lainnya","Lainnya"]
+  ];
+  function fillCompetitionOptionList(select, rows) {
+    if (!select) return;
+    select.replaceChildren();
+    for (const [id,label] of rows) { const option=document.createElement("option"); option.value=id; option.textContent=label; select.appendChild(option); }
+  }
+  function participantNameCompetition(id) {
+    return (competitionDetail?.participants || []).find(row => row.id === id)?.name || "TBD";
+  }
+  async function refreshCompetitionProfile() {
+    const data = await api("/api/me"); me = data.user;
+    fillSelect($("competition-select"), me.kompetisi || [], row => `${row.nama} · ${row.cabang || "Kompetisi"} · ${row.role}`);
+    $("tab-kompetisi").hidden = !((me.kompetisi || []).length || me.isOwner);
+  }
+  async function loadCompetitionIndex() {
+    $("competition-create").hidden = !me?.isOwner;
+    const data = await api("/api/kompetisi"); competitionRows = data.kompetisi || [];
+    fillSelect($("competition-select"), competitionRows, row => `${row.nama} · ${row.cabang} · ${row.role}`);
+    if (!competitionRows.length) {
+      activeCompetition=""; competitionDetail=null; $("competition-content").hidden=true;
+      if (me?.isOwner) { $("competition-select").replaceChildren(); const o=document.createElement("option");o.value="";o.textContent="Belum ada kompetisi";$("competition-select").appendChild(o); }
+      return;
+    }
+    const id = activeCompetition && competitionRows.some(row=>row.id===activeCompetition) ? activeCompetition : competitionRows[0].id;
+    await loadCompetition(id);
+  }
+  async function loadCompetition(id) {
+    if (!id) return;
+    activeCompetition=id; $("competition-select").value=id;
+    const data=await api(`/api/kompetisi/${encodeURIComponent(id)}`); competitionDetail=data.kompetisi;
+    renderCompetition(); $("competition-content").hidden=false;
+  }
+  function switchCompetitionTab(tab) {
+    activeCompetitionTab=["peserta","pertandingan","klasemen","bagan","pengaturan"].includes(tab)?tab:"peserta";
+    document.querySelectorAll("[data-competition-tab]").forEach(btn=>btn.classList.toggle("active",btn.dataset.competitionTab===activeCompetitionTab));
+    for (const name of ["peserta","pertandingan","klasemen","bagan","pengaturan"]) $("competition-"+name+"-panel").hidden=name!==activeCompetitionTab;
+  }
+  function renderCompetition() {
+    const d=competitionDetail;if(!d)return;
+    $("competition-name").textContent=d.nama||d.id; $("competition-sport").textContent=d.cabangNama||"Kompetisi"; $("competition-format").textContent=`${d.formatLabel || d.format} · ${d.participantType==="individual"?"Perorangan":"Tim"}`; $("competition-role").textContent=String(d.role||"member").toUpperCase();
+    $("competition-participant-count").textContent=wholeNumber.format((d.participants||[]).length); $("competition-participant-pill").textContent=`${(d.participants||[]).length} peserta`;
+    $("competition-match-count").textContent=wholeNumber.format((d.matches||[]).length); $("competition-finished-count").textContent=wholeNumber.format((d.matches||[]).filter(row=>row.status==="finished").length); $("competition-stage-count").textContent=wholeNumber.format((d.stages||[]).length);
+    const canManage=d.role!=="member"; $("competition-generate").hidden=!canManage; $("competition-participant-form").hidden=!canManage; $("competition-settings-form").querySelectorAll("input,select,button").forEach(el=>el.disabled=d.role!=="owner"); $("competition-manager-add").hidden=d.role!=="owner";
+    fillCompetitionOptionList($("competition-setting-format"),COMPETITION_FORMATS); $("competition-setting-name").value=d.nama||""; $("competition-setting-sport-name").value=d.cabangNama||""; $("competition-setting-format").value=d.format||"single_elimination"; $("competition-setting-groups").value=String(d.groupCount||2); $("competition-setting-advance").value=String(d.advancePerGroup||2); $("competition-setting-custom-advance").value=String(d.customAdvanceCount||4); $("competition-setting-legs").value=String(d.legs||1); $("competition-setting-scoring").value=d.scoringMode||"score"; $("competition-setting-bestof").value=String(d.bestOf||1); $("competition-setting-draw").checked=d.allowDraw!==false; $("competition-setting-third").checked=d.thirdPlace!==false;
+    renderCompetitionParticipants(); renderCompetitionMatches(); renderCompetitionStandings(); renderCompetitionBracket(); renderCompetitionManagers(); switchCompetitionTab(activeCompetitionTab);
+  }
+  function renderCompetitionParticipants() {
+    const list=$("competition-participant-list");list.replaceChildren();const rows=competitionDetail?.participants||[];if(!rows.length){list.appendChild(emptyBox("Belum ada peserta/tim."));return;}
+    for(const row of rows){const card=document.createElement("article");card.className="competition-row";const main=document.createElement("div");main.className="competition-row-main";const icon=document.createElement("span");icon.className="competition-icon";icon.innerHTML=`<i class="fa-solid ${competitionDetail.participantType==="individual"?"fa-user":"fa-people-group"}"></i>`;const copy=document.createElement("div");const name=document.createElement("strong");name.textContent=`${row.no}. ${row.name}`;const meta=document.createElement("span");meta.textContent=[row.groupId?row.groupId:"Belum masuk grup",`Seed ${row.seed||row.no}`].join(" · ");copy.append(name,meta);main.append(icon,copy);card.append(main);
+      if(competitionDetail.role!=="member"){const actions=document.createElement("div");actions.className="competition-row-actions";actions.append(rismaIconButton("Edit","fa-pen","ghost compact",async()=>{const next=prompt("Nama peserta/tim:",row.name);if(next===null||!next.trim())return;await api(`/api/kompetisi/${encodeURIComponent(activeCompetition)}/participant/${encodeURIComponent(row.id)}`,{method:"PATCH",body:JSON.stringify({name:next.trim(),seed:row.seed})});await loadCompetition(activeCompetition);}),rismaIconButton("Hapus","fa-trash-can","danger-soft compact",async()=>{if(!confirm(`Hapus ${row.name}?`))return;try{await api(`/api/kompetisi/${encodeURIComponent(activeCompetition)}/participant/${encodeURIComponent(row.id)}`,{method:"DELETE",body:"{}"});await loadCompetition(activeCompetition);}catch(error){showError(error);}}));card.append(actions);} list.append(card);}
+  }
+  function competitionMatchScoreText(row){if(row.status!=="finished")return "vs";if((row.sets||[]).length)return `${row.scoreA}–${row.scoreB} set`;return `${row.scoreA}–${row.scoreB}`;}
+  function renderCompetitionMatches() {
+    const actions=$("competition-phase-actions");actions.replaceChildren();const d=competitionDetail;const canManage=d.role!=="member";
+    if(canManage && d.format==="groups_knockout"){const hasKo=(d.stages||[]).some(s=>s.type==="single_elimination"&&s.status!=="waiting");const groupDone=(d.matches||[]).filter(m=>m.groupId).length>0 && (d.matches||[]).filter(m=>m.groupId).every(m=>m.status==="finished");if(groupDone&&!hasKo)actions.append(rismaIconButton("Buat fase gugur","fa-diagram-project","primary compact",()=>competitionAction("knockout")));}
+    if(canManage && d.format==="custom"){const stages=d.stages||[];const first=stages[0],second=stages[1];const firstRows=(d.matches||[]).filter(m=>m.stageId===first?.id);const ready=firstRows.length>0&&firstRows.every(m=>m.status==="finished")&&second?.status==="waiting";if(ready)actions.append(rismaIconButton("Lanjut ke fase gugur","fa-code-branch","primary compact",()=>competitionAction("knockout")));}
+    if(canManage && d.format==="swiss" && (d.matches||[]).length && (d.matches||[]).every(m=>m.status==="finished"))actions.append(rismaIconButton("Putaran Swiss berikutnya","fa-forward-step","primary compact",()=>competitionAction("swiss-next")));
+    const list=$("competition-match-list");list.replaceChildren();const rows=d.matches||[];if(!rows.length){list.appendChild(emptyBox("Belum ada jadwal. Tekan Generate setelah peserta siap."));return;}
+    for(const row of rows){const card=document.createElement("article");card.className=`competition-match ${row.status}`;const tag=document.createElement("div");tag.className="competition-match-tag";tag.textContent=[`#${row.matchNo}`,row.groupId,row.roundLabel].filter(Boolean).join(" · ");const score=document.createElement("div");score.className="competition-scoreline";const a=document.createElement("strong");a.textContent=participantNameCompetition(row.participantAId);const mid=document.createElement("b");mid.textContent=competitionMatchScoreText(row);const b=document.createElement("strong");b.textContent=participantNameCompetition(row.participantBId);score.append(a,mid,b);card.append(tag,score);if((row.sets||[]).length){const sets=document.createElement("div");sets.className="competition-setline";sets.textContent=row.sets.map((set,i)=>`S${i+1} ${set.a}-${set.b}`).join(" · ");card.append(sets);}if(canManage&&row.participantAId&&row.participantBId){const btn=rismaIconButton(row.status==="finished"?"Ubah skor":"Input skor","fa-pen-to-square","ghost compact",async()=>{const wins=Math.floor(Number(competitionDetail.bestOf||1)/2)+1;const example=competitionDetail.scoringMode!=="sets"?"2-1":wins>=3?"25-20,20-25,25-22,25-18":"21-18,18-21,21-19";const value=prompt(`Skor pertandingan #${row.matchNo}\n${participantNameCompetition(row.participantAId)} vs ${participantNameCompetition(row.participantBId)}\n\nFormat: ${example}`,"");if(value===null||!value.trim())return;try{await api(`/api/kompetisi/${encodeURIComponent(activeCompetition)}/score`,{method:"POST",body:JSON.stringify({matchNo:row.matchNo,score:value.trim()})});await loadCompetition(activeCompetition);}catch(error){showError(error);}});card.append(btn);}list.append(card);}
+  }
+  function standingsTable(rows,title="Klasemen") {const wrap=document.createElement("section");wrap.className="competition-table-card";const h=document.createElement("h3");h.textContent=title;wrap.append(h);const table=document.createElement("div");table.className="competition-table";const swiss=competitionDetail?.format==="swiss";const head=document.createElement("div");head.className="competition-table-row head";["#","Peserta","M","W","D","L",swiss?"Buchholz":"+/−","Poin"].forEach(x=>{const span=document.createElement("span");span.textContent=x;head.append(span);});table.append(head);rows.forEach((r,i)=>{const row=document.createElement("div");row.className="competition-table-row";[i+1,r.name,r.main,r.win,r.draw,r.loss,swiss?(r.buchholz||0):r.diff,r.points].forEach((x,j)=>{const span=document.createElement("span");span.textContent=x;if(j===1)span.className="name";row.append(span);});table.append(row);});wrap.append(table);return wrap;}
+  function renderCompetitionStandings(){const box=$("competition-standing-list");box.replaceChildren();const d=competitionDetail;if((d.groups||[]).length){for(const group of d.groups)box.append(standingsTable(group.standings||[],group.id));}else box.append(standingsTable(d.standings||[],"Klasemen umum"));}
+  function renderCompetitionBracket(){const box=$("competition-bracket");box.replaceChildren();const d=competitionDetail;const knockout=(d.matches||[]).filter(m=>!m.groupId);const source=knockout.length?knockout:(d.matches||[]);if(!source.length){box.appendChild(emptyBox("Bagan belum dibuat."));return;}const groups=new Map();for(const m of source){const key=[m.bracketSide?({W:"Winners",L:"Losers",F:"Final",R:"Reset"}[m.bracketSide]||m.bracketSide):"",m.roundLabel||`R${m.round}`].filter(Boolean).join(" · ");if(!groups.has(key))groups.set(key,[]);groups.get(key).push(m);}for(const [title,rows] of groups){const col=document.createElement("section");col.className="bracket-column";const h=document.createElement("h3");h.textContent=title;col.append(h);for(const m of rows){const card=document.createElement("div");card.className="bracket-match";const no=document.createElement("span");no.textContent=`#${m.matchNo}`;const a=document.createElement("strong");a.textContent=participantNameCompetition(m.participantAId);const sa=document.createElement("b");sa.textContent=m.status==="finished"?m.scoreA:"–";const b=document.createElement("strong");b.textContent=participantNameCompetition(m.participantBId);const sb=document.createElement("b");sb.textContent=m.status==="finished"?m.scoreB:"–";card.append(no,a,sa,b,sb);col.append(card);}box.append(col);}}
+  function renderCompetitionManagers(){const list=$("competition-manager-list");list.replaceChildren();const m=competitionDetail?.managers;if(!m)return;const owner=document.createElement("article");owner.className="competition-row";const ownerMain=document.createElement("div");ownerMain.className="competition-row-main";const ownerIcon=document.createElement("span");ownerIcon.className="competition-icon";ownerIcon.innerHTML='<i class="fa-solid fa-crown"></i>';const ownerCopy=document.createElement("div");const ownerName=document.createElement("strong");ownerName.textContent=m.owner?.name||"Owner";const ownerRole=document.createElement("span");ownerRole.textContent="Owner Kompetisi";ownerCopy.append(ownerName,ownerRole);ownerMain.append(ownerIcon,ownerCopy);owner.append(ownerMain);list.append(owner);for(const row of m.admins||[]){const card=document.createElement("article");card.className="competition-row";const main=document.createElement("div");main.className="competition-row-main";const icon=document.createElement("span");icon.className="competition-icon";icon.innerHTML='<i class="fa-solid fa-user-shield"></i>';const copy=document.createElement("div");const nm=document.createElement("strong");nm.textContent=row.name||row.phone||"Admin";const role=document.createElement("span");role.textContent="Admin Kompetisi";copy.append(nm,role);main.append(icon,copy);card.append(main);if(competitionDetail.role==="owner")card.append(rismaIconButton("Hapus","fa-trash-can","danger-soft compact",async()=>{if(!confirm(`Hapus ${row.name} dari Admin Kompetisi?`))return;await api(`/api/kompetisi/${encodeURIComponent(activeCompetition)}/admin/${encodeURIComponent(row.ref)}`,{method:"DELETE",body:"{}"});await loadCompetition(activeCompetition);}));list.append(card);}}
+  async function competitionAction(action){setStatus($("competition-match-status"),"Memproses…");try{await api(`/api/kompetisi/${encodeURIComponent(activeCompetition)}/${action}`,{method:"POST",body:"{}"});await loadCompetition(activeCompetition);setStatus($("competition-match-status"),"Berhasil.","success");}catch(error){setStatus($("competition-match-status"),error.message,"error");}}
+  function openCompetitionCreate(){fillCompetitionOptionList($("competition-create-format"),COMPETITION_FORMATS);fillCompetitionOptionList($("competition-create-sport"),COMPETITION_SPORTS);$("competition-create-name").value="";$("competition-create-format").value="groups_knockout";$("competition-create-sport").value="voli";syncCompetitionCreateOptions();setStatus($("competition-create-status"));$("competition-create-dialog").showModal();}
+  function syncCompetitionCreateOptions(){$("competition-create-group-options").hidden=$("competition-create-format").value!=="groups_knockout";$("competition-create-custom-advance-wrap").hidden=$("competition-create-format").value!=="custom";$("competition-create-custom-sport-wrap").hidden=$("competition-create-sport").value!=="lainnya";}
 
   // ---------- PENGGUNA ----------
   function openUserNameDialog(user = null, self = false) {
@@ -585,7 +592,7 @@
       const amount = document.createElement("div"); amount.className = `amount ${tx.jenis === "masuk" ? "in" : "out"}`; amount.textContent = `${tx.jenis === "masuk" ? "+" : "−"}${rupiah.format(tx.nominal)}`;
       top.append(left, amount); card.appendChild(top);
       if (tx.catatan) { const note = document.createElement("div"); note.className = "item-meta"; note.style.marginTop = "6px"; note.textContent = tx.catatan; card.appendChild(note); }
-      if (Number(tx.buktiCount || 0) > 0) { const proof = document.createElement("button"); proof.type = "button"; proof.className = "evidence-badge has-fa"; proof.innerHTML = `<i class="fa-solid fa-paperclip" aria-hidden="true"></i><span>${tx.buktiCount} bukti</span>`; proof.addEventListener("click", () => openEvidence(tx)); card.appendChild(proof); }
+      if (Number(tx.buktiCount || 0) > 0) { const proof = document.createElement("button"); proof.type = "button"; proof.className = "evidence-badge"; proof.textContent = `📎 ${tx.buktiCount} bukti`; proof.addEventListener("click", () => openEvidence(tx)); card.appendChild(proof); }
       for (const tag of tx.label || []) { const span = document.createElement("span"); span.className = "tag"; span.textContent = `#${tag}`; card.appendChild(span); }
       const actions = document.createElement("div"); actions.className = "item-actions";
       actions.append(button(Number(tx.buktiCount || 0) ? `Bukti · ${tx.buktiCount}` : "+ Bukti", "evidence-soft", () => openEvidence(tx)), button("Edit", "ghost", () => openKasEdit(tx)), button("Hapus", "danger-soft", () => deleteKasTx(tx)));
@@ -1721,6 +1728,7 @@
     $("risma-publish-rules-send").disabled = !period || groupBlocked;
     $("risma-publish-rules-pdf").disabled = !period;
     for (const id of ["risma-publish-announce-send","risma-publish-invite-send"]) $(id).disabled = groupBlocked;
+    $("risma-publish-footnote").textContent = `> Dikirim dari PROxyz web${me?.name ? ` oleh ${me.name}` : ""}`;
 
     if (owner) {
       $("risma-owner-period-year").value = period && !simulation ? String(period.hijriYear || "") : String((rismaDetail.periods || []).find(x => !x.isSimulation && x.status === "active")?.hijriYear || "");
@@ -1763,14 +1771,11 @@
     return parts.join(" · ");
   }
 
-  function renderRismaRankMark(el, index) {
-    if (index < 3) {
-      el.classList.add(`rank-medal-${index + 1}`);
-      el.innerHTML = '<i class="fa-solid fa-medal" aria-hidden="true"></i>';
-      el.setAttribute("aria-label", `Peringkat ${index + 1}`);
-      return;
-    }
-    el.textContent = String(index + 1);
+  function rismaRankMark(index) {
+    if (index === 0) return "🥇";
+    if (index === 1) return "🥈";
+    if (index === 2) return "🥉";
+    return String(index + 1);
   }
 
   function renderRismaRankings() {
@@ -1779,42 +1784,42 @@
     participantList.replaceChildren();
     teamList.replaceChildren();
 
-    const scores = rismaDetail?.scores || [];
+    const scores = (rismaDetail?.scores || []).filter(row=>!row.disqualified);
     const teams = rismaDetail?.teams || [];
+    const masterLocked = rismaDetail?.role !== "owner" && (rismaDetail?.weeks || []).some(row=>Number(row.week)>=2);
     $("risma-rank-participant-count").textContent = wholeNumber.format(scores.length);
     $("risma-rank-team-count").textContent = wholeNumber.format(teams.length);
 
     if (!scores.length) participantList.appendChild(emptyBox("Belum ada peserta yang masuk peringkat."));
     else scores.forEach((row,index) => {
       const card = document.createElement("article");
-      card.className = `risma-rank-card participant risma-rank-row-card${row.disqualified?" disqualified":""}`;
-      const rank = document.createElement("span"); rank.className = "risma-rank-number"; renderRismaRankMark(rank,index);
+      card.className = "risma-rank-card participant risma-rank-row-card";
+      const rank = document.createElement("span"); rank.className = "risma-rank-number"; rank.textContent = rismaRankMark(index);
       const info = document.createElement("div"); info.className = "risma-rank-info";
-      const headline = document.createElement("div"); headline.className = "risma-rank-name-line";
-      const title = document.createElement("strong"); title.textContent = row.name; if(row.disqualified) title.className="risma-disqualified-name";
-      const points = document.createElement("b"); points.className = "risma-rank-points"; points.textContent = `${number.format(row.totalPoints || 0)} poin`;
-      headline.append(title,points);
-      if(row.disqualified){const badge=document.createElement("span");badge.className="risma-dq-badge";badge.textContent="DISKUALIFIKASI";headline.appendChild(badge);}
+      const title = document.createElement("strong"); title.textContent = row.name;
       const meta = document.createElement("span"); meta.textContent = participantWeekSummary(row);
-      info.append(headline,meta);
-      card.append(rank,info);
+      info.append(title,meta);
+      const points = document.createElement("b"); points.className = "risma-rank-points"; points.textContent = `${number.format(row.totalPoints || 0)} poin`;
+      const edit=rismaIconButton("Ubah","fa-pen","ghost compact risma-mini-action",()=>openRismaParticipant(row));
+      const del=rismaIconButton("Hapus","fa-trash-can","danger-soft compact risma-mini-action",()=>deleteRismaParticipant(row));
+      edit.disabled=masterLocked;del.disabled=masterLocked;
+      if(masterLocked){edit.title="Dikunci setelah Minggu 2. Hanya Owner yang dapat mengubah.";del.title=edit.title;}
+      card.append(rank,info,points,edit,del);
       participantList.appendChild(card);
     });
 
     if (!teams.length) teamList.appendChild(emptyBox("Tim belum disusun. Tim awal dibuat setelah input Minggu 1."));
     else teams.forEach((row,index) => {
       const card = document.createElement("article");
-      card.className = "risma-rank-card team risma-rank-row-card risma-team-row-card";
-      const rank = document.createElement("span"); rank.className = "risma-rank-number"; renderRismaRankMark(rank,index);
+      card.className = "risma-rank-card team";
+      const top = document.createElement("div"); top.className = "risma-team-rank-top";
+      const rank = document.createElement("span"); rank.className = "risma-rank-number"; rank.textContent = rismaRankMark(index);
       const info = document.createElement("div"); info.className = "risma-rank-info";
-      const headline = document.createElement("div"); headline.className = "risma-rank-name-line";
       const title = document.createElement("strong"); title.textContent = row.name;
-      const average = document.createElement("b"); average.className = "risma-rank-points risma-team-average"; average.textContent = `Ø ${number.format(row.averagePoints || 0)} poin`;
-      headline.append(title,average);
-      const memberNames = (row.members || []).map(x => x.name).join(" · ") || "Belum ada anggota";
-      const meta = document.createElement("span"); meta.textContent = `Total ${number.format(row.totalPoints || 0)} poin · ${memberNames}`;
-      info.append(headline,meta);
-      card.append(rank,info);
+      const score = document.createElement("span"); score.textContent = `Rata-rata ${number.format(row.averagePoints || 0)} · Total ${number.format(row.totalPoints || 0)}`;
+      info.append(title,score); top.append(rank,info);
+      const members = document.createElement("p"); members.textContent = (row.members || []).map(x => x.name).join(" · ") || "Belum ada anggota";
+      card.append(top,members);
       teamList.appendChild(card);
     });
   }
@@ -1828,8 +1833,8 @@
     rows.forEach((row,index)=>{
       const card=document.createElement("article"); card.className=`item-card risma-score-card compact${row.disqualified?" disqualified":""}`;
       const line=document.createElement("div"); line.className="risma-score-line";
-      const name=document.createElement("strong"); name.className=`risma-row-name${row.disqualified?" risma-disqualified-name":""}`; name.textContent=`${index+1}. ${row.name}`;
-      const pts=document.createElement("span"); pts.className="score-pill"; pts.textContent=row.disqualified?`${number.format(row.totalPoints || 0)} poin · DQ`:`${number.format(row.totalPoints || 0)} poin`;
+      const name=document.createElement("strong"); name.className="risma-row-name"; name.textContent=`${index+1}. ${row.name}`;
+      const pts=document.createElement("span"); pts.className="score-pill"; pts.textContent=row.disqualified?"DISKUALIFIKASI":`${number.format(row.totalPoints || 0)} poin`;
       const edit=rismaIconButton("Ubah","fa-pen","ghost compact risma-mini-action",()=>openRismaParticipant(row));
       const del=rismaIconButton("Hapus","fa-trash-can","danger-soft compact risma-mini-action",()=>deleteRismaParticipant(row));
       edit.disabled=masterLocked;del.disabled=masterLocked;
@@ -2089,30 +2094,12 @@
     }
   }
   async function toggleRismaCoupon(row){ await api(`/api/risma/coupon/${encodeURIComponent(rismaCouponType)}/${row.no}`,{method:"PATCH",body:JSON.stringify({done:row.status!=="done"})}); await loadRisma(); }
-  function openRismaCouponEdit(row){ $("risma-coupon-edit-no").value=row.no; $("risma-coupon-edit-name").value=row.name; fillRismaCouponCountSelect($("risma-coupon-edit-count"),row.count||1); setStatus($("risma-coupon-edit-status")); $("risma-coupon-edit-dialog").showModal(); }
+  function openRismaCouponEdit(row){ $("risma-coupon-edit-no").value=row.no; $("risma-coupon-edit-name").value=row.name; $("risma-coupon-edit-count").value=String(row.count||1); setStatus($("risma-coupon-edit-status")); $("risma-coupon-edit-dialog").showModal(); }
   async function deleteRismaCoupon(row){ if(!confirm(`Hapus ${row.name} dari ${activeCouponGroup()?.label || "Kupon THR"}?`))return; await api(`/api/risma/coupon/${encodeURIComponent(rismaCouponType)}/${row.no}`,{method:"DELETE",body:"{}"}); await loadRisma(); }
 
   function syncRismaTemplateForm(){
     const settings=rismaDetail?.settings; const type=$("risma-template-type").value || "ngaji"; const tpl=settings?.couponTemplates?.[type] || {};
     $("risma-template-title").value=tpl.title||""; $("risma-template-slogan").value=tpl.slogan||""; $("risma-template-footer").value=tpl.footer||""; $("risma-template-palette").value=tpl.palette||"hijau";
-  }
-
-  function rismaCouponMax(){
-    const value=Number(rismaDetail?.settings?.maxCouponsPerRecipient||3);
-    return Number.isInteger(value)&&value>=1&&value<=20?value:3;
-  }
-
-  function fillRismaCouponCountSelect(select, selected=1){
-    if(!select)return;
-    const max=rismaCouponMax(); const wanted=Math.max(1,Math.min(max,Number(selected)||1));
-    select.innerHTML="";
-    for(let count=1;count<=max;count++){const option=document.createElement("option");option.value=String(count);option.textContent=`${count} kupon`;select.appendChild(option);}
-    select.value=String(wanted);
-  }
-
-  function syncRismaCouponCountSelects(){
-    fillRismaCouponCountSelect($("risma-coupon-add-count"), Number($("risma-coupon-add-count")?.value||1));
-    fillRismaCouponCountSelect($("risma-coupon-edit-count"), Number($("risma-coupon-edit-count")?.value||1));
   }
 
   function renderRismaSettings(){
@@ -2127,10 +2114,10 @@
     $("risma-team-rebuild-note").textContent = week2Done
       ? "Minggu 2 sudah diinput. Susunan tim dikunci dan tidak dapat diacak ulang."
       : "Hanya Owner. Acak ulang tersedia sampai sebelum Minggu 2 diinput.";
-    if(!settings){ $("risma-setting-rank").value="10"; $("risma-setting-team").value="3"; $("risma-setting-coupon-max").value="3"; $("risma-setting-ngaji").checked=true; $("risma-setting-taraweh").checked=true; $("risma-setting-tadarus").checked=true; syncRismaCouponCountSelects(); syncRismaTemplateForm(); return; }
-    $("risma-setting-rank").value=String(settings.individualWinnerCount||10); $("risma-setting-team").value=String(settings.teamWinnerCount||3); $("risma-setting-coupon-max").value=String(settings.maxCouponsPerRecipient||3);
+    if(!settings){ $("risma-setting-rank").value="10"; $("risma-setting-team").value="3"; $("risma-setting-ngaji").checked=true; $("risma-setting-taraweh").checked=true; $("risma-setting-tadarus").checked=true; syncRismaTemplateForm(); return; }
+    $("risma-setting-rank").value=String(settings.individualWinnerCount||10); $("risma-setting-team").value=String(settings.teamWinnerCount||3);
     $("risma-setting-ngaji").checked=settings.couponEnabled?.ngaji!==false; $("risma-setting-taraweh").checked=settings.couponEnabled?.taraweh!==false; $("risma-setting-tadarus").checked=settings.couponEnabled?.tadarus!==false;
-    syncRismaCouponCountSelects(); syncRismaTemplateForm();
+    syncRismaTemplateForm();
   }
 
   function rismaPublicationPayload(kind){
@@ -2155,30 +2142,6 @@
     $("risma-publication-copy").disabled = !String(text || "").trim();
     if(anchor) placeRismaPublicationPreview(anchor);
     else $("risma-publication-preview-box").hidden=false;
-  }
-
-  function openRismaWeekPublishPrompt(week){
-    rismaPendingPublishWeek=Number(week)||0;
-    $("risma-week-publish-message").textContent=`Edit Minggu ${rismaPendingPublishWeek} sudah disimpan. Kirim update RISMA Poin terbaru ke grup?`;
-    setStatus($("risma-week-publish-status"));
-    $("risma-week-publish-send").disabled=Boolean(rismaDetail?.activePeriod?.isSimulation);
-    if(rismaDetail?.activePeriod?.isSimulation) setStatus($("risma-week-publish-status"),"Mode simulasi: pesan ke grup tidak dikirim.","error");
-    $("risma-week-publish-dialog").showModal();
-  }
-
-  async function sendRismaWeekUpdateToGroup(){
-    const week=rismaPendingPublishWeek;
-    setStatus($("risma-week-publish-status"),"Mengirim update RISMA Poin…");
-    $("risma-week-publish-send").disabled=true;
-    try{
-      const data=await api("/api/risma/publication/send",{method:"POST",body:JSON.stringify({kind:"rank",data:{}})});
-      setStatus($("risma-week-publish-status"),data.message||"Update RISMA Poin berhasil dikirim.","success");
-      setStatus($("risma-publish-status"),data.message||`Update Minggu ${week} berhasil dikirim.`,"success");
-      setTimeout(()=>{if($("risma-week-publish-dialog").open) $("risma-week-publish-dialog").close();},650);
-    }catch(error){
-      setStatus($("risma-week-publish-status"),error.message,"error");
-      $("risma-week-publish-send").disabled=false;
-    }
   }
 
   async function previewRismaPublication(kind, statusId){
@@ -2398,10 +2361,10 @@ Nomor surat yang terhapus dapat dipakai kembali jika menjadi nomor terakhir.`))r
     for(const [label,value] of [["Peserta",period.participants],["Minggu",`${period.weeks}/4`],["Tim",period.teams],["Kupon",period.coupons]]){const card=document.createElement("article");card.className="metric-card";card.innerHTML=`<span>${label}</span><b>${value}</b>`;metrics.appendChild(card);}
     const participants=$("risma-period-summary-participants");participants.replaceChildren();
     if(!(period.scores||[]).length)participants.appendChild(emptyBox("Belum ada data peserta."));
-    else(period.scores||[]).forEach((row,index)=>{const card=document.createElement("article");card.className=`risma-history-rank-row${row.disqualified?" disqualified":""}`;card.innerHTML=`<b class="${row.disqualified?"risma-disqualified-name":""}">${index+1}. ${row.name}</b><span>${participantWeekSummary(row)}${row.disqualified?" · DISKUALIFIKASI":""}</span><strong>${number.format(row.totalPoints||0)} poin</strong>`;participants.appendChild(card);});
+    else(period.scores||[]).forEach((row,index)=>{const card=document.createElement("article");card.className="risma-history-rank-row";card.innerHTML=`<b>${index+1}. ${row.name}</b><span>${participantWeekSummary(row)}</span><strong>${number.format(row.totalPoints||0)} poin</strong>`;participants.appendChild(card);});
     const teams=$("risma-period-summary-teams");teams.replaceChildren();
     if(!(period.teamRows||[]).length)teams.appendChild(emptyBox("Belum ada data tim."));
-    else(period.teamRows||[]).forEach((row,index)=>{const card=document.createElement("article");card.className="risma-history-team-row";const names=(row.members||[]).map(x=>x.name).join(" · ");card.innerHTML=`<b>${index+1}. ${row.name}</b><span>Ø ${number.format(row.averagePoints||0)} poin · Total ${number.format(row.totalPoints||0)} poin</span><small>${names}</small>`;teams.appendChild(card);});
+    else(period.teamRows||[]).forEach((row,index)=>{const card=document.createElement("article");card.className="risma-history-team-row";const names=(row.members||[]).map(x=>x.name).join(" · ");card.innerHTML=`<b>${index+1}. ${row.name}</b><span>Rata-rata ${number.format(row.averagePoints||0)} · Total ${number.format(row.totalPoints||0)}</span><small>${names}</small>`;teams.appendChild(card);});
     const coupons=$("risma-period-summary-coupons");coupons.replaceChildren();
     for(const row of period.couponTypes||[]){const card=document.createElement("article");card.className="metric-card";card.innerHTML=`<span>${row.label}</span><b>${wholeNumber.format(row.stats?.coupons||0)}</b><small>${wholeNumber.format(row.stats?.recipients||0)} penerima</small>`;coupons.appendChild(card);}
     setStatus($("risma-period-summary-status"),period.status==="active"?"Periode ini masih aktif.":"Data lama hanya ditampilkan dan tidak diubah.");
@@ -2462,7 +2425,7 @@ ${row.label}`))return;
     }catch(error){setStatus($("risma-log-status"),error.message,"error");}
   }
 
-  async function saveRismaSettings(event){ event.preventDefault(); setStatus($("risma-settings-status"),"Menyimpan pengaturan…"); try{ const data=await api("/api/risma/settings",{method:"PUT",body:JSON.stringify({individualWinnerCount:Number($("risma-setting-rank").value),teamWinnerCount:Number($("risma-setting-team").value),maxCouponsPerRecipient:Number($("risma-setting-coupon-max").value),couponEnabled:{ngaji:$("risma-setting-ngaji").checked,taraweh:$("risma-setting-taraweh").checked,tadarus:$("risma-setting-tadarus").checked}})}); rismaDetail=data.risma; renderRisma(); setStatus($("risma-settings-status"),"Pengaturan tersimpan.","success"); }catch(error){setStatus($("risma-settings-status"),error.message,"error");} }
+  async function saveRismaSettings(event){ event.preventDefault(); setStatus($("risma-settings-status"),"Menyimpan pengaturan…"); try{ const data=await api("/api/risma/settings",{method:"PUT",body:JSON.stringify({individualWinnerCount:Number($("risma-setting-rank").value),teamWinnerCount:Number($("risma-setting-team").value),couponEnabled:{ngaji:$("risma-setting-ngaji").checked,taraweh:$("risma-setting-taraweh").checked,tadarus:$("risma-setting-tadarus").checked}})}); rismaDetail=data.risma; renderRisma(); setStatus($("risma-settings-status"),"Pengaturan tersimpan.","success"); }catch(error){setStatus($("risma-settings-status"),error.message,"error");} }
   async function saveRismaTemplate(event){ event.preventDefault(); const type=$("risma-template-type").value; setStatus($("risma-template-status"),"Menyimpan template…"); try{const data=await api(`/api/risma/coupon-template/${encodeURIComponent(type)}`,{method:"PUT",body:JSON.stringify({title:$("risma-template-title").value,slogan:$("risma-template-slogan").value,footer:$("risma-template-footer").value,palette:$("risma-template-palette").value})});rismaDetail=data.risma;renderRisma();setStatus($("risma-template-status"),"Template tersimpan.","success");}catch(error){setStatus($("risma-template-status"),error.message,"error");}}
   async function resetRismaTemplate(){ const type=$("risma-template-type").value;if(!confirm("Kembalikan template kupon ini ke desain bawaan?"))return;setStatus($("risma-template-status"),"Mengembalikan template…");try{const data=await api(`/api/risma/coupon-template/${encodeURIComponent(type)}`,{method:"POST",body:"{}"});rismaDetail=data.risma;renderRisma();setStatus($("risma-template-status"),"Template kembali ke default.","success");}catch(error){setStatus($("risma-template-status"),error.message,"error");}}
 
@@ -2512,7 +2475,7 @@ ${row.label}`))return;
   function syncTernakEditFunctions(){ if(!ternakDetail)return; const sex=$("ternak-edit-sex").value; fillSelectOptions($("ternak-edit-function"),sex==="jantan"?ternakDetail.options.maleFunctions:ternakDetail.options.femaleFunctions); }
   function openTernakEdit(item){ if(!ternakDetail)return; $("ternak-edit-form").reset(); $("ternak-edit-code").value=item.kode; $("ternak-edit-title").textContent=`Edit ${itemLabel(item)}`; const individual=item.tipe==="individu"; $("ternak-edit-individual").hidden=!individual; $("ternak-edit-batch").hidden=individual; if(individual){ $("ternak-edit-name").value=item.nama||""; $("ternak-edit-sex").value=String(item.kelamin||"betina").toLowerCase(); syncTernakEditFunctions(); $("ternak-edit-function").value=item.fungsi||$("ternak-edit-function").value; } else { $("ternak-edit-batch-name").value=item.nama||""; fillSelectOptions($("ternak-edit-batch-function"),ternakDetail.options.batchFunctions||[]); $("ternak-edit-batch-function").value=item.fungsi||$("ternak-edit-batch-function").value; } $("ternak-edit-origin").value=item.asal==="Menetas/Lahir"?"Lahir":(item.asal||"Beli"); $("ternak-edit-date").value=String(item.tanggalMasuk||"").match(/^\d{4}-\d{2}-\d{2}$/)?item.tanggalMasuk:todayJakarta(); $("ternak-edit-cost").value=String(individual?(item.hargaBeli||0):(item.modalAwal||0)); setStatus($("ternak-edit-status")); $("ternak-edit-dialog").showModal(); }
 
-  function openTernakCreate(){ $("ternak-create-form").reset(); fillSelectOptions($("ternak-create-kind"),ternakJenis,row=>`${row.label} · ${row.mode==="individu"?"per ekor":"batch"}`); setStatus($("ternak-create-status")); $("ternak-create-dialog").showModal(); }
+  function openTernakCreate(){ $("ternak-create-form").reset(); fillSelectOptions($("ternak-create-kind"),ternakJenis,row=>`${row.emoji||"🐾"} ${row.label} · ${row.mode==="individu"?"per ekor":"batch"}`); setStatus($("ternak-create-status")); $("ternak-create-dialog").showModal(); }
   function syncTernakItemFunctions(){ if(!ternakDetail)return; const sex=$("ternak-item-sex").value; const rows=sex==="jantan"?ternakDetail.options.maleFunctions:ternakDetail.options.femaleFunctions; fillSelectOptions($("ternak-item-function"),rows); }
   function openTernakItem(){ if(!ternakDetail)return; $("ternak-item-form").reset(); const individual=ternakDetail.mode==="individu"; $("ternak-item-individual").hidden=!individual; $("ternak-item-batch").hidden=individual; $("ternak-item-title").textContent=individual?"Tambah ternak":"Tambah batch"; $("ternak-item-date").value=todayJakarta(); if(individual)syncTernakItemFunctions(); else fillSelectOptions($("ternak-batch-function"),ternakDetail.options.batchFunctions||[]); setStatus($("ternak-item-status")); $("ternak-item-dialog").showModal(); }
   function activityTargetOptions(){ return [{kode:"0",nama:"Seluruh ternak"},...(ternakDetail?.items||[]).filter(x=>x.status==="aktif"&&Number(x.jumlahAktif||0)>0)]; }
@@ -2543,7 +2506,7 @@ ${row.label}`))return;
     $("gallery-photo-total").textContent = galleryDetail.foto;
     $("gallery-group-total").textContent = `${galleryDetail.grup} grup`;
     $("gallery-public-link").href = galleryDetail.publicUrl;
-    $("gallery-public-link").innerHTML = `${galleryDetail.visibility === "private" ? "Buka Galeri privat" : "Buka Galeri publik"} <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i>`;
+    $("gallery-public-link").textContent = galleryDetail.visibility === "private" ? "Buka Galeri privat ↗" : "Buka Galeri publik ↗";
     $("rename-gallery").hidden = galleryDetail.role !== "owner";
     $("gallery-access").hidden = galleryDetail.role !== "owner";
     $("add-gallery-admin").hidden = galleryDetail.role !== "owner";
@@ -3341,7 +3304,7 @@ ${row.label}`))return;
         });
         const mark = document.createElement("span");
         mark.className = "candidate-check";
-        mark.innerHTML = '<i class="fa-solid fa-check" aria-hidden="true"></i>';
+        mark.textContent = "✓";
         media.append(img, check, mark);
 
         const body = document.createElement("div");
@@ -3481,7 +3444,6 @@ ${row.label}`))return;
     await loadGalleryVideoJobs();
   }
   // ---------- EVENTS ----------
-  hydrateAdminIcons();
   $("phone-form").addEventListener("submit", async event => {
     event.preventDefault(); setStatus($("auth-status"), "Mengirim kode…");
     try { const result = await api("/api/auth/request", { method: "POST", body: JSON.stringify({ phone: $("phone").value }) }); challengeId = result.challengeId; challengeExpiresAt = Number(result.expiresAt) || Date.now() + 300000; saveOtpChallenge($("phone").value); $("phone-form").hidden = true; $("otp-form").hidden = false; $("otp").value = ""; $("otp").focus(); setStatus($("auth-status"), "Kode OTP sudah dikirim ke WhatsApp.", "success"); } catch (error) { setStatus($("auth-status"), error.message, "error"); }
@@ -3493,15 +3455,24 @@ ${row.label}`))return;
   });
   $("change-phone").addEventListener("click", () => { clearOtpChallenge(); setStatus($("auth-status")); });
   $("logout").addEventListener("click", async () => { try { await api("/api/auth/logout", { method: "POST", body: "{}" }); } catch (_) {} saveSessionToken(""); clearSession(); });
+  // Kompetisi events
+  $("competition-select").addEventListener("change",()=>loadCompetition($("competition-select").value).catch(showError));
+  $("competition-refresh").addEventListener("click",()=>loadCompetition(activeCompetition).catch(showError));
+  $("competition-create").addEventListener("click",openCompetitionCreate);
+  $("close-competition-create").addEventListener("click",()=>$("competition-create-dialog").close());
+  $("competition-create-format").addEventListener("change",syncCompetitionCreateOptions);
+  $("competition-create-sport").addEventListener("change",syncCompetitionCreateOptions);
+  $("competition-create-form").addEventListener("submit",async event=>{event.preventDefault();setStatus($("competition-create-status"),"Membuat kompetisi…");try{const body={nama:$("competition-create-name").value,sport:$("competition-create-sport").value,cabangNama:$("competition-create-custom-sport").value.trim(),participantType:$("competition-create-participant-type").value,format:$("competition-create-format").value,groupCount:Number($("competition-create-groups").value||4),advancePerGroup:Number($("competition-create-advance").value||2),customAdvanceCount:Number($("competition-create-custom-advance").value||4),thirdPlace:true};const data=await api("/api/kompetisi",{method:"POST",body:JSON.stringify(body)});$("competition-create-dialog").close();await refreshCompetitionProfile();await loadCompetitionIndex();if(data.kompetisi?.id){activeCompetition=data.kompetisi.id;await loadCompetition(activeCompetition);}}catch(error){setStatus($("competition-create-status"),error.message,"error");}});
+  $("competition-participant-form").addEventListener("submit",async event=>{event.preventDefault();const text=$("competition-participant-input").value.trim();if(!text)return;setStatus($("competition-participant-status"),"Menambahkan…");try{await api(`/api/kompetisi/${encodeURIComponent(activeCompetition)}/participants`,{method:"POST",body:JSON.stringify({text})});$("competition-participant-input").value="";await loadCompetition(activeCompetition);setStatus($("competition-participant-status"),"Peserta ditambahkan.","success");}catch(error){setStatus($("competition-participant-status"),error.message,"error");}});
+  $("competition-generate").addEventListener("click",async()=>{if((competitionDetail?.matches||[]).length&&!confirm("Generate ulang hanya dapat dilakukan bila belum ada skor pertandingan. Lanjutkan?"))return;await competitionAction("generate");});
+  document.querySelectorAll("[data-competition-tab]").forEach(el=>el.addEventListener("click",()=>switchCompetitionTab(el.dataset.competitionTab)));
+  $("competition-settings-form").addEventListener("submit",async event=>{event.preventDefault();setStatus($("competition-settings-status"),"Menyimpan…");try{await api(`/api/kompetisi/${encodeURIComponent(activeCompetition)}`,{method:"PATCH",body:JSON.stringify({nama:$("competition-setting-name").value.trim(),cabangNama:$("competition-setting-sport-name").value.trim(),format:$("competition-setting-format").value,groupCount:Number($("competition-setting-groups").value||2),advancePerGroup:Number($("competition-setting-advance").value||2),customAdvanceCount:Number($("competition-setting-custom-advance").value||4),legs:Number($("competition-setting-legs").value||1),scoringMode:$("competition-setting-scoring").value,bestOf:Number($("competition-setting-bestof").value||1),allowDraw:$("competition-setting-draw").checked,thirdPlace:$("competition-setting-third").checked})});await refreshCompetitionProfile();await loadCompetition(activeCompetition);setStatus($("competition-settings-status"),"Pengaturan disimpan.","success");}catch(error){setStatus($("competition-settings-status"),error.message,"error");}});
+  $("competition-reset").addEventListener("click",async()=>{if(!confirm("Reset semua jadwal, skor, fase, dan pembagian grup? Peserta tetap disimpan."))return;try{await api(`/api/kompetisi/${encodeURIComponent(activeCompetition)}/reset-schedule`,{method:"POST",body:"{}"});await loadCompetition(activeCompetition);}catch(error){showError(error);}});
+  $("competition-manager-add").addEventListener("click",()=>{setStatus($("competition-manager-status"));$("competition-manager-phone").value="";$("competition-manager-name").value="";$("competition-manager-dialog").showModal();});
+  $("close-competition-manager").addEventListener("click",()=>$("competition-manager-dialog").close());
+  $("competition-manager-form").addEventListener("submit",async event=>{event.preventDefault();setStatus($("competition-manager-status"),"Menambahkan…");try{await api(`/api/kompetisi/${encodeURIComponent(activeCompetition)}/admin`,{method:"POST",body:JSON.stringify({phone:$("competition-manager-phone").value,name:$("competition-manager-name").value})});$("competition-manager-dialog").close();await loadCompetition(activeCompetition);}catch(error){setStatus($("competition-manager-status"),error.message,"error");}});
+
   document.querySelectorAll(".app-tab").forEach(el => el.addEventListener("click", () => switchView(el.dataset.view)));
-  $("app-tabs-toggle").addEventListener("click", () => {
-    const dock = $("app-tabs");
-    const expanded = !dock.classList.contains("is-expanded");
-    dock.classList.toggle("is-expanded", expanded);
-    $("app-tabs-toggle").setAttribute("aria-expanded", String(expanded));
-  });
-  window.addEventListener("scroll", syncAppDockFloating, { passive: true });
-  window.addEventListener("resize", syncAppDockFloating, { passive: true });
   $("edit-my-name").addEventListener("click", () => openUserNameDialog(null, true));
   $("close-user-name").addEventListener("click", () => $("user-name-dialog").close());
   $("users-refresh").addEventListener("click", () => loadUsers().catch(showError));
@@ -3650,8 +3621,6 @@ ${row.label}`))return;
   $("risma-period-form").addEventListener("submit",async event=>{event.preventDefault();setStatus($("risma-period-status"),"Membuat periode…");try{await api("/api/risma/period",{method:"POST",body:JSON.stringify({hijriYear:$("risma-period-year").value})});$("risma-period-dialog").close();await loadRisma();}catch(error){setStatus($("risma-period-status"),error.message,"error");}});
 
   $("close-risma-week").addEventListener("click",()=>$("risma-week-dialog").close());
-  $("risma-week-publish-skip").addEventListener("click",()=>{rismaPendingPublishWeek=0;$("risma-week-publish-dialog").close();});
-  $("risma-week-publish-send").addEventListener("click",sendRismaWeekUpdateToGroup);
   $("risma-week-new-toggle").addEventListener("click",()=>{rismaWeekNewParticipantMode=!rismaWeekNewParticipantMode;rismaWeekEditIndex=-1;$("risma-week-person-name").value="";syncRismaWeekBuilder();});
   $("risma-week-person-select").addEventListener("change",()=>{$("risma-week-excused").value="0";syncRismaWeekBuilder();});
   $("risma-week-gender").addEventListener("change",syncRismaWeekBuilder);
@@ -3673,7 +3642,6 @@ ${row.label}`))return;
         setStatus($("risma-publish-status"),message,auto.sent>0?"success":"error");
         setStatus($("risma-auto-status"),message,auto.sent>0?"success":"error");
       }
-      if(data.publicationPrompt) openRismaWeekPublishPrompt(week);
     }catch(error){setStatus($("risma-week-status"),error.message,"error");}
   });
 
@@ -3693,7 +3661,7 @@ ${row.label}`))return;
   });
 
   $("risma-coupon-type").addEventListener("change",()=>{rismaCouponType=$("risma-coupon-type").value;renderRismaCoupons();});
-  $("risma-coupon-add").addEventListener("click",()=>{$("risma-coupon-add-form").reset();fillRismaCouponCountSelect($("risma-coupon-add-count"),1);setStatus($("risma-coupon-add-status"));$("risma-coupon-add-dialog").showModal();});
+  $("risma-coupon-add").addEventListener("click",()=>{$("risma-coupon-add-form").reset();$("risma-coupon-add-count").value="1";setStatus($("risma-coupon-add-status"));$("risma-coupon-add-dialog").showModal();});
   $("close-risma-coupon-add").addEventListener("click",()=>$("risma-coupon-add-dialog").close());
   $("risma-coupon-add-form").addEventListener("submit",async event=>{
     event.preventDefault();
