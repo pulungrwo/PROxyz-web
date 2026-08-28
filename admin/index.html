@@ -10,7 +10,7 @@
   <meta http-equiv="Expires" content="0">
   <title>Admin PROxyz</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
-  <link rel="stylesheet" href="./admin.css?v=0.8.7">
+  <link rel="stylesheet" href="./admin.css?v=0.8.8">
 </head>
 <body>
   <main class="shell">
@@ -546,7 +546,7 @@
             </details>
 
             <section id="risma-publication-preview-box" class="risma-pub-preview-box" hidden>
-              <div class="risma-draft-head"><strong id="risma-publication-preview-title">Pratinjau publikasi</strong><span id="risma-publish-footnote" class="risma-web-footnote">&gt; Dikirim dari PROxyz web</span></div>
+              <div class="risma-draft-head"><strong id="risma-publication-preview-title">Pratinjau publikasi</strong></div>
               <textarea id="risma-publication-preview-text" rows="12" readonly placeholder="Tekan ikon mata untuk melihat pratinjau format WhatsApp."></textarea>
               <div class="actions two risma-pub-preview-actions"><button id="risma-publication-copy" class="ghost" type="button"><i class="fa-regular fa-copy"></i> Salin teks</button><button id="risma-publication-clear" class="ghost" type="button">Kosongkan</button></div>
               <p id="risma-publication-preview-status" class="status"></p>
@@ -738,7 +738,19 @@
     </form>
   </dialog>
 
-  <dialog id="risma-participant-dialog" class="risma-input-dialog"><form id="risma-participant-form" class="dialog-form"><div class="section-head"><div><p class="eyebrow"><i class="fa-solid fa-user-pen"></i> Peserta RISMA</p><h2>Edit peserta</h2></div><button id="close-risma-participant" class="icon-button" type="button">×</button></div><input id="risma-participant-id" type="hidden"><label>Nama peserta<input id="risma-participant-name" maxlength="80" required></label><label>Jenis peserta<select id="risma-participant-gender"><option value="">Belum diatur</option><option value="laki-laki">Laki-laki</option><option value="perempuan">Perempuan</option></select></label><section id="risma-participant-dq-box" class="risma-dq-box" hidden><label class="check-row"><input id="risma-participant-disqualified" type="checkbox"> Diskualifikasi peserta</label><label id="risma-participant-dq-reason-wrap" hidden>Alasan<input id="risma-participant-dq-reason" maxlength="120" placeholder="Contoh: Kecurangan input kehadiran"></label><p class="muted small">Khusus Owner. Peserta yang didiskualifikasi tidak masuk rank dan dikeluarkan dari tim.</p></section><p id="risma-participant-status" class="status"></p><button class="primary full" type="submit"><i class="fa-solid fa-floppy-disk"></i> Simpan peserta</button></form></dialog>
+  <dialog id="risma-week-publish-dialog">
+    <div class="dialog-form risma-week-publish-form">
+      <div class="section-head"><div><p class="eyebrow"><i class="fa-brands fa-whatsapp"></i> Update RISMA Poin</p><h2>Poin berhasil diperbarui</h2></div></div>
+      <p id="risma-week-publish-message" class="muted">Data Minggu 1 sudah disimpan. Kirim update RISMA Poin terbaru ke grup?</p>
+      <div class="actions two">
+        <button id="risma-week-publish-skip" class="ghost" type="button">Gak usah</button>
+        <button id="risma-week-publish-send" class="primary" type="button"><i class="fa-brands fa-whatsapp"></i> Kirim ke grup</button>
+      </div>
+      <p id="risma-week-publish-status" class="status"></p>
+    </div>
+  </dialog>
+
+  <dialog id="risma-participant-dialog" class="risma-input-dialog"><form id="risma-participant-form" class="dialog-form"><div class="section-head"><div><p class="eyebrow"><i class="fa-solid fa-user-pen"></i> Peserta RISMA</p><h2>Edit peserta</h2></div><button id="close-risma-participant" class="icon-button" type="button">×</button></div><input id="risma-participant-id" type="hidden"><label>Nama peserta<input id="risma-participant-name" maxlength="80" required></label><label>Jenis peserta<select id="risma-participant-gender"><option value="">Belum diatur</option><option value="laki-laki">Laki-laki</option><option value="perempuan">Perempuan</option></select></label><section id="risma-participant-dq-box" class="risma-dq-box" hidden><label class="check-row"><input id="risma-participant-disqualified" type="checkbox"> Diskualifikasi peserta</label><label id="risma-participant-dq-reason-wrap" hidden>Alasan<input id="risma-participant-dq-reason" maxlength="120" placeholder="Contoh: Kecurangan input kehadiran"></label><p class="muted small">Khusus Owner. Peserta yang didiskualifikasi tetap tampil di rank paling bawah dengan tanda diskualifikasi, tetapi tidak dihitung sebagai juara dan dikeluarkan dari tim.</p></section><p id="risma-participant-status" class="status"></p><button class="primary full" type="submit"><i class="fa-solid fa-floppy-disk"></i> Simpan peserta</button></form></dialog>
 
   <dialog id="risma-coupon-add-dialog" class="risma-input-dialog">
     <form id="risma-coupon-add-form" class="dialog-form">
@@ -873,6 +885,6 @@
   <dialog id="gallery-bulk-dialog"><form id="gallery-bulk-form" method="dialog" class="dialog-form"><div class="section-head"><div><p class="eyebrow">Edit beberapa foto</p><h2>Kelompokkan kejadian</h2></div><button id="close-gallery-bulk" class="icon-button" type="button">×</button></div><p class="muted small"><b id="gallery-bulk-dialog-count">0 foto</b> akan dijadikan satu kelompok di galeri publik.</p><label>Judul kejadian<input id="gallery-bulk-caption" maxlength="160" placeholder="Contoh: Makan Kerupuk Agustusan 2024" required></label><label>Tanggal dokumentasi<input id="gallery-bulk-date" type="date" required></label><p class="muted small">Semua foto terpilih akan memakai satu judul dan satu tanggal. Foto tidak dihapus atau diunggah ulang ke penyimpanan Galeri.</p><p id="gallery-bulk-status" class="status"></p><button class="primary full" type="submit">Simpan & kelompokkan</button></form></dialog>
 
   <script src="./config.js?v=242"></script>
-  <script src="./admin.js?v=0.8.7" defer></script>
+  <script src="./admin.js?v=0.8.8" defer></script>
 </body>
 </html>

@@ -1,7 +1,7 @@
 (() => {
   "use strict";
 
-  const ADMIN_BUILD = "0.8.7";
+  const ADMIN_BUILD = "0.8.8";
   const config = window.PROXYZ_ADMIN_CONFIG || {};
 
   async function checkAdminBuild() {
@@ -95,6 +95,7 @@
   let rismaLogs = [];
   let rismaArchives = [];
   let rismaLogSourceFilter = "all";
+  let rismaPendingPublishWeek = 0;
 
   // Ternak
   let activeTernak = "";
@@ -1639,7 +1640,6 @@
     $("risma-publish-rules-send").disabled = !period || groupBlocked;
     $("risma-publish-rules-pdf").disabled = !period;
     for (const id of ["risma-publish-announce-send","risma-publish-invite-send"]) $(id).disabled = groupBlocked;
-    $("risma-publish-footnote").textContent = `> Dikirim dari PROxyz web${me?.name ? ` oleh ${me.name}` : ""}`;
 
     if (owner) {
       $("risma-owner-period-year").value = period && !simulation ? String(period.hijriYear || "") : String((rismaDetail.periods || []).find(x => !x.isSimulation && x.status === "active")?.hijriYear || "");
@@ -1695,7 +1695,7 @@
     participantList.replaceChildren();
     teamList.replaceChildren();
 
-    const scores = (rismaDetail?.scores || []).filter(row=>!row.disqualified);
+    const scores = rismaDetail?.scores || [];
     const teams = rismaDetail?.teams || [];
     const masterLocked = rismaDetail?.role !== "owner" && (rismaDetail?.weeks || []).some(row=>Number(row.week)>=2);
     $("risma-rank-participant-count").textContent = wholeNumber.format(scores.length);
@@ -1704,13 +1704,14 @@
     if (!scores.length) participantList.appendChild(emptyBox("Belum ada peserta yang masuk peringkat."));
     else scores.forEach((row,index) => {
       const card = document.createElement("article");
-      card.className = "risma-rank-card participant risma-rank-row-card";
+      card.className = `risma-rank-card participant risma-rank-row-card${row.disqualified?" disqualified":""}`;
       const rank = document.createElement("span"); rank.className = "risma-rank-number"; rank.textContent = rismaRankMark(index);
       const info = document.createElement("div"); info.className = "risma-rank-info";
       const headline = document.createElement("div"); headline.className = "risma-rank-name-line";
-      const title = document.createElement("strong"); title.textContent = row.name;
+      const title = document.createElement("strong"); title.textContent = row.name; if(row.disqualified) title.className="risma-disqualified-name";
       const points = document.createElement("b"); points.className = "risma-rank-points"; points.textContent = `${number.format(row.totalPoints || 0)} poin`;
       headline.append(title,points);
+      if(row.disqualified){const badge=document.createElement("span");badge.className="risma-dq-badge";badge.textContent="DISKUALIFIKASI";headline.appendChild(badge);}
       const meta = document.createElement("span"); meta.textContent = participantWeekSummary(row);
       info.append(headline,meta);
       const actions=document.createElement("div"); actions.className="risma-rank-actions";
@@ -1731,7 +1732,7 @@
       const rank = document.createElement("span"); rank.className = "risma-rank-number"; rank.textContent = rismaRankMark(index);
       const info = document.createElement("div"); info.className = "risma-rank-info";
       const title = document.createElement("strong"); title.textContent = row.name;
-      const score = document.createElement("span"); score.textContent = `Rata-rata ${number.format(row.averagePoints || 0)} · Total ${number.format(row.totalPoints || 0)}`;
+      const score = document.createElement("span"); score.textContent = `Ø ${number.format(row.averagePoints || 0)} poin · Total ${number.format(row.totalPoints || 0)} poin`;
       info.append(title,score); top.append(rank,info);
       const members = document.createElement("p"); members.textContent = (row.members || []).map(x => x.name).join(" · ") || "Belum ada anggota";
       card.append(top,members);
@@ -1748,8 +1749,8 @@
     rows.forEach((row,index)=>{
       const card=document.createElement("article"); card.className=`item-card risma-score-card compact${row.disqualified?" disqualified":""}`;
       const line=document.createElement("div"); line.className="risma-score-line";
-      const name=document.createElement("strong"); name.className="risma-row-name"; name.textContent=`${index+1}. ${row.name}`;
-      const pts=document.createElement("span"); pts.className="score-pill"; pts.textContent=row.disqualified?"DISKUALIFIKASI":`${number.format(row.totalPoints || 0)} poin`;
+      const name=document.createElement("strong"); name.className=`risma-row-name${row.disqualified?" risma-disqualified-name":""}`; name.textContent=`${index+1}. ${row.name}`;
+      const pts=document.createElement("span"); pts.className="score-pill"; pts.textContent=row.disqualified?`${number.format(row.totalPoints || 0)} poin · DQ`:`${number.format(row.totalPoints || 0)} poin`;
       const edit=rismaIconButton("Ubah","fa-pen","ghost compact risma-mini-action",()=>openRismaParticipant(row));
       const del=rismaIconButton("Hapus","fa-trash-can","danger-soft compact risma-mini-action",()=>deleteRismaParticipant(row));
       edit.disabled=masterLocked;del.disabled=masterLocked;
@@ -2077,6 +2078,30 @@
     else $("risma-publication-preview-box").hidden=false;
   }
 
+  function openRismaWeekPublishPrompt(week){
+    rismaPendingPublishWeek=Number(week)||0;
+    $("risma-week-publish-message").textContent=`Edit Minggu ${rismaPendingPublishWeek} sudah disimpan. Kirim update RISMA Poin terbaru ke grup?`;
+    setStatus($("risma-week-publish-status"));
+    $("risma-week-publish-send").disabled=Boolean(rismaDetail?.activePeriod?.isSimulation);
+    if(rismaDetail?.activePeriod?.isSimulation) setStatus($("risma-week-publish-status"),"Mode simulasi: pesan ke grup tidak dikirim.","error");
+    $("risma-week-publish-dialog").showModal();
+  }
+
+  async function sendRismaWeekUpdateToGroup(){
+    const week=rismaPendingPublishWeek;
+    setStatus($("risma-week-publish-status"),"Mengirim update RISMA Poin…");
+    $("risma-week-publish-send").disabled=true;
+    try{
+      const data=await api("/api/risma/publication/send",{method:"POST",body:JSON.stringify({kind:"rank",data:{}})});
+      setStatus($("risma-week-publish-status"),data.message||"Update RISMA Poin berhasil dikirim.","success");
+      setStatus($("risma-publish-status"),data.message||`Update Minggu ${week} berhasil dikirim.`,"success");
+      setTimeout(()=>{if($("risma-week-publish-dialog").open) $("risma-week-publish-dialog").close();},650);
+    }catch(error){
+      setStatus($("risma-week-publish-status"),error.message,"error");
+      $("risma-week-publish-send").disabled=false;
+    }
+  }
+
   async function previewRismaPublication(kind, statusId){
     const el = statusId ? $(statusId) : $("risma-publication-preview-status");
     setStatus(el, "Membuat pratinjau…");
@@ -2294,10 +2319,10 @@ Nomor surat yang terhapus dapat dipakai kembali jika menjadi nomor terakhir.`))r
     for(const [label,value] of [["Peserta",period.participants],["Minggu",`${period.weeks}/4`],["Tim",period.teams],["Kupon",period.coupons]]){const card=document.createElement("article");card.className="metric-card";card.innerHTML=`<span>${label}</span><b>${value}</b>`;metrics.appendChild(card);}
     const participants=$("risma-period-summary-participants");participants.replaceChildren();
     if(!(period.scores||[]).length)participants.appendChild(emptyBox("Belum ada data peserta."));
-    else(period.scores||[]).forEach((row,index)=>{const card=document.createElement("article");card.className="risma-history-rank-row";card.innerHTML=`<b>${index+1}. ${row.name}</b><span>${participantWeekSummary(row)}</span><strong>${number.format(row.totalPoints||0)} poin</strong>`;participants.appendChild(card);});
+    else(period.scores||[]).forEach((row,index)=>{const card=document.createElement("article");card.className=`risma-history-rank-row${row.disqualified?" disqualified":""}`;card.innerHTML=`<b class="${row.disqualified?"risma-disqualified-name":""}">${index+1}. ${row.name}</b><span>${participantWeekSummary(row)}${row.disqualified?" · DISKUALIFIKASI":""}</span><strong>${number.format(row.totalPoints||0)} poin</strong>`;participants.appendChild(card);});
     const teams=$("risma-period-summary-teams");teams.replaceChildren();
     if(!(period.teamRows||[]).length)teams.appendChild(emptyBox("Belum ada data tim."));
-    else(period.teamRows||[]).forEach((row,index)=>{const card=document.createElement("article");card.className="risma-history-team-row";const names=(row.members||[]).map(x=>x.name).join(" · ");card.innerHTML=`<b>${index+1}. ${row.name}</b><span>Rata-rata ${number.format(row.averagePoints||0)} · Total ${number.format(row.totalPoints||0)}</span><small>${names}</small>`;teams.appendChild(card);});
+    else(period.teamRows||[]).forEach((row,index)=>{const card=document.createElement("article");card.className="risma-history-team-row";const names=(row.members||[]).map(x=>x.name).join(" · ");card.innerHTML=`<b>${index+1}. ${row.name}</b><span>Ø ${number.format(row.averagePoints||0)} poin · Total ${number.format(row.totalPoints||0)} poin</span><small>${names}</small>`;teams.appendChild(card);});
     const coupons=$("risma-period-summary-coupons");coupons.replaceChildren();
     for(const row of period.couponTypes||[]){const card=document.createElement("article");card.className="metric-card";card.innerHTML=`<span>${row.label}</span><b>${wholeNumber.format(row.stats?.coupons||0)}</b><small>${wholeNumber.format(row.stats?.recipients||0)} penerima</small>`;coupons.appendChild(card);}
     setStatus($("risma-period-summary-status"),period.status==="active"?"Periode ini masih aktif.":"Data lama hanya ditampilkan dan tidak diubah.");
@@ -3537,6 +3562,8 @@ ${row.label}`))return;
   $("risma-period-form").addEventListener("submit",async event=>{event.preventDefault();setStatus($("risma-period-status"),"Membuat periode…");try{await api("/api/risma/period",{method:"POST",body:JSON.stringify({hijriYear:$("risma-period-year").value})});$("risma-period-dialog").close();await loadRisma();}catch(error){setStatus($("risma-period-status"),error.message,"error");}});
 
   $("close-risma-week").addEventListener("click",()=>$("risma-week-dialog").close());
+  $("risma-week-publish-skip").addEventListener("click",()=>{rismaPendingPublishWeek=0;$("risma-week-publish-dialog").close();});
+  $("risma-week-publish-send").addEventListener("click",sendRismaWeekUpdateToGroup);
   $("risma-week-new-toggle").addEventListener("click",()=>{rismaWeekNewParticipantMode=!rismaWeekNewParticipantMode;rismaWeekEditIndex=-1;$("risma-week-person-name").value="";syncRismaWeekBuilder();});
   $("risma-week-person-select").addEventListener("change",()=>{$("risma-week-excused").value="0";syncRismaWeekBuilder();});
   $("risma-week-gender").addEventListener("change",syncRismaWeekBuilder);
@@ -3558,6 +3585,7 @@ ${row.label}`))return;
         setStatus($("risma-publish-status"),message,auto.sent>0?"success":"error");
         setStatus($("risma-auto-status"),message,auto.sent>0?"success":"error");
       }
+      if(data.publicationPrompt) openRismaWeekPublishPrompt(week);
     }catch(error){setStatus($("risma-week-status"),error.message,"error");}
   });
 
