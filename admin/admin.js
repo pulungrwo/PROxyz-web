@@ -494,7 +494,7 @@
     if (!dock || !sentinel || !toggle || $("app-view")?.hidden) return;
     const floating = sentinel.getBoundingClientRect().top <= appDockTopPx() + 1 && window.scrollY > 0;
     dock.classList.toggle("is-floating", floating);
-    toggle.hidden = !floating;
+    toggle.hidden = false;
     if (!floating) dock.classList.remove("is-expanded");
     toggle.setAttribute("aria-expanded", String(floating && dock.classList.contains("is-expanded")));
   }
@@ -4040,4 +4040,73 @@ ${row.label}`))return;
   setTimeout(checkAdminBuild, 1500);
   window.addEventListener("pageshow", event => { if (event.persisted) checkAdminBuild(); });
   document.addEventListener("visibilitychange", () => { if (!document.hidden) checkAdminBuild(); });
+
+
+  /* BEGIN PROxyz NAVBAR JS V092 */
+  function syncProxyzAppSwitcherLabel() {
+    const label = $("app-active-label");
+    if (!label) return;
+    const active = document.querySelector("#app-switcher-menu .app-tab.active") || document.querySelector("#app-switcher-menu .app-tab:not([hidden])");
+    const text = active?.querySelector(".app-tab-label")?.textContent?.trim() || active?.getAttribute("title") || "Aplikasi";
+    label.textContent = text;
+  }
+
+  function closeProxyzAppSwitcher() {
+    const dock = $("app-tabs");
+    const bar = $("app-switcher-bar");
+    const toggle = $("app-tabs-toggle");
+    if (!dock) return;
+    dock.classList.remove("is-expanded");
+    bar?.setAttribute("aria-expanded", "false");
+    toggle?.setAttribute("aria-expanded", "false");
+  }
+
+  function toggleProxyzAppSwitcher() {
+    const dock = $("app-tabs");
+    const bar = $("app-switcher-bar");
+    const toggle = $("app-tabs-toggle");
+    if (!dock) return;
+    const open = !dock.classList.contains("is-expanded");
+    dock.classList.toggle("is-expanded", open);
+    bar?.setAttribute("aria-expanded", String(open));
+    toggle?.setAttribute("aria-expanded", String(open));
+    syncProxyzAppSwitcherLabel();
+  }
+
+  const proxyzSwitcherBar = $("app-switcher-bar");
+  if (proxyzSwitcherBar) {
+    proxyzSwitcherBar.addEventListener("click", event => {
+      if (event.target.closest("#app-tabs-toggle")) return;
+      toggleProxyzAppSwitcher();
+    });
+    proxyzSwitcherBar.addEventListener("keydown", event => {
+      if (event.key !== "Enter" && event.key !== " ") return;
+      event.preventDefault();
+      toggleProxyzAppSwitcher();
+    });
+  }
+
+  document.addEventListener("click", event => {
+    const dock = $("app-tabs");
+    if (dock?.classList.contains("is-expanded") && !dock.contains(event.target)) closeProxyzAppSwitcher();
+  });
+  document.addEventListener("keydown", event => {
+    if (event.key === "Escape") closeProxyzAppSwitcher();
+  });
+
+  const proxyzAppMenu = $("app-switcher-menu");
+  if (proxyzAppMenu) {
+    proxyzAppMenu.addEventListener("click", event => {
+      if (!event.target.closest(".app-tab")) return;
+      queueMicrotask(() => {
+        syncProxyzAppSwitcherLabel();
+        closeProxyzAppSwitcher();
+      });
+    });
+    const observer = new MutationObserver(syncProxyzAppSwitcherLabel);
+    observer.observe(proxyzAppMenu, { subtree: true, attributes: true, attributeFilter: ["class", "hidden"] });
+  }
+  syncProxyzAppSwitcherLabel();
+  /* END PROxyz NAVBAR JS V092 */
+
 })();

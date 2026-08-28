@@ -621,3 +621,88 @@ button.has-fa{gap:7px}.primary.has-fa,.ghost.has-fa,.success-soft.has-fa,.danger
   #kompetisi-view .competition-scoreline{font-size:12px}
   #kompetisi-view .bracket-column{min-width:182px}
 }
+
+/* BEGIN PROxyz NAVBAR DROPDOWN V092 */
+/* Semua aturan baru dibatasi pada app switcher/footer agar UI aplikasi lain tidak berubah. */
+#app-tabs.app-tabs,
+#app-tabs.app-tabs:not(.is-floating),
+#app-tabs.app-tabs.is-floating{
+  position:sticky!important;top:var(--admin-dock-top)!important;z-index:45!important;
+  display:block!important;width:min(100%,350px)!important;max-width:calc(100vw - 20px)!important;
+  margin:0 auto 15px!important;padding:0!important;border:0!important;border-radius:18px!important;
+  background:transparent!important;box-shadow:none!important;overflow:visible!important;
+}
+#app-tabs .app-switcher-bar{
+  display:grid;grid-template-columns:minmax(92px,1fr) 42px auto;align-items:center;gap:6px;
+  min-height:54px;padding:6px;border:1px solid rgba(208,213,221,.86);border-radius:18px;
+  background:rgba(255,255,255,.94);box-shadow:0 12px 34px rgba(16,24,40,.12);
+  backdrop-filter:blur(16px) saturate(150%);-webkit-backdrop-filter:blur(16px) saturate(150%);
+  cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent;
+}
+#app-tabs .app-switcher-bar:focus-visible{outline:3px solid rgba(16,24,40,.16);outline-offset:2px}
+#app-tabs .app-active-label{
+  display:flex;align-items:center;justify-content:center;min-width:0;height:42px;padding:0 13px;
+  border-radius:13px;background:#101828;color:#fff;font-size:12.5px;font-weight:850;line-height:1;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;box-shadow:0 7px 18px rgba(16,24,40,.18)
+}
+#app-tabs #app-tabs-toggle{
+  display:inline-grid!important;place-items:center!important;width:42px!important;min-width:42px!important;height:42px!important;
+  margin:0!important;padding:0!important;border:0!important;border-radius:13px!important;background:#eef2f6!important;
+  color:#344054!important;box-shadow:none!important;cursor:pointer
+}
+#app-tabs #app-tabs-toggle[hidden]{display:inline-grid!important}
+#app-tabs #app-tabs-toggle i{font-size:14px;transition:transform .16s ease}
+#app-tabs .app-switcher-brand{
+  display:flex;align-items:center;height:42px;padding:0 10px 0 4px;color:#344054;font-size:12.5px;font-weight:820;white-space:nowrap
+}
+#app-tabs .app-switcher-menu{
+  display:none;position:absolute;top:calc(100% + 8px);left:0;width:100%;max-height:min(62vh,430px);overflow-y:auto;
+  overscroll-behavior:contain;padding:7px;border:1px solid rgba(208,213,221,.9);border-radius:17px;
+  background:rgba(255,255,255,.985);box-shadow:0 20px 52px rgba(16,24,40,.2);
+  backdrop-filter:blur(18px) saturate(150%);-webkit-backdrop-filter:blur(18px) saturate(150%)
+}
+#app-tabs.is-expanded .app-switcher-menu{display:block!important}
+#app-tabs .app-switcher-menu .app-tab,
+#app-tabs.is-floating .app-switcher-menu .app-tab,
+#app-tabs.is-floating.is-expanded .app-switcher-menu .app-tab{
+  display:grid!important;grid-template-columns:34px minmax(0,1fr)!important;align-items:center!important;justify-content:stretch!important;
+  gap:9px!important;width:100%!important;min-width:0!important;height:45px!important;margin:0!important;padding:0 10px!important;
+  border:0!important;border-radius:12px!important;background:transparent!important;color:#344054!important;box-shadow:none!important;text-align:left!important
+}
+#app-tabs .app-switcher-menu .app-tab[hidden]{display:none!important}
+#app-tabs .app-switcher-menu .app-tab i{
+  display:grid;place-items:center;width:30px;height:30px;border-radius:9px;background:#f2f4f7;color:#475467;font-size:12px
+}
+#app-tabs .app-switcher-menu .app-tab .app-tab-label{
+  display:block!important;min-width:0;overflow:hidden;text-overflow:ellipsis;font-size:13px;font-weight:780;white-space:nowrap
+}
+#app-tabs .app-switcher-menu .app-tab:hover,#app-tabs .app-switcher-menu .app-tab:focus-visible{background:#f8fafc!important}
+#app-tabs .app-switcher-menu .app-tab.active{background:#eef2f6!important;color:#101828!important}
+#app-tabs .app-switcher-menu .app-tab.active i{background:#101828!important;color:#fff!important}
+#app-tabs.is-expanded #app-tabs-toggle{background:#101828!important;color:#fff!important}
+#app-tabs.is-expanded #app-tabs-toggle i{transform:rotate(90deg)}
+
+#admin-footer.admin-footer{margin:28px auto 0;padding:18px 12px max(10px,env(safe-area-inset-bottom));border-top:1px solid #e7eaf0;color:#667085;text-align:center}
+#admin-footer .admin-footer-signature{display:inline-flex;align-items:center;justify-content:center;gap:9px;font-size:12.5px;line-height:1.4}
+#admin-footer .admin-footer-mark{display:grid;place-items:center;width:28px;height:28px;border-radius:9px;background:#101828;color:#fff;font-size:12px;box-shadow:0 6px 14px rgba(16,24,40,.12)}
+#admin-footer .admin-footer-text strong{color:#101828;font-weight:900}
+#admin-footer .admin-footer-o{text-transform:uppercase}
+#admin-footer .admin-footer-xyz{letter-spacing:.025em}
+
+@media(max-width:520px){
+  #app-tabs.app-tabs,#app-tabs.app-tabs:not(.is-floating),#app-tabs.app-tabs.is-floating{width:min(calc(100vw - 20px),340px)!important;max-width:calc(100vw - 20px)!important}
+  #app-tabs .app-switcher-bar{grid-template-columns:minmax(82px,1fr) 42px auto;gap:5px;padding:5px;min-height:52px;border-radius:16px}
+  #app-tabs .app-active-label{height:42px;padding:0 11px;font-size:12px}
+  #app-tabs .app-switcher-brand{padding:0 8px 0 3px;font-size:12px}
+  #app-tabs .app-switcher-menu{top:calc(100% + 7px);padding:6px;border-radius:15px}
+  #app-tabs .app-switcher-menu .app-tab{height:44px!important;padding:0 9px!important}
+  #admin-footer.admin-footer{margin-top:22px;padding-top:16px}
+}
+@media(max-width:360px){
+  #app-tabs.app-tabs,#app-tabs.app-tabs:not(.is-floating),#app-tabs.app-tabs.is-floating{width:calc(100vw - 16px)!important;max-width:calc(100vw - 16px)!important}
+  #app-tabs .app-switcher-bar{grid-template-columns:minmax(72px,1fr) 40px auto}
+  #app-tabs #app-tabs-toggle{width:40px!important;min-width:40px!important;height:40px!important}
+  #app-tabs .app-active-label{height:40px;padding:0 9px}
+  #app-tabs .app-switcher-brand{height:40px;padding-right:6px;font-size:11.5px}
+}
+/* END PROxyz NAVBAR DROPDOWN V092 */
