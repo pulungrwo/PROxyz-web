@@ -1,7 +1,7 @@
 (() => {
   "use strict";
 
-  const ADMIN_BUILD = "0.9.1";
+  const ADMIN_BUILD = "0.9.3";
   const config = window.PROXYZ_ADMIN_CONFIG || {};
 
   async function checkAdminBuild() {
@@ -12,7 +12,14 @@
       const latest = String(info?.version || "").trim();
       if (!latest || latest === ADMIN_BUILD) return;
       const next = new URL(window.location.href);
-      next.searchParams.set("v", latest.replace(/[^0-9A-Za-z._-]/g, ""));
+      const normalizedLatest = latest.replace(/[^0-9A-Za-z._-]/g, "");
+      // Jangan reload tanpa akhir bila CDN/browser masih menyajikan JS lama.
+      // Jika URL sudah meminta build terbaru, cukup hentikan refresh loop.
+      if (next.searchParams.get("v") === normalizedLatest) {
+        console.warn(`[Admin Web] Build JS ${ADMIN_BUILD} berbeda dari ${latest}, reload paksa dihentikan agar tidak terjadi loop.`);
+        return;
+      }
+      next.searchParams.set("v", normalizedLatest);
       window.location.replace(next.toString());
     } catch (_) {}
   }
