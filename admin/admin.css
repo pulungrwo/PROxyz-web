@@ -430,3 +430,5 @@ dialog{max-height:min(92dvh,760px);overflow:hidden}
   .risma-week-draft-card{display:grid!important;grid-template-columns:minmax(0,1fr) auto!important}
   .risma-draft-actions{justify-self:end!important;justify-content:flex-end!important}
 }
+
+/* RISMA Web V0.8.7 — batas kupon per penerima dapat diatur Owner */

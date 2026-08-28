@@ -1,7 +1,7 @@
 (() => {
   "use strict";
 
-  const ADMIN_BUILD = "0.8.6";
+  const ADMIN_BUILD = "0.8.7";
   const config = window.PROXYZ_ADMIN_CONFIG || {};
 
   async function checkAdminBuild() {
@@ -2009,12 +2009,30 @@
     }
   }
   async function toggleRismaCoupon(row){ await api(`/api/risma/coupon/${encodeURIComponent(rismaCouponType)}/${row.no}`,{method:"PATCH",body:JSON.stringify({done:row.status!=="done"})}); await loadRisma(); }
-  function openRismaCouponEdit(row){ $("risma-coupon-edit-no").value=row.no; $("risma-coupon-edit-name").value=row.name; $("risma-coupon-edit-count").value=String(row.count||1); setStatus($("risma-coupon-edit-status")); $("risma-coupon-edit-dialog").showModal(); }
+  function openRismaCouponEdit(row){ $("risma-coupon-edit-no").value=row.no; $("risma-coupon-edit-name").value=row.name; fillRismaCouponCountSelect($("risma-coupon-edit-count"),row.count||1); setStatus($("risma-coupon-edit-status")); $("risma-coupon-edit-dialog").showModal(); }
   async function deleteRismaCoupon(row){ if(!confirm(`Hapus ${row.name} dari ${activeCouponGroup()?.label || "Kupon THR"}?`))return; await api(`/api/risma/coupon/${encodeURIComponent(rismaCouponType)}/${row.no}`,{method:"DELETE",body:"{}"}); await loadRisma(); }
 
   function syncRismaTemplateForm(){
     const settings=rismaDetail?.settings; const type=$("risma-template-type").value || "ngaji"; const tpl=settings?.couponTemplates?.[type] || {};
     $("risma-template-title").value=tpl.title||""; $("risma-template-slogan").value=tpl.slogan||""; $("risma-template-footer").value=tpl.footer||""; $("risma-template-palette").value=tpl.palette||"hijau";
+  }
+
+  function rismaCouponMax(){
+    const value=Number(rismaDetail?.settings?.maxCouponsPerRecipient||3);
+    return Number.isInteger(value)&&value>=1&&value<=20?value:3;
+  }
+
+  function fillRismaCouponCountSelect(select, selected=1){
+    if(!select)return;
+    const max=rismaCouponMax(); const wanted=Math.max(1,Math.min(max,Number(selected)||1));
+    select.innerHTML="";
+    for(let count=1;count<=max;count++){const option=document.createElement("option");option.value=String(count);option.textContent=`${count} kupon`;select.appendChild(option);}
+    select.value=String(wanted);
+  }
+
+  function syncRismaCouponCountSelects(){
+    fillRismaCouponCountSelect($("risma-coupon-add-count"), Number($("risma-coupon-add-count")?.value||1));
+    fillRismaCouponCountSelect($("risma-coupon-edit-count"), Number($("risma-coupon-edit-count")?.value||1));
   }
 
   function renderRismaSettings(){
@@ -2029,10 +2047,10 @@
     $("risma-team-rebuild-note").textContent = week2Done
       ? "Minggu 2 sudah diinput. Susunan tim dikunci dan tidak dapat diacak ulang."
       : "Hanya Owner. Acak ulang tersedia sampai sebelum Minggu 2 diinput.";
-    if(!settings){ $("risma-setting-rank").value="10"; $("risma-setting-team").value="3"; $("risma-setting-ngaji").checked=true; $("risma-setting-taraweh").checked=true; $("risma-setting-tadarus").checked=true; syncRismaTemplateForm(); return; }
-    $("risma-setting-rank").value=String(settings.individualWinnerCount||10); $("risma-setting-team").value=String(settings.teamWinnerCount||3);
+    if(!settings){ $("risma-setting-rank").value="10"; $("risma-setting-team").value="3"; $("risma-setting-coupon-max").value="3"; $("risma-setting-ngaji").checked=true; $("risma-setting-taraweh").checked=true; $("risma-setting-tadarus").checked=true; syncRismaCouponCountSelects(); syncRismaTemplateForm(); return; }
+    $("risma-setting-rank").value=String(settings.individualWinnerCount||10); $("risma-setting-team").value=String(settings.teamWinnerCount||3); $("risma-setting-coupon-max").value=String(settings.maxCouponsPerRecipient||3);
     $("risma-setting-ngaji").checked=settings.couponEnabled?.ngaji!==false; $("risma-setting-taraweh").checked=settings.couponEnabled?.taraweh!==false; $("risma-setting-tadarus").checked=settings.couponEnabled?.tadarus!==false;
-    syncRismaTemplateForm();
+    syncRismaCouponCountSelects(); syncRismaTemplateForm();
   }
 
   function rismaPublicationPayload(kind){
@@ -2340,7 +2358,7 @@ ${row.label}`))return;
     }catch(error){setStatus($("risma-log-status"),error.message,"error");}
   }
 
-  async function saveRismaSettings(event){ event.preventDefault(); setStatus($("risma-settings-status"),"Menyimpan pengaturan…"); try{ const data=await api("/api/risma/settings",{method:"PUT",body:JSON.stringify({individualWinnerCount:Number($("risma-setting-rank").value),teamWinnerCount:Number($("risma-setting-team").value),couponEnabled:{ngaji:$("risma-setting-ngaji").checked,taraweh:$("risma-setting-taraweh").checked,tadarus:$("risma-setting-tadarus").checked}})}); rismaDetail=data.risma; renderRisma(); setStatus($("risma-settings-status"),"Pengaturan tersimpan.","success"); }catch(error){setStatus($("risma-settings-status"),error.message,"error");} }
+  async function saveRismaSettings(event){ event.preventDefault(); setStatus($("risma-settings-status"),"Menyimpan pengaturan…"); try{ const data=await api("/api/risma/settings",{method:"PUT",body:JSON.stringify({individualWinnerCount:Number($("risma-setting-rank").value),teamWinnerCount:Number($("risma-setting-team").value),maxCouponsPerRecipient:Number($("risma-setting-coupon-max").value),couponEnabled:{ngaji:$("risma-setting-ngaji").checked,taraweh:$("risma-setting-taraweh").checked,tadarus:$("risma-setting-tadarus").checked}})}); rismaDetail=data.risma; renderRisma(); setStatus($("risma-settings-status"),"Pengaturan tersimpan.","success"); }catch(error){setStatus($("risma-settings-status"),error.message,"error");} }
   async function saveRismaTemplate(event){ event.preventDefault(); const type=$("risma-template-type").value; setStatus($("risma-template-status"),"Menyimpan template…"); try{const data=await api(`/api/risma/coupon-template/${encodeURIComponent(type)}`,{method:"PUT",body:JSON.stringify({title:$("risma-template-title").value,slogan:$("risma-template-slogan").value,footer:$("risma-template-footer").value,palette:$("risma-template-palette").value})});rismaDetail=data.risma;renderRisma();setStatus($("risma-template-status"),"Template tersimpan.","success");}catch(error){setStatus($("risma-template-status"),error.message,"error");}}
   async function resetRismaTemplate(){ const type=$("risma-template-type").value;if(!confirm("Kembalikan template kupon ini ke desain bawaan?"))return;setStatus($("risma-template-status"),"Mengembalikan template…");try{const data=await api(`/api/risma/coupon-template/${encodeURIComponent(type)}`,{method:"POST",body:"{}"});rismaDetail=data.risma;renderRisma();setStatus($("risma-template-status"),"Template kembali ke default.","success");}catch(error){setStatus($("risma-template-status"),error.message,"error");}}
 
@@ -3559,7 +3577,7 @@ ${row.label}`))return;
   });
 
   $("risma-coupon-type").addEventListener("change",()=>{rismaCouponType=$("risma-coupon-type").value;renderRismaCoupons();});
-  $("risma-coupon-add").addEventListener("click",()=>{$("risma-coupon-add-form").reset();$("risma-coupon-add-count").value="1";setStatus($("risma-coupon-add-status"));$("risma-coupon-add-dialog").showModal();});
+  $("risma-coupon-add").addEventListener("click",()=>{$("risma-coupon-add-form").reset();fillRismaCouponCountSelect($("risma-coupon-add-count"),1);setStatus($("risma-coupon-add-status"));$("risma-coupon-add-dialog").showModal();});
   $("close-risma-coupon-add").addEventListener("click",()=>$("risma-coupon-add-dialog").close());
   $("risma-coupon-add-form").addEventListener("submit",async event=>{
     event.preventDefault();
