@@ -415,3 +415,31 @@ dialog{max-height:min(92dvh,760px);overflow:hidden}
   .competition-scoreline{grid-template-columns:minmax(0,1fr) 54px minmax(0,1fr);font-size:.8rem}.competition-scoreline b{text-align:center;padding:4px}
   .competition-bracket{margin-left:-4px;margin-right:-4px}.bracket-column{min-width:186px}
 }
+
+/* ==========================================================
+   KOMPETISI · Admin Web 0.9.0
+   ========================================================== */
+#tab-kompetisi{display:inline-flex;align-items:center;gap:.45rem}
+.competition-picker{margin-bottom:12px}.competition-picker .section-head{margin-bottom:10px}
+.competition-hero{background:linear-gradient(145deg,#111827,#1f2937 58%,#172554);color:#fff;border-radius:22px;padding:20px;box-shadow:0 16px 38px rgba(15,23,42,.16)}
+.competition-hero .eyebrow,.competition-hero .hero-sub{color:rgba(255,255,255,.72)}
+.competition-summary{margin-top:16px}.competition-summary>div{background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.1);border-radius:15px;padding:11px}.competition-summary span{display:block;font-size:.73rem;color:rgba(255,255,255,.67)}.competition-summary b{font-size:1.12rem}
+.competition-hero-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}.competition-hero .hero-tool{background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.13)}
+.competition-subtabs{margin:12px 0;overflow:auto;scrollbar-width:none}.competition-subtabs::-webkit-scrollbar{display:none}.competition-subtabs .subtab{display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+.competition-panel{margin-bottom:14px}.competition-add-form{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:end;margin-bottom:8px}.competition-add-form textarea{min-height:76px}
+.competition-list{display:grid;gap:9px}.competition-row{display:flex;justify-content:space-between;gap:10px;align-items:center;border:1px solid var(--line,#e5e7eb);border-radius:15px;padding:10px 11px;background:var(--surface,#fff)}
+.competition-row-main{display:flex;gap:10px;align-items:center;min-width:0}.competition-row-main>div{display:flex;flex-direction:column;min-width:0}.competition-row-main strong{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.competition-row-main span:not(.competition-icon){font-size:.78rem;color:var(--muted,#64748b)}
+.competition-icon{width:34px;height:34px;border-radius:11px;display:grid;place-items:center;background:#eef2ff;color:#3730a3;flex:0 0 auto}.competition-row-actions{display:flex;gap:6px;flex:0 0 auto}
+.competition-actions{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:9px}
+.competition-match{border:1px solid var(--line,#e5e7eb);border-radius:16px;padding:11px;background:var(--surface,#fff);display:grid;gap:8px}.competition-match.finished{border-color:#bbf7d0}.competition-match.waiting{opacity:.72}.competition-match-tag{font-size:.73rem;color:var(--muted,#64748b);font-weight:700}
+.competition-scoreline{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:8px;align-items:center}.competition-scoreline strong:first-child{text-align:right}.competition-scoreline strong:last-child{text-align:left}.competition-scoreline b{font-size:1rem;border-radius:10px;padding:5px 9px;background:#f1f5f9;white-space:nowrap}.competition-setline{font-size:.75rem;color:var(--muted,#64748b);text-align:center}
+.competition-standing-wrap{display:grid;gap:12px}.competition-table-card{overflow:hidden;border:1px solid var(--line,#e5e7eb);border-radius:16px}.competition-table-card h3{margin:0;padding:10px 12px;background:#f8fafc;font-size:.9rem}.competition-table{overflow:auto}.competition-table-row{display:grid;grid-template-columns:34px minmax(125px,1fr) repeat(6,42px);min-width:455px;border-top:1px solid var(--line,#e5e7eb);align-items:center}.competition-table-row span{padding:8px 6px;text-align:center;font-size:.78rem}.competition-table-row .name{text-align:left;font-weight:700}.competition-table-row.head{background:#f8fafc;font-weight:800;color:#475569}
+.competition-bracket{display:flex;gap:12px;overflow:auto;padding:2px 1px 8px;align-items:flex-start}.bracket-column{min-width:210px;display:grid;gap:8px}.bracket-column h3{font-size:.8rem;margin:0;color:var(--muted,#64748b);position:sticky;left:0}.bracket-match{display:grid;grid-template-columns:1fr 30px;gap:4px 8px;border:1px solid var(--line,#e5e7eb);border-radius:13px;padding:9px;background:var(--surface,#fff);box-shadow:0 5px 16px rgba(15,23,42,.05)}.bracket-match>span{grid-column:1/-1;font-size:.68rem;color:var(--muted,#64748b)}.bracket-match strong{font-size:.79rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.bracket-match b{text-align:center;border-radius:7px;background:#f1f5f9;font-size:.8rem;padding:2px}
+#competition-pengaturan-panel .mini-section-title{margin-top:18px}.competition-panel .check-row{display:flex;gap:8px;align-items:flex-start}.competition-panel .check-row input{width:auto;margin-top:3px}
+
+@media (max-width:680px){
+  .competition-hero{padding:15px;border-radius:18px}.competition-summary{grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}.competition-summary>div{padding:9px 6px;text-align:center}.competition-summary span{font-size:.64rem}.competition-summary b{font-size:.98rem}
+  .competition-add-form{grid-template-columns:1fr}.competition-add-form button{width:100%}.competition-row{align-items:flex-start}.competition-row-actions{flex-direction:column}.competition-row-actions button span{display:none}.competition-row-actions button{min-width:36px}
+  .competition-scoreline{grid-template-columns:minmax(0,1fr) 54px minmax(0,1fr);font-size:.8rem}.competition-scoreline b{text-align:center;padding:4px}
+  .competition-bracket{margin-left:-4px;margin-right:-4px}.bracket-column{min-width:186px}
+}
