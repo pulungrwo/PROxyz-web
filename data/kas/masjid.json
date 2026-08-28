@@ -6,10 +6,10 @@
   "saldo": {
     "awal": 0,
     "masuk": 15338500,
-    "keluar": 11703000,
-    "akhir": 3635500
+    "keluar": 11733000,
+    "akhir": 3605500
   },
-  "jumlahTransaksi": 148,
+  "jumlahTransaksi": 149,
   "transactions": [
     {
       "id": "masjid-260828-002",
@@ -32,6 +32,19 @@
       "keterangan": "Marbot",
       "nominal": 25000,
       "label": []
+    },
+    {
+      "id": "masjid-260828-004",
+      "nomor": "149",
+      "tanggal": 1787893200000,
+      "jenis": "keluar",
+      "kategori": "konsumsi",
+      "kategoriNama": "Konsumsi",
+      "keterangan": "Pasang Plafon",
+      "nominal": 30000,
+      "label": [
+        "plafon"
+      ]
     },
     {
       "id": "masjid-260828-003",
@@ -64,7 +77,9 @@
       "kategoriNama": "Konsumsi",
       "keterangan": "Air Minum",
       "nominal": 7000,
-      "label": []
+      "label": [
+        "plafon"
+      ]
     },
     {
       "id": "masjid-260827-003",
@@ -75,7 +90,9 @@
       "kategoriNama": "Konsumsi",
       "keterangan": "Gula Kopi",
       "nominal": 19000,
-      "label": []
+      "label": [
+        "plafon"
+      ]
     },
     {
       "id": "masjid-260827-002",
@@ -86,7 +103,9 @@
       "kategoriNama": "Konsumsi",
       "keterangan": "Pasang plafon",
       "nominal": 20000,
-      "label": []
+      "label": [
+        "plafon"
+      ]
     },
     {
       "id": "masjid-260827-001",
@@ -97,7 +116,9 @@
       "kategoriNama": "Pemeliharaan",
       "keterangan": "Paku",
       "nominal": 10000,
-      "label": []
+      "label": [
+        "plafon"
+      ]
     },
     {
       "id": "masjid-260821-002",
@@ -1864,5 +1885,5 @@
       ]
     }
   ],
-  "updatedAt": 1787897540316
+  "updatedAt": 1787897746313
 }
