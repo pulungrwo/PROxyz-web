@@ -6,10 +6,10 @@
   "saldo": {
     "awal": 0,
     "masuk": 15338500,
-    "keluar": 11733000,
-    "akhir": 3605500
+    "keluar": 11943000,
+    "akhir": 3395500
   },
-  "jumlahTransaksi": 149,
+  "jumlahTransaksi": 150,
   "transactions": [
     {
       "id": "masjid-260828-002",
@@ -32,6 +32,19 @@
       "keterangan": "Marbot",
       "nominal": 25000,
       "label": []
+    },
+    {
+      "id": "masjid-260828-005",
+      "nomor": "150",
+      "tanggal": 1787893200000,
+      "jenis": "keluar",
+      "kategori": "perlengkapan",
+      "kategoriNama": "Perlengkapan",
+      "keterangan": "Kabel putih",
+      "nominal": 210000,
+      "label": [
+        "plafon"
+      ]
     },
     {
       "id": "masjid-260828-004",
@@ -1885,5 +1898,5 @@
       ]
     }
   ],
-  "updatedAt": 1787897746313
+  "updatedAt": 1787916695813
 }
