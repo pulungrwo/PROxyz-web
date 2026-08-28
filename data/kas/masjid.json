@@ -6,11 +6,33 @@
   "saldo": {
     "awal": 0,
     "masuk": 15304500,
-    "keluar": 11653000,
-    "akhir": 3651500
+    "keluar": 11703000,
+    "akhir": 3601500
   },
-  "jumlahTransaksi": 145,
+  "jumlahTransaksi": 147,
   "transactions": [
+    {
+      "id": "masjid-260828-002",
+      "nomor": "147",
+      "tanggal": 1787897366498,
+      "jenis": "keluar",
+      "kategori": "operasional",
+      "kategoriNama": "Operasional",
+      "keterangan": "Marbot",
+      "nominal": 25000,
+      "label": []
+    },
+    {
+      "id": "masjid-260828-001",
+      "nomor": "146",
+      "tanggal": 1787897349253,
+      "jenis": "keluar",
+      "kategori": "operasional",
+      "kategoriNama": "Operasional",
+      "keterangan": "Marbot",
+      "nominal": 25000,
+      "label": []
+    },
     {
       "id": "masjid-260827-005",
       "nomor": "145",
@@ -1831,5 +1853,5 @@
       ]
     }
   ],
-  "updatedAt": 1787846747478
+  "updatedAt": 1787897366788
 }
