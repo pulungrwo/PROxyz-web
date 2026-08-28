@@ -388,58 +388,236 @@ dialog{max-height:min(92dvh,760px);overflow:hidden}
   .risma-rank-row-card .risma-rank-points{font-size:8.8px;padding:4px 5px}
 }
 
-/* ==========================================================
-   KOMPETISI · Admin Web 0.9.0
-   ========================================================== */
-#tab-kompetisi{display:inline-flex;align-items:center;gap:.45rem}
-.competition-picker{margin-bottom:12px}.competition-picker .section-head{margin-bottom:10px}
-.competition-hero{background:linear-gradient(145deg,#111827,#1f2937 58%,#172554);color:#fff;border-radius:22px;padding:20px;box-shadow:0 16px 38px rgba(15,23,42,.16)}
-.competition-hero .eyebrow,.competition-hero .hero-sub{color:rgba(255,255,255,.72)}
-.competition-summary{margin-top:16px}.competition-summary>div{background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.1);border-radius:15px;padding:11px}.competition-summary span{display:block;font-size:.73rem;color:rgba(255,255,255,.67)}.competition-summary b{font-size:1.12rem}
-.competition-hero-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}.competition-hero .hero-tool{background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.13)}
-.competition-subtabs{margin:12px 0;overflow:auto;scrollbar-width:none}.competition-subtabs::-webkit-scrollbar{display:none}.competition-subtabs .subtab{display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
-.competition-panel{margin-bottom:14px}.competition-add-form{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:end;margin-bottom:8px}.competition-add-form textarea{min-height:76px}
-.competition-list{display:grid;gap:9px}.competition-row{display:flex;justify-content:space-between;gap:10px;align-items:center;border:1px solid var(--line,#e5e7eb);border-radius:15px;padding:10px 11px;background:var(--surface,#fff)}
-.competition-row-main{display:flex;gap:10px;align-items:center;min-width:0}.competition-row-main>div{display:flex;flex-direction:column;min-width:0}.competition-row-main strong{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.competition-row-main span:not(.competition-icon){font-size:.78rem;color:var(--muted,#64748b)}
-.competition-icon{width:34px;height:34px;border-radius:11px;display:grid;place-items:center;background:#eef2ff;color:#3730a3;flex:0 0 auto}.competition-row-actions{display:flex;gap:6px;flex:0 0 auto}
-.competition-actions{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:9px}
-.competition-match{border:1px solid var(--line,#e5e7eb);border-radius:16px;padding:11px;background:var(--surface,#fff);display:grid;gap:8px}.competition-match.finished{border-color:#bbf7d0}.competition-match.waiting{opacity:.72}.competition-match-tag{font-size:.73rem;color:var(--muted,#64748b);font-weight:700}
-.competition-scoreline{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:8px;align-items:center}.competition-scoreline strong:first-child{text-align:right}.competition-scoreline strong:last-child{text-align:left}.competition-scoreline b{font-size:1rem;border-radius:10px;padding:5px 9px;background:#f1f5f9;white-space:nowrap}.competition-setline{font-size:.75rem;color:var(--muted,#64748b);text-align:center}
-.competition-standing-wrap{display:grid;gap:12px}.competition-table-card{overflow:hidden;border:1px solid var(--line,#e5e7eb);border-radius:16px}.competition-table-card h3{margin:0;padding:10px 12px;background:#f8fafc;font-size:.9rem}.competition-table{overflow:auto}.competition-table-row{display:grid;grid-template-columns:34px minmax(125px,1fr) repeat(6,42px);min-width:455px;border-top:1px solid var(--line,#e5e7eb);align-items:center}.competition-table-row span{padding:8px 6px;text-align:center;font-size:.78rem}.competition-table-row .name{text-align:left;font-weight:700}.competition-table-row.head{background:#f8fafc;font-weight:800;color:#475569}
-.competition-bracket{display:flex;gap:12px;overflow:auto;padding:2px 1px 8px;align-items:flex-start}.bracket-column{min-width:210px;display:grid;gap:8px}.bracket-column h3{font-size:.8rem;margin:0;color:var(--muted,#64748b);position:sticky;left:0}.bracket-match{display:grid;grid-template-columns:1fr 30px;gap:4px 8px;border:1px solid var(--line,#e5e7eb);border-radius:13px;padding:9px;background:var(--surface,#fff);box-shadow:0 5px 16px rgba(15,23,42,.05)}.bracket-match>span{grid-column:1/-1;font-size:.68rem;color:var(--muted,#64748b)}.bracket-match strong{font-size:.79rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.bracket-match b{text-align:center;border-radius:7px;background:#f1f5f9;font-size:.8rem;padding:2px}
-#competition-pengaturan-panel .mini-section-title{margin-top:18px}.competition-panel .check-row{display:flex;gap:8px;align-items:flex-start}.competition-panel .check-row input{width:auto;margin-top:3px}
+/* RISMA Web V0.8.6 — finalisasi Rank & daftar input */
+.risma-rank-row-card{
+  grid-template-columns:34px minmax(0,1fr) auto!important;
+  align-items:start!important;
+  column-gap:8px!important;
+  row-gap:4px!important;
+}
+.risma-rank-row-card .risma-rank-info{display:grid;gap:4px;min-width:0;padding-top:1px}
+.risma-rank-name-line{display:flex;align-items:center;gap:7px;min-width:0;flex-wrap:nowrap}
+.risma-rank-name-line strong{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.risma-rank-name-line .risma-rank-points{flex:0 0 auto}
+.risma-rank-actions{display:flex;align-items:flex-start;justify-content:flex-end;gap:5px;align-self:start;justify-self:end;margin-top:-1px}
+.risma-rank-row-card .risma-rank-number{align-self:start}
 
-@media (max-width:680px){
-  .competition-hero{padding:15px;border-radius:18px}.competition-summary{grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}.competition-summary>div{padding:9px 6px;text-align:center}.competition-summary span{font-size:.64rem}.competition-summary b{font-size:.98rem}
-  .competition-add-form{grid-template-columns:1fr}.competition-add-form button{width:100%}.competition-row{align-items:flex-start}.competition-row-actions{flex-direction:column}.competition-row-actions button span{display:none}.competition-row-actions button{min-width:36px}
-  .competition-scoreline{grid-template-columns:minmax(0,1fr) 54px minmax(0,1fr);font-size:.8rem}.competition-scoreline b{text-align:center;padding:4px}
-  .competition-bracket{margin-left:-4px;margin-right:-4px}.bracket-column{min-width:186px}
+/* Nama tetap di kiri, Ubah/Hapus di kanan atas; hadir/poin menjadi keterangan di bawah nama. */
+.risma-week-draft-card{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) auto!important;
+  align-items:start!important;
+  gap:8px!important;
+}
+.risma-week-draft-card>div:first-child{min-width:0}
+.risma-draft-actions{justify-self:end!important;align-self:start!important;justify-content:flex-end!important;flex-wrap:nowrap!important}
+
+@media(max-width:640px){
+  .risma-rank-row-card{grid-template-columns:31px minmax(0,1fr) auto!important;padding:9px!important;gap:6px!important}
+  .risma-rank-name-line{gap:5px}
+  .risma-rank-actions{gap:3px}
+  .risma-rank-row-card .risma-mini-action{padding:5px!important}
+  .risma-week-draft-card{grid-template-columns:minmax(0,1fr) auto!important}
+}
+@media(max-width:410px){
+  .risma-rank-row-card{grid-template-columns:28px minmax(0,1fr) auto!important;gap:5px!important}
+  .risma-rank-name-line{gap:4px}
+  .risma-rank-row-card .risma-rank-info strong{font-size:11.8px}
+  .risma-rank-row-card .risma-rank-info span{font-size:8.7px}
+  .risma-rank-row-card .risma-rank-points{font-size:8.8px;padding:4px 5px}
+  .risma-rank-actions{gap:2px}
+  .risma-rank-actions .risma-mini-action{padding:4px!important;min-height:28px}
+  .risma-week-draft-card{display:grid!important;grid-template-columns:minmax(0,1fr) auto!important}
+  .risma-draft-actions{justify-self:end!important;justify-content:flex-end!important}
 }
 
-/* ==========================================================
-   KOMPETISI · Admin Web 0.9.0
-   ========================================================== */
-#tab-kompetisi{display:inline-flex;align-items:center;gap:.45rem}
-.competition-picker{margin-bottom:12px}.competition-picker .section-head{margin-bottom:10px}
-.competition-hero{background:linear-gradient(145deg,#111827,#1f2937 58%,#172554);color:#fff;border-radius:22px;padding:20px;box-shadow:0 16px 38px rgba(15,23,42,.16)}
-.competition-hero .eyebrow,.competition-hero .hero-sub{color:rgba(255,255,255,.72)}
-.competition-summary{margin-top:16px}.competition-summary>div{background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.1);border-radius:15px;padding:11px}.competition-summary span{display:block;font-size:.73rem;color:rgba(255,255,255,.67)}.competition-summary b{font-size:1.12rem}
-.competition-hero-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}.competition-hero .hero-tool{background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.13)}
-.competition-subtabs{margin:12px 0;overflow:auto;scrollbar-width:none}.competition-subtabs::-webkit-scrollbar{display:none}.competition-subtabs .subtab{display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
-.competition-panel{margin-bottom:14px}.competition-add-form{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:end;margin-bottom:8px}.competition-add-form textarea{min-height:76px}
-.competition-list{display:grid;gap:9px}.competition-row{display:flex;justify-content:space-between;gap:10px;align-items:center;border:1px solid var(--line,#e5e7eb);border-radius:15px;padding:10px 11px;background:var(--surface,#fff)}
-.competition-row-main{display:flex;gap:10px;align-items:center;min-width:0}.competition-row-main>div{display:flex;flex-direction:column;min-width:0}.competition-row-main strong{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.competition-row-main span:not(.competition-icon){font-size:.78rem;color:var(--muted,#64748b)}
-.competition-icon{width:34px;height:34px;border-radius:11px;display:grid;place-items:center;background:#eef2ff;color:#3730a3;flex:0 0 auto}.competition-row-actions{display:flex;gap:6px;flex:0 0 auto}
-.competition-actions{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:9px}
-.competition-match{border:1px solid var(--line,#e5e7eb);border-radius:16px;padding:11px;background:var(--surface,#fff);display:grid;gap:8px}.competition-match.finished{border-color:#bbf7d0}.competition-match.waiting{opacity:.72}.competition-match-tag{font-size:.73rem;color:var(--muted,#64748b);font-weight:700}
-.competition-scoreline{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:8px;align-items:center}.competition-scoreline strong:first-child{text-align:right}.competition-scoreline strong:last-child{text-align:left}.competition-scoreline b{font-size:1rem;border-radius:10px;padding:5px 9px;background:#f1f5f9;white-space:nowrap}.competition-setline{font-size:.75rem;color:var(--muted,#64748b);text-align:center}
-.competition-standing-wrap{display:grid;gap:12px}.competition-table-card{overflow:hidden;border:1px solid var(--line,#e5e7eb);border-radius:16px}.competition-table-card h3{margin:0;padding:10px 12px;background:#f8fafc;font-size:.9rem}.competition-table{overflow:auto}.competition-table-row{display:grid;grid-template-columns:34px minmax(125px,1fr) repeat(6,42px);min-width:455px;border-top:1px solid var(--line,#e5e7eb);align-items:center}.competition-table-row span{padding:8px 6px;text-align:center;font-size:.78rem}.competition-table-row .name{text-align:left;font-weight:700}.competition-table-row.head{background:#f8fafc;font-weight:800;color:#475569}
-.competition-bracket{display:flex;gap:12px;overflow:auto;padding:2px 1px 8px;align-items:flex-start}.bracket-column{min-width:210px;display:grid;gap:8px}.bracket-column h3{font-size:.8rem;margin:0;color:var(--muted,#64748b);position:sticky;left:0}.bracket-match{display:grid;grid-template-columns:1fr 30px;gap:4px 8px;border:1px solid var(--line,#e5e7eb);border-radius:13px;padding:9px;background:var(--surface,#fff);box-shadow:0 5px 16px rgba(15,23,42,.05)}.bracket-match>span{grid-column:1/-1;font-size:.68rem;color:var(--muted,#64748b)}.bracket-match strong{font-size:.79rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.bracket-match b{text-align:center;border-radius:7px;background:#f1f5f9;font-size:.8rem;padding:2px}
-#competition-pengaturan-panel .mini-section-title{margin-top:18px}.competition-panel .check-row{display:flex;gap:8px;align-items:flex-start}.competition-panel .check-row input{width:auto;margin-top:3px}
+/* RISMA Web V0.8.7 — batas kupon per penerima dapat diatur Owner */
 
-@media (max-width:680px){
-  .competition-hero{padding:15px;border-radius:18px}.competition-summary{grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}.competition-summary>div{padding:9px 6px;text-align:center}.competition-summary span{font-size:.64rem}.competition-summary b{font-size:.98rem}
-  .competition-add-form{grid-template-columns:1fr}.competition-add-form button{width:100%}.competition-row{align-items:flex-start}.competition-row-actions{flex-direction:column}.competition-row-actions button span{display:none}.competition-row-actions button{min-width:36px}
-  .competition-scoreline{grid-template-columns:minmax(0,1fr) 54px minmax(0,1fr);font-size:.8rem}.competition-scoreline b{text-align:center;padding:4px}
-  .competition-bracket{margin-left:-4px;margin-right:-4px}.bracket-column{min-width:186px}
+/* RISMA Web V0.8.8 — font lebih jelas, diskualifikasi, dialog update, simbol rata-rata */
+#risma-view .week-card strong{font-size:15px}
+#risma-view .week-card span{font-size:11.5px}
+#risma-view .risma-rank-title strong{font-size:16px}
+#risma-view .risma-rank-title span{font-size:11px}
+#risma-view .risma-rank-row-card .risma-rank-info strong{font-size:14px}
+#risma-view .risma-rank-row-card .risma-rank-info>span{font-size:10.5px}
+#risma-view .risma-rank-points{font-size:11px;padding:6px 8px}
+#risma-view .risma-row-name{font-size:14px}
+#risma-view .risma-row-meta{font-size:10.8px}
+#risma-view .risma-score-line .score-pill,#risma-view .risma-coupon-count-inline{font-size:10.8px}
+#risma-view .risma-week-draft-card strong{font-size:14px}
+#risma-view .risma-week-draft-card span{font-size:11px}
+#risma-view .risma-draft-head strong{font-size:14px}
+#risma-view .risma-draft-head span{font-size:11.5px}
+#risma-view .risma-pub-item summary strong,#risma-view .risma-pub-static-head strong{font-size:16px}
+#risma-view .risma-pub-item summary small,#risma-view .risma-pub-static-head small{font-size:12px}
+#risma-view label{font-size:13px}
+#risma-view input,#risma-view select,#risma-view textarea{font-size:14px}
+#risma-view .muted.small{font-size:11.5px}
+
+.risma-rank-row-card.disqualified{background:#fffafa;border-color:#fecaca}
+.risma-disqualified-name{text-decoration:line-through;text-decoration-thickness:1.5px;color:#7a271a!important}
+.risma-dq-badge{display:inline-flex;align-items:center;white-space:nowrap;border-radius:999px;padding:4px 6px;background:#fee2e2;color:#b42318!important;font-size:8.5px!important;font-weight:900;letter-spacing:.02em}
+.risma-rank-row-card.disqualified .risma-rank-points{background:#fff1f2;color:#b42318}
+.risma-rank-row-card.disqualified .risma-rank-number{background:#fff1f2;color:#b42318}
+.risma-rank-row-card.disqualified .risma-rank-name-line{flex-wrap:wrap}
+
+.risma-week-publish-form{max-width:440px}
+.risma-week-publish-form .muted{font-size:14px;line-height:1.55}
+.risma-week-publish-form .actions{margin-top:4px}
+
+@media(max-width:640px){
+  #risma-view .risma-rank-row-card .risma-rank-info strong{font-size:13px}
+  #risma-view .risma-rank-row-card .risma-rank-info>span{font-size:9.8px}
+  #risma-view .risma-rank-points{font-size:10px;padding:5px 6px}
+  #risma-view .risma-row-name{font-size:13px}
+  #risma-view .risma-row-meta{font-size:10px}
+  #risma-view .risma-score-line .score-pill,#risma-view .risma-coupon-count-inline{font-size:10px}
+  #risma-view .risma-mini-action{font-size:9.8px!important}
+  #risma-view .risma-pub-item summary small,#risma-view .risma-pub-static-head small{font-size:11.5px}
+}
+@media(max-width:390px){
+  #risma-view .risma-rank-row-card .risma-rank-info strong{font-size:12.5px}
+  #risma-view .risma-rank-row-card .risma-rank-info>span{font-size:9.3px}
+  #risma-view .risma-rank-points{font-size:9.5px}
+  #risma-view .risma-row-name{font-size:12.5px}
+  #risma-view .risma-row-meta{font-size:9.7px}
+  #risma-view .risma-mini-action span{font-size:9px}
+  .risma-dq-badge{font-size:8px!important;padding:3px 5px}
+}
+
+
+/* Admin Web V0.8.9 — Font Awesome system, login ringkas, floating app dock */
+:root{--admin-dock-top:max(8px,env(safe-area-inset-top));--admin-dock-height:58px}
+button>i,.hero-link>i,.field-label>i,.auth-security>i{pointer-events:none}
+button.has-fa,.primary>i,.ghost>i,.success-soft>i,.danger-soft>i,.evidence-soft>i{display:inline-flex;align-items:center;justify-content:center}
+button.has-fa{gap:7px}.primary.has-fa,.ghost.has-fa,.success-soft.has-fa,.danger-soft.has-fa{align-items:center;justify-content:center}
+.icon-button{display:inline-grid!important;place-items:center}.icon-button i{font-size:16px}
+.evidence-badge{gap:6px}.evidence-badge i{font-size:10px}
+
+/* Login memakai bahasa visual yang sama dengan Admin */
+.auth-wrap{min-height:calc(100dvh - 32px);align-items:center;padding:12px 0}
+.auth-panel{width:min(100%,430px);padding:24px;border-radius:24px;box-shadow:0 22px 60px rgba(16,24,40,.09);overflow:hidden;position:relative}
+.auth-panel::before{content:"";position:absolute;inset:0 0 auto;height:4px;background:linear-gradient(90deg,#101828,#475467);pointer-events:none}
+.auth-brand{display:flex;align-items:center;gap:11px;margin-bottom:22px}.auth-brand .eyebrow{margin:0 0 2px}.auth-brand strong{font-size:15px;color:#101828}
+.auth-icon{width:44px;height:44px;margin:0;border-radius:14px;font-size:18px;box-shadow:0 8px 22px rgba(16,24,40,.16)}
+.auth-copy{margin-bottom:15px}.auth-copy h1{font-size:26px;letter-spacing:-.035em;margin-bottom:6px}.auth-copy .muted{font-size:13.5px;margin-bottom:0}
+.auth-app-icons{display:flex;align-items:center;gap:7px;margin:0 0 19px}.auth-app-icons span{display:grid;place-items:center;width:34px;height:34px;border-radius:11px;background:#f2f4f7;color:#475467;font-size:13px}.auth-app-icons span:first-child{background:#101828;color:#fff}
+.auth-form{gap:12px}.auth-form+.auth-form{margin-top:0}.field-label{display:inline-flex;align-items:center;gap:7px}.field-label i{width:15px;text-align:center;color:#667085}.field-label .fa-whatsapp{color:#067647}
+.auth-form input{min-height:48px;border-radius:14px;padding:13px 14px}.auth-form button{min-height:47px;border-radius:14px}.auth-form .primary{display:flex;align-items:center;justify-content:center;gap:8px}
+.auth-security{display:flex;align-items:flex-start;gap:8px;margin:17px 0 0;padding-top:15px;border-top:1px solid #eef1f4;color:#667085;font-size:11.5px;line-height:1.45}.auth-security i{margin-top:2px;color:#475467}.auth-panel .status:not(:empty){margin-top:12px;padding:9px 11px;border-radius:11px;background:#f8fafc}.auth-panel .status.error:not(:empty){background:#fff1f0}.auth-panel .status.success:not(:empty){background:#ecfdf3}
+
+/* Header pengguna lebih ringkas agar dock aplikasi menjadi fokus */
+.profilebar{border-radius:18px;margin-bottom:10px}.profile-actions button i{font-size:12px}.logout-icon{display:none}
+
+/* Dock aplikasi mengambang: satu baris, compact, tetap mudah disentuh */
+.app-tabs{position:sticky!important;top:var(--admin-dock-top)!important;z-index:30!important;display:flex!important;grid-template-columns:none!important;align-items:center;gap:6px!important;width:max-content;max-width:100%;margin:0 auto 15px!important;padding:6px!important;border:1px solid rgba(208,213,221,.78);border-radius:18px!important;background:rgba(255,255,255,.88)!important;box-shadow:0 14px 38px rgba(16,24,40,.13)!important;backdrop-filter:blur(16px) saturate(150%);-webkit-backdrop-filter:blur(16px) saturate(150%);overflow-x:auto;overscroll-behavior-inline:contain;scrollbar-width:none}
+.app-tabs::-webkit-scrollbar{display:none}.app-tab{flex:0 0 auto;display:inline-flex!important;align-items:center;justify-content:center;gap:7px;min-width:48px;height:44px;padding:0 13px!important;border-radius:13px!important;background:transparent!important;color:#667085!important;font-size:12.5px!important;font-weight:820;white-space:nowrap;transition:background .16s ease,color .16s ease,box-shadow .16s ease,transform .16s ease}.app-tab i{font-size:14px}.app-tab:active{transform:scale(.97)}.app-tab.active{background:#101828!important;color:#fff!important;box-shadow:0 7px 18px rgba(16,24,40,.2)}
+.app-section{scroll-margin-top:82px}
+
+/* Navigasi internal semua aplikasi mengikuti satu sistem ikon */
+.subtab{display:inline-flex!important;align-items:center;justify-content:center;gap:6px}.subtab i{font-size:11px;opacity:.88}.subtab.active i{color:inherit;opacity:1}
+.quick-card>i{display:grid;place-items:center;width:30px;height:30px;margin-bottom:8px;border-radius:10px;background:#f2f4f7;color:#475467;font-size:13px}.quick-card:hover>i,.quick-card:focus-visible>i{background:#e9edf3}.kas-action-card{gap:7px}.kas-action-card>i{width:28px;height:28px;margin:0;border-radius:9px}.kas-action-card b{display:inline}.kas-action-income>i{background:#ecfdf3;color:#067647}.kas-action-expense>i{background:#fff1f0;color:#b42318}
+.hero-link{align-items:center;gap:6px}.hero-link i{font-size:10px}
+.risma-subtabs{top:calc(var(--admin-dock-top) + var(--admin-dock-height) + 5px)!important}
+.risma-rank-number[class*=rank-medal-]{font-size:14px}.risma-rank-number.rank-medal-1{background:#fff7ed;color:#b54708}.risma-rank-number.rank-medal-2{background:#f2f4f7;color:#475467}.risma-rank-number.rank-medal-3{background:#fff4ed;color:#c4320a}
+.candidate-check i{font-size:11px}
+
+@media(max-width:640px){
+  .auth-wrap{min-height:calc(100dvh - 20px);padding:4px 0}.auth-panel{padding:21px 18px;border-radius:21px}.auth-copy h1{font-size:24px}.auth-app-icons{gap:6px}.auth-app-icons span{width:32px;height:32px;border-radius:10px}
+  .profilebar{margin-bottom:9px}.app-tabs{max-width:calc(100vw - 20px);margin-bottom:12px!important;padding:5px!important;border-radius:16px!important}.app-tab{height:42px;min-width:44px;padding:0 11px!important}.app-tab i{font-size:13px}
+  .quick-card>i{width:28px;height:28px;margin-bottom:7px}.risma-subtabs{top:calc(var(--admin-dock-top) + 54px)!important}
+}
+@media(max-width:520px){
+  .app-tabs{width:max-content}.app-tab{width:44px;min-width:44px;padding:0!important;gap:0}.app-tab .app-tab-label{display:none}.app-tab.active{width:auto;min-width:74px;padding:0 12px!important;gap:7px}.app-tab.active .app-tab-label{display:inline}
+}
+@media(max-width:380px){
+  .shell{padding-left:8px;padding-right:8px}.auth-panel{padding:20px 16px}.auth-app-icons span{width:30px;height:30px}.app-tabs{max-width:calc(100vw - 12px)}.app-tab{width:42px;min-width:42px}.app-tab.active{min-width:68px;padding:0 10px!important}
+}
+
+/* Admin Web V0.9.0 — dock mengambang ringkas + Rank RISMA tanpa aksi */
+.app-tabs-sentinel{height:1px;margin:0;padding:0;pointer-events:none}
+.app-tab[hidden],.app-tabs-toggle[hidden]{display:none!important}
+.app-tabs-toggle{order:99;display:none;align-items:center;justify-content:center;gap:7px;min-width:44px;height:42px;padding:0 11px;border:0;border-radius:13px;background:#eef2f6;color:#344054;font-size:12px;font-weight:850;white-space:nowrap;cursor:pointer}
+.app-tabs-toggle i{font-size:13px}.app-tabs-toggle:active{transform:scale(.97)}
+
+/* Saat belum menempel, semua aplikasi tetap mudah dipilih dalam dock compact. */
+.app-tabs:not(.is-floating){position:relative!important;top:auto!important}
+
+/* Saat dock benar-benar mengambang, cukup tampilkan aplikasi aktif + tombol aplikasi. */
+.app-tabs.is-floating{width:auto!important;max-width:calc(100vw - 20px);overflow:visible!important;padding:5px!important;gap:5px!important}
+.app-tabs.is-floating .app-tabs-toggle{display:inline-flex}
+.app-tabs.is-floating:not(.is-expanded) .app-tab:not(.active){display:none!important}
+.app-tabs.is-floating:not(.is-expanded) .app-tab.active{display:inline-flex!important;width:auto!important;min-width:78px!important;padding:0 13px!important;gap:7px!important}
+.app-tabs.is-floating:not(.is-expanded) .app-tab.active .app-tab-label{display:inline!important}
+.app-tabs.is-floating.is-expanded{overflow-x:auto!important;max-width:calc(100vw - 16px)}
+.app-tabs.is-floating.is-expanded .app-tab{display:inline-flex!important}
+.app-tabs.is-floating.is-expanded .app-tab[hidden]{display:none!important}
+.app-tabs.is-floating.is-expanded .app-tabs-toggle span{display:none}
+.app-tabs.is-floating.is-expanded .app-tabs-toggle{width:42px;min-width:42px;padding:0}
+
+/* Rank hanya untuk melihat peringkat; perubahan peserta dilakukan dari tab Poin. */
+#risma-rank-participants .risma-rank-row-card,
+#risma-rank-teams .risma-rank-row-card{grid-template-columns:34px minmax(0,1fr)!important;align-items:start!important}
+#risma-rank-participants .risma-rank-info,
+#risma-rank-teams .risma-rank-info{min-width:0}
+#risma-rank-teams .risma-team-average{display:inline-flex;align-items:center;gap:4px}
+#risma-rank-teams .risma-rank-info>span{white-space:normal;overflow-wrap:anywhere;line-height:1.5}
+#risma-rank-teams .risma-rank-card.team p{display:none}
+
+@media(max-width:640px){
+  .app-tabs:not(.is-floating){max-width:calc(100vw - 20px);overflow-x:auto!important}
+  .app-tabs.is-floating{max-width:calc(100vw - 14px)}
+  #risma-rank-participants .risma-rank-row-card,
+  #risma-rank-teams .risma-rank-row-card{grid-template-columns:31px minmax(0,1fr)!important;gap:7px!important}
+  #risma-rank-teams .risma-rank-info>span{font-size:9.8px}
+}
+@media(max-width:410px){
+  .app-tabs.is-floating:not(.is-expanded) .app-tab.active{min-width:72px!important;padding:0 11px!important}
+  .app-tabs-toggle{padding:0 10px}.app-tabs-toggle span{display:none}.app-tabs-toggle{width:42px;min-width:42px}
+  #risma-rank-participants .risma-rank-row-card,
+  #risma-rank-teams .risma-rank-row-card{grid-template-columns:28px minmax(0,1fr)!important;gap:6px!important}
+  #risma-rank-teams .risma-rank-name-line{flex-wrap:nowrap}
+  #risma-rank-teams .risma-team-average{font-size:9.5px;padding:5px 6px}
+}
+
+/* Kompetisi · tambahan terisolasi. Semua aplikasi lain tetap memakai CSS Admin Web 13:40. */
+#kompetisi-view .competition-hero-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:12px}
+#kompetisi-view .competition-list{display:grid;gap:9px;margin-top:11px}
+#kompetisi-view .competition-actions{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+#kompetisi-view .competition-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 13px;border:1px solid #e7eaf0;border-radius:15px;background:#fff}
+#kompetisi-view .competition-row-main{display:flex;align-items:center;gap:10px;min-width:0}
+#kompetisi-view .competition-row-main>div{display:grid;gap:3px;min-width:0}
+#kompetisi-view .competition-row-main strong{font-size:14px;overflow-wrap:anywhere}
+#kompetisi-view .competition-row-main span:not(.competition-icon){font-size:11px;color:#667085}
+#kompetisi-view .competition-icon{display:grid;place-items:center;width:36px;height:36px;border-radius:12px;background:#f2f4f7;color:#475467;flex:0 0 auto}
+#kompetisi-view .competition-row-actions{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+#kompetisi-view .competition-match{border:1px solid #eaecf0;border-radius:15px;padding:12px 13px;background:#fff;display:grid;gap:8px}
+#kompetisi-view .competition-match.finished{border-color:#d1fadf}
+#kompetisi-view .competition-match.waiting{opacity:.7}
+#kompetisi-view .competition-match-tag{font-size:10px;color:#667085;font-weight:800}
+#kompetisi-view .competition-scoreline{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:8px;align-items:center}
+#kompetisi-view .competition-scoreline strong:first-child{text-align:right}
+#kompetisi-view .competition-scoreline strong:last-child{text-align:left}
+#kompetisi-view .competition-scoreline b{min-width:48px;text-align:center;padding:6px 8px;border-radius:10px;background:#f2f4f7;font-size:13px}
+#kompetisi-view .competition-setline{text-align:center;font-size:11px;color:#667085}
+#kompetisi-view .competition-standing-wrap{display:grid;gap:12px}
+#kompetisi-view .competition-table-card{overflow:hidden;border:1px solid #e7eaf0;border-radius:15px;background:#fff}
+#kompetisi-view .competition-table-card h3{margin:0;padding:11px 12px;background:#f8fafc;font-size:13px}
+#kompetisi-view .competition-table{overflow:auto}
+#kompetisi-view .competition-table-row{display:grid;grid-template-columns:34px minmax(125px,1fr) repeat(6,42px);min-width:455px;border-top:1px solid #eaecf0;align-items:center}
+#kompetisi-view .competition-table-row span{padding:8px 6px;text-align:center;font-size:11px}
+#kompetisi-view .competition-table-row .name{text-align:left;font-weight:800}
+#kompetisi-view .competition-table-row.head{background:#f8fafc;color:#475467;font-weight:850}
+#kompetisi-view .competition-bracket{display:flex;gap:10px;overflow:auto;padding-bottom:6px;align-items:flex-start}
+#kompetisi-view .bracket-column{min-width:200px;display:grid;gap:8px}
+#kompetisi-view .bracket-column h3{font-size:12px;margin:0;color:#667085}
+#kompetisi-view .bracket-match{display:grid;grid-template-columns:1fr 28px;gap:5px 8px;padding:10px;border:1px solid #e7eaf0;border-radius:13px;background:#fff}
+#kompetisi-view .bracket-match>span{grid-column:1/-1;font-size:9px;color:#98a2b3}
+#kompetisi-view .bracket-match strong{font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#kompetisi-view .bracket-match b{text-align:center;padding:3px;border-radius:7px;background:#f2f4f7;font-size:11px}
+@media(max-width:640px){
+  #kompetisi-view .competition-row{align-items:flex-start}
+  #kompetisi-view .competition-row-actions{flex-direction:column}
+  #kompetisi-view .competition-scoreline{font-size:12px}
+  #kompetisi-view .bracket-column{min-width:182px}
 }

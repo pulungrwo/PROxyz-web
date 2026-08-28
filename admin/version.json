@@ -1,11 +1,11 @@
 {
   "version": "0.9.0",
-  "updatedAt": "2026-08-28T14:00:00+07:00",
+  "updatedAt": "2026-08-28T21:27:00+07:00",
+  "uiBase": "PROxyz-SOURCE-20260828-1340",
   "features": [
-    "kompetisi-wa",
+    "admin-v0.9.0",
+    "risma-v0.8.8",
     "kompetisi-web",
-    "font-awesome",
-    "bracket",
-    "standings"
+    "restore-ui-1340"
   ]
 }
