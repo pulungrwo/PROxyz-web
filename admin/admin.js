@@ -1,7 +1,7 @@
 (() => {
   "use strict";
 
-  const ADMIN_BUILD = "0.8.9";
+  const ADMIN_BUILD = "0.9.0";
   const config = window.PROXYZ_ADMIN_CONFIG || {};
 
   async function checkAdminBuild() {
@@ -402,12 +402,40 @@
     }
   }
 
+  function appDockTopPx() {
+    const raw = getComputedStyle(document.documentElement).getPropertyValue("--admin-dock-top").trim();
+    const parsed = Number.parseFloat(raw);
+    return Number.isFinite(parsed) ? parsed : 8;
+  }
+
+  function syncAppDockFloating() {
+    const dock = $("app-tabs");
+    const sentinel = $("app-tabs-sentinel");
+    const toggle = $("app-tabs-toggle");
+    if (!dock || !sentinel || !toggle || $("app-view")?.hidden) return;
+    const floating = sentinel.getBoundingClientRect().top <= appDockTopPx() + 1 && window.scrollY > 0;
+    dock.classList.toggle("is-floating", floating);
+    toggle.hidden = !floating;
+    if (!floating) dock.classList.remove("is-expanded");
+    toggle.setAttribute("aria-expanded", String(floating && dock.classList.contains("is-expanded")));
+  }
+
+  function collapseAppDock() {
+    const dock = $("app-tabs");
+    const toggle = $("app-tabs-toggle");
+    if (!dock) return;
+    dock.classList.remove("is-expanded");
+    if (toggle) toggle.setAttribute("aria-expanded", "false");
+  }
+
   function switchView(view) {
     activeView = view;
     for (const name of ["kas", "bertunas", "galeri", "risma", "ternak", "users"]) {
       $(`${name}-view`).hidden = name !== view;
       $("tab-" + name).classList.toggle("active", name === view);
     }
+    collapseAppDock();
+    requestAnimationFrame(syncAppDockFloating);
     if (view === "kas" && !activeKas && me.kas?.length) loadKas(me.kas[0].id).catch(showError);
     if (view === "bertunas" && !activeBertunas && me.bertunas?.length) loadBertunas(me.bertunas[0].id).catch(showError);
     if (view === "galeri" && !activeGallery && me.galeri?.length) loadGallery(me.galeri[0].id).catch(showError);
@@ -1753,7 +1781,6 @@
 
     const scores = rismaDetail?.scores || [];
     const teams = rismaDetail?.teams || [];
-    const masterLocked = rismaDetail?.role !== "owner" && (rismaDetail?.weeks || []).some(row=>Number(row.week)>=2);
     $("risma-rank-participant-count").textContent = wholeNumber.format(scores.length);
     $("risma-rank-team-count").textContent = wholeNumber.format(teams.length);
 
@@ -1770,28 +1797,24 @@
       if(row.disqualified){const badge=document.createElement("span");badge.className="risma-dq-badge";badge.textContent="DISKUALIFIKASI";headline.appendChild(badge);}
       const meta = document.createElement("span"); meta.textContent = participantWeekSummary(row);
       info.append(headline,meta);
-      const actions=document.createElement("div"); actions.className="risma-rank-actions";
-      const edit=rismaIconButton("Ubah","fa-pen","ghost compact risma-mini-action",()=>openRismaParticipant(row));
-      const del=rismaIconButton("Hapus","fa-trash-can","danger-soft compact risma-mini-action",()=>deleteRismaParticipant(row));
-      edit.disabled=masterLocked;del.disabled=masterLocked;
-      if(masterLocked){edit.title="Dikunci setelah Minggu 2. Hanya Owner yang dapat mengubah.";del.title=edit.title;}
-      actions.append(edit,del);
-      card.append(rank,info,actions);
+      card.append(rank,info);
       participantList.appendChild(card);
     });
 
     if (!teams.length) teamList.appendChild(emptyBox("Tim belum disusun. Tim awal dibuat setelah input Minggu 1."));
     else teams.forEach((row,index) => {
       const card = document.createElement("article");
-      card.className = "risma-rank-card team";
-      const top = document.createElement("div"); top.className = "risma-team-rank-top";
+      card.className = "risma-rank-card team risma-rank-row-card risma-team-row-card";
       const rank = document.createElement("span"); rank.className = "risma-rank-number"; renderRismaRankMark(rank,index);
       const info = document.createElement("div"); info.className = "risma-rank-info";
+      const headline = document.createElement("div"); headline.className = "risma-rank-name-line";
       const title = document.createElement("strong"); title.textContent = row.name;
-      const score = document.createElement("span"); score.textContent = `Ø ${number.format(row.averagePoints || 0)} poin · Total ${number.format(row.totalPoints || 0)} poin`;
-      info.append(title,score); top.append(rank,info);
-      const members = document.createElement("p"); members.textContent = (row.members || []).map(x => x.name).join(" · ") || "Belum ada anggota";
-      card.append(top,members);
+      const average = document.createElement("b"); average.className = "risma-rank-points risma-team-average"; average.textContent = `Ø ${number.format(row.averagePoints || 0)} poin`;
+      headline.append(title,average);
+      const memberNames = (row.members || []).map(x => x.name).join(" · ") || "Belum ada anggota";
+      const meta = document.createElement("span"); meta.textContent = `Total ${number.format(row.totalPoints || 0)} poin · ${memberNames}`;
+      info.append(headline,meta);
+      card.append(rank,info);
       teamList.appendChild(card);
     });
   }
@@ -3471,6 +3494,14 @@ ${row.label}`))return;
   $("change-phone").addEventListener("click", () => { clearOtpChallenge(); setStatus($("auth-status")); });
   $("logout").addEventListener("click", async () => { try { await api("/api/auth/logout", { method: "POST", body: "{}" }); } catch (_) {} saveSessionToken(""); clearSession(); });
   document.querySelectorAll(".app-tab").forEach(el => el.addEventListener("click", () => switchView(el.dataset.view)));
+  $("app-tabs-toggle").addEventListener("click", () => {
+    const dock = $("app-tabs");
+    const expanded = !dock.classList.contains("is-expanded");
+    dock.classList.toggle("is-expanded", expanded);
+    $("app-tabs-toggle").setAttribute("aria-expanded", String(expanded));
+  });
+  window.addEventListener("scroll", syncAppDockFloating, { passive: true });
+  window.addEventListener("resize", syncAppDockFloating, { passive: true });
   $("edit-my-name").addEventListener("click", () => openUserNameDialog(null, true));
   $("close-user-name").addEventListener("click", () => $("user-name-dialog").close());
   $("users-refresh").addEventListener("click", () => loadUsers().catch(showError));
