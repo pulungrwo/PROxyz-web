@@ -1,7 +1,7 @@
 (() => {
   "use strict";
 
-  const ADMIN_BUILD = "0.8.8";
+  const ADMIN_BUILD = "0.8.9";
   const config = window.PROXYZ_ADMIN_CONFIG || {};
 
   async function checkAdminBuild() {
@@ -235,11 +235,31 @@
     return div;
   }
 
+  const ADMIN_BUTTON_ICONS = [
+    [/^\+?\s*Bukti\b/i, "fa-paperclip"], [/^Edit$/i, "fa-pen"], [/^Ubah$/i, "fa-pen"], [/^Beri nama$/i, "fa-user-pen"], [/^Nama$/i, "fa-user-pen"],
+    [/^Hapus(?:\s|$)/i, "fa-trash-can"], [/^Bayar$/i, "fa-circle-check"], [/^Selesai$/i, "fa-circle-check"], [/^Lewati$/i, "fa-forward-step"],
+    [/^Aktifkan$/i, "fa-toggle-on"], [/^Nonaktifkan$/i, "fa-toggle-off"], [/^Jual$/i, "fa-money-bill-transfer"], [/^Status$/i, "fa-pen-to-square"],
+    [/^Pilih(?:\s|$)/i, "fa-check-double"], [/^Kosongkan/i, "fa-eraser"], [/^Ganti nama$/i, "fa-pen"], [/^Proses ulang$/i, "fa-rotate-right"],
+    [/^Cek status$/i, "fa-rotate"], [/^Lihat(?:\s|$)/i, "fa-eye"], [/^Pulihkan$/i, "fa-rotate-left"], [/^Kirim(?:\s|$)/i, "fa-paper-plane"],
+    [/^PDF$/i, "fa-file-pdf"], [/^↑$/, "fa-arrow-up"], [/^↓$/, "fa-arrow-down"]
+  ];
+
+  function decorateButtonIcon(el, text) {
+    const label = String(text || "").trim();
+    const match = ADMIN_BUTTON_ICONS.find(([pattern]) => pattern.test(label));
+    if (!match) return el;
+    const icon = match[1];
+    el.classList.add("has-fa");
+    el.innerHTML = `<i class="fa-solid ${icon}" aria-hidden="true"></i><span>${escapeText(label)}</span>`;
+    return el;
+  }
+
   function button(text, className, onClick) {
     const el = document.createElement("button");
     el.type = "button";
     el.className = className;
     el.textContent = text;
+    decorateButtonIcon(el, text);
     el.addEventListener("click", onClick);
     return el;
   }
@@ -248,6 +268,39 @@
     const el = button(text, className, onClick);
     el.innerHTML = `<i class="fa-solid ${icon}"></i><span>${text}</span>`;
     return el;
+  }
+
+  const STATIC_ADMIN_ICONS = new Map([
+    ["refresh","fa-rotate"],["load-more","fa-angles-down"],["kas-report-load","fa-chart-pie"],["kas-schedule-add","fa-calendar-plus"],
+    ["kas-category-add","fa-tags"],["kas-manager-add","fa-user-plus"],["kas-viewer-add","fa-user-plus"],["kas-web-access-save","fa-floppy-disk"],
+    ["bt-refresh","fa-rotate"],["rename-gallery","fa-pen"],["gallery-access","fa-lock"],["refresh-gallery","fa-rotate"],["add-gallery-admin","fa-user-plus"],
+    ["gallery-upload-open","fa-image"],["gallery-bulk-toggle","fa-check-double"],["gallery-bulk-select-loaded","fa-check-double"],["gallery-bulk-clear","fa-eraser"],
+    ["gallery-bulk-edit","fa-layer-group"],["gallery-load-more","fa-angles-down"],["gallery-video-submit","fa-cloud-arrow-up"],["gallery-video-refresh","fa-rotate"],
+    ["gallery-video-close-review","fa-xmark"],["gallery-video-select-all","fa-check-double"],["gallery-video-clear-all","fa-eraser"],["gallery-video-publish","fa-floppy-disk"],
+    ["ternak-refresh","fa-rotate"],["ternak-repro-add","fa-plus"],["ternak-manager-add","fa-user-plus"],["users-refresh","fa-rotate"],
+    ["risma-week-new-toggle","fa-user-plus"],["risma-week-publish-skip","fa-xmark"]
+  ]);
+
+  function hydrateAdminIcons() {
+    document.querySelectorAll(".icon-button").forEach(el => {
+      if (el.querySelector("i")) return;
+      el.innerHTML = '<i class="fa-solid fa-xmark" aria-hidden="true"></i>';
+      el.setAttribute("aria-label", el.getAttribute("aria-label") || "Tutup");
+    });
+    for (const [id, icon] of STATIC_ADMIN_ICONS.entries()) {
+      const el = $(id);
+      if (!el || el.querySelector("i")) continue;
+      const label = String(el.textContent || "").trim();
+      el.classList.add("has-fa");
+      el.innerHTML = `<i class="fa-solid ${icon}" aria-hidden="true"></i><span>${escapeText(label)}</span>`;
+    }
+    document.querySelectorAll('button[type="submit"].primary:not(.risma-mini-action)').forEach(el => {
+      if (el.querySelector("i")) return;
+      const label = String(el.textContent || "").trim();
+      if (!label) return;
+      el.classList.add("has-fa");
+      el.innerHTML = `<i class="fa-solid fa-floppy-disk" aria-hidden="true"></i><span>${escapeText(label)}</span>`;
+    });
   }
 
   function clearOtpChallenge() {
@@ -504,7 +557,7 @@
       const amount = document.createElement("div"); amount.className = `amount ${tx.jenis === "masuk" ? "in" : "out"}`; amount.textContent = `${tx.jenis === "masuk" ? "+" : "−"}${rupiah.format(tx.nominal)}`;
       top.append(left, amount); card.appendChild(top);
       if (tx.catatan) { const note = document.createElement("div"); note.className = "item-meta"; note.style.marginTop = "6px"; note.textContent = tx.catatan; card.appendChild(note); }
-      if (Number(tx.buktiCount || 0) > 0) { const proof = document.createElement("button"); proof.type = "button"; proof.className = "evidence-badge"; proof.textContent = `📎 ${tx.buktiCount} bukti`; proof.addEventListener("click", () => openEvidence(tx)); card.appendChild(proof); }
+      if (Number(tx.buktiCount || 0) > 0) { const proof = document.createElement("button"); proof.type = "button"; proof.className = "evidence-badge has-fa"; proof.innerHTML = `<i class="fa-solid fa-paperclip" aria-hidden="true"></i><span>${tx.buktiCount} bukti</span>`; proof.addEventListener("click", () => openEvidence(tx)); card.appendChild(proof); }
       for (const tag of tx.label || []) { const span = document.createElement("span"); span.className = "tag"; span.textContent = `#${tag}`; card.appendChild(span); }
       const actions = document.createElement("div"); actions.className = "item-actions";
       actions.append(button(Number(tx.buktiCount || 0) ? `Bukti · ${tx.buktiCount}` : "+ Bukti", "evidence-soft", () => openEvidence(tx)), button("Edit", "ghost", () => openKasEdit(tx)), button("Hapus", "danger-soft", () => deleteKasTx(tx)));
@@ -1682,11 +1735,14 @@
     return parts.join(" · ");
   }
 
-  function rismaRankMark(index) {
-    if (index === 0) return "🥇";
-    if (index === 1) return "🥈";
-    if (index === 2) return "🥉";
-    return String(index + 1);
+  function renderRismaRankMark(el, index) {
+    if (index < 3) {
+      el.classList.add(`rank-medal-${index + 1}`);
+      el.innerHTML = '<i class="fa-solid fa-medal" aria-hidden="true"></i>';
+      el.setAttribute("aria-label", `Peringkat ${index + 1}`);
+      return;
+    }
+    el.textContent = String(index + 1);
   }
 
   function renderRismaRankings() {
@@ -1705,7 +1761,7 @@
     else scores.forEach((row,index) => {
       const card = document.createElement("article");
       card.className = `risma-rank-card participant risma-rank-row-card${row.disqualified?" disqualified":""}`;
-      const rank = document.createElement("span"); rank.className = "risma-rank-number"; rank.textContent = rismaRankMark(index);
+      const rank = document.createElement("span"); rank.className = "risma-rank-number"; renderRismaRankMark(rank,index);
       const info = document.createElement("div"); info.className = "risma-rank-info";
       const headline = document.createElement("div"); headline.className = "risma-rank-name-line";
       const title = document.createElement("strong"); title.textContent = row.name; if(row.disqualified) title.className="risma-disqualified-name";
@@ -1729,7 +1785,7 @@
       const card = document.createElement("article");
       card.className = "risma-rank-card team";
       const top = document.createElement("div"); top.className = "risma-team-rank-top";
-      const rank = document.createElement("span"); rank.className = "risma-rank-number"; rank.textContent = rismaRankMark(index);
+      const rank = document.createElement("span"); rank.className = "risma-rank-number"; renderRismaRankMark(rank,index);
       const info = document.createElement("div"); info.className = "risma-rank-info";
       const title = document.createElement("strong"); title.textContent = row.name;
       const score = document.createElement("span"); score.textContent = `Ø ${number.format(row.averagePoints || 0)} poin · Total ${number.format(row.totalPoints || 0)} poin`;
@@ -2433,7 +2489,7 @@ ${row.label}`))return;
   function syncTernakEditFunctions(){ if(!ternakDetail)return; const sex=$("ternak-edit-sex").value; fillSelectOptions($("ternak-edit-function"),sex==="jantan"?ternakDetail.options.maleFunctions:ternakDetail.options.femaleFunctions); }
   function openTernakEdit(item){ if(!ternakDetail)return; $("ternak-edit-form").reset(); $("ternak-edit-code").value=item.kode; $("ternak-edit-title").textContent=`Edit ${itemLabel(item)}`; const individual=item.tipe==="individu"; $("ternak-edit-individual").hidden=!individual; $("ternak-edit-batch").hidden=individual; if(individual){ $("ternak-edit-name").value=item.nama||""; $("ternak-edit-sex").value=String(item.kelamin||"betina").toLowerCase(); syncTernakEditFunctions(); $("ternak-edit-function").value=item.fungsi||$("ternak-edit-function").value; } else { $("ternak-edit-batch-name").value=item.nama||""; fillSelectOptions($("ternak-edit-batch-function"),ternakDetail.options.batchFunctions||[]); $("ternak-edit-batch-function").value=item.fungsi||$("ternak-edit-batch-function").value; } $("ternak-edit-origin").value=item.asal==="Menetas/Lahir"?"Lahir":(item.asal||"Beli"); $("ternak-edit-date").value=String(item.tanggalMasuk||"").match(/^\d{4}-\d{2}-\d{2}$/)?item.tanggalMasuk:todayJakarta(); $("ternak-edit-cost").value=String(individual?(item.hargaBeli||0):(item.modalAwal||0)); setStatus($("ternak-edit-status")); $("ternak-edit-dialog").showModal(); }
 
-  function openTernakCreate(){ $("ternak-create-form").reset(); fillSelectOptions($("ternak-create-kind"),ternakJenis,row=>`${row.emoji||"🐾"} ${row.label} · ${row.mode==="individu"?"per ekor":"batch"}`); setStatus($("ternak-create-status")); $("ternak-create-dialog").showModal(); }
+  function openTernakCreate(){ $("ternak-create-form").reset(); fillSelectOptions($("ternak-create-kind"),ternakJenis,row=>`${row.label} · ${row.mode==="individu"?"per ekor":"batch"}`); setStatus($("ternak-create-status")); $("ternak-create-dialog").showModal(); }
   function syncTernakItemFunctions(){ if(!ternakDetail)return; const sex=$("ternak-item-sex").value; const rows=sex==="jantan"?ternakDetail.options.maleFunctions:ternakDetail.options.femaleFunctions; fillSelectOptions($("ternak-item-function"),rows); }
   function openTernakItem(){ if(!ternakDetail)return; $("ternak-item-form").reset(); const individual=ternakDetail.mode==="individu"; $("ternak-item-individual").hidden=!individual; $("ternak-item-batch").hidden=individual; $("ternak-item-title").textContent=individual?"Tambah ternak":"Tambah batch"; $("ternak-item-date").value=todayJakarta(); if(individual)syncTernakItemFunctions(); else fillSelectOptions($("ternak-batch-function"),ternakDetail.options.batchFunctions||[]); setStatus($("ternak-item-status")); $("ternak-item-dialog").showModal(); }
   function activityTargetOptions(){ return [{kode:"0",nama:"Seluruh ternak"},...(ternakDetail?.items||[]).filter(x=>x.status==="aktif"&&Number(x.jumlahAktif||0)>0)]; }
@@ -2464,7 +2520,7 @@ ${row.label}`))return;
     $("gallery-photo-total").textContent = galleryDetail.foto;
     $("gallery-group-total").textContent = `${galleryDetail.grup} grup`;
     $("gallery-public-link").href = galleryDetail.publicUrl;
-    $("gallery-public-link").textContent = galleryDetail.visibility === "private" ? "Buka Galeri privat ↗" : "Buka Galeri publik ↗";
+    $("gallery-public-link").innerHTML = `${galleryDetail.visibility === "private" ? "Buka Galeri privat" : "Buka Galeri publik"} <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i>`;
     $("rename-gallery").hidden = galleryDetail.role !== "owner";
     $("gallery-access").hidden = galleryDetail.role !== "owner";
     $("add-gallery-admin").hidden = galleryDetail.role !== "owner";
@@ -3262,7 +3318,7 @@ ${row.label}`))return;
         });
         const mark = document.createElement("span");
         mark.className = "candidate-check";
-        mark.textContent = "✓";
+        mark.innerHTML = '<i class="fa-solid fa-check" aria-hidden="true"></i>';
         media.append(img, check, mark);
 
         const body = document.createElement("div");
@@ -3402,6 +3458,7 @@ ${row.label}`))return;
     await loadGalleryVideoJobs();
   }
   // ---------- EVENTS ----------
+  hydrateAdminIcons();
   $("phone-form").addEventListener("submit", async event => {
     event.preventDefault(); setStatus($("auth-status"), "Mengirim kode…");
     try { const result = await api("/api/auth/request", { method: "POST", body: JSON.stringify({ phone: $("phone").value }) }); challengeId = result.challengeId; challengeExpiresAt = Number(result.expiresAt) || Date.now() + 300000; saveOtpChallenge($("phone").value); $("phone-form").hidden = true; $("otp-form").hidden = false; $("otp").value = ""; $("otp").focus(); setStatus($("auth-status"), "Kode OTP sudah dikirim ke WhatsApp.", "success"); } catch (error) { setStatus($("auth-status"), error.message, "error"); }

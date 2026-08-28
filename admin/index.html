@@ -10,31 +10,43 @@
   <meta http-equiv="Expires" content="0">
   <title>Admin PROxyz</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
-  <link rel="stylesheet" href="./admin.css?v=0.8.8">
+  <link rel="stylesheet" href="./admin.css?v=0.8.9">
 </head>
 <body>
   <main class="shell">
     <section id="login-view" class="auth-wrap">
       <section class="panel auth-panel">
-        <div class="auth-icon">P</div>
-        <p class="eyebrow">Admin PROxyz</p>
-        <h1>Masuk dengan WhatsApp</h1>
-        <p class="muted">Satu login untuk Multi Kas, Bertunas, Galeri, RISMA, dan Ternak sesuai hak akses Anda.</p>
-        <p class="session-note">Kode OTP dikirim oleh bot PROxyz. Sesi berakhir setelah 24 jam tanpa aktivitas.</p>
-        <form id="phone-form" class="stack">
-          <label>Nomor WhatsApp
+        <div class="auth-brand">
+          <div class="auth-icon" aria-hidden="true"><i class="fa-solid fa-layer-group"></i></div>
+          <div><p class="eyebrow">PROxyz Web</p><strong>Admin</strong></div>
+        </div>
+        <div class="auth-copy">
+          <h1>Masuk ke PROxyz</h1>
+          <p class="muted">Kelola aplikasi sesuai hak akses Anda dalam satu tempat.</p>
+        </div>
+        <div class="auth-app-icons" aria-hidden="true">
+          <span title="Kas"><i class="fa-solid fa-wallet"></i></span>
+          <span title="Bertunas"><i class="fa-solid fa-seedling"></i></span>
+          <span title="Galeri"><i class="fa-solid fa-images"></i></span>
+          <span title="RISMA"><i class="fa-solid fa-star"></i></span>
+          <span title="Ternak"><i class="fa-solid fa-cow"></i></span>
+          <span title="Pengguna"><i class="fa-solid fa-users-gear"></i></span>
+        </div>
+        <form id="phone-form" class="stack auth-form">
+          <label><span class="field-label"><i class="fa-brands fa-whatsapp"></i> Nomor WhatsApp</span>
             <input id="phone" inputmode="tel" autocomplete="tel" placeholder="08xxxxxxxxxx" required>
           </label>
-          <button type="submit" class="primary">Kirim kode OTP</button>
+          <button type="submit" class="primary"><i class="fa-solid fa-paper-plane"></i><span>Kirim kode OTP</span></button>
         </form>
-        <form id="otp-form" class="stack" hidden>
-          <label>Kode OTP
+        <form id="otp-form" class="stack auth-form" hidden>
+          <label><span class="field-label"><i class="fa-solid fa-key"></i> Kode OTP</span>
             <input id="otp" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="6 digit" required>
           </label>
-          <button type="submit" class="primary">Masuk</button>
-          <button id="change-phone" type="button" class="ghost">Ganti nomor</button>
+          <button type="submit" class="primary"><i class="fa-solid fa-right-to-bracket"></i><span>Masuk</span></button>
+          <button id="change-phone" type="button" class="ghost"><i class="fa-solid fa-arrow-left"></i><span>Ganti nomor</span></button>
         </form>
         <p id="auth-status" class="status" aria-live="polite"></p>
+        <p class="auth-security"><i class="fa-solid fa-shield-halved"></i><span>OTP dikirim oleh bot PROxyz. Sesi aktif 24 jam sejak aktivitas terakhir.</span></p>
       </section>
     </section>
 
@@ -46,18 +58,18 @@
           <p id="access-summary" class="muted small"></p>
         </div>
         <div class="profile-actions">
-          <button id="logout" class="logout-btn" type="button" aria-label="Keluar dari Admin"><span class="logout-icon" aria-hidden="true">↪</span><span>Keluar</span></button>
-          <button id="edit-my-name" class="name-edit-btn" type="button"><span aria-hidden="true">✎</span><span>Edit nama</span></button>
+          <button id="logout" class="logout-btn" type="button" aria-label="Keluar dari Admin"><i class="fa-solid fa-right-from-bracket" aria-hidden="true"></i><span>Keluar</span></button>
+          <button id="edit-my-name" class="name-edit-btn" type="button"><i class="fa-solid fa-user-pen" aria-hidden="true"></i><span>Edit nama</span></button>
         </div>
       </section>
 
       <nav id="app-tabs" class="app-tabs" aria-label="Aplikasi Admin">
-        <button id="tab-kas" class="app-tab" type="button" data-view="kas">Kas</button>
-        <button id="tab-bertunas" class="app-tab" type="button" data-view="bertunas">Bertunas</button>
-        <button id="tab-galeri" class="app-tab" type="button" data-view="galeri">Galeri</button>
-        <button id="tab-risma" class="app-tab" type="button" data-view="risma" hidden>RISMA</button>
-        <button id="tab-ternak" class="app-tab" type="button" data-view="ternak" hidden>Ternak</button>
-        <button id="tab-users" class="app-tab" type="button" data-view="users" hidden>Pengguna</button>
+        <button id="tab-kas" class="app-tab" type="button" data-view="kas" aria-label="Kas" title="Kas"><i class="fa-solid fa-wallet"></i><span class="app-tab-label">Kas</span></button>
+        <button id="tab-bertunas" class="app-tab" type="button" data-view="bertunas" aria-label="Bertunas" title="Bertunas"><i class="fa-solid fa-seedling"></i><span class="app-tab-label">Bertunas</span></button>
+        <button id="tab-galeri" class="app-tab" type="button" data-view="galeri" aria-label="Galeri" title="Galeri"><i class="fa-solid fa-images"></i><span class="app-tab-label">Galeri</span></button>
+        <button id="tab-risma" class="app-tab" type="button" data-view="risma" aria-label="RISMA" title="RISMA" hidden><i class="fa-solid fa-star"></i><span class="app-tab-label">RISMA</span></button>
+        <button id="tab-ternak" class="app-tab" type="button" data-view="ternak" aria-label="Ternak" title="Ternak" hidden><i class="fa-solid fa-cow"></i><span class="app-tab-label">Ternak</span></button>
+        <button id="tab-users" class="app-tab" type="button" data-view="users" aria-label="Pengguna" title="Pengguna" hidden><i class="fa-solid fa-users-gear"></i><span class="app-tab-label">Pengguna</span></button>
       </nav>
 
       <section id="kas-view" class="app-section" hidden>
@@ -77,16 +89,16 @@
           </section>
 
           <section class="kas-primary-actions">
-            <button id="add-income" class="quick-card kas-action-card kas-action-income" type="button"><b>+ Pemasukan</b></button>
-            <button id="add-expense" class="quick-card kas-action-card kas-action-expense" type="button"><b>− Pengeluaran</b></button>
+            <button id="add-income" class="quick-card kas-action-card kas-action-income" type="button"><i class="fa-solid fa-arrow-trend-up"></i><b>Pemasukan</b></button>
+            <button id="add-expense" class="quick-card kas-action-card kas-action-expense" type="button"><i class="fa-solid fa-arrow-trend-down"></i><b>Pengeluaran</b></button>
           </section>
 
           <nav class="subtabs kas-subtabs" aria-label="Fitur Kas">
-            <button class="subtab active" type="button" data-kas-tab="transaksi">Transaksi</button>
-            <button class="subtab" type="button" data-kas-tab="laporan">Laporan</button>
-            <button class="subtab" type="button" data-kas-tab="jadwal">Jadwal</button>
-            <button class="subtab" type="button" data-kas-tab="kategori">Kategori</button>
-            <button class="subtab" type="button" data-kas-tab="pengelola">Pengelola</button>
+            <button class="subtab active" type="button" data-kas-tab="transaksi"><i class="fa-solid fa-arrow-right-arrow-left"></i><span>Transaksi</span></button>
+            <button class="subtab" type="button" data-kas-tab="laporan"><i class="fa-solid fa-chart-pie"></i><span>Laporan</span></button>
+            <button class="subtab" type="button" data-kas-tab="jadwal"><i class="fa-solid fa-calendar-days"></i><span>Jadwal</span></button>
+            <button class="subtab" type="button" data-kas-tab="kategori"><i class="fa-solid fa-tags"></i><span>Kategori</span></button>
+            <button class="subtab" type="button" data-kas-tab="pengelola"><i class="fa-solid fa-user-shield"></i><span>Pengelola</span></button>
           </nav>
 
           <section id="kas-transaksi-panel" class="kas-panel panel">
@@ -193,12 +205,12 @@
             <div id="bt-crop-grid" class="crop-overview"></div>
           </section>
           <section class="quick-actions">
-            <button id="bt-add-expense" class="quick-card" type="button"><b>+ Biaya</b><span>Catat pengeluaran</span></button>
-            <button id="bt-add-harvest" class="quick-card" type="button"><b>+ Panen</b><span>Catat hasil</span></button>
-            <button id="bt-add-activity" class="quick-card" type="button"><b>+ Aktivitas</b><span>Budidaya</span></button>
-            <button id="bt-add-schedule" class="quick-card" type="button"><b>+ Jadwal</b><span>Rencana kerja</span></button>
+            <button id="bt-add-expense" class="quick-card" type="button"><i class="fa-solid fa-receipt"></i><b>Biaya</b><span>Catat pengeluaran</span></button>
+            <button id="bt-add-harvest" class="quick-card" type="button"><i class="fa-solid fa-basket-shopping"></i><b>Panen</b><span>Catat hasil</span></button>
+            <button id="bt-add-activity" class="quick-card" type="button"><i class="fa-solid fa-list-check"></i><b>Aktivitas</b><span>Budidaya</span></button>
+            <button id="bt-add-schedule" class="quick-card" type="button"><i class="fa-solid fa-calendar-plus"></i><b>Jadwal</b><span>Rencana kerja</span></button>
           </section>
-          <nav class="subtabs"><button class="subtab active" data-bt-tab="transaksi">Keuangan</button><button class="subtab" data-bt-tab="aktivitas">Aktivitas</button><button class="subtab" data-bt-tab="jadwal">Jadwal</button></nav>
+          <nav class="subtabs"><button class="subtab active" data-bt-tab="transaksi"><i class="fa-solid fa-coins"></i><span>Keuangan</span></button><button class="subtab" data-bt-tab="aktivitas"><i class="fa-solid fa-list-check"></i><span>Aktivitas</span></button><button class="subtab" data-bt-tab="jadwal"><i class="fa-solid fa-calendar-days"></i><span>Jadwal</span></button></nav>
           <section class="panel bt-panel" id="bt-transaksi-panel"><div class="section-head"><div><p class="eyebrow">Keuangan</p><h2>Transaksi</h2></div><div class="section-tools"><span id="bt-tx-count" class="muted small">0 data</span><button id="bt-refresh" class="ghost compact">Muat ulang</button></div></div><div id="bt-transactions" class="list-stack"></div></section>
           <section class="panel bt-panel" id="bt-aktivitas-panel" hidden><div class="section-head"><div><p class="eyebrow">Budidaya</p><h2>Aktivitas</h2></div><span id="bt-activity-count" class="muted small">0 aktivitas</span></div><div id="bt-activities" class="list-stack"></div></section>
           <section class="panel bt-panel" id="bt-jadwal-panel" hidden><div class="section-head"><div><p class="eyebrow">Rencana</p><h2>Jadwal</h2></div><span id="bt-schedule-count" class="muted small">0 jadwal</span></div><div id="bt-schedules" class="list-stack"></div></section>
@@ -214,7 +226,7 @@
           <section class="hero hero-indigo">
             <div class="hero-head"><div><p class="eyebrow light">Galeri</p><h2 id="gallery-name">—</h2><p id="gallery-id" class="hero-sub">—</p></div><span id="gallery-role" class="role-pill">—</span></div>
             <div class="summary-grid two"><div><span>Foto</span><b id="gallery-photo-total">0</b></div><div><span>Terpasang</span><b id="gallery-group-total">0 grup</b></div></div>
-            <a id="gallery-public-link" class="hero-link" href="#" target="_blank" rel="noopener">Buka galeri publik ↗</a>
+            <a id="gallery-public-link" class="hero-link" href="#" target="_blank" rel="noopener">Buka galeri publik <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
           </section>
           <section class="panel actions three gallery-main-actions"><button id="rename-gallery" class="ghost" type="button">Ganti nama</button><button id="gallery-access" class="ghost" type="button">Atur akses</button><button id="refresh-gallery" class="ghost" type="button">Muat ulang</button></section>
           <section class="panel gallery-manager-panel">
@@ -222,9 +234,9 @@
             <div id="gallery-admin-list" class="manager-list"></div>
           </section>
           <nav class="subtabs gallery-subtabs" aria-label="Media Galeri">
-            <button class="subtab active" type="button" data-gallery-tab="foto">Foto</button>
-            <button class="subtab" type="button" data-gallery-tab="video">Video → Foto</button>
-            <button class="subtab" type="button" data-gallery-tab="draft">Foto sementara <span id="gallery-draft-badge" class="tab-count" hidden>0</span></button>
+            <button class="subtab active" type="button" data-gallery-tab="foto"><i class="fa-solid fa-images"></i><span>Foto</span></button>
+            <button class="subtab" type="button" data-gallery-tab="video"><i class="fa-solid fa-video"></i><span>Video ke Foto</span></button>
+            <button class="subtab" type="button" data-gallery-tab="draft"><i class="fa-solid fa-clock"></i><span>Foto sementara</span><span id="gallery-draft-badge" class="tab-count" hidden>0</span></button>
           </nav>
 
           <section id="gallery-foto-panel" class="gallery-panel">
@@ -627,8 +639,8 @@
             <div class="hero-head"><div><p class="eyebrow light" id="ternak-kind">Ternak</p><h2 id="ternak-name">—</h2><p id="ternak-mode" class="hero-sub">—</p></div><span id="ternak-role" class="role-pill">—</span></div>
             <div class="summary-grid four"><div><span>Aktif</span><b id="ternak-active">0</b></div><div><span>Masuk</span><b id="ternak-income">Rp0</b></div><div><span>Keluar</span><b id="ternak-expense">Rp0</b></div><div><span>Selisih</span><b id="ternak-profit">Rp0</b></div></div>
           </section>
-          <section class="quick-actions ternak-actions"><button id="ternak-add-item" class="quick-card" type="button"><b>+ Ternak</b><span>Tambah populasi</span></button><button id="ternak-add-feed" class="quick-card" type="button"><b>+ Pakan</b><span>Catat pemberian</span></button><button id="ternak-add-health" class="quick-card" type="button"><b>+ Kesehatan</b><span>Obat/vaksin</span></button><button id="ternak-add-finance" class="quick-card" type="button"><b>+ Keuangan</b><span>Kas usaha</span></button></section>
-          <nav class="subtabs" aria-label="Fitur Ternak"><button class="subtab active" type="button" data-ternak-tab="populasi">Populasi</button><button class="subtab" type="button" data-ternak-tab="aktivitas">Aktivitas</button><button class="subtab" type="button" data-ternak-tab="keuangan">Keuangan</button><button class="subtab" type="button" data-ternak-tab="reproduksi">Reproduksi</button><button class="subtab" type="button" data-ternak-tab="pengelola">Pengelola</button></nav>
+          <section class="quick-actions ternak-actions"><button id="ternak-add-item" class="quick-card" type="button"><i class="fa-solid fa-paw"></i><b>Ternak</b><span>Tambah populasi</span></button><button id="ternak-add-feed" class="quick-card" type="button"><i class="fa-solid fa-wheat-awn"></i><b>Pakan</b><span>Catat pemberian</span></button><button id="ternak-add-health" class="quick-card" type="button"><i class="fa-solid fa-notes-medical"></i><b>Kesehatan</b><span>Obat/vaksin</span></button><button id="ternak-add-finance" class="quick-card" type="button"><i class="fa-solid fa-coins"></i><b>Keuangan</b><span>Kas usaha</span></button></section>
+          <nav class="subtabs" aria-label="Fitur Ternak"><button class="subtab active" type="button" data-ternak-tab="populasi"><i class="fa-solid fa-paw"></i><span>Populasi</span></button><button class="subtab" type="button" data-ternak-tab="aktivitas"><i class="fa-solid fa-list-check"></i><span>Aktivitas</span></button><button class="subtab" type="button" data-ternak-tab="keuangan"><i class="fa-solid fa-wallet"></i><span>Keuangan</span></button><button class="subtab" type="button" data-ternak-tab="reproduksi"><i class="fa-solid fa-venus-mars"></i><span>Reproduksi</span></button><button class="subtab" type="button" data-ternak-tab="pengelola"><i class="fa-solid fa-user-shield"></i><span>Pengelola</span></button></nav>
 
           <section id="ternak-populasi-panel" class="ternak-panel panel">
             <div class="section-head"><div><p class="eyebrow">Populasi</p><h2 id="ternak-pop-title">Ternak aktif</h2></div><button id="ternak-refresh" class="ghost compact" type="button">Muat ulang</button></div>
@@ -885,6 +897,6 @@
   <dialog id="gallery-bulk-dialog"><form id="gallery-bulk-form" method="dialog" class="dialog-form"><div class="section-head"><div><p class="eyebrow">Edit beberapa foto</p><h2>Kelompokkan kejadian</h2></div><button id="close-gallery-bulk" class="icon-button" type="button">×</button></div><p class="muted small"><b id="gallery-bulk-dialog-count">0 foto</b> akan dijadikan satu kelompok di galeri publik.</p><label>Judul kejadian<input id="gallery-bulk-caption" maxlength="160" placeholder="Contoh: Makan Kerupuk Agustusan 2024" required></label><label>Tanggal dokumentasi<input id="gallery-bulk-date" type="date" required></label><p class="muted small">Semua foto terpilih akan memakai satu judul dan satu tanggal. Foto tidak dihapus atau diunggah ulang ke penyimpanan Galeri.</p><p id="gallery-bulk-status" class="status"></p><button class="primary full" type="submit">Simpan & kelompokkan</button></form></dialog>
 
   <script src="./config.js?v=242"></script>
-  <script src="./admin.js?v=0.8.8" defer></script>
+  <script src="./admin.js?v=0.8.9" defer></script>
 </body>
 </html>
