@@ -6,11 +6,22 @@
   "saldo": {
     "awal": 0,
     "masuk": 15338500,
-    "keluar": 14310000,
-    "akhir": 1028500
+    "keluar": 14317000,
+    "akhir": 1021500
   },
-  "jumlahTransaksi": 158,
+  "jumlahTransaksi": 159,
   "transactions": [
+    {
+      "id": "masjid-260829-009",
+      "nomor": "159",
+      "tanggal": 1787979600000,
+      "jenis": "keluar",
+      "kategori": "perlengkapan",
+      "kategoriNama": "Perlengkapan",
+      "keterangan": "Lem Korea",
+      "nominal": 7000,
+      "label": []
+    },
     {
       "id": "masjid-260829-008",
       "nomor": "158",
@@ -1988,5 +1999,5 @@
       ]
     }
   ],
-  "updatedAt": 1788007013469
+  "updatedAt": 1788007183981
 }
