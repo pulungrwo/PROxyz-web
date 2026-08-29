@@ -248,8 +248,8 @@
       "nomor": "141",
       "tanggal": 1787806800000,
       "jenis": "keluar",
-      "kategori": "pemeliharaan",
-      "kategoriNama": "Pemeliharaan",
+      "kategori": "pembangunan & renovasi",
+      "kategoriNama": "Pembangunan & Renovasi",
       "keterangan": "Paku",
       "nominal": 10000,
       "label": [
@@ -868,8 +868,8 @@
       "nomor": "091",
       "tanggal": 1773637200000,
       "jenis": "keluar",
-      "kategori": "pemeliharaan",
-      "kategoriNama": "Pemeliharaan",
+      "kategori": "pembangunan & renovasi",
+      "kategoriNama": "Pembangunan & Renovasi",
       "keterangan": "Paku",
       "nominal": 10000,
       "label": [
@@ -2021,5 +2021,5 @@
       ]
     }
   ],
-  "updatedAt": 1788007625063
+  "updatedAt": 1788013778719
 }
