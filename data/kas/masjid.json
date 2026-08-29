@@ -6,11 +6,22 @@
   "saldo": {
     "awal": 0,
     "masuk": 15338500,
-    "keluar": 14317000,
-    "akhir": 1021500
+    "keluar": 14324000,
+    "akhir": 1014500
   },
-  "jumlahTransaksi": 159,
+  "jumlahTransaksi": 160,
   "transactions": [
+    {
+      "id": "masjid-260829-010",
+      "nomor": "160",
+      "tanggal": 1787979600000,
+      "jenis": "keluar",
+      "kategori": "konsumsi",
+      "kategoriNama": "Konsumsi",
+      "keterangan": "Air Minum",
+      "nominal": 7000,
+      "label": []
+    },
     {
       "id": "masjid-260829-009",
       "nomor": "159",
@@ -1999,5 +2010,5 @@
       ]
     }
   ],
-  "updatedAt": 1788007183981
+  "updatedAt": 1788007371164
 }
