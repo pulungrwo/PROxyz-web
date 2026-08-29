@@ -6,11 +6,24 @@
   "saldo": {
     "awal": 0,
     "masuk": 15338500,
-    "keluar": 14050000,
-    "akhir": 1288500
+    "keluar": 14090000,
+    "akhir": 1248500
   },
-  "jumlahTransaksi": 155,
+  "jumlahTransaksi": 156,
   "transactions": [
+    {
+      "id": "masjid-260829-006",
+      "nomor": "156",
+      "tanggal": 1787979600000,
+      "jenis": "keluar",
+      "kategori": "konsumsi",
+      "kategoriNama": "Konsumsi",
+      "keterangan": "Pasang Plafon",
+      "nominal": 40000,
+      "label": [
+        "plafon"
+      ]
+    },
     {
       "id": "masjid-260829-005",
       "nomor": "155",
@@ -1953,5 +1966,5 @@
       ]
     }
   ],
-  "updatedAt": 1787981926639
+  "updatedAt": 1787982220903
 }
