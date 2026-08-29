@@ -6,11 +6,22 @@
   "saldo": {
     "awal": 0,
     "masuk": 15338500,
-    "keluar": 13827000,
-    "akhir": 1511500
+    "keluar": 13950000,
+    "akhir": 1388500
   },
-  "jumlahTransaksi": 153,
+  "jumlahTransaksi": 154,
   "transactions": [
+    {
+      "id": "masjid-260829-004",
+      "nomor": "154",
+      "tanggal": 1787979600000,
+      "jenis": "keluar",
+      "kategori": "peralatan",
+      "kategoriNama": "Peralatan",
+      "keterangan": "Lampu",
+      "nominal": 123000,
+      "label": []
+    },
     {
       "id": "masjid-260829-003",
       "nomor": "153",
@@ -1931,5 +1942,5 @@
       ]
     }
   ],
-  "updatedAt": 1787981176731
+  "updatedAt": 1787981317424
 }
