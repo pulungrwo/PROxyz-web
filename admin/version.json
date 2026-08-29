@@ -1,13 +1,18 @@
 {
-  "version": "0.9.3",
-  "updatedAt": "2026-08-29T00:02:00+07:00",
-  "uiBase": "PROxyz-SOURCE-20260828-2325",
+  "version": "0.9.4",
+  "updatedAt": "2026-08-29T21:00:00+07:00",
+  "uiBase": "PROxyz-SOURCE-20260829-2042",
   "features": [
     "admin-v0.9.3",
     "login-loop-fix",
     "whatsapp-login-global",
     "whatsapp-one-click-login",
     "risma-v0.8.8",
-    "kompetisi-web"
+    "kompetisi-web",
+    "admin-v0.9.4",
+    "admin-settings-app-order",
+    "admin-default-app",
+    "responsive-app-strip",
+    "compact-global-footer"
   ]
 }

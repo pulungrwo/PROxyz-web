@@ -1,7 +1,7 @@
 (() => {
   "use strict";
 
-  const ADMIN_BUILD = "0.9.3";
+  const ADMIN_BUILD = "0.9.4";
   const config = window.PROXYZ_ADMIN_CONFIG || {};
 
   async function checkAdminBuild() {
@@ -40,7 +40,10 @@
     videoJob: String(deepLinkParams.get("videoJob") || "").trim()
   };
 
+  const ADMIN_APP_KEYS = ["kas", "bertunas", "galeri", "risma", "ternak", "kompetisi", "users"];
   let me = null;
+  let sessionViewInitialized = false;
+  let adminSettingsDraftOrder = [];
   let challengeId = "";
   let challengeExpiresAt = 0;
   let activeView = ["kas", "bertunas", "galeri", "risma", "ternak", "kompetisi", "users"].includes(adminDeepLink.view) ? adminDeepLink.view : "";
@@ -192,6 +195,7 @@
     deepLinkHandled = false;
     clearGalleryVideoObjectUrls();
     me = null;
+    sessionViewInitialized = false;
     $("app-view").hidden = true;
     $("login-view").hidden = false;
   }
@@ -422,6 +426,82 @@
     }
   }
 
+  function appAvailability() {
+    return {
+      kas: (me?.kas || []).length > 0,
+      bertunas: (me?.bertunas || []).length > 0,
+      galeri: (me?.galeri || []).length > 0,
+      risma: (me?.risma || []).length > 0 || Boolean(me?.isOwner),
+      ternak: (me?.ternak || []).length > 0 || Boolean(me?.isOwner),
+      kompetisi: (me?.kompetisi || []).length > 0 || Boolean(me?.isOwner),
+      users: Boolean(me?.isOwner)
+    };
+  }
+
+  function normalizedAdminAppOrder(availability = appAvailability()) {
+    const saved = Array.isArray(me?.adminWebPreferences?.appOrder) ? me.adminWebPreferences.appOrder : [];
+    const source = [...saved, ...ADMIN_APP_KEYS];
+    const seen = new Set();
+    return source.filter(key => {
+      if (!availability[key] || seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+  }
+
+  function applyAdminAppOrder(order = normalizedAdminAppOrder()) {
+    const menu = $("app-switcher-menu");
+    if (!menu) return;
+    const clean = [...new Set(order)].filter(key => ADMIN_APP_KEYS.includes(key));
+    for (const key of clean) {
+      const tab = $("tab-" + key);
+      if (tab) menu.appendChild(tab);
+    }
+    for (const key of ADMIN_APP_KEYS) {
+      const tab = $("tab-" + key);
+      if (tab && !clean.includes(key)) menu.appendChild(tab);
+    }
+  }
+
+  function adminAppMeta(key) {
+    const tab = $("tab-" + key);
+    return {
+      key,
+      label: tab?.querySelector(".app-tab-label")?.textContent?.trim() || tab?.title || key,
+      iconClass: tab?.querySelector("i")?.className || "fa-solid fa-grid-2"
+    };
+  }
+
+  function renderAdminSettingsAppOrder() {
+    const list = $("admin-settings-app-list");
+    if (!list) return;
+    list.replaceChildren();
+    adminSettingsDraftOrder.forEach((key, index) => {
+      const meta = adminAppMeta(key);
+      const row = document.createElement("div");
+      row.className = "admin-settings-app-row";
+      row.dataset.appKey = key;
+      const lead = document.createElement("div"); lead.className = "admin-settings-app-lead";
+      const icon = document.createElement("span"); icon.className = "admin-settings-app-icon"; icon.innerHTML = `<i class="${meta.iconClass}"></i>`;
+      const copy = document.createElement("div");
+      const name = document.createElement("strong"); name.textContent = meta.label;
+      const sub = document.createElement("span"); sub.textContent = index === 0 ? "Aplikasi default" : `Urutan ${index + 1}`;
+      copy.append(name, sub); lead.append(icon, copy);
+      const actions = document.createElement("div"); actions.className = "admin-settings-app-actions";
+      const up = document.createElement("button"); up.type = "button"; up.className = "icon-button admin-order-btn"; up.dataset.move = "up"; up.disabled = index === 0; up.title = "Naik"; up.innerHTML = '<i class="fa-solid fa-chevron-up"></i>';
+      const down = document.createElement("button"); down.type = "button"; down.className = "icon-button admin-order-btn"; down.dataset.move = "down"; down.disabled = index === adminSettingsDraftOrder.length - 1; down.title = "Turun"; down.innerHTML = '<i class="fa-solid fa-chevron-down"></i>';
+      actions.append(up, down); row.append(lead, actions); list.append(row);
+    });
+  }
+
+  function openAdminSettings() {
+    adminSettingsDraftOrder = normalizedAdminAppOrder();
+    $("admin-settings-name").textContent = me?.name || "Pengguna PROxyz";
+    renderAdminSettingsAppOrder();
+    setStatus($("admin-settings-status"));
+    $("admin-settings-dialog").showModal();
+  }
+
   function renderMe() {
     $("login-view").hidden = true;
     $("app-view").hidden = false;
@@ -437,16 +517,10 @@
     ].filter(Boolean);
     $("access-summary").textContent = counts.join(" · ") || "Tidak ada akses aplikasi.";
 
-    const availability = {
-      kas: (me.kas || []).length > 0,
-      bertunas: (me.bertunas || []).length > 0,
-      galeri: (me.galeri || []).length > 0,
-      risma: (me.risma || []).length > 0 || Boolean(me.isOwner),
-      ternak: (me.ternak || []).length > 0 || Boolean(me.isOwner),
-      kompetisi: (me.kompetisi || []).length > 0 || Boolean(me.isOwner),
-      users: Boolean(me.isOwner)
-    };
+    const availability = appAvailability();
     for (const [name, available] of Object.entries(availability)) $("tab-" + name).hidden = !available;
+    const orderedApps = normalizedAdminAppOrder(availability);
+    applyAdminAppOrder(orderedApps);
 
     fillSelect($("kas-select"), me.kas || [], row => `${row.nama} · ${row.role}`);
     fillSelect($("bertunas-select"), me.bertunas || [], row => `${row.nama} · ${row.role}`);
@@ -462,9 +536,12 @@
       $("gallery-select").value = requestedGallery;
     }
 
-    const preferred = activeView && availability[activeView] ? activeView : "";
-    const first = preferred || ["kas", "bertunas", "galeri", "risma", "ternak", "kompetisi", "users"].find(name => availability[name]);
+    const preferred = sessionViewInitialized && activeView && availability[activeView] ? activeView : "";
+    const deepLinked = !sessionViewInitialized && activeView && availability[activeView] ? activeView : "";
+    const configuredDefault = String(me?.adminWebPreferences?.defaultApp || "").trim().toLowerCase();
+    const first = preferred || deepLinked || (availability[configuredDefault] ? configuredDefault : "") || orderedApps[0];
     if (first) switchView(first);
+    sessionViewInitialized = true;
 
     if (requestedGallery && first === "galeri") {
       setTimeout(() => handleAdminDeepLink().catch(showError), 0);
@@ -491,12 +568,15 @@
     const dock = $("app-tabs");
     const sentinel = $("app-tabs-sentinel");
     const toggle = $("app-tabs-toggle");
+    const bar = $("app-switcher-bar");
     if (!dock || !sentinel || !toggle || $("app-view")?.hidden) return;
     const floating = sentinel.getBoundingClientRect().top <= appDockTopPx() + 1 && window.scrollY > 0;
     dock.classList.toggle("is-floating", floating);
     toggle.hidden = false;
     if (!floating) dock.classList.remove("is-expanded");
-    toggle.setAttribute("aria-expanded", String(floating && dock.classList.contains("is-expanded")));
+    const expanded = floating && dock.classList.contains("is-expanded");
+    toggle.setAttribute("aria-expanded", String(expanded));
+    bar?.setAttribute("aria-expanded", String(expanded));
   }
 
   function collapseAppDock() {
@@ -505,6 +585,7 @@
     if (!dock) return;
     dock.classList.remove("is-expanded");
     if (toggle) toggle.setAttribute("aria-expanded", "false");
+    $("app-switcher-bar")?.setAttribute("aria-expanded", "false");
   }
 
   function switchView(view) {
@@ -514,6 +595,7 @@
       $("tab-" + name).classList.toggle("active", name === view);
     }
     collapseAppDock();
+    syncProxyzAppSwitcherLabel();
     requestAnimationFrame(syncAppDockFloating);
     if (view === "kas" && !activeKas && me.kas?.length) loadKas(me.kas[0].id).catch(showError);
     if (view === "bertunas" && !activeBertunas && me.bertunas?.length) loadBertunas(me.bertunas[0].id).catch(showError);
@@ -3678,7 +3760,34 @@ ${row.label}`))return;
   });
   window.addEventListener("scroll", syncAppDockFloating, { passive: true });
   window.addEventListener("resize", syncAppDockFloating, { passive: true });
-  $("edit-my-name").addEventListener("click", () => openUserNameDialog(null, true));
+  $("admin-settings-open").addEventListener("click", openAdminSettings);
+  $("admin-settings-close").addEventListener("click", () => $("admin-settings-dialog").close());
+  $("admin-settings-edit-name").addEventListener("click", () => { $("admin-settings-dialog").close(); openUserNameDialog(null, true); });
+  $("admin-settings-reset-order").addEventListener("click", () => { adminSettingsDraftOrder = ADMIN_APP_KEYS.filter(key => appAvailability()[key]); renderAdminSettingsAppOrder(); });
+  $("admin-settings-app-list").addEventListener("click", event => {
+    const button = event.target.closest("[data-move]");
+    const row = event.target.closest("[data-app-key]");
+    if (!button || !row) return;
+    const index = adminSettingsDraftOrder.indexOf(row.dataset.appKey);
+    if (index < 0) return;
+    const nextIndex = button.dataset.move === "up" ? index - 1 : index + 1;
+    if (nextIndex < 0 || nextIndex >= adminSettingsDraftOrder.length) return;
+    [adminSettingsDraftOrder[index], adminSettingsDraftOrder[nextIndex]] = [adminSettingsDraftOrder[nextIndex], adminSettingsDraftOrder[index]];
+    renderAdminSettingsAppOrder();
+  });
+  $("admin-settings-form").addEventListener("submit", async event => {
+    event.preventDefault();
+    if (!adminSettingsDraftOrder.length) return;
+    setStatus($("admin-settings-status"), "Menyimpan pengaturan…");
+    try {
+      const data = await api("/api/me/preferences", { method:"PATCH", body:JSON.stringify({ appOrder:adminSettingsDraftOrder, defaultApp:adminSettingsDraftOrder[0] }) });
+      me.adminWebPreferences = data.preferences;
+      applyAdminAppOrder(normalizedAdminAppOrder());
+      syncProxyzAppSwitcherLabel();
+      setStatus($("admin-settings-status"), "Pengaturan disimpan.", "success");
+      setTimeout(() => { if ($("admin-settings-dialog").open) $("admin-settings-dialog").close(); }, 350);
+    } catch (error) { setStatus($("admin-settings-status"), error.message, "error"); }
+  });
   $("close-user-name").addEventListener("click", () => $("user-name-dialog").close());
   $("users-refresh").addEventListener("click", () => loadUsers().catch(showError));
   $("users-search").addEventListener("input", renderUsers);
