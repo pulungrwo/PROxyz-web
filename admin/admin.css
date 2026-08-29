@@ -857,3 +857,7 @@ button.has-fa{gap:7px}.primary.has-fa,.ghost.has-fa,.success-soft.has-fa,.danger
   #app-tabs.is-floating .app-switcher-web{font-size:10.4px!important}
 }
 /* END PROxyz ADMIN WEB V096 */
+
+/* BEGIN PROxyz LOGIN PRIVATE HANDSHAKE V100 */
+.whatsapp-login-panel{margin-top:2px;gap:9px}.whatsapp-login-panel .primary{background:#101828}.whatsapp-login-panel .primary i{color:#25d366;font-size:18px}.whatsapp-login-help{margin:0 4px;text-align:center;line-height:1.45}.whatsapp-login-help strong{color:#101828}.auth-security{margin-top:13px}
+/* END PROxyz LOGIN PRIVATE HANDSHAKE V100 */

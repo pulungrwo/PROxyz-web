@@ -1,7 +1,7 @@
 (() => {
   "use strict";
 
-  const ADMIN_BUILD = "0.9.6";
+  const ADMIN_BUILD = "1.0.0";
   const config = window.PROXYZ_ADMIN_CONFIG || {};
 
   async function checkAdminBuild() {
@@ -325,7 +325,8 @@
     challengeExpiresAt = 0;
     try { sessionStorage.removeItem(OTP_STORAGE_KEY); } catch (_) {}
     $("otp-form").hidden = true;
-    $("phone-form").hidden = false;
+    $("phone-form").hidden = true;
+    if ($("whatsapp-login-panel")) $("whatsapp-login-panel").hidden = false;
   }
 
   function saveOtpChallenge(phone) {
@@ -335,16 +336,15 @@
   }
 
   function restoreOtpChallenge() {
-    try {
-      const saved = JSON.parse(sessionStorage.getItem(OTP_STORAGE_KEY) || "null");
-      if (!saved?.challengeId || Number(saved.expiresAt) <= Date.now()) return false;
-      challengeId = String(saved.challengeId);
-      challengeExpiresAt = Number(saved.expiresAt);
-      if (saved.phone) $("phone").value = saved.phone;
-      $("phone-form").hidden = true;
-      $("otp-form").hidden = false;
-      return true;
-    } catch (_) { return false; }
+    // OTP outbound lama tidak dipakai lagi karena WhatsApp dapat menolak
+    // chat pribadi baru (ACK 463). Login sekarang dimulai pengguna lewat WA.
+    try { sessionStorage.removeItem(OTP_STORAGE_KEY); } catch (_) {}
+    challengeId = "";
+    challengeExpiresAt = 0;
+    $("phone-form").hidden = true;
+    $("otp-form").hidden = true;
+    if ($("whatsapp-login-panel")) $("whatsapp-login-panel").hidden = false;
+    return false;
   }
 
   async function consumeWhatsAppLoginLink() {
@@ -418,8 +418,8 @@
         $("app-view").hidden = true;
       }
 
-      if (challengeId && challengeExpiresAt > Date.now()) {
-        setStatus($("auth-status"), "Masukkan kode OTP yang dikirim bot PROxyz ke WhatsApp kamu.", "success");
+      if (!challengeId) {
+        setStatus($("auth-status"), "Buka WhatsApp, kirim Login ke bot, lalu ketuk link yang dibalas.");
       } else {
         setStatus($("auth-status"), error?.message || "Sesi Admin belum tersedia.", "error");
       }
@@ -3723,6 +3723,17 @@ ${row.label}`))return;
   }
   // ---------- EVENTS ----------
   hydrateAdminIcons();
+  $("whatsapp-login-start").addEventListener("click", async () => {
+    setStatus($("auth-status"), "Membuka chat pribadi bot PROxyz…");
+    try {
+      const result = await api("/api/auth/whatsapp-entry");
+      if (!result?.waUrl) throw new Error("Alamat WhatsApp bot belum tersedia.");
+      setStatus($("auth-status"), "Kirim pesan Login di WhatsApp. Bot akan membalas link masuk.", "success");
+      window.location.href = result.waUrl;
+    } catch (error) {
+      setStatus($("auth-status"), error.message || "WhatsApp PROxyz belum tersedia.", "error");
+    }
+  });
   $("phone-form").addEventListener("submit", async event => {
     event.preventDefault(); setStatus($("auth-status"), "Mengirim kode…");
     try { const result = await api("/api/auth/request", { method: "POST", body: JSON.stringify({ phone: $("phone").value }) }); challengeId = result.challengeId; challengeExpiresAt = Number(result.expiresAt) || Date.now() + 300000; saveOtpChallenge($("phone").value); $("phone-form").hidden = true; $("otp-form").hidden = false; $("otp").value = ""; $("otp").focus(); setStatus($("auth-status"), "Kode OTP sudah dikirim ke WhatsApp.", "success"); } catch (error) { setStatus($("auth-status"), error.message, "error"); }

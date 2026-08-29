@@ -1,6 +1,6 @@
 {
-  "version": "0.9.6",
-  "updatedAt": "2026-08-29T22:30:00+07:00",
+  "version": "1.0.0",
+  "updatedAt": "2026-08-30T00:35:00+07:00",
   "uiBase": "PROxyz-SOURCE-20260829-2042",
   "features": [
     "admin-v0.9.3",
@@ -22,6 +22,22 @@
     "brand-wordmark-unified",
     "login-footer-enabled",
     "plain-global-footer",
-    "admin-api-port-reuse-guard"
+    "admin-api-port-reuse-guard",
+    "admin-v0.9.7",
+    "whatsapp-lid-direct-login-fix",
+    "whatsapp-ready-socket-guard",
+    "single-process-port-guard",
+    "login-wa-server-ack",
+    "otp-server-ack",
+    "ack-463-fallback",
+    "login-link-preview-disabled",
+    "login-wa-v0.9.9",
+    "baileys-lowlevel-ack-capture",
+    "ack-463-fast-fallback",
+    "reachout-463-private-handshake",
+    "admin-v1.0.0",
+    "private-chat-login-handshake",
+    "user-initiated-whatsapp-login",
+    "ack463-safe-login"
   ]
 }
