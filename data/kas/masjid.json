@@ -6,11 +6,22 @@
   "saldo": {
     "awal": 0,
     "masuk": 15338500,
-    "keluar": 11943000,
-    "akhir": 3395500
+    "keluar": 11962000,
+    "akhir": 3376500
   },
-  "jumlahTransaksi": 150,
+  "jumlahTransaksi": 151,
   "transactions": [
+    {
+      "id": "masjid-260829-001",
+      "nomor": "151",
+      "tanggal": 1787979600000,
+      "jenis": "keluar",
+      "kategori": "konsumsi",
+      "kategoriNama": "Konsumsi",
+      "keterangan": "Gula Kopi",
+      "nominal": 19000,
+      "label": []
+    },
     {
       "id": "masjid-260828-002",
       "nomor": "147",
@@ -1898,5 +1909,5 @@
       ]
     }
   ],
-  "updatedAt": 1787916695813
+  "updatedAt": 1787971344553
 }
