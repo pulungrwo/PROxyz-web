@@ -6,11 +6,22 @@
   "saldo": {
     "awal": 0,
     "masuk": 15338500,
-    "keluar": 11962000,
-    "akhir": 3376500
+    "keluar": 13632000,
+    "akhir": 1706500
   },
-  "jumlahTransaksi": 151,
+  "jumlahTransaksi": 152,
   "transactions": [
+    {
+      "id": "masjid-260829-002",
+      "nomor": "152",
+      "tanggal": 1787979600000,
+      "jenis": "keluar",
+      "kategori": "peralatan",
+      "kategoriNama": "Peralatan",
+      "keterangan": "Corong Toa",
+      "nominal": 1670000,
+      "label": []
+    },
     {
       "id": "masjid-260829-001",
       "nomor": "151",
@@ -1909,5 +1920,5 @@
       ]
     }
   ],
-  "updatedAt": 1787971344553
+  "updatedAt": 1787978647606
 }
