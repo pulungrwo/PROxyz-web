@@ -675,3 +675,102 @@ button.has-fa{gap:7px}.primary.has-fa,.ghost.has-fa,.success-soft.has-fa,.danger
 @media(max-width:640px){.shell{padding-bottom:max(18px,env(safe-area-inset-bottom))!important}#app-tabs:not(.is-floating) .app-tab{min-width:106px!important;height:51px!important;padding:6px 10px!important}#app-tabs:not(.is-floating) .app-tab i{width:29px;height:29px}#app-tabs.is-floating{max-width:calc(100vw - 16px)!important}.admin-settings-name-row{align-items:flex-start;flex-direction:column}.admin-settings-name-row button{width:100%}}
 @media(max-width:360px){#app-tabs.is-floating{width:calc(100vw - 14px)!important;max-width:calc(100vw - 14px)!important}#app-tabs.is-floating .app-switcher-bar{grid-template-columns:minmax(70px,1fr) 38px auto}#app-tabs.is-floating #app-tabs-toggle{width:38px!important;min-width:38px!important;height:38px!important}#app-tabs.is-floating .app-active-label{height:38px;max-width:112px;padding:0 9px;font-size:11.5px}#app-tabs.is-floating .app-switcher-brand{height:38px;padding-right:5px}.admin-settings-heading{align-items:flex-start;flex-direction:column}.admin-settings-heading button{align-self:flex-end}}
 /* END PROxyz ADMIN NAV + SETTINGS V094 */
+
+/* BEGIN PROxyz ADMIN NAV + FOOTER V095 */
+/* Header aplikasi: 3 kolom di HP, tanpa scroll horizontal. */
+#app-tabs:not(.is-floating) .app-switcher-menu{
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:8px!important;
+  width:100%!important;
+  overflow:visible!important;
+  padding:2px 0 4px!important;
+}
+#app-tabs:not(.is-floating) .app-tab{
+  display:flex!important;
+  width:100%!important;
+  min-width:0!important;
+  max-width:none!important;
+  height:54px!important;
+  padding:7px 8px!important;
+  gap:7px!important;
+  overflow:hidden!important;
+}
+#app-tabs:not(.is-floating) .app-tab i{width:29px!important;height:29px!important;flex:0 0 29px!important}
+#app-tabs:not(.is-floating) .app-tab .app-tab-label{
+  min-width:0!important;display:block!important;overflow:hidden!important;text-overflow:ellipsis!important;
+  white-space:nowrap!important;font-size:12px!important;
+}
+
+/* Navbar sticky: utuh selebar konten, urutan [Aplikasi] [Menu] [PROxyz web]. */
+#app-tabs.is-floating{
+  width:100%!important;max-width:100%!important;margin-left:0!important;margin-right:0!important;overflow:visible!important;
+}
+#app-tabs.is-floating .app-switcher-bar{
+  width:100%!important;grid-template-columns:minmax(0,1fr) 42px minmax(106px,auto)!important;
+  gap:6px!important;padding:5px!important;overflow:hidden!important;border-radius:17px!important;
+}
+#app-tabs.is-floating .app-active-label{
+  width:100%!important;min-width:0!important;max-width:none!important;padding:0 12px!important;
+  font-size:12.5px!important;letter-spacing:-.01em;text-align:center;
+}
+#app-tabs.is-floating #app-tabs-toggle{
+  order:0!important;width:42px!important;min-width:42px!important;height:40px!important;border-radius:12px!important;
+}
+#app-tabs.is-floating .app-switcher-brand{
+  order:0!important;min-width:106px!important;height:40px!important;padding:0 8px!important;gap:0!important;
+  border:1px solid #eaecf0;border-radius:12px;background:#f8fafc;color:#101828;overflow:hidden;
+}
+#app-tabs.is-floating .app-switcher-brand strong,#app-tabs.is-floating .app-switcher-xyz{
+  font-size:12.5px!important;font-weight:900!important;letter-spacing:-.035em!important;
+}
+#app-tabs.is-floating .app-switcher-brand strong{color:#101828!important}
+#app-tabs.is-floating .app-switcher-xyz{color:#d9480f!important}
+#app-tabs.is-floating .app-switcher-web{
+  margin-left:4px!important;font-size:10.5px!important;font-weight:800!important;color:#667085!important;letter-spacing:-.01em;
+}
+#app-tabs.is-floating .app-switcher-menu{left:0!important;right:0!important;width:auto!important;max-width:none!important}
+
+/* Footer brand PROxyz: compact navy + aksen orange. */
+#admin-footer.admin-footer{
+  width:max-content;max-width:100%;margin:14px auto 2px!important;
+  padding:7px 10px max(7px,env(safe-area-inset-bottom))!important;
+  border:1px solid rgba(16,24,40,.08)!important;border-radius:999px!important;
+  background:linear-gradient(135deg,#101828 0%,#1d2939 100%)!important;color:#d0d5dd!important;
+  box-shadow:0 8px 20px rgba(16,24,40,.10);text-align:center;
+}
+#admin-footer .admin-footer-signature{gap:6px!important;font-size:11.5px!important;line-height:1!important}
+#admin-footer .admin-footer-mark{
+  width:23px!important;height:23px!important;border-radius:8px!important;background:rgba(217,72,15,.16)!important;
+  color:#ff9b73!important;box-shadow:none!important;
+}
+#admin-footer .admin-footer-text{color:#d0d5dd!important}
+#admin-footer .admin-footer-text strong{color:#fff!important}
+#admin-footer .admin-footer-xyz{color:#ff8a5b!important}
+
+@media(min-width:641px){
+  #app-tabs:not(.is-floating) .app-switcher-menu{grid-template-columns:repeat(auto-fit,minmax(132px,1fr))!important}
+  #app-tabs.is-floating{max-width:680px!important;margin-left:auto!important;margin-right:auto!important}
+}
+@media(max-width:420px){
+  #app-tabs:not(.is-floating) .app-switcher-menu{gap:7px!important}
+  #app-tabs:not(.is-floating) .app-tab{height:52px!important;padding:6px!important;gap:5px!important}
+  #app-tabs:not(.is-floating) .app-tab i{width:27px!important;height:27px!important;flex-basis:27px!important;font-size:11px!important}
+  #app-tabs:not(.is-floating) .app-tab .app-tab-label{font-size:11.2px!important}
+  #app-tabs.is-floating .app-switcher-bar{grid-template-columns:minmax(0,1fr) 40px 104px!important;gap:5px!important}
+  #app-tabs.is-floating #app-tabs-toggle{width:40px!important;min-width:40px!important;height:38px!important}
+  #app-tabs.is-floating .app-active-label{height:38px!important;padding:0 10px!important;font-size:12px!important}
+  #app-tabs.is-floating .app-switcher-brand{min-width:104px!important;height:38px!important;padding:0 7px!important}
+  #app-tabs.is-floating .app-switcher-brand strong,#app-tabs.is-floating .app-switcher-xyz{font-size:12px!important}
+  #app-tabs.is-floating .app-switcher-web{font-size:10px!important;margin-left:3px!important}
+}
+@media(max-width:350px){
+  #app-tabs:not(.is-floating) .app-tab{gap:4px!important;padding-inline:5px!important}
+  #app-tabs:not(.is-floating) .app-tab i{width:25px!important;height:25px!important;flex-basis:25px!important}
+  #app-tabs:not(.is-floating) .app-tab .app-tab-label{font-size:10.5px!important}
+  #app-tabs.is-floating .app-switcher-bar{grid-template-columns:minmax(0,1fr) 38px 98px!important}
+  #app-tabs.is-floating .app-switcher-brand{min-width:98px!important}
+  #app-tabs.is-floating .app-switcher-web{font-size:9.5px!important}
+}
+/* END PROxyz ADMIN NAV + FOOTER V095 */
+
