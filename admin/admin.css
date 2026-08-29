@@ -861,3 +861,24 @@ button.has-fa{gap:7px}.primary.has-fa,.ghost.has-fa,.success-soft.has-fa,.danger
 /* BEGIN PROxyz LOGIN PRIVATE HANDSHAKE V100 */
 .whatsapp-login-panel{margin-top:2px;gap:9px}.whatsapp-login-panel .primary{background:#101828}.whatsapp-login-panel .primary i{color:#25d366;font-size:18px}.whatsapp-login-help{margin:0 4px;text-align:center;line-height:1.45}.whatsapp-login-help strong{color:#101828}.auth-security{margin-top:13px}
 /* END PROxyz LOGIN PRIVATE HANDSHAKE V100 */
+
+/* BEGIN PROxyz BRAND SYSTEM V101 */
+.proxyz-wordmark{display:inline-flex;align-items:baseline;gap:0;white-space:nowrap;line-height:1;text-transform:none!important;letter-spacing:0!important}
+.proxyz-wordmark-pro,.proxyz-wordmark-xyz{font-weight:900;letter-spacing:-.045em}
+.proxyz-wordmark-pro{color:#101828}.proxyz-wordmark-xyz{color:#d9480f}
+.proxyz-wordmark-web{margin-left:.28em;color:#667085;font-size:.76em;font-weight:820;letter-spacing:-.02em;text-transform:none!important}
+.auth-brand .proxyz-wordmark{font-size:18px}.auth-brand .proxyz-wordmark-web{font-size:.72em}
+#admin-settings-dialog .eyebrow-brand{display:flex;align-items:center;gap:6px;letter-spacing:0!important;text-transform:none!important}
+#admin-settings-dialog .proxyz-wordmark{font-size:16px}
+#app-tabs.is-floating .app-switcher-bar{grid-template-columns:minmax(0,1fr) 42px 128px!important}
+#app-tabs.is-floating .app-switcher-brand{display:flex!important;align-items:center!important;justify-content:center!important;min-width:0!important;width:128px!important;height:40px!important;padding:0 8px!important;border:0!important;background:transparent!important;overflow:visible!important}
+#app-tabs.is-floating .app-switcher-brand .proxyz-wordmark{font-size:17px!important}
+#app-tabs.is-floating .app-switcher-brand .proxyz-wordmark-web{font-size:.68em!important}
+#app-tabs.is-floating .app-active-label{font-size:12.5px!important;font-weight:850!important;padding-inline:10px!important}
+.admin-footer.admin-footer-plain .admin-footer-mark{color:#d9480f!important}
+.admin-footer.admin-footer-plain .admin-footer-text{color:#667085!important}
+.admin-footer.admin-footer-plain .admin-footer-text strong{color:#101828!important}
+.admin-footer.admin-footer-plain .admin-footer-xyz{color:#d9480f!important}
+@media(max-width:420px){#app-tabs.is-floating .app-switcher-bar{grid-template-columns:minmax(0,1fr) 40px 118px!important}#app-tabs.is-floating .app-switcher-brand{width:118px!important;height:38px!important;padding-inline:6px!important}#app-tabs.is-floating .app-switcher-brand .proxyz-wordmark{font-size:15.5px!important}.auth-brand .proxyz-wordmark{font-size:17px}#admin-settings-dialog .proxyz-wordmark{font-size:15px}}
+@media(max-width:350px){#app-tabs.is-floating .app-switcher-bar{grid-template-columns:minmax(0,1fr) 38px 110px!important}#app-tabs.is-floating .app-switcher-brand{width:110px!important}#app-tabs.is-floating .app-switcher-brand .proxyz-wordmark{font-size:14.5px!important}}
+/* END PROxyz BRAND SYSTEM V101 */

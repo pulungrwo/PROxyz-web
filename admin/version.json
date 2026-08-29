@@ -1,6 +1,6 @@
 {
-  "version": "1.0.0",
-  "updatedAt": "2026-08-30T00:35:00+07:00",
+  "version": "1.0.1",
+  "updatedAt": "2026-08-30T01:20:00+07:00",
   "uiBase": "PROxyz-SOURCE-20260829-2042",
   "features": [
     "admin-v0.9.3",
@@ -38,6 +38,10 @@
     "admin-v1.0.0",
     "private-chat-login-handshake",
     "user-initiated-whatsapp-login",
-    "ack463-safe-login"
+    "ack463-safe-login",
+    "admin-v1.0.1",
+    "proxyz-wordmark-system",
+    "public-header-brand",
+    "footer-wordmark-color-sync"
   ]
 }
