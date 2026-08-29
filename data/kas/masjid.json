@@ -6,11 +6,22 @@
   "saldo": {
     "awal": 0,
     "masuk": 15338500,
-    "keluar": 13950000,
-    "akhir": 1388500
+    "keluar": 14050000,
+    "akhir": 1288500
   },
-  "jumlahTransaksi": 154,
+  "jumlahTransaksi": 155,
   "transactions": [
+    {
+      "id": "masjid-260829-005",
+      "nomor": "155",
+      "tanggal": 1787979600000,
+      "jenis": "keluar",
+      "kategori": "konsumsi",
+      "kategoriNama": "Konsumsi",
+      "keterangan": "Pasang TOA & GRC",
+      "nominal": 100000,
+      "label": []
+    },
     {
       "id": "masjid-260829-004",
       "nomor": "154",
@@ -1942,5 +1953,5 @@
       ]
     }
   ],
-  "updatedAt": 1787981317424
+  "updatedAt": 1787981926639
 }
