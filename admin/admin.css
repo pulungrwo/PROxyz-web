@@ -696,53 +696,93 @@ button.has-fa{gap:7px}.primary.has-fa,.ghost.has-fa,.success-soft.has-fa,.danger
   gap:7px!important;
   overflow:hidden!important;
 }
-#app-tabs:not(.is-floating) .app-tab i{width:29px!important;height:29px!important;flex:0 0 29px!important}
+#app-tabs:not(.is-floating) .app-tab i{
+  width:29px!important;
+  height:29px!important;
+  flex:0 0 29px!important;
+}
 #app-tabs:not(.is-floating) .app-tab .app-tab-label{
-  min-width:0!important;display:block!important;overflow:hidden!important;text-overflow:ellipsis!important;
-  white-space:nowrap!important;font-size:12px!important;
+  min-width:0!important;
+  display:block!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  white-space:nowrap!important;
+  font-size:12px!important;
 }
 
-/* Navbar sticky: utuh selebar konten, urutan [Aplikasi] [Menu] [PROxyz web]. */
+/* Navbar sticky: selalu utuh selebar konten, urutan [Aplikasi] [Menu] [PROxyz web]. */
 #app-tabs.is-floating{
-  width:100%!important;max-width:100%!important;margin-left:0!important;margin-right:0!important;overflow:visible!important;
+  width:100%!important;
+  max-width:100%!important;
+  margin-left:0!important;
+  margin-right:0!important;
+  overflow:visible!important;
 }
 #app-tabs.is-floating .app-switcher-bar{
-  width:100%!important;grid-template-columns:minmax(0,1fr) 42px minmax(106px,auto)!important;
-  gap:6px!important;padding:5px!important;overflow:hidden!important;border-radius:17px!important;
+  width:100%!important;
+  grid-template-columns:minmax(0,1fr) 42px minmax(106px,auto)!important;
+  gap:6px!important;
+  padding:5px!important;
+  overflow:hidden!important;
+  border-radius:17px!important;
 }
 #app-tabs.is-floating .app-active-label{
-  width:100%!important;min-width:0!important;max-width:none!important;padding:0 12px!important;
-  font-size:12.5px!important;letter-spacing:-.01em;text-align:center;
+  width:100%!important;
+  min-width:0!important;
+  max-width:none!important;
+  padding:0 12px!important;
+  font-size:12.5px!important;
+  letter-spacing:-.01em;
+  text-align:center;
 }
 #app-tabs.is-floating #app-tabs-toggle{
-  order:0!important;width:42px!important;min-width:42px!important;height:40px!important;border-radius:12px!important;
+  order:0!important;
+  width:42px!important;
+  min-width:42px!important;
+  height:40px!important;
+  border-radius:12px!important;
 }
 #app-tabs.is-floating .app-switcher-brand{
-  order:0!important;min-width:106px!important;height:40px!important;padding:0 8px!important;gap:0!important;
-  border:1px solid #eaecf0;border-radius:12px;background:#f8fafc;color:#101828;overflow:hidden;
+  order:0!important;
+  min-width:106px!important;
+  height:40px!important;
+  padding:0 8px!important;
+  gap:0!important;
+  border:1px solid #eaecf0;
+  border-radius:12px;
+  background:#f8fafc;
+  color:#101828;
+  overflow:hidden;
 }
-#app-tabs.is-floating .app-switcher-brand strong,#app-tabs.is-floating .app-switcher-xyz{
-  font-size:12.5px!important;font-weight:900!important;letter-spacing:-.035em!important;
-}
+#app-tabs.is-floating .app-switcher-brand strong,
+#app-tabs.is-floating .app-switcher-xyz{font-size:12.5px!important;font-weight:900!important;letter-spacing:-.035em!important}
 #app-tabs.is-floating .app-switcher-brand strong{color:#101828!important}
 #app-tabs.is-floating .app-switcher-xyz{color:#d9480f!important}
-#app-tabs.is-floating .app-switcher-web{
-  margin-left:4px!important;font-size:10.5px!important;font-weight:800!important;color:#667085!important;letter-spacing:-.01em;
+#app-tabs.is-floating .app-switcher-web{margin-left:4px!important;font-size:10.5px!important;font-weight:800!important;color:#667085!important;letter-spacing:-.01em}
+#app-tabs.is-floating .app-switcher-menu{
+  left:0!important;
+  right:0!important;
+  width:auto!important;
+  max-width:none!important;
 }
-#app-tabs.is-floating .app-switcher-menu{left:0!important;right:0!important;width:auto!important;max-width:none!important}
 
-/* Footer brand PROxyz: compact navy + aksen orange. */
+/* Footer brand PROxyz: compact navy + aksen orange, konsisten dengan identitas Web. */
 #admin-footer.admin-footer{
-  width:max-content;max-width:100%;margin:14px auto 2px!important;
+  width:max-content;
+  max-width:100%;
+  margin:14px auto 2px!important;
   padding:7px 10px max(7px,env(safe-area-inset-bottom))!important;
-  border:1px solid rgba(16,24,40,.08)!important;border-radius:999px!important;
-  background:linear-gradient(135deg,#101828 0%,#1d2939 100%)!important;color:#d0d5dd!important;
-  box-shadow:0 8px 20px rgba(16,24,40,.10);text-align:center;
+  border:1px solid rgba(16,24,40,.08)!important;
+  border-radius:999px!important;
+  background:linear-gradient(135deg,#101828 0%,#1d2939 100%)!important;
+  color:#d0d5dd!important;
+  box-shadow:0 8px 20px rgba(16,24,40,.10);
 }
 #admin-footer .admin-footer-signature{gap:6px!important;font-size:11.5px!important;line-height:1!important}
 #admin-footer .admin-footer-mark{
-  width:23px!important;height:23px!important;border-radius:8px!important;background:rgba(217,72,15,.16)!important;
-  color:#ff9b73!important;box-shadow:none!important;
+  width:23px!important;height:23px!important;border-radius:8px!important;
+  background:rgba(217,72,15,.16)!important;color:#ff9b73!important;
+  box-shadow:none!important;
 }
 #admin-footer .admin-footer-text{color:#d0d5dd!important}
 #admin-footer .admin-footer-text strong{color:#fff!important}
@@ -754,7 +794,7 @@ button.has-fa{gap:7px}.primary.has-fa,.ghost.has-fa,.success-soft.has-fa,.danger
 }
 @media(max-width:420px){
   #app-tabs:not(.is-floating) .app-switcher-menu{gap:7px!important}
-  #app-tabs:not(.is-floating) .app-tab{height:52px!important;padding:6px!important;gap:5px!important}
+  #app-tabs:not(.is-floating) .app-tab{height:52px!important;padding:6px 6px!important;gap:5px!important}
   #app-tabs:not(.is-floating) .app-tab i{width:27px!important;height:27px!important;flex-basis:27px!important;font-size:11px!important}
   #app-tabs:not(.is-floating) .app-tab .app-tab-label{font-size:11.2px!important}
   #app-tabs.is-floating .app-switcher-bar{grid-template-columns:minmax(0,1fr) 40px 104px!important;gap:5px!important}
@@ -774,3 +814,46 @@ button.has-fa{gap:7px}.primary.has-fa,.ghost.has-fa,.success-soft.has-fa,.danger
 }
 /* END PROxyz ADMIN NAV + FOOTER V095 */
 
+
+
+/* BEGIN PROxyz ADMIN WEB V096 */
+/* Wordmark PROxyz web: dipakai di login, navbar, dan pengaturan admin. */
+.eyebrow-brand{display:inline-flex;align-items:baseline;gap:0;white-space:nowrap}
+.eyebrow-brand .brand-pro,.eyebrow-brand .brand-xyz{font-size:1.18em;font-weight:900;letter-spacing:-.04em}
+.eyebrow-brand .brand-pro{color:#0f172a}
+.eyebrow-brand .brand-xyz{color:#d9480f}
+.eyebrow-brand .brand-web{margin-left:4px;font-size:1.02em;font-weight:860;letter-spacing:-.02em;color:#667085;text-transform:none}
+.auth-brand .eyebrow-brand{font-size:13.8px;letter-spacing:0}
+.auth-brand strong{display:block;font-size:31px;line-height:1.04;letter-spacing:-.03em;color:#101828}
+#admin-settings-dialog .eyebrow-brand{font-size:12.8px;letter-spacing:0}
+#app-tabs.is-floating .app-switcher-bar{grid-template-columns:minmax(0,1fr) 42px minmax(132px,auto)!important}
+#app-tabs.is-floating .app-switcher-brand{display:inline-flex!important;align-items:baseline!important;justify-content:center!important;min-width:132px!important;height:40px!important;padding:0 10px!important;gap:0!important;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;white-space:nowrap;overflow:visible!important}
+#app-tabs.is-floating .app-switcher-brand strong,#app-tabs.is-floating .app-switcher-xyz{font-size:15.5px!important;font-weight:900!important;letter-spacing:-.045em!important}
+#app-tabs.is-floating .app-switcher-brand strong{color:#101828!important}
+#app-tabs.is-floating .app-switcher-xyz{color:#d9480f!important}
+#app-tabs.is-floating .app-switcher-web{margin-left:4px!important;font-size:12.2px!important;font-weight:860!important;letter-spacing:-.02em!important;color:#667085!important;text-transform:none!important}
+#app-tabs.is-floating .app-switcher-menu{top:calc(100% + 8px)!important}
+#app-tabs:not(.is-floating) .app-switcher-menu{overflow:visible!important;scrollbar-width:auto!important}
+.admin-footer.admin-footer-plain{display:flex;justify-content:center;align-items:center;width:100%;max-width:100%;margin:14px auto 0!important;padding:0 4px max(6px,env(safe-area-inset-bottom))!important;border:0!important;background:transparent!important;box-shadow:none!important;color:#667085!important;text-align:center}
+.admin-footer.admin-footer-plain .admin-footer-signature{display:inline-flex;align-items:center;justify-content:center;gap:6px;font-size:11.5px;line-height:1.2}
+.admin-footer.admin-footer-plain .admin-footer-mark{display:grid;place-items:center;width:20px;height:20px;border-radius:999px;background:transparent!important;color:#d9480f!important;font-size:12px;box-shadow:none!important}
+.admin-footer.admin-footer-plain .admin-footer-text{color:#667085!important;white-space:nowrap}
+.admin-footer.admin-footer-plain .admin-footer-text strong{color:#101828!important}
+.admin-footer.admin-footer-plain .admin-footer-xyz{color:#d9480f!important}
+#login-view .admin-footer{margin-top:10px!important;padding-bottom:max(8px,env(safe-area-inset-bottom))!important}
+#login-view .auth-panel{margin-bottom:0!important}
+@media(max-width:420px){
+  .auth-brand .eyebrow-brand{font-size:13px}
+  #admin-settings-dialog .eyebrow-brand{font-size:12.2px}
+  #app-tabs.is-floating .app-switcher-bar{grid-template-columns:minmax(0,1fr) 40px minmax(122px,auto)!important}
+  #app-tabs.is-floating .app-switcher-brand{min-width:122px!important;padding:0 8px!important;height:38px!important}
+  #app-tabs.is-floating .app-switcher-brand strong,#app-tabs.is-floating .app-switcher-xyz{font-size:14px!important}
+  #app-tabs.is-floating .app-switcher-web{font-size:11px!important}
+}
+@media(max-width:350px){
+  #app-tabs.is-floating .app-switcher-bar{grid-template-columns:minmax(0,1fr) 38px minmax(114px,auto)!important}
+  #app-tabs.is-floating .app-switcher-brand{min-width:114px!important;padding:0 7px!important}
+  #app-tabs.is-floating .app-switcher-brand strong,#app-tabs.is-floating .app-switcher-xyz{font-size:13.2px!important}
+  #app-tabs.is-floating .app-switcher-web{font-size:10.4px!important}
+}
+/* END PROxyz ADMIN WEB V096 */

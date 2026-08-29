@@ -10,7 +10,7 @@
   <meta http-equiv="Expires" content="0">
   <title>Admin PROxyz</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
-  <link rel="stylesheet" href="./admin.css?v=0.9.5-navgrid-footerbrand">
+  <link rel="stylesheet" href="./admin.css?v=0.9.6-brandfix-footerplain">
 </head>
 <body>
   <main class="shell">
@@ -18,7 +18,7 @@
       <section class="panel auth-panel">
         <div class="auth-brand">
           <div class="auth-icon" aria-hidden="true"><i class="fa-solid fa-layer-group"></i></div>
-          <div><p class="eyebrow">PROxyz Web</p><strong>Admin</strong></div>
+          <div><p class="eyebrow eyebrow-brand"><span class="brand-pro">PRO</span><span class="brand-xyz">xyz</span><span class="brand-web">web</span></p><strong>Admin</strong></div>
         </div>
         <div class="auth-copy">
           <h1>Masuk ke PROxyz</h1>
@@ -48,6 +48,12 @@
         <p id="auth-status" class="status" aria-live="polite"></p>
         <p class="auth-security"><i class="fa-solid fa-shield-halved"></i><span>OTP dikirim oleh bot PROxyz. Sesi aktif 24 jam sejak aktivitas terakhir.</span></p>
       </section>
+      <footer id="login-footer" class="admin-footer admin-footer-plain" aria-label="Kredit PROxyz">
+        <div class="admin-footer-signature">
+          <span class="admin-footer-mark" aria-hidden="true"><i class="fa-regular fa-copyright"></i></span>
+          <span class="admin-footer-text"><strong>P</strong>ulung <strong>R</strong>iswant<strong class="admin-footer-o">o</strong> gen <strong class="admin-footer-xyz">xyz</strong></span>
+        </div>
+      </footer>
     </section>
 
     <section id="app-view" hidden>
@@ -780,7 +786,7 @@
         </section>
       </section>
 
-      <footer id="admin-footer" class="admin-footer" aria-label="Kredit PROxyz">
+      <footer id="admin-footer" class="admin-footer admin-footer-plain" aria-label="Kredit PROxyz">
         <div class="admin-footer-signature">
           <span class="admin-footer-mark" aria-hidden="true"><i class="fa-regular fa-copyright"></i></span>
           <span class="admin-footer-text"><strong>P</strong>ulung <strong>R</strong>iswant<strong class="admin-footer-o">o</strong> gen <strong class="admin-footer-xyz">xyz</strong></span>
@@ -920,7 +926,7 @@
 
   <dialog id="admin-settings-dialog" class="admin-settings-dialog">
     <form id="admin-settings-form" class="dialog-form">
-      <div class="section-head"><div><p class="eyebrow"><i class="fa-solid fa-sliders"></i> PROxyz web</p><h2>Pengaturan Admin</h2></div><button id="admin-settings-close" class="icon-button" type="button" aria-label="Tutup">×</button></div>
+      <div class="section-head"><div><p class="eyebrow eyebrow-brand"><i class="fa-solid fa-sliders"></i> <span class="brand-pro">PRO</span><span class="brand-xyz">xyz</span><span class="brand-web">web</span></p><h2>Pengaturan Admin</h2></div><button id="admin-settings-close" class="icon-button" type="button" aria-label="Tutup">×</button></div>
       <div class="admin-settings-name-row"><div><strong id="admin-settings-name">Admin</strong><span>Nama akun yang tampil di seluruh PROxyz.</span></div><button id="admin-settings-edit-name" class="ghost compact" type="button"><i class="fa-solid fa-user-pen"></i> Edit nama</button></div>
       <section class="admin-settings-section">
         <div class="admin-settings-heading"><div><strong>Urutan aplikasi</strong><span>Aplikasi paling atas menjadi aplikasi default saat login.</span></div><button id="admin-settings-reset-order" class="ghost compact" type="button"><i class="fa-solid fa-arrow-rotate-left"></i> Reset</button></div>
@@ -1037,6 +1043,6 @@
   <dialog id="gallery-bulk-dialog"><form id="gallery-bulk-form" method="dialog" class="dialog-form"><div class="section-head"><div><p class="eyebrow">Edit beberapa foto</p><h2>Kelompokkan kejadian</h2></div><button id="close-gallery-bulk" class="icon-button" type="button">×</button></div><p class="muted small"><b id="gallery-bulk-dialog-count">0 foto</b> akan dijadikan satu kelompok di galeri publik.</p><label>Judul kejadian<input id="gallery-bulk-caption" maxlength="160" placeholder="Contoh: Makan Kerupuk Agustusan 2024" required></label><label>Tanggal dokumentasi<input id="gallery-bulk-date" type="date" required></label><p class="muted small">Semua foto terpilih akan memakai satu judul dan satu tanggal. Foto tidak dihapus atau diunggah ulang ke penyimpanan Galeri.</p><p id="gallery-bulk-status" class="status"></p><button class="primary full" type="submit">Simpan & kelompokkan</button></form></dialog>
 
   <script src="./config.js?v=242"></script>
-  <script src="./admin.js?v=0.9.5-navgrid-footerbrand" defer></script>
+  <script src="./admin.js?v=0.9.6-brandfix-footerplain" defer></script>
 </body>
 </html>

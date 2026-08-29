@@ -1,6 +1,6 @@
 {
-  "version": "0.9.5",
-  "updatedAt": "2026-08-29T21:40:00+07:00",
+  "version": "0.9.6",
+  "updatedAt": "2026-08-29T22:30:00+07:00",
   "uiBase": "PROxyz-SOURCE-20260829-2042",
   "features": [
     "admin-v0.9.3",
@@ -17,6 +17,11 @@
     "admin-v0.9.5",
     "admin-app-grid-3-col",
     "full-width-floating-navbar",
-    "proxyz-brand-footer"
+    "proxyz-brand-footer",
+    "admin-v0.9.6",
+    "brand-wordmark-unified",
+    "login-footer-enabled",
+    "plain-global-footer",
+    "admin-api-port-reuse-guard"
   ]
 }
