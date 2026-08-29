@@ -6,11 +6,22 @@
   "saldo": {
     "awal": 0,
     "masuk": 15338500,
-    "keluar": 13632000,
-    "akhir": 1706500
+    "keluar": 13827000,
+    "akhir": 1511500
   },
-  "jumlahTransaksi": 152,
+  "jumlahTransaksi": 153,
   "transactions": [
+    {
+      "id": "masjid-260829-003",
+      "nomor": "153",
+      "tanggal": 1787979600000,
+      "jenis": "keluar",
+      "kategori": "pembangunan & renovasi",
+      "kategoriNama": "Pembangunan & Renovasi",
+      "keterangan": "GRC + paku",
+      "nominal": 195000,
+      "label": []
+    },
     {
       "id": "masjid-260829-002",
       "nomor": "152",
@@ -1920,5 +1931,5 @@
       ]
     }
   ],
-  "updatedAt": 1787978647606
+  "updatedAt": 1787981176731
 }
