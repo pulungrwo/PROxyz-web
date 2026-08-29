@@ -6,11 +6,22 @@
   "saldo": {
     "awal": 0,
     "masuk": 15338500,
-    "keluar": 14324000,
-    "akhir": 1014500
+    "keluar": 14339000,
+    "akhir": 999500
   },
-  "jumlahTransaksi": 160,
+  "jumlahTransaksi": 161,
   "transactions": [
+    {
+      "id": "masjid-260829-011",
+      "nomor": "161",
+      "tanggal": 1787979600000,
+      "jenis": "keluar",
+      "kategori": "perlengkapan",
+      "kategoriNama": "Perlengkapan",
+      "keterangan": "Fitting Lampu",
+      "nominal": 15000,
+      "label": []
+    },
     {
       "id": "masjid-260829-010",
       "nomor": "160",
@@ -2010,5 +2021,5 @@
       ]
     }
   ],
-  "updatedAt": 1788007371164
+  "updatedAt": 1788007625063
 }
