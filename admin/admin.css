@@ -1034,3 +1034,31 @@ button.has-fa{gap:7px}.primary.has-fa,.ghost.has-fa,.success-soft.has-fa,.danger
   cursor:not-allowed;
 }
 /* END RISMA HARDENING V1.0.6 */
+
+
+/* BEGIN ADMIN NAVBAR ALWAYS-READY V1.0.7 */
+/* Navbar compact langsung tampil sejak halaman Admin dibuka. Karena sticky,
+   elemen tetap mengambil ruang layout dan tidak menimpa card Admin pertama. */
+#app-view > #app-tabs.app-tabs.is-floating{
+  position:sticky!important;
+  top:var(--admin-dock-top)!important;
+  margin:0 0 12px!important;
+}
+#app-view > #app-tabs-sentinel{display:none!important}
+#app-view > #app-tabs + .profilebar{
+  margin-top:0!important;
+}
+/* Footer diberi ruang napas dari card terakhir dan tepi bawah layar. */
+#admin-footer.admin-footer.admin-footer-plain{
+  margin:30px auto 18px!important;
+  padding:0 8px max(16px,env(safe-area-inset-bottom))!important;
+}
+@media(max-width:640px){
+  #app-view > #app-tabs.app-tabs.is-floating{margin-bottom:11px!important}
+  #admin-footer.admin-footer.admin-footer-plain{
+    margin-top:28px!important;
+    margin-bottom:16px!important;
+    padding-bottom:max(18px,env(safe-area-inset-bottom))!important;
+  }
+}
+/* END ADMIN NAVBAR ALWAYS-READY V1.0.7 */

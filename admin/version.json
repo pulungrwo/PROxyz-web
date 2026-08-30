@@ -1,6 +1,6 @@
 {
-  "version": "1.0.6",
-  "updatedAt": "2026-08-30T17:41:00+07:00",
+  "version": "1.0.7",
+  "updatedAt": "2026-08-30T19:47:00+07:00",
   "uiBase": "PROxyz-SOURCE-20260829-2042",
   "features": [
     "admin-v0.9.3",
@@ -54,6 +54,10 @@
     "risma-neutral-coupon-done-action",
     "risma-auto-coupon-protection",
     "risma-period-delete-restore",
-    "admin-cookie-only-session"
+    "admin-cookie-only-session",
+    "admin-v1.0.7",
+    "admin-navbar-visible-from-start",
+    "admin-navbar-before-profile-card",
+    "admin-footer-spacing-v107"
   ]
 }

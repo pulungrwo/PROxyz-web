@@ -1,7 +1,7 @@
 (() => {
   "use strict";
 
-  const ADMIN_BUILD = "1.0.6";
+  const ADMIN_BUILD = "1.0.7";
   const config = window.PROXYZ_ADMIN_CONFIG || {};
 
   async function checkAdminBuild() {
@@ -594,15 +594,14 @@
 
   function syncAppDockFloating() {
     const dock = $("app-tabs");
-    const sentinel = $("app-tabs-sentinel");
     const toggle = $("app-tabs-toggle");
     const bar = $("app-switcher-bar");
-    if (!dock || !sentinel || !toggle || $("app-view")?.hidden) return;
-    const floating = sentinel.getBoundingClientRect().top <= appDockTopPx() + 1 && window.scrollY > 0;
-    dock.classList.toggle("is-floating", floating);
+    if (!dock || !toggle || $("app-view")?.hidden) return;
+    // Navbar compact selalu tersedia sejak Admin dibuka. Sticky tetap berada
+    // dalam flow halaman, sehingga card Admin di bawahnya tidak tertutup.
+    dock.classList.add("is-floating");
     toggle.hidden = false;
-    if (!floating) dock.classList.remove("is-expanded");
-    const expanded = floating && dock.classList.contains("is-expanded");
+    const expanded = dock.classList.contains("is-expanded");
     toggle.setAttribute("aria-expanded", String(expanded));
     bar?.setAttribute("aria-expanded", String(expanded));
   }
@@ -3863,8 +3862,6 @@ ${row.label}`))return;
     dock.classList.toggle("is-expanded", expanded);
     $("app-tabs-toggle").setAttribute("aria-expanded", String(expanded));
   });
-  window.addEventListener("scroll", syncAppDockFloating, { passive: true });
-  window.addEventListener("resize", syncAppDockFloating, { passive: true });
   $("admin-settings-open").addEventListener("click", openAdminSettings);
   $("admin-settings-close").addEventListener("click", () => $("admin-settings-dialog").close());
   $("admin-settings-edit-name").addEventListener("click", () => { $("admin-settings-dialog").close(); openUserNameDialog(null, true); });
