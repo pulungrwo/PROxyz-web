@@ -1,6 +1,6 @@
 {
-  "version": "1.0.7",
-  "updatedAt": "2026-08-30T19:47:00+07:00",
+  "version": "1.0.9",
+  "updatedAt": "2026-08-30T20:40:00+07:00",
   "uiBase": "PROxyz-SOURCE-20260829-2042",
   "features": [
     "admin-v0.9.3",
@@ -58,6 +58,13 @@
     "admin-v1.0.7",
     "admin-navbar-visible-from-start",
     "admin-navbar-before-profile-card",
-    "admin-footer-spacing-v107"
+    "admin-footer-spacing-v107",
+    "admin-v1.0.8",
+    "admin-profile-in-navbar-menu",
+    "admin-account-fontawesome",
+    "footer-gen-spacing-v108",
+    "admin-v1.0.9",
+    "admin-clean-temp-deploy",
+    "admin-live-deploy-cache-bust"
   ]
 }

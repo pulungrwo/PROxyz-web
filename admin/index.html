@@ -10,7 +10,7 @@
   <meta http-equiv="Expires" content="0">
   <title>Admin PROxyz</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
-  <link rel="stylesheet" href="./admin.css?v=1.0.7">
+  <link rel="stylesheet" href="./admin.css?v=1.0.9">
 </head>
 <body>
   <main class="shell">
@@ -67,6 +67,21 @@
           <span id="app-active-label" class="app-active-label">Aplikasi</span>
           <button id="app-tabs-toggle" class="app-tabs-toggle" type="button" aria-label="Buka daftar aplikasi" aria-expanded="false"><i class="fa-solid fa-grip" aria-hidden="true"></i></button>
           <span class="app-switcher-brand" aria-label="PROxyz web"><span class="proxyz-wordmark"><strong class="proxyz-wordmark-pro">PRO</strong><strong class="proxyz-wordmark-xyz">xyz</strong><span class="proxyz-wordmark-web">web</span></span></span>
+          <button id="admin-account-toggle" class="admin-account-toggle" type="button" aria-label="Buka menu Admin" aria-haspopup="menu" aria-expanded="false" aria-controls="admin-account-menu"><i class="fa-solid fa-user-shield" aria-hidden="true"></i></button>
+        </div>
+        <div id="admin-account-menu" class="admin-account-menu" role="menu" aria-label="Menu Admin" hidden>
+          <div class="admin-account-head">
+            <span class="admin-account-avatar" aria-hidden="true"><i class="fa-solid fa-user-gear"></i></span>
+            <div class="admin-account-copy">
+              <p class="profile-eyebrow">Admin PROxyz</p>
+              <strong id="welcome">Admin</strong>
+              <p id="access-summary" class="muted small"></p>
+            </div>
+          </div>
+          <div class="admin-account-actions">
+            <button id="admin-settings-open" class="admin-account-action" type="button"><i class="fa-solid fa-sliders" aria-hidden="true"></i><span>Pengaturan</span></button>
+            <button id="logout" class="admin-account-action admin-account-logout" type="button" aria-label="Keluar dari Admin"><i class="fa-solid fa-right-from-bracket" aria-hidden="true"></i><span>Keluar</span></button>
+          </div>
         </div>
         <div id="app-switcher-menu" class="app-switcher-menu" role="menu" aria-label="Pilih aplikasi">
           <button id="tab-kas" class="app-tab" type="button" data-view="kas" aria-label="Kas" title="Kas"><i class="fa-solid fa-wallet"></i><span class="app-tab-label">Kas</span></button>
@@ -78,18 +93,6 @@
           <button id="tab-users" class="app-tab" type="button" data-view="users" aria-label="Pengguna" title="Pengguna" hidden><i class="fa-solid fa-users-gear"></i><span class="app-tab-label">Pengguna</span></button>
         </div>
       </nav>
-
-      <section class="profilebar panel">
-        <div class="profile-copy">
-          <p class="profile-eyebrow">Admin PROxyz</p>
-          <h1 id="welcome">Admin</h1>
-          <p id="access-summary" class="muted small"></p>
-        </div>
-        <div class="profile-actions">
-          <button id="logout" class="logout-btn" type="button" aria-label="Keluar dari Admin"><i class="fa-solid fa-right-from-bracket" aria-hidden="true"></i><span>Keluar</span></button>
-          <button id="admin-settings-open" class="name-edit-btn" type="button"><i class="fa-solid fa-sliders" aria-hidden="true"></i><span>Pengaturan</span></button>
-        </div>
-      </section>
 
       <section id="kas-view" class="app-section" hidden>
         <section class="panel compact-panel">
@@ -1047,6 +1050,6 @@
   <dialog id="gallery-bulk-dialog"><form id="gallery-bulk-form" method="dialog" class="dialog-form"><div class="section-head"><div><p class="eyebrow">Edit beberapa foto</p><h2>Kelompokkan kejadian</h2></div><button id="close-gallery-bulk" class="icon-button" type="button">×</button></div><p class="muted small"><b id="gallery-bulk-dialog-count">0 foto</b> akan dijadikan satu kelompok di galeri publik.</p><label>Judul kejadian<input id="gallery-bulk-caption" maxlength="160" placeholder="Contoh: Makan Kerupuk Agustusan 2024" required></label><label>Tanggal dokumentasi<input id="gallery-bulk-date" type="date" required></label><p class="muted small">Semua foto terpilih akan memakai satu judul dan satu tanggal. Foto tidak dihapus atau diunggah ulang ke penyimpanan Galeri.</p><p id="gallery-bulk-status" class="status"></p><button class="primary full" type="submit">Simpan & kelompokkan</button></form></dialog>
 
   <script src="./config.js?v=242"></script>
-  <script src="./admin.js?v=1.0.7" defer></script>
+  <script src="./admin.js?v=1.0.9" defer></script>
 </body>
 </html>

@@ -1062,3 +1062,140 @@ button.has-fa{gap:7px}.primary.has-fa,.ghost.has-fa,.success-soft.has-fa,.danger
   }
 }
 /* END ADMIN NAVBAR ALWAYS-READY V1.0.7 */
+
+/* BEGIN ADMIN ACCOUNT NAVBAR V1.0.8 */
+/* Card Admin dipindahkan ke menu akun kanan atas navbar. */
+#app-tabs.is-floating .app-switcher-bar{
+  position:relative!important;
+  grid-template-columns:minmax(0,1fr) 46px minmax(126px,150px) 42px!important;
+}
+#app-tabs.is-floating .admin-account-toggle{
+  display:inline-grid!important;
+  place-items:center!important;
+  width:42px!important;
+  min-width:42px!important;
+  height:42px!important;
+  margin:0!important;
+  padding:0!important;
+  border:1px solid #e4e7ec!important;
+  border-radius:13px!important;
+  background:#f8fafc!important;
+  color:#344054!important;
+  box-shadow:none!important;
+}
+#app-tabs.is-floating .admin-account-toggle i{font-size:15px!important}
+#app-tabs.is-floating .admin-account-toggle[aria-expanded="true"]{
+  background:#101828!important;
+  border-color:#101828!important;
+  color:#fff!important;
+}
+#app-tabs .admin-account-menu{
+  position:absolute!important;
+  top:calc(100% + 8px)!important;
+  right:0!important;
+  left:auto!important;
+  z-index:35!important;
+  width:min(320px,calc(100vw - 24px))!important;
+  padding:12px!important;
+  border:1px solid rgba(208,213,221,.92)!important;
+  border-radius:17px!important;
+  background:rgba(255,255,255,.99)!important;
+  box-shadow:0 20px 52px rgba(16,24,40,.20)!important;
+  backdrop-filter:blur(18px) saturate(150%)!important;
+  -webkit-backdrop-filter:blur(18px) saturate(150%)!important;
+}
+#app-tabs .admin-account-menu[hidden]{display:none!important}
+.admin-account-head{
+  display:grid!important;
+  grid-template-columns:44px minmax(0,1fr)!important;
+  align-items:start!important;
+  gap:10px!important;
+  padding:3px 3px 11px!important;
+}
+.admin-account-avatar{
+  display:grid!important;
+  place-items:center!important;
+  width:44px!important;
+  height:44px!important;
+  border-radius:13px!important;
+  background:#101828!important;
+  color:#fff!important;
+  font-size:16px!important;
+}
+.admin-account-copy{min-width:0!important}
+.admin-account-copy .profile-eyebrow{margin:0 0 2px!important;font-size:10.5px!important}
+.admin-account-copy #welcome{
+  display:block!important;
+  margin:0!important;
+  overflow:hidden!important;
+  color:#101828!important;
+  font-size:15px!important;
+  font-weight:850!important;
+  line-height:1.25!important;
+  text-overflow:ellipsis!important;
+  white-space:nowrap!important;
+}
+.admin-account-copy #access-summary{
+  margin:3px 0 0!important;
+  color:#667085!important;
+  font-size:10.5px!important;
+  line-height:1.35!important;
+}
+.admin-account-actions{
+  display:grid!important;
+  grid-template-columns:1fr 1fr!important;
+  gap:7px!important;
+  padding-top:10px!important;
+  border-top:1px solid #eef2f6!important;
+}
+.admin-account-action{
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:7px!important;
+  min-height:38px!important;
+  padding:8px 10px!important;
+  border-radius:11px!important;
+  background:#f2f4f7!important;
+  color:#344054!important;
+  font-size:12px!important;
+  font-weight:800!important;
+}
+.admin-account-logout{background:#fff1f0!important;color:#b42318!important}
+/* Profile card lama tidak lagi mengambil ruang halaman. */
+#app-view > .profilebar{display:none!important}
+/* Footer: beri spasi nyata di sekitar kata "gen" pada Admin dan Login. */
+#login-footer .admin-footer-text,
+#admin-footer .admin-footer-text{
+  gap:5px!important;
+}
+#login-footer .admin-footer-gen,
+#admin-footer .admin-footer-gen{
+  margin:0!important;
+}
+@media(max-width:640px){
+  #app-tabs.is-floating .app-switcher-bar{
+    grid-template-columns:minmax(0,1fr) 42px minmax(112px,136px) 40px!important;
+    gap:4px!important;
+  }
+  #app-tabs.is-floating .admin-account-toggle{
+    width:40px!important;
+    min-width:40px!important;
+    height:40px!important;
+  }
+  #app-tabs .admin-account-menu{right:0!important;width:min(300px,calc(100vw - 20px))!important}
+}
+@media(max-width:390px){
+  #app-tabs.is-floating .app-switcher-bar{
+    grid-template-columns:minmax(0,1fr) 40px minmax(98px,118px) 38px!important;
+  }
+  #app-tabs.is-floating .app-switcher-brand{min-width:98px!important;padding:0 5px!important}
+  #app-tabs.is-floating .app-switcher-brand .proxyz-wordmark{font-size:15.5px!important}
+  #app-tabs.is-floating .admin-account-toggle{
+    width:38px!important;
+    min-width:38px!important;
+    height:38px!important;
+    border-radius:11px!important;
+  }
+}
+/* END ADMIN ACCOUNT NAVBAR V1.0.8 */

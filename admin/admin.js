@@ -1,7 +1,7 @@
 (() => {
   "use strict";
 
-  const ADMIN_BUILD = "1.0.7";
+  const ADMIN_BUILD = "1.0.9";
   const config = window.PROXYZ_ADMIN_CONFIG || {};
 
   async function checkAdminBuild() {
@@ -3857,6 +3857,7 @@ ${row.label}`))return;
 
   document.querySelectorAll(".app-tab").forEach(el => el.addEventListener("click", () => switchView(el.dataset.view)));
   $("app-tabs-toggle").addEventListener("click", () => {
+    closeAdminAccountMenu();
     const dock = $("app-tabs");
     const expanded = !dock.classList.contains("is-expanded");
     dock.classList.toggle("is-expanded", expanded);
@@ -4259,6 +4260,48 @@ ${row.label}`))return;
   document.addEventListener("visibilitychange", () => { if (!document.hidden) checkAdminBuild(); });
 
 
+  /* BEGIN ADMIN ACCOUNT NAVBAR V1.0.8 */
+  function closeAdminAccountMenu() {
+    const menu = $("admin-account-menu");
+    const toggle = $("admin-account-toggle");
+    if (!menu || !toggle) return;
+    menu.hidden = true;
+    toggle.setAttribute("aria-expanded", "false");
+  }
+
+  function toggleAdminAccountMenu() {
+    const menu = $("admin-account-menu");
+    const toggle = $("admin-account-toggle");
+    if (!menu || !toggle) return;
+    const open = menu.hidden;
+    if (open) closeProxyzAppSwitcher();
+    menu.hidden = !open;
+    toggle.setAttribute("aria-expanded", String(open));
+  }
+
+  const adminAccountToggle = $("admin-account-toggle");
+  if (adminAccountToggle) {
+    adminAccountToggle.addEventListener("click", event => {
+      event.stopPropagation();
+      toggleAdminAccountMenu();
+    });
+  }
+
+  document.addEventListener("click", event => {
+    const menu = $("admin-account-menu");
+    if (!menu || menu.hidden) return;
+    if (menu.contains(event.target) || adminAccountToggle?.contains(event.target)) return;
+    closeAdminAccountMenu();
+  });
+
+  document.addEventListener("keydown", event => {
+    if (event.key === "Escape") closeAdminAccountMenu();
+  });
+
+  $("admin-settings-open")?.addEventListener("click", closeAdminAccountMenu);
+  $("logout")?.addEventListener("click", closeAdminAccountMenu);
+  /* END ADMIN ACCOUNT NAVBAR V1.0.8 */
+
   /* BEGIN PROxyz NAVBAR JS V092 */
   function syncProxyzAppSwitcherLabel() {
     const label = $("app-active-label");
@@ -4293,7 +4336,8 @@ ${row.label}`))return;
   const proxyzSwitcherBar = $("app-switcher-bar");
   if (proxyzSwitcherBar) {
     proxyzSwitcherBar.addEventListener("click", event => {
-      if (event.target.closest("#app-tabs-toggle")) return;
+      if (event.target.closest("#app-tabs-toggle") || event.target.closest("#admin-account-toggle")) return;
+      closeAdminAccountMenu();
       toggleProxyzAppSwitcher();
     });
     proxyzSwitcherBar.addEventListener("keydown", event => {
