@@ -1,5 +1,5 @@
 {
-  "version": "1.0.1",
+  "version": "1.0.5",
   "updatedAt": "2026-08-30T01:20:00+07:00",
   "uiBase": "PROxyz-SOURCE-20260829-2042",
   "features": [
@@ -42,6 +42,9 @@
     "admin-v1.0.1",
     "proxyz-wordmark-system",
     "public-header-brand",
-    "footer-wordmark-color-sync"
+    "footer-wordmark-color-sync",
+    "brand-footer-refresh-v105",
+    "kas-web-current-time",
+    "kas-edit-scroll-keep"
   ]
 }

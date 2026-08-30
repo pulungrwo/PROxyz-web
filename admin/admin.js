@@ -1,7 +1,7 @@
 (() => {
   "use strict";
 
-  const ADMIN_BUILD = "1.0.1";
+  const ADMIN_BUILD = "1.0.5";
   const config = window.PROXYZ_ADMIN_CONFIG || {};
 
   async function checkAdminBuild() {
@@ -63,6 +63,9 @@
   let kasCategoryEditing = null;
   let kasScheduleEditing = null;
   let kasManagerData = null;
+  let kasEditingTimestamp = 0;
+  let kasPendingScrollY = null;
+  let kasPendingFocusRef = "";
 
   // Bertunas
   let activeBertunas = "";
@@ -214,6 +217,45 @@
     const parts = new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Jakarta", year: "numeric", month: "2-digit", day: "2-digit" }).formatToParts(new Date(Number(value) || Date.now()));
     const map = Object.fromEntries(parts.map(p => [p.type, p.value]));
     return `${map.year}-${map.month}-${map.day}`;
+  }
+
+  // WEB KAS UX V105
+  function jakartaDateTimeParts(value = Date.now()) {
+    const date = new Date(Number(value) || Date.now());
+    const parts = new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Jakarta", year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false }).formatToParts(date);
+    const map = Object.fromEntries(parts.map(p => [p.type, p.value]));
+    return { year: map.year, month: map.month, day: map.day, hour: map.hour, minute: map.minute, second: map.second, date: `${map.year}-${map.month}-${map.day}`, time: `${map.hour}:${map.minute}:${map.second}` };
+  }
+  function combineJakartaDateTime(dateValue, timeValue = "12:00:00") {
+    const [year, month, day] = String(dateValue || todayJakarta()).split("-").map(part => Number(part) || 0);
+    const [hour, minute, second] = String(timeValue || "12:00:00").split(":").map(part => Number(part) || 0);
+    if (!year || !month || !day) return Date.now();
+    return Date.UTC(year, month - 1, day, hour - 7, minute, second);
+  }
+  function transactionTimestampFromForm(dateValue, originalTimestamp = 0) {
+    if (originalTimestamp) return combineJakartaDateTime(dateValue, jakartaDateTimeParts(originalTimestamp).time);
+    return combineJakartaDateTime(dateValue, jakartaDateTimeParts(Date.now()).time);
+  }
+  function escapeSelectorValue(value) {
+    if (window.CSS && typeof window.CSS.escape === "function") return window.CSS.escape(String(value || ""));
+    return String(value || "").replace(/["\\]/g, "\\$&");
+  }
+  function restoreKasTransactionViewport() {
+    const focusRef = kasPendingFocusRef;
+    const restoreY = kasPendingScrollY;
+    kasPendingFocusRef = "";
+    kasPendingScrollY = null;
+    requestAnimationFrame(() => {
+      let target = null;
+      if (focusRef) target = document.querySelector(`#tx-list [data-tx-ref="${escapeSelectorValue(focusRef)}"]`);
+      if (target) {
+        target.classList.add("tx-card-flash");
+        target.scrollIntoView({ block: "center", behavior: "auto" });
+        window.setTimeout(() => target.classList.remove("tx-card-flash"), 1800);
+        return;
+      }
+      if (typeof restoreY === "number") window.scrollTo({ top: restoreY, behavior: "auto" });
+    });
   }
 
   function nominalDigits(value) {
@@ -817,7 +859,7 @@
     list.replaceChildren();
     if (!kasRows.length) list.appendChild(emptyBox("Belum ada transaksi."));
     for (const tx of kasRows) {
-      const card = document.createElement("article"); card.className = "item-card";
+      const card = document.createElement("article"); card.className = "item-card"; card.dataset.txRef = String(tx.nomor || "");
       const top = document.createElement("div"); top.className = "item-top";
       const left = document.createElement("div");
       const title = document.createElement("h3"); title.textContent = `${tx.nomor} · ${tx.keterangan}`;
@@ -1316,6 +1358,9 @@
 
   function openKasCreate(type) {
     $("tx-form").reset();
+    kasEditingTimestamp = 0;
+    kasPendingScrollY = null;
+    kasPendingFocusRef = "";
     $("tx-ref").value = "";
     $("form-mode").textContent = type === "masuk" ? "Pemasukan" : "Pengeluaran";
     $("form-title").textContent = type === "masuk" ? "Tambah pemasukan" : "Tambah pengeluaran";
@@ -1331,6 +1376,7 @@
 
   function openKasEdit(tx) {
     $("tx-form").reset();
+    kasEditingTimestamp = Number(tx?.tanggal) || 0;
     $("tx-ref").value = tx.nomor;
     $("form-mode").textContent = `Edit ${tx.nomor}`;
     $("form-title").textContent = tx.keterangan;
@@ -3868,12 +3914,18 @@ ${row.label}`))return;
     const ref = $("tx-ref").value;
     const nominal = parseNominalText($("tx-amount").value);
     if (!nominal) return setStatus($("form-status"), "Nominal belum valid.", "error");
-    const payload = { jenis: $("tx-type").value, nominal, kategori: $("tx-category").value, keterangan: $("tx-description").value.trim(), catatan: $("tx-note").value.trim(), label: parseTags($("tx-tags").value), tanggal: dateToTimestamp($("tx-date").value) };
+    const isEdit = Boolean(ref);
+    const payload = { jenis: $("tx-type").value, nominal, kategori: $("tx-category").value, keterangan: $("tx-description").value.trim(), catatan: $("tx-note").value.trim(), label: parseTags($("tx-tags").value), tanggal: transactionTimestampFromForm($("tx-date").value, isEdit ? kasEditingTimestamp : 0) };
     if (ref) payload.alasan = $("tx-reason").value.trim() || "Edit melalui Web PROxyz";
+    const submitScrollY = window.scrollY || window.pageYOffset || 0;
     setStatus($("form-status"), "Menyimpan…");
     try {
       await api(ref ? `/api/kas/${encodeURIComponent(activeKas)}/transaksi/${encodeURIComponent(ref)}` : `/api/kas/${encodeURIComponent(activeKas)}/transaksi`, { method: ref ? "PUT" : "POST", body: JSON.stringify(payload) });
-      $("tx-dialog").close(); await loadKas(activeKas);
+      $("tx-dialog").close();
+      if (isEdit) { kasPendingScrollY = submitScrollY; kasPendingFocusRef = ref; }
+      else { kasPendingScrollY = null; kasPendingFocusRef = ""; }
+      await loadKas(activeKas);
+      if (isEdit) restoreKasTransactionViewport();
     } catch (error) { setStatus($("form-status"), error.message, "error"); }
   });
 
