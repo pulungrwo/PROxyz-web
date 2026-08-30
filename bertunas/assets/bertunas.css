@@ -13,3 +13,28 @@
 /* BEGIN PROxyz PUBLIC HEADER FOOTER REFRESH V103 */
 .proxyz-wordmark{display:inline-flex!important;align-items:baseline!important;justify-content:center!important;gap:0!important;white-space:nowrap!important;line-height:1!important;font-variant-ligatures:none!important;text-transform:none!important;letter-spacing:0!important}.proxyz-wordmark-pro,.proxyz-wordmark-xyz{font-weight:900!important;letter-spacing:-.05em!important}.proxyz-wordmark-pro{color:#101828!important}.proxyz-wordmark-xyz{color:#d9480f!important}.proxyz-wordmark-web{display:inline-block!important;margin-left:.24em!important;color:#667085!important;font-size:.72em!important;font-weight:840!important;letter-spacing:-.02em!important}.topbar{display:grid!important;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr)!important;align-items:center!important;gap:10px!important;padding:10px 4px 18px!important}.topbar-side{min-width:0}.app-name{justify-self:start;color:#173b2b;text-decoration:none;font-size:18px;font-weight:800;letter-spacing:-.03em}.topbar-center{display:flex;align-items:center;justify-content:center}.topbar-wordmark.proxyz-wordmark{font-size:19px!important}.topbar-chip{justify-self:end;padding:5px 10px;border:1px solid #dbe6df;border-radius:999px;background:#fff;color:#6c8376;font-size:11px;font-weight:800}.proxyz-footer{display:flex!important;align-items:center!important;justify-content:center!important;gap:8px 10px!important;flex-wrap:wrap!important;max-width:100%!important;margin:16px auto 2px!important;padding:0 8px max(6px,env(safe-area-inset-bottom))!important;border:0!important;background:transparent!important;color:#667085!important;font-size:11.5px!important;line-height:1.25!important;text-align:center!important;box-shadow:none!important}.proxyz-footer-signature{display:inline-flex!important;align-items:center!important;justify-content:center!important;gap:6px!important}.proxyz-footer-mark{display:inline-flex!important;align-items:center!important;justify-content:center!important;width:auto!important;height:auto!important;border-radius:0!important;background:transparent!important;color:#d9480f!important;font-size:12px!important;font-weight:900!important;box-shadow:none!important}.proxyz-footer-credit{display:inline-flex!important;align-items:baseline!important;justify-content:center!important;gap:5px!important;white-space:nowrap!important;color:#667085!important}.proxyz-footer-name{color:#344054!important;font-weight:700!important}.proxyz-footer-gen{color:#98a2b3!important}.proxyz-footer-xyz{color:#101828!important}.proxyz-footer-meta{color:#98a2b3!important;font-size:10.5px!important;white-space:nowrap!important}@media(max-width:520px){.topbar-wordmark.proxyz-wordmark{font-size:17px!important}.app-name{font-size:16px}.topbar-chip{font-size:10.5px}}
 /* END PROxyz PUBLIC HEADER FOOTER REFRESH V103 */
+
+
+/* BEGIN PROxyz PUBLIC BRAND FORCE V104 */
+body .proxyz-footer{
+  width:100%!important;
+  max-width:100%!important;
+  margin:16px auto 2px!important;
+  padding:0 8px max(6px,env(safe-area-inset-bottom))!important;
+  border:0!important;
+  border-top:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  background-image:none!important;
+  box-shadow:none!important;
+  color:#667085!important;
+}
+body .proxyz-footer-mark{width:auto!important;height:auto!important;border:0!important;border-radius:0!important;background:transparent!important;color:#d9480f!important;box-shadow:none!important}
+body .proxyz-footer-credit{color:#667085!important}
+body .proxyz-footer-name{color:#344054!important;font-weight:700!important}
+body .proxyz-footer-gen{color:#98a2b3!important}
+body .proxyz-footer-xyz{color:#101828!important;font-weight:900!important}
+.topbar-center{display:flex!important;align-items:center!important;justify-content:center!important;text-align:center!important}
+.topbar-center .proxyz-wordmark{font-size:20px!important;justify-content:center!important}
+@media(max-width:520px){.topbar-center .proxyz-wordmark{font-size:18px!important}}
+/* END PROxyz PUBLIC BRAND FORCE V104 */
