@@ -10,7 +10,7 @@
   <meta http-equiv="Expires" content="0">
   <title>Admin PROxyz</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
-  <link rel="stylesheet" href="./admin.css?v=1.1.3">
+  <link rel="stylesheet" href="./admin.css?v=1.1.4">
 </head>
 <body>
   <main class="shell">
@@ -621,6 +621,15 @@
 
             <form id="risma-settings-form" class="settings-stack">
               <div class="context-grid"><label>Jumlah Rank Poin<input id="risma-setting-rank" type="number" min="1" max="100" required></label><label>Jumlah Rank Tim<input id="risma-setting-team" type="number" min="1" max="50" required></label><label>Maksimal kupon per penerima<input id="risma-setting-coupon-max" type="number" min="1" max="20" required><small class="muted">Berlaku untuk setiap jenis Kupon THR.</small></label></div>
+              <fieldset class="toggle-fieldset risma-scoring-fieldset"><legend>Nilai poin kehadiran</legend><div class="risma-scoring-grid">
+                <label>1x<input id="risma-setting-score-1" type="number" min="0" max="100" step="0.25" inputmode="decimal"></label>
+                <label>2x<input id="risma-setting-score-2" type="number" min="0" max="100" step="0.25" inputmode="decimal"></label>
+                <label>3x<input id="risma-setting-score-3" type="number" min="0" max="100" step="0.25" inputmode="decimal"></label>
+                <label>4x<input id="risma-setting-score-4" type="number" min="0" max="100" step="0.25" inputmode="decimal"></label>
+                <label>5x<input id="risma-setting-score-5" type="number" min="0" max="100" step="0.25" inputmode="decimal"></label>
+                <label>6x<input id="risma-setting-score-6" type="number" min="0" max="100" step="0.25" inputmode="decimal"></label>
+                <label>7x<input id="risma-setting-score-7" type="number" min="0" max="100" step="0.25" inputmode="decimal"></label>
+              </div><small class="muted">Default: 1, 2, 3, 4, 6, 7,5, 9 poin. Perubahan menghitung ulang data minggu yang sudah tersimpan.</small></fieldset>
               <fieldset class="toggle-fieldset"><legend>Kupon THR aktif</legend><label class="check-row"><input id="risma-setting-ngaji" type="checkbox"> Kupon Ngaji</label><label class="check-row"><input id="risma-setting-taraweh" type="checkbox"> Kupon Taraweh</label><label class="check-row"><input id="risma-setting-tadarus" type="checkbox"> Kupon Tadarus</label></fieldset>
               <p id="risma-settings-status" class="status"></p><button class="primary full" type="submit"><i class="fa-solid fa-floppy-disk"></i> Simpan pengaturan</button>
             </form>
@@ -839,7 +848,6 @@
           </label>
           <label>Nilai hadir
             <select id="risma-week-attendance">
-              <option value="0">0x hadir</option>
               <option value="1">1x hadir</option>
               <option value="2">2x hadir</option>
               <option value="3">3x hadir</option>
@@ -1054,6 +1062,6 @@
   <dialog id="gallery-bulk-dialog"><form id="gallery-bulk-form" method="dialog" class="dialog-form"><div class="section-head"><div><p class="eyebrow">Edit beberapa foto</p><h2>Kelompokkan kejadian</h2></div><button id="close-gallery-bulk" class="icon-button" type="button">×</button></div><p class="muted small"><b id="gallery-bulk-dialog-count">0 foto</b> akan dijadikan satu kelompok di galeri publik.</p><label>Judul kejadian<input id="gallery-bulk-caption" maxlength="160" placeholder="Contoh: Makan Kerupuk Agustusan 2024" required></label><label>Tanggal dokumentasi<input id="gallery-bulk-date" type="date" required></label><p class="muted small">Semua foto terpilih akan memakai satu judul dan satu tanggal. Foto tidak dihapus atau diunggah ulang ke penyimpanan Galeri.</p><p id="gallery-bulk-status" class="status"></p><button class="primary full" type="submit">Simpan & kelompokkan</button></form></dialog>
 
   <script src="./config.js?v=242"></script>
-  <script src="./admin.js?v=1.1.3" defer></script>
+  <script src="./admin.js?v=1.1.4" defer></script>
 </body>
 </html>

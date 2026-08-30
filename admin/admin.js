@@ -1,7 +1,7 @@
 (() => {
   "use strict";
 
-  const ADMIN_BUILD = "1.1.3";
+  const ADMIN_BUILD = "1.1.4";
   const config = window.PROXYZ_ADMIN_CONFIG || {};
 
   async function checkAdminBuild() {
@@ -2207,10 +2207,28 @@
     rismaWeekEditIndex = -1;
     if (!keepMode) rismaWeekNewParticipantMode = week === 1;
     $("risma-week-person-name").value = "";
-    $("risma-week-attendance").value = "0";
+    $("risma-week-attendance").value = "1";
     $("risma-week-gender").value = "";
     $("risma-week-excused").value = "0";
     syncRismaWeekBuilder();
+  }
+
+  function syncRismaWeekAttendanceOptions(preferred = null) {
+    const select = $("risma-week-attendance");
+    const excusedWrap = $("risma-week-excused-wrap");
+    const allowZero = !excusedWrap.hidden && Number($("risma-week-excused").value || 0) > 0;
+    let zero = [...select.options].find(option => option.value === "0");
+    if (allowZero && !zero) {
+      zero = document.createElement("option");
+      zero.value = "0";
+      zero.textContent = "0x hadir · berhalangan";
+      select.insertBefore(zero, select.firstChild);
+    } else if (!allowZero && zero) {
+      if (select.value === "0") select.value = "1";
+      zero.remove();
+    }
+    if (preferred !== null && [...select.options].some(option => option.value === String(preferred))) select.value = String(preferred);
+    if (!select.value) select.value = "1";
   }
 
   function syncRismaWeekBuilder() {
@@ -2266,6 +2284,7 @@
       [...$("risma-week-excused").options].forEach(opt=>opt.disabled=Number(opt.value)>remaining);
       if(Number($("risma-week-excused").value)>remaining) $("risma-week-excused").value="0";
     }
+    syncRismaWeekAttendanceOptions();
     $("risma-week-add-entry").innerHTML = rismaWeekEditIndex >= 0 ? `<i class="fa-solid fa-floppy-disk"></i> Simpan` : `<i class="fa-solid fa-plus"></i> Tambahkan`;
   }
 
@@ -2314,7 +2333,7 @@
     rismaWeekNewParticipantMode = Number(week) === 1;
 
     if(existing){
-      rismaWeekDraft=(existing.entries||[]).map(entry=>{
+      rismaWeekDraft=(existing.entries||[]).filter(entry=>Number(entry.attendance||0)>0 || Number(entry.excused||0)>0).map(entry=>{
         const participant=rismaParticipantById(entry.participantId);
         return { participantId:String(entry.participantId||""), name:participant?.name || `Peserta ${entry.participantId}`, attendance:Number(entry.attendance||0), excused:Number(entry.excused||0), gender:participant?.gender||"", isNew:false };
       });
@@ -2370,7 +2389,6 @@
     const row=rismaWeekDraft[index]; if(!row)return;
     const week=Number($("risma-week-number").value||1);
     rismaWeekEditIndex=index;
-    $("risma-week-attendance").value=String(row.attendance);
     $("risma-week-excused").value=String(row.excused||0);
     $("risma-week-gender").value=row.gender||"";
     if(week===1){ rismaWeekNewParticipantMode=true; $("risma-week-person-name").value=row.name; }
@@ -2378,6 +2396,7 @@
     else { rismaWeekNewParticipantMode=true; $("risma-week-person-name").value=row.name; }
     syncRismaWeekBuilder();
     if(!rismaWeekNewParticipantMode && row.participantId){ $("risma-week-person-select").value=String(row.participantId); syncRismaWeekBuilder(); $("risma-week-excused").value=String(row.excused||0); }
+    syncRismaWeekAttendanceOptions(row.attendance);
     if(rismaWeekNewParticipantMode) $("risma-week-person-name").value=row.name;
   }
 
@@ -2476,9 +2495,11 @@
     $("risma-team-rebuild-note").textContent = week2Done
       ? "Minggu 2 sudah diinput. Susunan tim dikunci dan tidak dapat diacak ulang."
       : "Hanya Owner. Acak ulang tersedia sampai sebelum Minggu 2 diinput.";
-    if(!settings){ $("risma-setting-rank").value="10"; $("risma-setting-team").value="3"; $("risma-setting-coupon-max").value="3"; $("risma-setting-ngaji").checked=true; $("risma-setting-taraweh").checked=true; $("risma-setting-tadarus").checked=true; syncRismaCouponCountSelects(); syncRismaTemplateForm(); return; }
+    const defaultScoring={1:1,2:2,3:3,4:4,5:6,6:7.5,7:9};
+    if(!settings){ $("risma-setting-rank").value="10"; $("risma-setting-team").value="3"; $("risma-setting-coupon-max").value="3"; $("risma-setting-ngaji").checked=true; $("risma-setting-taraweh").checked=true; $("risma-setting-tadarus").checked=true; for(let attendance=1;attendance<=7;attendance++) $("risma-setting-score-"+attendance).value=String(defaultScoring[attendance]); syncRismaCouponCountSelects(); syncRismaTemplateForm(); return; }
     $("risma-setting-rank").value=String(settings.individualWinnerCount||10); $("risma-setting-team").value=String(settings.teamWinnerCount||3); $("risma-setting-coupon-max").value=String(settings.maxCouponsPerRecipient||3);
     $("risma-setting-ngaji").checked=settings.couponEnabled?.ngaji!==false; $("risma-setting-taraweh").checked=settings.couponEnabled?.taraweh!==false; $("risma-setting-tadarus").checked=settings.couponEnabled?.tadarus!==false;
+    for(let attendance=1;attendance<=7;attendance++) $("risma-setting-score-"+attendance).value=String(settings.scoring?.[attendance] ?? defaultScoring[attendance]);
     syncRismaCouponCountSelects(); syncRismaTemplateForm();
   }
 
@@ -2851,7 +2872,7 @@ ${row.label}`))return;
     }catch(error){setStatus($("risma-log-status"),error.message,"error");}
   }
 
-  async function saveRismaSettings(event){ event.preventDefault(); setStatus($("risma-settings-status"),"Menyimpan pengaturan…"); try{ const data=await api("/api/risma/settings",{method:"PUT",body:JSON.stringify({individualWinnerCount:Number($("risma-setting-rank").value),teamWinnerCount:Number($("risma-setting-team").value),maxCouponsPerRecipient:Number($("risma-setting-coupon-max").value),couponEnabled:{ngaji:$("risma-setting-ngaji").checked,taraweh:$("risma-setting-taraweh").checked,tadarus:$("risma-setting-tadarus").checked}})}); rismaDetail=data.risma; renderRisma(); setStatus($("risma-settings-status"),"Pengaturan tersimpan.","success"); }catch(error){setStatus($("risma-settings-status"),error.message,"error");} }
+  async function saveRismaSettings(event){ event.preventDefault(); setStatus($("risma-settings-status"),"Menyimpan pengaturan…"); try{ const scoring={}; for(let attendance=1;attendance<=7;attendance++) scoring[attendance]=$("risma-setting-score-"+attendance).value; const data=await api("/api/risma/settings",{method:"PUT",body:JSON.stringify({individualWinnerCount:Number($("risma-setting-rank").value),teamWinnerCount:Number($("risma-setting-team").value),maxCouponsPerRecipient:Number($("risma-setting-coupon-max").value),scoring,couponEnabled:{ngaji:$("risma-setting-ngaji").checked,taraweh:$("risma-setting-taraweh").checked,tadarus:$("risma-setting-tadarus").checked}})}); rismaDetail=data.risma; renderRisma(); setStatus($("risma-settings-status"),"Pengaturan tersimpan dan poin mingguan disinkronkan.","success"); }catch(error){setStatus($("risma-settings-status"),error.message,"error");} }
   async function saveRismaTemplate(event){ event.preventDefault(); const type=$("risma-template-type").value; setStatus($("risma-template-status"),"Menyimpan template…"); try{const data=await api(`/api/risma/coupon-template/${encodeURIComponent(type)}`,{method:"PUT",body:JSON.stringify({title:$("risma-template-title").value,slogan:$("risma-template-slogan").value,footer:$("risma-template-footer").value,palette:$("risma-template-palette").value})});rismaDetail=data.risma;renderRisma();setStatus($("risma-template-status"),"Template tersimpan.","success");}catch(error){setStatus($("risma-template-status"),error.message,"error");}}
   async function resetRismaTemplate(){ const type=$("risma-template-type").value;if(!confirm("Kembalikan template kupon ini ke desain bawaan?"))return;setStatus($("risma-template-status"),"Mengembalikan template…");try{const data=await api(`/api/risma/coupon-template/${encodeURIComponent(type)}`,{method:"POST",body:"{}"});rismaDetail=data.risma;renderRisma();setStatus($("risma-template-status"),"Template kembali ke default.","success");}catch(error){setStatus($("risma-template-status"),error.message,"error");}}
 
@@ -4104,6 +4125,7 @@ ${row.label}`))return;
   $("risma-week-new-toggle").addEventListener("click",()=>{rismaWeekNewParticipantMode=!rismaWeekNewParticipantMode;rismaWeekEditIndex=-1;$("risma-week-person-name").value="";syncRismaWeekBuilder();});
   $("risma-week-person-select").addEventListener("change",()=>{$("risma-week-excused").value="0";syncRismaWeekBuilder();});
   $("risma-week-gender").addEventListener("change",syncRismaWeekBuilder);
+  $("risma-week-excused").addEventListener("change",()=>syncRismaWeekAttendanceOptions());
   $("risma-week-add-entry").addEventListener("click",addRismaWeekDraft);
   $("risma-week-form").addEventListener("submit",async event=>{
     event.preventDefault();
