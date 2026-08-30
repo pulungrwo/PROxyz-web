@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": 1787827947438,
+  "generatedAt": 1788085472725,
   "id": "01",
   "nama": "Lahan 300 m²",
   "lokasi": "",
@@ -34,12 +34,30 @@
   "summary": {
     "weightKg": 0,
     "harvestCount": 0,
-    "activityCount": 4,
+    "activityCount": 6,
     "pendingScheduleCount": 4
   },
   "financeVisible": false,
   "recentHarvest": [],
   "recentActivities": [
+    {
+      "date": "2026-08-30",
+      "cropId": "02",
+      "komoditas": "Kacang Panjang",
+      "category": "Pemupukan",
+      "description": "Kocor Ultradap + Ambition + Humigrow",
+      "note": "",
+      "hst": 8
+    },
+    {
+      "date": "2026-08-30",
+      "cropId": "01",
+      "komoditas": "Cabai",
+      "category": "Pemupukan",
+      "description": "Kocor Ultradap + Ambition + Humigrow",
+      "note": "",
+      "hst": 17
+    },
     {
       "date": "2026-08-27",
       "cropId": "01",
@@ -127,5 +145,5 @@
       "status": "pending"
     }
   ],
-  "updatedAt": 1787827947438
+  "updatedAt": 1788085472725
 }
