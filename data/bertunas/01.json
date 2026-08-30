@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": 1788085472725,
+  "generatedAt": 1788085605581,
   "id": "01",
   "nama": "Lahan 300 m²",
   "lokasi": "",
@@ -35,7 +35,7 @@
     "weightKg": 0,
     "harvestCount": 0,
     "activityCount": 6,
-    "pendingScheduleCount": 4
+    "pendingScheduleCount": 2
   },
   "financeVisible": false,
   "recentHarvest": [],
@@ -54,7 +54,7 @@
       "cropId": "01",
       "komoditas": "Cabai",
       "category": "Pemupukan",
-      "description": "Kocor Ultradap + Ambition + Humigrow",
+      "description": "Kocor 40L air,  150 gr ultradap + 4 sdm Humigrow + 60 age",
       "note": "",
       "hst": 17
     },
@@ -97,30 +97,6 @@
   ],
   "schedules": [
     {
-      "nomor": 2,
-      "cropId": "01",
-      "komoditas": "Cabai",
-      "category": "Pemupukan",
-      "description": "Kocor 40L air,  150 gr ultradap + 4 sdm Humigrow + 60 age",
-      "note": "",
-      "targetType": "hst",
-      "targetHst": 15,
-      "targetDate": "2026-08-28",
-      "status": "pending"
-    },
-    {
-      "nomor": 3,
-      "cropId": "02",
-      "komoditas": "Kacang Panjang",
-      "category": "Pemupukan",
-      "description": "Kocor Ultradap + Ambition + Humigrow",
-      "note": "",
-      "targetType": "hst",
-      "targetHst": 8,
-      "targetDate": "2026-08-30",
-      "status": "pending"
-    },
-    {
       "nomor": 5,
       "cropId": "01",
       "komoditas": "Cabai",
@@ -145,5 +121,5 @@
       "status": "pending"
     }
   ],
-  "updatedAt": 1788085472725
+  "updatedAt": 1788085605581
 }
