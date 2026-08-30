@@ -1,6 +1,6 @@
 {
-  "version": "1.1.1",
-  "updatedAt": "2026-08-30T21:27:00+07:00",
+  "version": "1.1.2",
+  "updatedAt": "2026-08-30T21:40:00+07:00",
   "uiBase": "PROxyz-SOURCE-20260829-2042",
   "features": [
     "admin-v0.9.3",
@@ -72,6 +72,9 @@
     "admin-v1.1.1",
     "admin-font-restore-v111",
     "admin-responsive-overflow-guard",
-    "risma-poin-mobile-responsive"
+    "risma-poin-mobile-responsive",
+    "admin-v1.1.2",
+    "risma-hero-horizontal-summary",
+    "risma-coupon-stats-by-total-coupon"
   ]
 }

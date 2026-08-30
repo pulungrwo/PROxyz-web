@@ -1277,3 +1277,31 @@ img,video,canvas,svg{max-width:100%}
   #risma-coupons.risma-coupon-summary-inline .risma-coupon-mini-card strong{text-align:right!important}
 }
 /* END ADMIN RESPONSIVE HARDENING + RISMA COUPON SUMMARY V1.1.1 */
+
+
+/* BEGIN RISMA HERO SUMMARY + COUPON TOTALS V1.1.2 */
+.risma-hero-compact .risma-summary-stack{display:grid;gap:9px;margin-top:14px;position:relative;z-index:1}
+.risma-hero-compact .risma-summary-row{display:grid;gap:8px}
+.risma-hero-compact .risma-summary-row-main{grid-template-columns:repeat(3,minmax(0,1fr))}
+.risma-hero-compact .risma-summary-stat,.risma-hero-compact .risma-summary-row-coupons{padding:10px 11px;border-radius:14px;background:rgba(255,255,255,.09);backdrop-filter:blur(3px)}
+.risma-hero-compact .risma-summary-stat span{display:block;font-size:11px;color:rgba(255,255,255,.84)}
+.risma-hero-compact .risma-summary-stat b{display:block;margin-top:3px;font-size:20px;color:#fff}
+.risma-hero-compact .risma-summary-row-coupons{padding:10px}
+.risma-hero-compact #risma-coupons.risma-coupon-summary-inline{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px!important;min-height:0!important;margin-top:0!important}
+.risma-hero-compact #risma-coupons.risma-coupon-summary-inline .risma-coupon-mini-card{padding:8px 10px!important;border-radius:13px!important;background:color-mix(in srgb,var(--coupon-light,#F8FAFC) 94%, white)!important}
+.risma-hero-compact #risma-coupons.risma-coupon-summary-inline .risma-coupon-mini-card small{font-size:10.5px!important}
+.risma-hero-compact #risma-coupons.risma-coupon-summary-inline .risma-coupon-mini-card strong{font-size:15px!important}
+@media(max-width:640px){
+  .risma-hero-compact .risma-summary-stat,.risma-hero-compact .risma-summary-row-coupons{padding:9px 10px}
+  .risma-hero-compact .risma-summary-stat span{font-size:10.5px}
+  .risma-hero-compact .risma-summary-stat b{font-size:18px}
+  .risma-hero-compact #risma-coupons.risma-coupon-summary-inline{gap:6px!important}
+  .risma-hero-compact #risma-coupons.risma-coupon-summary-inline .risma-coupon-mini-card{padding:7px 8px!important}
+}
+@media(max-width:390px){
+  .risma-hero-compact .risma-summary-stat b{font-size:17px}
+  .risma-hero-compact #risma-coupons.risma-coupon-summary-inline .risma-coupon-mini-card{padding:6px 7px!important}
+  .risma-hero-compact #risma-coupons.risma-coupon-summary-inline .risma-coupon-mini-card small{font-size:9.5px!important}
+  .risma-hero-compact #risma-coupons.risma-coupon-summary-inline .risma-coupon-mini-card strong{font-size:14px!important}
+}
+/* END RISMA HERO SUMMARY + COUPON TOTALS V1.1.2 */

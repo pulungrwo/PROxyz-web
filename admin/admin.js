@@ -1,7 +1,7 @@
 (() => {
   "use strict";
 
-  const ADMIN_BUILD = "1.1.1";
+  const ADMIN_BUILD = "1.1.2";
   const config = window.PROXYZ_ADMIN_CONFIG || {};
 
   async function checkAdminBuild() {
@@ -2043,13 +2043,24 @@
 
   function renderRismaCouponSummaryCards() {
     const host = $("risma-coupons");
+    const rowWrap = $("risma-coupon-summary-row");
     if (!host) return;
     host.replaceChildren();
-    const rows = (rismaDetail?.summary?.couponBreakdown || []);
+    const enabledTypes = (rismaDetail?.couponTypes || []).filter(row => row?.enabled !== false);
+    const breakdown = new Map((rismaDetail?.summary?.couponBreakdown || []).map(row => [String(row.type || "").toLowerCase(), row]));
+    const rows = enabledTypes.length
+      ? enabledTypes.map(row => ({
+          type: row.type,
+          label: row.label,
+          coupons: Number(breakdown.get(String(row.type || "").toLowerCase())?.coupons || row.stats?.coupons || 0)
+        }))
+      : [];
     if (!rows.length) {
-      host.textContent = "0";
+      if (rowWrap) rowWrap.hidden = true;
+      host.textContent = "";
       return;
     }
+    if (rowWrap) rowWrap.hidden = false;
     rows.forEach(row => {
       const meta = rismaCouponSummaryMeta(row.type);
       const card = document.createElement("span");
