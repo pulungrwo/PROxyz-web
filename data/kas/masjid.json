@@ -6,11 +6,24 @@
   "saldo": {
     "awal": 0,
     "masuk": 15338500,
-    "keluar": 14339000,
-    "akhir": 999500
+    "keluar": 14349000,
+    "akhir": 989500
   },
-  "jumlahTransaksi": 161,
+  "jumlahTransaksi": 162,
   "transactions": [
+    {
+      "id": "masjid-260830-001",
+      "nomor": "162",
+      "tanggal": 1788066000000,
+      "jenis": "keluar",
+      "kategori": "pembangunan & renovasi",
+      "kategoriNama": "Pembangunan & Renovasi",
+      "keterangan": "Paku",
+      "nominal": 10000,
+      "label": [
+        "plafon"
+      ]
+    },
     {
       "id": "masjid-260829-011",
       "nomor": "161",
@@ -31,7 +44,9 @@
       "kategoriNama": "Konsumsi",
       "keterangan": "Air Minum",
       "nominal": 7000,
-      "label": []
+      "label": [
+        "plafon"
+      ]
     },
     {
       "id": "masjid-260829-009",
@@ -2021,5 +2036,5 @@
       ]
     }
   ],
-  "updatedAt": 1788013778719
+  "updatedAt": 1788067428081
 }
