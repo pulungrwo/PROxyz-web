@@ -1199,3 +1199,86 @@ button.has-fa{gap:7px}.primary.has-fa,.ghost.has-fa,.success-soft.has-fa,.danger
   }
 }
 /* END ADMIN ACCOUNT NAVBAR V1.0.8 */
+
+
+/* BEGIN ADMIN TYPOGRAPHY + RISMA COUPON SUMMARY V1.1.0 */
+/* admin-global-font-scale-v110 */
+#risma-coupons.risma-coupon-summary-inline{
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:6px!important;
+  min-height:48px!important;
+  margin-top:3px!important;
+  white-space:normal!important;
+}
+#risma-coupons.risma-coupon-summary-inline .risma-coupon-mini-card{
+  display:grid!important;
+  gap:2px!important;
+  min-width:0!important;
+  padding:7px 8px!important;
+  border-radius:12px!important;
+  background:var(--coupon-light,#F8FAFC)!important;
+  border:1px solid color-mix(in srgb,var(--coupon-accent,#D0D5DD) 70%, white)!important;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.45)!important;
+}
+#risma-coupons.risma-coupon-summary-inline .risma-coupon-mini-card small{
+  display:block!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  white-space:nowrap!important;
+  color:var(--coupon-primary,#344054)!important;
+  font-size:10.5px!important;
+  font-weight:800!important;
+  line-height:1.1!important;
+}
+#risma-coupons.risma-coupon-summary-inline .risma-coupon-mini-card strong{
+  display:block!important;
+  color:var(--coupon-primary,#101828)!important;
+  font-size:16px!important;
+  font-weight:900!important;
+  line-height:1.05!important;
+}
+.risma-coupon-summary-card{align-content:start!important}
+html{font-size:17px}
+body,.shell{font-size:16px!important}
+h1{font-size:31px!important}
+h2,.section-head h2{font-size:24px!important}
+h3{font-size:17px!important}
+label{font-size:14.5px!important}
+input,select,textarea,button{font-size:15.5px!important}
+.top-label,.small,.status,.session-note,.hero-link,.role-pill,.tag,.item-meta,.photo-caption,.photo-meta,.quick-card span,.admin-meta span,.feature-pill,.metric-card span,.mini-stat-card span,.week-card span,.team-card p,.progress-head,.video-footnote,.video-draft-message,.candidate-body span,.candidate-body small{font-size:13.5px!important}
+.brand{font-size:22px!important}
+.app-tab,.subtab,.quick-card b,.video-info-box b,.candidate-body strong,.photo-title,.mini-stat-card strong,.metric-card b,.week-card strong,.team-card strong{font-size:15.5px!important}
+.amount{font-size:18px!important}
+.item-actions button,.photo-actions button,.video-status,.score-pill,.status-chip,.risma-count-pill{font-size:12.5px!important}
+.risma-rank-title strong,.video-draft-top strong{font-size:17px!important}
+.risma-rank-title span,.risma-rank-info span,.risma-score-card .item-meta,.risma-coupon-card .item-meta{font-size:12.5px!important}
+#app-tabs.is-floating .app-switcher-current{font-size:18px!important}
+#app-tabs.is-floating .app-switcher-brand .proxyz-wordmark{font-size:18px!important}
+#app-tabs.is-floating .app-switcher-grid-toggle,#app-tabs.is-floating .admin-account-toggle{font-size:18px!important}
+#app-tabs .app-grid-button{font-size:15px!important}
+#app-tabs .admin-account-menu #welcome{font-size:16px!important}
+#app-tabs .admin-account-menu #access-summary{font-size:11.5px!important}
+#login-footer .admin-footer-signature,#admin-footer .admin-footer-signature{font-size:13px!important}
+@media(max-width:640px){
+  html{font-size:16px}
+  body,.shell{font-size:15.5px!important}
+  h1{font-size:29px!important}
+  h2,.section-head h2{font-size:22px!important}
+  input,select,textarea,button{font-size:15px!important}
+  .app-tab,.subtab{font-size:15px!important}
+  .quick-card b,.video-info-box b,.candidate-body strong,.photo-title,.mini-stat-card strong,.metric-card b,.week-card strong,.team-card strong{font-size:15px!important}
+  .top-label,.small,.status,.session-note,.hero-link,.role-pill,.tag,.item-meta,.photo-caption,.photo-meta,.quick-card span,.admin-meta span,.feature-pill,.metric-card span,.mini-stat-card span,.week-card span,.team-card p,.progress-head,.video-footnote,.video-draft-message,.candidate-body span,.candidate-body small{font-size:13px!important}
+  #risma-coupons.risma-coupon-summary-inline{grid-template-columns:repeat(3,minmax(0,1fr));gap:5px!important}
+  #risma-coupons.risma-coupon-summary-inline .risma-coupon-mini-card{padding:6px 7px!important;border-radius:11px!important}
+  #risma-coupons.risma-coupon-summary-inline .risma-coupon-mini-card small{font-size:9.5px!important}
+  #risma-coupons.risma-coupon-summary-inline .risma-coupon-mini-card strong{font-size:15px!important}
+}
+@media(max-width:410px){
+  #risma-coupons.risma-coupon-summary-inline{grid-template-columns:1fr!important}
+  #risma-coupons.risma-coupon-summary-inline .risma-coupon-mini-card{grid-template-columns:minmax(0,1fr) auto!important;align-items:center!important;gap:8px!important}
+  #risma-coupons.risma-coupon-summary-inline .risma-coupon-mini-card strong{text-align:right!important}
+  #app-tabs.is-floating .app-switcher-current{font-size:17px!important}
+  #app-tabs.is-floating .app-switcher-brand .proxyz-wordmark{font-size:17px!important}
+}
+/* END ADMIN TYPOGRAPHY + RISMA COUPON SUMMARY V1.1.0 */

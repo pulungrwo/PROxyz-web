@@ -10,7 +10,7 @@
   <meta http-equiv="Expires" content="0">
   <title>Admin PROxyz</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
-  <link rel="stylesheet" href="./admin.css?v=1.0.9">
+  <link rel="stylesheet" href="./admin.css?v=1.1.0">
 </head>
 <body>
   <main class="shell">
@@ -416,7 +416,7 @@
               <div><span>Peserta</span><b id="risma-participants">0</b></div>
               <div><span>Minggu</span><b id="risma-weeks">0/4</b></div>
               <div><span>Tim</span><b id="risma-teams">0</b></div>
-              <div><span>Kupon</span><b id="risma-coupons">0</b></div>
+              <div class="risma-coupon-summary-card"><span>Kupon</span><div id="risma-coupons" class="risma-coupon-summary-inline" aria-live="polite">0</div></div>
             </div>
             <div class="risma-hero-tools">
               <button id="risma-period-new" class="hero-tool" type="button" hidden><i class="fa-solid fa-calendar-plus"></i> Periode</button>
@@ -1050,6 +1050,6 @@
   <dialog id="gallery-bulk-dialog"><form id="gallery-bulk-form" method="dialog" class="dialog-form"><div class="section-head"><div><p class="eyebrow">Edit beberapa foto</p><h2>Kelompokkan kejadian</h2></div><button id="close-gallery-bulk" class="icon-button" type="button">×</button></div><p class="muted small"><b id="gallery-bulk-dialog-count">0 foto</b> akan dijadikan satu kelompok di galeri publik.</p><label>Judul kejadian<input id="gallery-bulk-caption" maxlength="160" placeholder="Contoh: Makan Kerupuk Agustusan 2024" required></label><label>Tanggal dokumentasi<input id="gallery-bulk-date" type="date" required></label><p class="muted small">Semua foto terpilih akan memakai satu judul dan satu tanggal. Foto tidak dihapus atau diunggah ulang ke penyimpanan Galeri.</p><p id="gallery-bulk-status" class="status"></p><button class="primary full" type="submit">Simpan & kelompokkan</button></form></dialog>
 
   <script src="./config.js?v=242"></script>
-  <script src="./admin.js?v=1.0.9" defer></script>
+  <script src="./admin.js?v=1.1.0" defer></script>
 </body>
 </html>

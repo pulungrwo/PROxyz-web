@@ -1,7 +1,7 @@
 (() => {
   "use strict";
 
-  const ADMIN_BUILD = "1.0.9";
+  const ADMIN_BUILD = "1.1.0";
   const config = window.PROXYZ_ADMIN_CONFIG || {};
 
   async function checkAdminBuild() {
@@ -1969,8 +1969,7 @@
     $("risma-participants").textContent = wholeNumber.format(rismaDetail.summary?.participants || 0);
     $("risma-weeks").textContent = `${rismaDetail.summary?.weeks || 0}/4`;
     $("risma-teams").textContent = wholeNumber.format(rismaDetail.summary?.teams || 0);
-    const couponParts=(rismaDetail.summary?.couponBreakdown||[]).map(row=>Number(row.coupons||0)).filter(value=>value>0);
-    $("risma-coupons").textContent = couponParts.length ? couponParts.map(value=>wholeNumber.format(value)).join(" + ") : "0";
+    renderRismaCouponSummaryCards();
     $("risma-total-points").textContent = `${number.format(rismaDetail.summary?.totalPoints || 0)} poin`;
 
     // Pengaturan periode dipindah ke tab Pengaturan agar hero tetap bersih.
@@ -2022,6 +2021,51 @@
     renderRismaSettings();
     renderManagerList($("risma-manager-list"), rismaDetail.managers, { remove: removeRismaManager });
     switchRismaTab(activeRismaTab);
+  }
+
+  const RISMA_COUPON_SUMMARY_PALETTES = {
+    hijau:{ primary:"#166534", light:"#F0FDF4", accent:"#86EFAC" },
+    biru:{ primary:"#0369A1", light:"#F0F9FF", accent:"#7DD3FC" },
+    emas:{ primary:"#92400E", light:"#FFFBEB", accent:"#FCD34D" },
+    ungu:{ primary:"#6B21A8", light:"#FAF5FF", accent:"#D8B4FE" },
+    merah:{ primary:"#B91C1C", light:"#FEF2F2", accent:"#FCA5A5" },
+    toska:{ primary:"#0F766E", light:"#F0FDFA", accent:"#5EEAD4" }
+  };
+
+  function rismaCouponSummaryMeta(type) {
+    const key = String(type || "").toLowerCase();
+    const fallbackPalette = key === "ngaji" ? "hijau" : key === "taraweh" ? "biru" : "emas";
+    const savedPalette = String(rismaDetail?.settings?.couponTemplates?.[key]?.palette || "").toLowerCase();
+    const palette = RISMA_COUPON_SUMMARY_PALETTES[savedPalette] || RISMA_COUPON_SUMMARY_PALETTES[fallbackPalette] || RISMA_COUPON_SUMMARY_PALETTES.hijau;
+    const label = key === "ngaji" ? "Ngaji" : key === "taraweh" ? "Taraweh" : key === "tadarus" ? "Tadarus" : (String(type || "Kupon") || "Kupon");
+    return { key, label, palette };
+  }
+
+  function renderRismaCouponSummaryCards() {
+    const host = $("risma-coupons");
+    if (!host) return;
+    host.replaceChildren();
+    const rows = (rismaDetail?.summary?.couponBreakdown || []);
+    if (!rows.length) {
+      host.textContent = "0";
+      return;
+    }
+    rows.forEach(row => {
+      const meta = rismaCouponSummaryMeta(row.type);
+      const card = document.createElement("span");
+      card.className = "risma-coupon-mini-card";
+      card.dataset.type = meta.key;
+      card.style.setProperty("--coupon-primary", meta.palette.primary);
+      card.style.setProperty("--coupon-light", meta.palette.light);
+      card.style.setProperty("--coupon-accent", meta.palette.accent);
+      card.setAttribute("aria-label", `${meta.label}: ${wholeNumber.format(Number(row.coupons || 0))} kupon`);
+      const label = document.createElement("small");
+      label.textContent = meta.label;
+      const value = document.createElement("strong");
+      value.textContent = wholeNumber.format(Number(row.coupons || 0));
+      card.append(label, value);
+      host.appendChild(card);
+    });
   }
 
   function participantWeekSummary(row) {
