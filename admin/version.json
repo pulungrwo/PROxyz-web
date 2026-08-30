@@ -1,6 +1,6 @@
 {
-  "version": "1.1.0",
-  "updatedAt": "2026-08-30T21:04:00+07:00",
+  "version": "1.1.1",
+  "updatedAt": "2026-08-30T21:27:00+07:00",
   "uiBase": "PROxyz-SOURCE-20260829-2042",
   "features": [
     "admin-v0.9.3",
@@ -68,6 +68,10 @@
     "admin-live-deploy-cache-bust",
     "admin-v1.1.0",
     "risma-coupon-summary-cards",
-    "admin-global-font-scale-v110"
+    "admin-global-font-scale-v110",
+    "admin-v1.1.1",
+    "admin-font-restore-v111",
+    "admin-responsive-overflow-guard",
+    "risma-poin-mobile-responsive"
   ]
 }
