@@ -1503,3 +1503,15 @@ dialog[id^="risma-"] .ghost{background:#eff7fd!important;color:#315a78!important
 dialog[id^="risma-"] input:focus,dialog[id^="risma-"] select:focus,dialog[id^="risma-"] textarea:focus{border-color:#55aee3!important;box-shadow:0 0 0 3px rgba(55,157,218,.13)!important}
 dialog[id^="risma-"] .icon-button{background:#edf7fd!important;color:#285c7d!important}
 /* END RISMA LIGHT BLUE THEME V1.1.5 */
+
+
+/* BEGIN KOMPETISI SIMPLE V1.1.7 */
+#kompetisi-view .summary-grid.four{grid-template-columns:repeat(3,minmax(0,1fr))}
+#kompetisi-view .competition-system-help{margin:-3px 0 2px;padding:10px 12px;border-radius:12px;background:#f8fafc;border:1px solid #e8edf3;color:#667085;font-size:12px;line-height:1.5}
+#kompetisi-view .competition-actions:empty{display:none}
+#kompetisi-view .competition-actions:not(:empty){display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+#kompetisi-view .subtabs .subtab[hidden]{display:none!important}
+#kompetisi-view #competition-setting-group-options[hidden],#kompetisi-view #competition-setting-league-options[hidden],#kompetisi-view #competition-setting-third-wrap[hidden],#kompetisi-view #competition-setting-draw-wrap[hidden]{display:none!important}
+#competition-create-dialog .competition-system-help{margin:-3px 0 2px;padding:10px 12px;border-radius:12px;background:#f8fafc;border:1px solid #e8edf3;color:#667085;font-size:12px;line-height:1.5}
+@media(max-width:540px){#kompetisi-view .summary-grid.four{grid-template-columns:repeat(3,minmax(0,1fr))}#kompetisi-view .summary-grid.four>div{padding:9px 8px}}
+/* END KOMPETISI SIMPLE V1.1.7 */

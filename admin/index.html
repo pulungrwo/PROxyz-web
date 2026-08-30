@@ -10,7 +10,7 @@
   <meta http-equiv="Expires" content="0">
   <title>Admin PROxyz</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
-  <link rel="stylesheet" href="./admin.css?v=1.1.6">
+  <link rel="stylesheet" href="./admin.css?v=1.1.7">
 </head>
 <body>
   <main class="shell">
@@ -726,10 +726,10 @@
               <div><span>Peserta</span><b id="competition-participant-count">0</b></div>
               <div><span>Laga</span><b id="competition-match-count">0</b></div>
               <div><span>Selesai</span><b id="competition-finished-count">0</b></div>
-              <div><span>Fase</span><b id="competition-stage-count">0</b></div>
+              
             </div>
             <div class="competition-hero-actions">
-              <button id="competition-generate" class="hero-tool" type="button"><i class="fa-solid fa-wand-magic-sparkles"></i> Generate</button>
+              <button id="competition-generate" class="hero-tool" type="button"><i class="fa-solid fa-calendar-plus"></i> Buat jadwal</button>
               <button id="competition-refresh" class="hero-tool" type="button"><i class="fa-solid fa-rotate"></i> Muat ulang</button>
             </div>
           </section>
@@ -737,8 +737,8 @@
           <nav class="subtabs" aria-label="Fitur Kompetisi">
             <button class="subtab active" type="button" data-competition-tab="peserta"><i class="fa-solid fa-users"></i><span>Peserta</span></button>
             <button class="subtab" type="button" data-competition-tab="pertandingan"><i class="fa-solid fa-list-ol"></i><span>Laga</span></button>
-            <button class="subtab" type="button" data-competition-tab="klasemen"><i class="fa-solid fa-ranking-star"></i><span>Klasemen</span></button>
-            <button class="subtab" type="button" data-competition-tab="bagan"><i class="fa-solid fa-diagram-project"></i><span>Bagan</span></button>
+            <button id="competition-tab-klasemen" class="subtab" type="button" data-competition-tab="klasemen"><i class="fa-solid fa-ranking-star"></i><span>Klasemen</span></button>
+            <button id="competition-tab-bagan" class="subtab" type="button" data-competition-tab="bagan"><i class="fa-solid fa-diagram-project"></i><span>Bagan</span></button>
             <button class="subtab" type="button" data-competition-tab="pengaturan"><i class="fa-solid fa-sliders"></i><span>Atur</span></button>
           </nav>
 
@@ -774,16 +774,18 @@
             <form id="competition-settings-form" class="stack">
               <label>Nama kompetisi<input id="competition-setting-name" maxlength="120"></label>
               <label>Nama cabang/permainan<input id="competition-setting-sport-name" maxlength="80" placeholder="Contoh: Gobak Sodor"></label>
-              <div class="context-grid">
-                <label>Sistem<select id="competition-setting-format"></select></label>
+              <label>Sistem<select id="competition-setting-format"></select></label>
+              <p id="competition-setting-system-help" class="competition-system-help"></p>
+              <div id="competition-setting-group-options" class="context-grid">
                 <label>Jumlah grup<input id="competition-setting-groups" type="number" min="2" max="16"></label>
                 <label>Lolos per grup<input id="competition-setting-advance" type="number" min="1" max="8"></label>
-                <label>Top custom<input id="competition-setting-custom-advance" type="number" min="2" max="64"></label>
-                <label>Leg<input id="competition-setting-legs" type="number" min="1" max="4"></label>
               </div>
+              <label id="competition-setting-league-options">Pertemuan
+                <select id="competition-setting-legs"><option value="1">1x bertemu</option><option value="2">2x bertemu</option></select>
+              </label>
               <div class="context-grid"><label>Mode skor<select id="competition-setting-scoring"><option value="score">Skor biasa</option><option value="sets">Set / game</option></select></label><label>Best of<input id="competition-setting-bestof" type="number" min="1" max="15" step="2"></label></div>
-              <label class="check-row"><input id="competition-setting-draw" type="checkbox"><span>Izinkan hasil seri</span></label>
-              <label class="check-row"><input id="competition-setting-third" type="checkbox"><span>Aktifkan perebutan juara 3</span></label>
+              <label id="competition-setting-draw-wrap" class="check-row"><input id="competition-setting-draw" type="checkbox"><span>Izinkan hasil seri</span></label>
+              <label id="competition-setting-third-wrap" class="check-row"><input id="competition-setting-third" type="checkbox"><span>Perebutan juara 3</span></label>
               <button id="competition-settings-save" class="primary full" type="submit"><i class="fa-solid fa-floppy-disk"></i> Simpan pengaturan</button>
               <button id="competition-reset" class="danger-soft full" type="button"><i class="fa-solid fa-arrow-rotate-left"></i> Reset jadwal & bagan</button>
             </form>
@@ -926,8 +928,8 @@
       <div class="context-grid"><label>Cabang<select id="competition-create-sport"></select></label><label>Peserta<select id="competition-create-participant-type"><option value="team">Tim</option><option value="individual">Perorangan</option></select></label></div>
       <label id="competition-create-custom-sport-wrap" hidden>Nama cabang/permainan<input id="competition-create-custom-sport" maxlength="80" placeholder="Contoh: Gobak Sodor"></label>
       <label>Sistem<select id="competition-create-format"></select></label>
+      <p id="competition-create-system-help" class="competition-system-help"></p>
       <div id="competition-create-group-options" class="context-grid"><label>Jumlah grup<input id="competition-create-groups" type="number" min="2" max="16" value="4"></label><label>Lolos per grup<input id="competition-create-advance" type="number" min="1" max="8" value="2"></label></div>
-      <label id="competition-create-custom-advance-wrap" hidden>Jumlah peserta terbaik ke fase gugur<input id="competition-create-custom-advance" type="number" min="2" max="64" value="4"></label>
       <p id="competition-create-status" class="status"></p>
       <button class="primary full" type="submit"><i class="fa-solid fa-plus"></i> Buat kompetisi</button>
     </form>
@@ -1062,6 +1064,6 @@
   <dialog id="gallery-bulk-dialog"><form id="gallery-bulk-form" method="dialog" class="dialog-form"><div class="section-head"><div><p class="eyebrow">Edit beberapa foto</p><h2>Kelompokkan kejadian</h2></div><button id="close-gallery-bulk" class="icon-button" type="button">×</button></div><p class="muted small"><b id="gallery-bulk-dialog-count">0 foto</b> akan dijadikan satu kelompok di galeri publik.</p><label>Judul kejadian<input id="gallery-bulk-caption" maxlength="160" placeholder="Contoh: Makan Kerupuk Agustusan 2024" required></label><label>Tanggal dokumentasi<input id="gallery-bulk-date" type="date" required></label><p class="muted small">Semua foto terpilih akan memakai satu judul dan satu tanggal. Foto tidak dihapus atau diunggah ulang ke penyimpanan Galeri.</p><p id="gallery-bulk-status" class="status"></p><button class="primary full" type="submit">Simpan & kelompokkan</button></form></dialog>
 
   <script src="./config.js?v=242"></script>
-  <script src="./admin.js?v=1.1.6" defer></script>
+  <script src="./admin.js?v=1.1.7" defer></script>
 </body>
 </html>
