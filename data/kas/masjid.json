@@ -114,7 +114,9 @@
       "kategoriNama": "Peralatan",
       "keterangan": "Lampu",
       "nominal": 123000,
-      "label": []
+      "label": [
+        "plafon"
+      ]
     },
     {
       "id": "masjid-260829-003",
@@ -2036,5 +2038,5 @@
       ]
     }
   ],
-  "updatedAt": 1788067428081
+  "updatedAt": 1788067595607
 }
