@@ -1,7 +1,7 @@
 (() => {
   "use strict";
 
-  const ADMIN_BUILD = "1.1.4";
+  const ADMIN_BUILD = "1.1.6";
   const config = window.PROXYZ_ADMIN_CONFIG || {};
 
   async function checkAdminBuild() {
@@ -617,6 +617,7 @@
 
   function switchView(view) {
     activeView = view;
+    if ($("app-tabs")) $("app-tabs").dataset.activeView = view;
     for (const name of ["kas", "bertunas", "galeri", "risma", "ternak", "kompetisi", "users"]) {
       $(`${name}-view`).hidden = name !== view;
       $("tab-" + name).classList.toggle("active", name === view);

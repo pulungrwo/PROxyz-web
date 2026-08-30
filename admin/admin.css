@@ -1353,3 +1353,153 @@ img,video,canvas,svg{max-width:100%}
   #risma-view .risma-score-line>.risma-mini-action{font-size:8.8px!important;padding:4px 5px!important}
 }
 /* END RISMA POIN INLINE + SCORING SETTINGS V1.1.4 */
+
+
+/* BEGIN RISMA LIGHT BLUE THEME V1.1.5 */
+/* Tema hanya berlaku pada aplikasi RISMA; aplikasi PROxyz lain tidak berubah. */
+#risma-view{
+  --risma-accent:#1683d8;
+  --risma-accent-strong:#0969b5;
+  --risma-deep:#0b3f72;
+  --risma-soft:#eef8ff;
+  --risma-soft-2:#f7fbff;
+  --risma-line:#cfe9fb;
+  --risma-line-strong:#a9d8f6;
+  --risma-muted:#5d7891;
+}
+#risma-view .hero-risma.risma-hero-compact{
+  background:linear-gradient(145deg,#dff4ff 0%,#c8ebff 52%,#a9dcfa 100%)!important;
+  border:1px solid #a8d9f7!important;
+  color:var(--risma-deep)!important;
+  box-shadow:0 12px 30px rgba(14,116,184,.12)!important;
+}
+#risma-view .hero-risma.risma-hero-compact::after{
+  width:220px!important;height:220px!important;right:-78px!important;top:-100px!important;
+  background:rgba(255,255,255,.32)!important;
+  box-shadow:-80px 90px 0 rgba(255,255,255,.10)!important;
+}
+#risma-view .hero-risma h2,#risma-view .hero-risma .hero-sub{color:var(--risma-deep)!important}
+#risma-view .hero-risma .eyebrow.light{color:#3979a8!important}
+#risma-view .hero-risma .role-pill{
+  color:#0b5c99!important;background:rgba(255,255,255,.58)!important;border-color:rgba(80,157,207,.25)!important;
+}
+#risma-view .risma-summary-stat,#risma-view .risma-summary-row-coupons{
+  background:rgba(255,255,255,.48)!important;border:1px solid rgba(255,255,255,.42)!important;
+}
+#risma-view .risma-summary-stat span{color:#4d7592!important}
+#risma-view .risma-summary-stat b{color:#0b4d82!important}
+#risma-view .hero-tool{
+  color:#0c5f9e!important;background:rgba(255,255,255,.48)!important;border-color:rgba(31,126,191,.20)!important;
+}
+#risma-view .hero-tool:hover{background:rgba(255,255,255,.72)!important}
+#risma-view .hero-tool.danger{color:#b42318!important;background:rgba(255,241,240,.74)!important;border-color:#fecaca!important}
+
+/* Navbar aplikasi saat RISMA aktif. */
+#app-tabs[data-active-view="risma"] .app-active-label{
+  background:linear-gradient(135deg,#238fdd,#0f75c5)!important;color:#fff!important;
+  box-shadow:0 7px 18px rgba(15,117,197,.20)!important;
+}
+#app-tabs[data-active-view="risma"] .app-tabs-toggle,
+#app-tabs[data-active-view="risma"] .admin-account-toggle{
+  background:#eff8ff!important;color:#196fae!important;border-color:#cfe8f8!important;
+}
+
+/* Tab dan panel utama. */
+#risma-view .risma-subtabs{
+  background:rgba(232,246,255,.94)!important;border:1px solid #d8edf9!important;
+  box-shadow:0 6px 18px rgba(15,94,145,.045)!important;
+}
+#risma-view .risma-subtabs .subtab{color:#668099!important}
+#risma-view .risma-subtabs .subtab i{color:#7795ae!important}
+#risma-view .risma-subtabs .subtab.active{
+  background:linear-gradient(135deg,#218ad5,#106fb9)!important;color:#fff!important;
+  box-shadow:0 5px 13px rgba(16,111,185,.20)!important;
+}
+#risma-view .risma-subtabs .subtab.active i{color:#fff!important}
+#risma-view .panel{
+  border-color:#dcecf7!important;background:#fff!important;
+  box-shadow:0 8px 24px rgba(15,88,136,.045)!important;
+}
+#risma-view .eyebrow,#risma-view .eyebrow i{color:#2b80b9!important}
+#risma-view .feature-pill,#risma-view .risma-count-pill{
+  background:#eaf6ff!important;color:#156ca9!important;border:1px solid #d5ecfb!important;
+}
+#risma-view .risma-rank-title span{color:#6c8aa2!important}
+
+/* Rank dan poin. */
+#risma-view .risma-rank-card,#risma-view .risma-score-card,#risma-view .risma-week-draft-card,
+#risma-view .team-card,#risma-view .week-card{
+  border-color:#dcebf5!important;background:#fff!important;
+}
+#risma-view .risma-rank-card:hover,#risma-view .risma-score-card:hover{border-color:#b9ddf5!important}
+#risma-view .risma-rank-number{
+  background:#edf7ff!important;color:#176da9!important;border:1px solid #d8edf9!important;
+}
+#risma-view .risma-rank-card.participant:first-child .risma-rank-number,
+#risma-view .risma-rank-card.participant:nth-child(2) .risma-rank-number,
+#risma-view .risma-rank-card.participant:nth-child(3) .risma-rank-number{
+  background:#dff2ff!important;color:#0c67a7!important;
+}
+#risma-view .risma-rank-points,#risma-view .score-pill{
+  background:#eaf6ff!important;color:#0f6ba9!important;border:1px solid #d7ecfa!important;
+}
+#risma-view .team-card span{color:#1671ad!important}
+#risma-view .risma-info-strip,#risma-view .risma-entry-builder{
+  background:#f4faff!important;border-color:#dcecf7!important;color:#526f87!important;
+}
+#risma-view .risma-week-grid .week-card.done{
+  background:#f3fbff!important;border-color:#bfe4f8!important;
+}
+#risma-view .risma-week-grid .week-card.done>div span{color:#1474ad!important}
+#risma-view .week-card.locked{background:#f5f9fc!important}
+
+/* Kupon mempertahankan warna jenis kupon, sementara bingkai aplikasi mengikuti tema biru. */
+#risma-view .risma-coupon-summary .metric-card{
+  background:#f5faff!important;border-color:#d9ebf7!important;
+}
+#risma-view .risma-coupon-count-inline.pending{
+  background:#edf8ff!important;color:#126ca9!important;border:1px solid #d6ecfa!important;
+}
+#risma-view .risma-coupon-count-inline.done{background:#eafbf2!important;color:#067647!important}
+
+/* Publikasi, Pengaturan, Pengelola, Log. */
+#risma-view .risma-pub-item,#risma-view .risma-pub-card,#risma-view .risma-owner-control,
+#risma-view .risma-owner-tool,#risma-view .risma-pub-preview-box,#risma-view .risma-log-card,
+#risma-view .risma-period-history-card,#risma-view .risma-archive-card{
+  border-color:#dbeaf5!important;background:linear-gradient(180deg,#fff,#f9fcff)!important;
+}
+#risma-view .risma-pub-item[open]{border-color:#bcdff5!important;box-shadow:0 8px 20px rgba(17,104,163,.07)!important}
+#risma-view .risma-pub-item.rank-pub{border-color:#b9ddf5!important;background:linear-gradient(180deg,#fff,#f4faff)!important}
+#risma-view .risma-pub-icon,#risma-view .risma-log-icon{
+  background:#e9f6ff!important;color:#1475b7!important;border-color:#d0eafb!important;
+  box-shadow:none!important;
+}
+#risma-view .risma-pub-body{border-top-color:#e5f1f8!important}
+#risma-view .risma-pub-preview-box textarea{border-color:#d3e7f4!important;background:#fff!important}
+#risma-view .risma-owner-control.simulation{background:linear-gradient(180deg,#f4faff,#edf7ff)!important;border-color:#cae5f6!important}
+#risma-view .risma-history-rank-row strong{color:#116fae!important}
+
+/* Kontrol RISMA saja. */
+#risma-view .primary{
+  background:linear-gradient(135deg,#218ad5,#116fb9)!important;color:#fff!important;
+  box-shadow:0 4px 11px rgba(17,111,185,.12)!important;
+}
+#risma-view .ghost{
+  background:#eff7fd!important;color:#315a78!important;
+}
+#risma-view input:focus,#risma-view select:focus,#risma-view textarea:focus{
+  border-color:#55aee3!important;box-shadow:0 0 0 3px rgba(55,157,218,.13)!important;
+}
+#risma-view .danger-soft{background:#fff1f0!important;color:#b42318!important}
+#risma-view .risma-score-card.disqualified,#risma-view .risma-rank-row-card.disqualified,
+#risma-view .risma-dq-box{background:#fffafa!important;border-color:#fecaca!important}
+
+/* Dialog RISMA berada di luar #risma-view, jadi diberi tema yang sama secara eksplisit. */
+dialog[id^="risma-"]{border:1px solid #d6eaf7!important;box-shadow:0 24px 80px rgba(9,83,132,.24)!important}
+dialog[id^="risma-"] .dialog-form{background:linear-gradient(180deg,#fff,#fafdff)!important}
+dialog[id^="risma-"] .eyebrow,dialog[id^="risma-"] .eyebrow i{color:#247db7!important}
+dialog[id^="risma-"] .primary{background:linear-gradient(135deg,#218ad5,#116fb9)!important;color:#fff!important}
+dialog[id^="risma-"] .ghost{background:#eff7fd!important;color:#315a78!important}
+dialog[id^="risma-"] input:focus,dialog[id^="risma-"] select:focus,dialog[id^="risma-"] textarea:focus{border-color:#55aee3!important;box-shadow:0 0 0 3px rgba(55,157,218,.13)!important}
+dialog[id^="risma-"] .icon-button{background:#edf7fd!important;color:#285c7d!important}
+/* END RISMA LIGHT BLUE THEME V1.1.5 */
