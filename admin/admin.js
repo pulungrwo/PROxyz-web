@@ -1,7 +1,7 @@
 (() => {
   "use strict";
 
-  const ADMIN_BUILD = "1.0.5";
+  const ADMIN_BUILD = "1.0.6";
   const config = window.PROXYZ_ADMIN_CONFIG || {};
 
   async function checkAdminBuild() {
@@ -32,7 +32,6 @@
   const dateTimeFmt = new Intl.DateTimeFormat("id-ID", { day: "2-digit", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" });
   const $ = id => document.getElementById(id);
   const OTP_STORAGE_KEY = "proxyz_admin_otp_challenge";
-  const SESSION_TOKEN_KEY = "proxyz_admin_session_token";
   const deepLinkParams = new URLSearchParams(window.location.search);
   const adminDeepLink = {
     view: deepLinkParams.get("view") || "",
@@ -130,22 +129,10 @@
     el.className = `status ${type}`.trim();
   }
 
-  function storedSessionToken() {
-    try { return String(localStorage.getItem(SESSION_TOKEN_KEY) || "").trim(); } catch (_) { return ""; }
-  }
-
-  function saveSessionToken(token) {
-    try {
-      if (token) localStorage.setItem(SESSION_TOKEN_KEY, String(token));
-      else localStorage.removeItem(SESSION_TOKEN_KEY);
-    } catch (_) {}
-  }
-
   function authHeaders(headers = {}) {
-    const result = { ...headers };
-    const token = storedSessionToken();
-    if (token && !result.Authorization && !result.authorization) result.Authorization = `Bearer ${token}`;
-    return result;
+    // Sesi Admin memakai cookie HttpOnly dari api.pulungriswanto.my.id.
+    // Token tidak disimpan di localStorage agar tidak dapat dicuri oleh script halaman.
+    return { ...headers };
   }
 
   async function api(path, options = {}) {
@@ -159,7 +146,7 @@
     }
     const data = await response.json().catch(() => ({}));
     if (!response.ok) {
-      if (response.status === 401 && !path.includes("/auth/")) { saveSessionToken(""); clearSession(); }
+      if (response.status === 401 && !path.includes("/auth/")) clearSession();
       const error = new Error(data.error || `Permintaan gagal (${response.status}).`);
       error.status = response.status;
       throw error;
@@ -179,7 +166,7 @@
     if (!response.ok) {
       let message = `Permintaan gagal (${response.status}).`;
       try { message = (await response.json()).error || message; } catch (_) {}
-      if (response.status === 401 && !path.includes("/auth/")) { saveSessionToken(""); clearSession(); }
+      if (response.status === 401 && !path.includes("/auth/")) clearSession();
       throw new Error(message);
     }
     return response;
@@ -407,7 +394,6 @@
     setStatus($("auth-status"), "Membuka sesi Admin PROxyz…");
     try {
       const result = await api("/api/auth/whatsapp-link", { method: "POST", body: JSON.stringify({ token }) });
-      saveSessionToken(result.token || "");
       clearOtpChallenge();
       setStatus($("auth-status"), "Login berhasil. Membuka Admin PROxyz…", "success");
     } catch (error) {
@@ -2050,14 +2036,16 @@
     return parts.join(" · ");
   }
 
-  function renderRismaRankMark(el, index) {
-    if (index < 3) {
-      el.classList.add(`rank-medal-${index + 1}`);
-      el.innerHTML = '<i class="fa-solid fa-medal" aria-hidden="true"></i>';
-      el.setAttribute("aria-label", `Peringkat ${index + 1}`);
-      return;
-    }
-    el.textContent = String(index + 1);
+  function renderRismaRankMark(el, index, disqualified = false) {
+    el.textContent = disqualified ? "—" : String(index + 1);
+    el.setAttribute("aria-label", disqualified ? "Diskualifikasi" : `Peringkat ${index + 1}`);
+  }
+
+  function appendRismaRankCutoff(list, label) {
+    const divider=document.createElement("div");
+    divider.className="risma-rank-cutoff";
+    divider.textContent=label;
+    list.appendChild(divider);
   }
 
   function renderRismaRankings() {
@@ -2075,7 +2063,7 @@
     else scores.forEach((row,index) => {
       const card = document.createElement("article");
       card.className = `risma-rank-card participant risma-rank-row-card${row.disqualified?" disqualified":""}`;
-      const rank = document.createElement("span"); rank.className = "risma-rank-number"; renderRismaRankMark(rank,index);
+      const rank = document.createElement("span"); rank.className = "risma-rank-number"; renderRismaRankMark(rank,index,Boolean(row.disqualified));
       const info = document.createElement("div"); info.className = "risma-rank-info";
       const headline = document.createElement("div"); headline.className = "risma-rank-name-line";
       const title = document.createElement("strong"); title.textContent = row.name; if(row.disqualified) title.className="risma-disqualified-name";
@@ -2086,6 +2074,9 @@
       info.append(headline,meta);
       card.append(rank,info);
       participantList.appendChild(card);
+      const winnerLimit=Number(rismaDetail?.settings?.individualWinnerCount||10);
+      const eligibleCount=scores.filter(item=>!item.disqualified).length;
+      if(!row.disqualified && index+1===winnerLimit && eligibleCount>winnerLimit) appendRismaRankCutoff(participantList,`Batas penerima penghargaan · Top ${winnerLimit}`);
     });
 
     if (!teams.length) teamList.appendChild(emptyBox("Tim belum disusun. Tim awal dibuat setelah input Minggu 1."));
@@ -2103,6 +2094,8 @@
       info.append(headline,meta);
       card.append(rank,info);
       teamList.appendChild(card);
+      const teamLimit=Number(rismaDetail?.settings?.teamWinnerCount||3);
+      if(index+1===teamLimit && teams.length>teamLimit) appendRismaRankCutoff(teamList,`Batas penerima penghargaan · Top ${teamLimit}`);
     });
   }
 
@@ -2115,14 +2108,14 @@
     rows.forEach((row,index)=>{
       const card=document.createElement("article"); card.className=`item-card risma-score-card compact${row.disqualified?" disqualified":""}`;
       const line=document.createElement("div"); line.className="risma-score-line";
-      const name=document.createElement("strong"); name.className=`risma-row-name${row.disqualified?" risma-disqualified-name":""}`; name.textContent=`${index+1}. ${row.name}`;
+      const name=document.createElement("strong"); name.className=`risma-row-name${row.disqualified?" risma-disqualified-name":""}`; name.textContent=row.disqualified?`— ${row.name}`:`${index+1}. ${row.name}`;
       const pts=document.createElement("span"); pts.className="score-pill"; pts.textContent=row.disqualified?`${number.format(row.totalPoints || 0)} poin · DQ`:`${number.format(row.totalPoints || 0)} poin`;
       const edit=rismaIconButton("Ubah","fa-pen","ghost compact risma-mini-action",()=>openRismaParticipant(row));
       const del=rismaIconButton("Hapus","fa-trash-can","danger-soft compact risma-mini-action",()=>deleteRismaParticipant(row));
       edit.disabled=masterLocked;del.disabled=masterLocked;
       if(masterLocked){edit.title="Data peserta dikunci setelah Minggu 2. Hanya Owner yang dapat mengubah.";del.title=edit.title;}
       line.append(name,pts,edit,del);
-      const meta=document.createElement("div"); meta.className="item-meta risma-row-meta"; meta.textContent=`${participantWeekSummary(row)}${row.gender?` · ${row.gender}`:""}${row.excusedUsed?` · kelonggaran ${row.excusedUsed}/7 hari`:""}`;
+      const meta=document.createElement("div"); meta.className="item-meta risma-row-meta"; meta.textContent=`${participantWeekSummary(row)}${row.gender?` · ${row.gender}`:""}${row.excusedUsed?` · berhalangan ${row.excusedUsed}/7 hari`:""}`;
       card.append(line,meta); full.appendChild(card);
     });
   }
@@ -2182,18 +2175,24 @@
       genderWrap.hidden=false;
       const editing=rismaWeekEditIndex>=0?rismaWeekDraft[rismaWeekEditIndex]:null;
       selectedParticipant=editing?.participantId?rismaParticipantById(editing.participantId):null;
-      excusedWrap.hidden=String(selectedParticipant?.gender||editing?.gender||"")!=="perempuan" || !editing?.participantId;
+      const selectedGender=String(selectedParticipant?.gender||editing?.gender||$("risma-week-gender").value||"");
+      excusedWrap.hidden=selectedGender!=="perempuan";
       label.firstChild.textContent = "Nama peserta\n            ";
       $("risma-week-entry-hint").textContent = excusedWrap.hidden
-        ? "Masukkan nama, jenis peserta, dan jumlah hadir. Kelonggaran dapat diatur setelah peserta tersimpan."
-        : "Peserta perempuan. Anda dapat menambahkan hari kelonggaran berhalangan.";
+        ? "Masukkan nama, jenis peserta, dan jumlah hadir."
+        : "Peserta perempuan. Pilih jumlah hari berhalangan bila diperlukan.";
     } else {
       toggle.hidden = false;
       if (rismaWeekNewParticipantMode) {
-        nameInput.hidden = false; select.hidden = true; genderWrap.hidden=false; excusedWrap.hidden=true;
+        nameInput.hidden = false; select.hidden = true; genderWrap.hidden=false;
+        const editing=rismaWeekEditIndex>=0?rismaWeekDraft[rismaWeekEditIndex]:null;
+        const selectedGender=String(editing?.gender||$("risma-week-gender").value||"");
+        excusedWrap.hidden=selectedGender!=="perempuan";
         toggle.textContent = "Pilih peserta lama";
         label.firstChild.textContent = "Nama peserta baru\n            ";
-        $("risma-week-entry-hint").textContent = "Peserta baru akan dibuatkan tim baru agar tim lama tidak berubah.";
+        $("risma-week-entry-hint").textContent = excusedWrap.hidden
+          ? "Peserta baru akan dibuatkan tim baru agar tim lama tidak berubah."
+          : "Peserta perempuan baru. Berhalangan dapat langsung diisi; tim lama tetap tidak berubah.";
       } else {
         nameInput.hidden = true; select.hidden = false; genderWrap.hidden=true;
         toggle.textContent = "+ Peserta baru";
@@ -2203,12 +2202,13 @@
         excusedWrap.hidden=String(selectedParticipant?.gender||"")!=="perempuan";
         $("risma-week-entry-hint").textContent = excusedWrap.hidden
           ? "Pilih nama peserta, lalu pilih jumlah hadir."
-          : `Peserta perempuan. Kelonggaran tersisa ${Math.max(0,7-Number(selectedParticipant?.excusedUsed||0))} hari.`;
+          : `Peserta perempuan. Berhalangan tersisa ${Math.max(0,7-Number(selectedParticipant?.excusedUsed||0))} hari.`;
       }
     }
     if(!excusedWrap.hidden){
       const oldExcused=rismaWeekEditIndex>=0?Number(rismaWeekDraft[rismaWeekEditIndex]?.excused||0):0;
-      const remaining=Math.max(0,7-(Number(selectedParticipant?.excusedUsed||0)-oldExcused));
+      const usedBefore=selectedParticipant?Number(selectedParticipant.excusedUsed||0):0;
+      const remaining=Math.max(0,7-(usedBefore-oldExcused));
       [...$("risma-week-excused").options].forEach(opt=>opt.disabled=Number(opt.value)>remaining);
       if(Number($("risma-week-excused").value)>remaining) $("risma-week-excused").value="0";
     }
@@ -2237,7 +2237,7 @@
       const info=document.createElement("div");
       const title=document.createElement("strong"); title.textContent=row.name;
       const effective=Math.min(7,Number(row.attendance||0)+Number(row.excused||0));
-      const meta=document.createElement("span"); meta.textContent=`${row.attendance}x hadir${row.excused?` + ${row.excused} hari kelonggaran`:""} → ${number.format(rismaPointForAttendance(effective))} poin${row.isNew ? " · peserta baru" : ""}`;
+      const meta=document.createElement("span"); meta.textContent=`${row.attendance}x hadir${row.excused?` + ${row.excused} hari berhalangan`:""} → ${number.format(rismaPointForAttendance(effective))} poin${row.isNew ? " · peserta baru" : ""}`;
       info.append(title,meta);
       const actions=document.createElement("div"); actions.className="risma-draft-actions";
       actions.append(rismaIconButton("Ubah","fa-pen","ghost compact",()=>editRismaWeekDraft(index)),rismaIconButton("Hapus","fa-trash-can","danger-soft compact",()=>removeRismaWeekDraft(index)));
@@ -2284,7 +2284,13 @@
       if(known) name=known.name;
       isNew=!known;
       gender=known?.gender || $("risma-week-gender").value || "";
-      if(rismaWeekEditIndex>=0 && participantId && String(gender)==="perempuan") excused=Number($("risma-week-excused").value||0);
+      if(String(gender)==="perempuan") {
+        excused=Number($("risma-week-excused").value||0);
+        const usedBefore=known?Number(known.excusedUsed||0):0;
+        const oldExcused=rismaWeekEditIndex>=0?Number(rismaWeekDraft[rismaWeekEditIndex]?.excused||0):0;
+        const remaining=Math.max(0,7-usedBefore+oldExcused);
+        if(excused>remaining){setStatus($("risma-week-status"),`Berhalangan ${name} tersisa ${remaining} hari.`,"error");return;}
+      }
     } else {
       participantId=String($("risma-week-person-select").value||"");
       const participant=rismaParticipantById(participantId);
@@ -2292,7 +2298,7 @@
       name=participant.name;gender=participant.gender||"";
       excused=String(gender)==="perempuan"?Number($("risma-week-excused").value||0):0;
       const remaining=Math.max(0,7-Number(participant.excusedUsed||0)+Number(rismaWeekDraft[rismaWeekEditIndex]?.excused||0));
-      if(excused>remaining){setStatus($("risma-week-status"),`Kelonggaran ${name} tersisa ${remaining} hari.`,"error");return;}
+      if(excused>remaining){setStatus($("risma-week-status"),`Berhalangan ${name} tersisa ${remaining} hari.`,"error");return;}
     }
 
     const duplicate=rismaWeekDraft.findIndex((row,index)=>index!==rismaWeekEditIndex && ((participantId && String(row.participantId)===participantId) || row.name.trim().toLowerCase()===name.toLowerCase()));
@@ -2367,11 +2373,13 @@
       const line=document.createElement("div"); line.className="risma-coupon-line";
       const name=document.createElement("strong"); name.className="risma-row-name"; name.textContent=`${row.no} · ${row.name}`;
       const count=document.createElement("span"); count.className=`risma-coupon-count-inline ${row.status==="done"?"done":"pending"}`; count.textContent=`${wholeNumber.format(row.count||1)} kupon`;
-      const done=rismaIconButton(row.status==="done"?"Batal":"Selesai",row.status==="done"?"fa-rotate-left":"fa-check",row.status==="done"?"ghost compact risma-mini-action":"success-soft compact risma-mini-action",()=>toggleRismaCoupon(row));
+      const done=rismaIconButton(row.status==="done"?"Batal":"Selesai",row.status==="done"?"fa-rotate-left":"fa-check","ghost compact risma-mini-action risma-coupon-status-action",()=>toggleRismaCoupon(row));
       const edit=rismaIconButton("Edit","fa-pen","ghost compact risma-mini-action",()=>openRismaCouponEdit(row));
       const del=rismaIconButton("Hapus","fa-trash-can","danger-soft compact risma-mini-action",()=>deleteRismaCoupon(row));
+      const automatic=Boolean(row.autoSource);
+      if(automatic){edit.disabled=true;del.disabled=true;edit.title="Kupon otomatis mengikuti Rank Minggu 4.";del.title=edit.title;}
       line.append(name,count,done,edit,del);
-      const meta=document.createElement("div"); meta.className="item-meta risma-row-meta"; meta.textContent=row.status==="done"?"Sudah dibagikan":"Belum dibagikan";
+      const meta=document.createElement("div"); meta.className="item-meta risma-row-meta"; meta.textContent=`${row.status==="done"?"Sudah dibagikan":"Belum dibagikan"}${automatic?" · Otomatis · Rank Minggu 4":""}`;
       card.append(line,meta); list.appendChild(card);
     }
   }
@@ -2667,7 +2675,11 @@ Nomor surat yang terhapus dapat dipakai kembali jika menjadi nomor terakhir.`))r
       const side=document.createElement("div");side.className="risma-period-history-side";
       const chip=document.createElement("span");chip.className=row.status==="active"?"status-chip done":"status-chip pending";chip.textContent=row.status==="active"?"Aktif":"Arsip";
       const view=button("Lihat rekap","ghost compact",()=>openRismaPeriodHistory(row));view.innerHTML='<i class="fa-solid fa-chart-simple"></i> Lihat rekap';
-      side.append(chip,view);card.append(info,side);list.appendChild(card);
+      side.append(chip,view);
+      if(rismaDetail?.role==="owner"){
+        const del=button("Hapus","danger-soft compact",()=>deleteRismaPeriod(row));del.innerHTML='<i class="fa-solid fa-trash-can"></i> Hapus';side.appendChild(del);
+      }
+      card.append(info,side);list.appendChild(card);
     }
   }
 
@@ -2679,18 +2691,54 @@ Nomor surat yang terhapus dapat dipakai kembali jika menjadi nomor terakhir.`))r
     }catch(error){setStatus($("risma-period-history-status"),error.message,"error");}
   }
 
+  async function deleteRismaPeriod(row){
+    if(rismaDetail?.role!=="owner")return;
+    const phrase=`HAPUS ${row.hijriYear}`;
+    const typed=prompt(`Hapus permanen periode Ramadan ${row.hijriYear} H beserta poin, tim, kupon, dan publikasinya?\n\nBackup pemulihan akan disimpan di Aktivitas Owner.\nKetik: ${phrase}`);
+    if(String(typed||"").trim().toUpperCase()!==phrase)return;
+    setStatus($("risma-period-history-status"),`Menghapus Ramadan ${row.hijriYear} H…`);
+    try{
+      const data=await api(`/api/risma/period/${encodeURIComponent(row.id)}`,{method:"DELETE",body:"{}"});
+      await loadRisma();
+      setStatus($("risma-period-history-status"),data.message||"Periode dihapus. Backup tersimpan di Aktivitas.","success");
+    }catch(error){setStatus($("risma-period-history-status"),error.message,"error");}
+  }
+
   function renderRismaHistoricalSummary(period){
     $("risma-period-summary-title").textContent=`Ramadan ${period.hijriYear} H`;
     const metrics=$("risma-period-summary-metrics");metrics.replaceChildren();
-    for(const [label,value] of [["Peserta",period.participants],["Minggu",`${period.weeks}/4`],["Tim",period.teams],["Kupon",period.coupons]]){const card=document.createElement("article");card.className="metric-card";card.innerHTML=`<span>${label}</span><b>${value}</b>`;metrics.appendChild(card);}
+    for(const [label,value] of [["Peserta",period.participants],["Minggu",`${period.weeks}/4`],["Tim",period.teams],["Kupon",period.coupons]]){
+      const card=document.createElement("article");card.className="metric-card";
+      const labelEl=document.createElement("span");labelEl.textContent=String(label);
+      const valueEl=document.createElement("b");valueEl.textContent=String(value);
+      card.append(labelEl,valueEl);metrics.appendChild(card);
+    }
     const participants=$("risma-period-summary-participants");participants.replaceChildren();
     if(!(period.scores||[]).length)participants.appendChild(emptyBox("Belum ada data peserta."));
-    else(period.scores||[]).forEach((row,index)=>{const card=document.createElement("article");card.className=`risma-history-rank-row${row.disqualified?" disqualified":""}`;card.innerHTML=`<b class="${row.disqualified?"risma-disqualified-name":""}">${index+1}. ${row.name}</b><span>${participantWeekSummary(row)}${row.disqualified?" · DISKUALIFIKASI":""}</span><strong>${number.format(row.totalPoints||0)} poin</strong>`;participants.appendChild(card);});
+    else(period.scores||[]).forEach((row,index)=>{
+      const card=document.createElement("article");card.className=`risma-history-rank-row${row.disqualified?" disqualified":""}`;
+      const name=document.createElement("b");if(row.disqualified)name.className="risma-disqualified-name";name.textContent=`${row.disqualified?"—":`${index+1}.`} ${row.name}`;
+      const meta=document.createElement("span");meta.textContent=`${participantWeekSummary(row)}${row.disqualified?" · DISKUALIFIKASI":""}`;
+      const points=document.createElement("strong");points.textContent=`${number.format(row.totalPoints||0)} poin`;
+      card.append(name,meta,points);participants.appendChild(card);
+    });
     const teams=$("risma-period-summary-teams");teams.replaceChildren();
     if(!(period.teamRows||[]).length)teams.appendChild(emptyBox("Belum ada data tim."));
-    else(period.teamRows||[]).forEach((row,index)=>{const card=document.createElement("article");card.className="risma-history-team-row";const names=(row.members||[]).map(x=>x.name).join(" · ");card.innerHTML=`<b>${index+1}. ${row.name}</b><span>Ø ${number.format(row.averagePoints||0)} poin · Total ${number.format(row.totalPoints||0)} poin</span><small>${names}</small>`;teams.appendChild(card);});
+    else(period.teamRows||[]).forEach((row,index)=>{
+      const card=document.createElement("article");card.className="risma-history-team-row";
+      const name=document.createElement("b");name.textContent=row.disqualified?`— ${row.name}`:`${index+1}. ${row.name}`;
+      const meta=document.createElement("span");meta.textContent=`Ø ${number.format(row.averagePoints||0)} poin · Total ${number.format(row.totalPoints||0)} poin`;
+      const members=document.createElement("small");members.textContent=(row.members||[]).map(x=>x.name).join(" · ");
+      card.append(name,meta,members);teams.appendChild(card);
+    });
     const coupons=$("risma-period-summary-coupons");coupons.replaceChildren();
-    for(const row of period.couponTypes||[]){const card=document.createElement("article");card.className="metric-card";card.innerHTML=`<span>${row.label}</span><b>${wholeNumber.format(row.stats?.coupons||0)}</b><small>${wholeNumber.format(row.stats?.recipients||0)} penerima</small>`;coupons.appendChild(card);}
+    for(const row of period.couponTypes||[]){
+      const card=document.createElement("article");card.className="metric-card";
+      const label=document.createElement("span");label.textContent=String(row.label||"");
+      const total=document.createElement("b");total.textContent=wholeNumber.format(row.stats?.coupons||0);
+      const recipients=document.createElement("small");recipients.textContent=`${wholeNumber.format(row.stats?.recipients||0)} penerima`;
+      card.append(label,total,recipients);coupons.appendChild(card);
+    }
     setStatus($("risma-period-summary-status"),period.status==="active"?"Periode ini masih aktif.":"Data lama hanya ditampilkan dan tidak diubah.");
   }
 
@@ -3787,10 +3835,10 @@ ${row.label}`))return;
 
   $("otp-form").addEventListener("submit", async event => {
     event.preventDefault(); setStatus($("auth-status"), "Memeriksa kode…");
-    try { if (!challengeId) throw new Error("Kirim kode OTP terlebih dahulu."); const verified = await api("/api/auth/verify", { method: "POST", body: JSON.stringify({ challengeId, code: $("otp").value }) }); saveSessionToken(verified.token || ""); clearOtpChallenge(); setStatus($("auth-status")); await bootstrapSession(); } catch (error) { if (/kedaluwarsa|tidak ditemukan|berakhir/i.test(error.message)) clearOtpChallenge(); setStatus($("auth-status"), error.message, "error"); }
+    try { if (!challengeId) throw new Error("Kirim kode OTP terlebih dahulu."); await api("/api/auth/verify", { method: "POST", body: JSON.stringify({ challengeId, code: $("otp").value }) }); clearOtpChallenge(); setStatus($("auth-status")); await bootstrapSession(); } catch (error) { if (/kedaluwarsa|tidak ditemukan|berakhir/i.test(error.message)) clearOtpChallenge(); setStatus($("auth-status"), error.message, "error"); }
   });
   $("change-phone").addEventListener("click", () => { clearOtpChallenge(); setStatus($("auth-status")); });
-  $("logout").addEventListener("click", async () => { try { await api("/api/auth/logout", { method: "POST", body: "{}" }); } catch (_) {} saveSessionToken(""); clearSession(); });
+  $("logout").addEventListener("click", async () => { try { await api("/api/auth/logout", { method: "POST", body: "{}" }); } catch (_) {} clearSession(); });
   // Kompetisi events
   $("competition-select").addEventListener("change",()=>loadCompetition($("competition-select").value).catch(showError));
   $("competition-refresh").addEventListener("click",()=>loadCompetition(activeCompetition).catch(showError));

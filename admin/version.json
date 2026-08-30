@@ -1,6 +1,6 @@
 {
-  "version": "1.0.5",
-  "updatedAt": "2026-08-30T01:20:00+07:00",
+  "version": "1.0.6",
+  "updatedAt": "2026-08-30T17:41:00+07:00",
   "uiBase": "PROxyz-SOURCE-20260829-2042",
   "features": [
     "admin-v0.9.3",
@@ -45,6 +45,15 @@
     "footer-wordmark-color-sync",
     "brand-footer-refresh-v105",
     "kas-web-current-time",
-    "kas-edit-scroll-keep"
+    "kas-edit-scroll-keep",
+    "risma-hardening-v106",
+    "risma-atomic-week-save",
+    "risma-stored-xss-fix",
+    "risma-numeric-ranking",
+    "risma-direct-female-excused",
+    "risma-neutral-coupon-done-action",
+    "risma-auto-coupon-protection",
+    "risma-period-delete-restore",
+    "admin-cookie-only-session"
   ]
 }

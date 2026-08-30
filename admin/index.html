@@ -10,7 +10,7 @@
   <meta http-equiv="Expires" content="0">
   <title>Admin PROxyz</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
-  <link rel="stylesheet" href="./admin.css?v=1.0.5-web-kas-ux">
+  <link rel="stylesheet" href="./admin.css?v=1.0.6">
 </head>
 <body>
   <main class="shell">
@@ -521,7 +521,7 @@
               <article class="risma-pub-item static">
                 <div class="risma-pub-static-head">
                   <span class="risma-pub-icon"><i class="fa-solid fa-moon"></i></span>
-                  <span><strong>RISMA Poin</strong><small>Kirim aturan RISMA Poin, pembagian tim, kelonggaran peserta perempuan, diskualifikasi, dan Kupon THR.</small></span>
+                  <span><strong>RISMA Poin</strong><small>Kirim aturan RISMA Poin, pembagian tim, berhalangan peserta perempuan, diskualifikasi, dan Kupon THR.</small></span>
                 </div>
                 <div class="risma-pub-actions">
                   <button id="risma-publish-rules-send" class="primary" type="button"><i class="fa-brands fa-whatsapp"></i> Kirim grup</button>
@@ -845,7 +845,7 @@
           <label id="risma-week-gender-wrap" hidden>Jenis peserta
             <select id="risma-week-gender"><option value="">Belum diatur</option><option value="laki-laki">Laki-laki</option><option value="perempuan">Perempuan</option></select>
           </label>
-          <label id="risma-week-excused-wrap" hidden>Kelonggaran berhalangan
+          <label id="risma-week-excused-wrap" hidden>Berhalangan
             <select id="risma-week-excused"><option value="0">0 hari</option><option value="1">1 hari</option><option value="2">2 hari</option><option value="3">3 hari</option><option value="4">4 hari</option><option value="5">5 hari</option><option value="6">6 hari</option><option value="7">7 hari</option></select>
           </label>
         </div>
@@ -1047,6 +1047,6 @@
   <dialog id="gallery-bulk-dialog"><form id="gallery-bulk-form" method="dialog" class="dialog-form"><div class="section-head"><div><p class="eyebrow">Edit beberapa foto</p><h2>Kelompokkan kejadian</h2></div><button id="close-gallery-bulk" class="icon-button" type="button">×</button></div><p class="muted small"><b id="gallery-bulk-dialog-count">0 foto</b> akan dijadikan satu kelompok di galeri publik.</p><label>Judul kejadian<input id="gallery-bulk-caption" maxlength="160" placeholder="Contoh: Makan Kerupuk Agustusan 2024" required></label><label>Tanggal dokumentasi<input id="gallery-bulk-date" type="date" required></label><p class="muted small">Semua foto terpilih akan memakai satu judul dan satu tanggal. Foto tidak dihapus atau diunggah ulang ke penyimpanan Galeri.</p><p id="gallery-bulk-status" class="status"></p><button class="primary full" type="submit">Simpan & kelompokkan</button></form></dialog>
 
   <script src="./config.js?v=242"></script>
-  <script src="./admin.js?v=1.0.0-private-handshake" defer></script>
+  <script src="./admin.js?v=1.0.6" defer></script>
 </body>
 </html>
