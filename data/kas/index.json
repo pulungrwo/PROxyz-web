@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "updatedAt": 1788278037239,
+  "updatedAt": 1788278275441,
   "kas": [
     {
       "idKas": "mbamar",
@@ -29,10 +29,10 @@
       "idKas": "masjid",
       "nama": "Kas Masjid Al-Huda Tanjung Bulan",
       "visibility": "public",
-      "updatedAt": 1788278037239,
+      "updatedAt": 1788278275441,
       "url": "/kas/masjid/",
-      "saldo": 17959500,
-      "jumlahTransaksi": 164
+      "saldo": 6822500,
+      "jumlahTransaksi": 165
     },
     {
       "idKas": "ramadan",
