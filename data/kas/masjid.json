@@ -5,11 +5,11 @@
   "status": "aktif",
   "saldo": {
     "awal": 0,
-    "masuk": 15338500,
+    "masuk": 32338500,
     "keluar": 14379000,
-    "akhir": 959500
+    "akhir": 17959500
   },
-  "jumlahTransaksi": 163,
+  "jumlahTransaksi": 164,
   "transactions": [
     {
       "id": "masjid-260830-002",
@@ -285,6 +285,17 @@
       "label": [
         "plafon"
       ]
+    },
+    {
+      "id": "masjid-260826-001",
+      "nomor": "164",
+      "tanggal": 1787759636000,
+      "jenis": "masuk",
+      "kategori": "hasil usaha",
+      "kategoriNama": "Hasil Usaha",
+      "keterangan": "Panen singkong",
+      "nominal": 17000000,
+      "label": []
     },
     {
       "id": "masjid-260821-002",
@@ -2051,5 +2062,5 @@
       ]
     }
   ],
-  "updatedAt": 1788067712022
+  "updatedAt": 1788278037239
 }
