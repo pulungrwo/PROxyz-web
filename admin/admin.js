@@ -1,7 +1,7 @@
 (() => {
   "use strict";
 
-  const ADMIN_BUILD = "1.1.7";
+  const ADMIN_BUILD = "1.1.8";
   const config = window.PROXYZ_ADMIN_CONFIG || {};
 
   async function checkAdminBuild() {
@@ -43,6 +43,8 @@
   let me = null;
   let sessionViewInitialized = false;
   let adminSettingsDraftOrder = [];
+  let adminSettingsGroups = [];
+  let adminSettingsOwnedKas = [];
   let challengeId = "";
   let challengeExpiresAt = 0;
   let activeView = ["kas", "bertunas", "galeri", "risma", "ternak", "kompetisi", "users"].includes(adminDeepLink.view) ? adminDeepLink.view : "";
@@ -522,12 +524,148 @@
     });
   }
 
+  function renderAdminSettingsGroups() {
+    const list = $("admin-settings-group-list");
+    if (!list) return;
+    list.replaceChildren();
+
+    if (!adminSettingsGroups.length) {
+      const empty = document.createElement("div");
+      empty.className = "admin-settings-group-empty";
+      empty.innerHTML = '<i class="fa-solid fa-users-slash"></i><span>Belum ada grup yang dapat ditampilkan.</span>';
+      list.append(empty);
+      return;
+    }
+
+    for (const group of adminSettingsGroups) {
+      const row = document.createElement("article");
+      row.className = "admin-settings-group-row";
+      row.dataset.groupId = group.id;
+
+      const head = document.createElement("div");
+      head.className = "admin-settings-group-head";
+      const icon = document.createElement("span");
+      icon.className = "admin-settings-group-icon";
+      icon.innerHTML = '<i class="fa-brands fa-whatsapp"></i>';
+      const copy = document.createElement("div");
+      const name = document.createElement("strong");
+      name.textContent = group.nama || "Grup WhatsApp";
+      const meta = document.createElement("span");
+      const count = Number(group.participantCount || 0);
+      meta.textContent = count ? `${count} anggota` : "Grup WhatsApp";
+      copy.append(name, meta);
+      head.append(icon, copy);
+      row.append(head);
+
+      const installedIds = new Set((group.installedKas || []).map(item => item.id));
+      const installed = document.createElement("div");
+      installed.className = "admin-settings-group-installed";
+      if (group.installedKas?.length) {
+        for (const kas of group.installedKas) {
+          const chip = document.createElement("span");
+          chip.className = "admin-settings-group-chip";
+          chip.textContent = `${kas.nama || kas.id} · terpasang`;
+          installed.append(chip);
+        }
+      } else {
+        const note = document.createElement("span");
+        note.className = "admin-settings-group-note";
+        note.textContent = "Belum ada Kas Anda yang terpasang.";
+        installed.append(note);
+      }
+      row.append(installed);
+
+      const availableKas = adminSettingsOwnedKas.filter(kas => !installedIds.has(kas.id));
+      const actions = document.createElement("div");
+      actions.className = "admin-settings-group-actions";
+      const select = document.createElement("select");
+      select.className = "admin-settings-group-kas-select";
+      select.setAttribute("aria-label", `Pilih Kas untuk ${group.nama || "grup"}`);
+      const placeholder = document.createElement("option");
+      placeholder.value = "";
+      placeholder.textContent = availableKas.length ? "Pilih Kas…" : "Semua Kas sudah terpasang";
+      select.append(placeholder);
+      for (const kas of availableKas) {
+        const option = document.createElement("option");
+        option.value = kas.id;
+        option.textContent = kas.nama || kas.id;
+        select.append(option);
+      }
+      select.disabled = !group.isMember || !availableKas.length;
+
+      const install = document.createElement("button");
+      install.type = "button";
+      install.className = "primary compact admin-settings-group-install";
+      install.dataset.groupInstall = group.id;
+      install.innerHTML = '<i class="fa-solid fa-download"></i> Install';
+      install.disabled = select.disabled;
+      actions.append(select, install);
+      row.append(actions);
+
+      if (!group.isMember) {
+        const accessNote = document.createElement("small");
+        accessNote.className = "admin-settings-group-access-note";
+        accessNote.textContent = "Grup ditampilkan karena Kas sudah terpasang; install baru hanya bisa pada grup yang dapat Anda akses.";
+        row.append(accessNote);
+      } else if (!adminSettingsOwnedKas.length) {
+        const accessNote = document.createElement("small");
+        accessNote.className = "admin-settings-group-access-note";
+        accessNote.textContent = "Hanya Owner Kas yang dapat melakukan install ke grup.";
+        row.append(accessNote);
+      }
+
+      list.append(row);
+    }
+  }
+
+  async function loadAdminSettingsGroups() {
+    setStatus($("admin-settings-groups-status"), "Memuat daftar grup WhatsApp…");
+    try {
+      const data = await api("/api/groups");
+      adminSettingsGroups = Array.isArray(data.groups) ? data.groups : [];
+      adminSettingsOwnedKas = Array.isArray(data.ownedKas) ? data.ownedKas : [];
+      renderAdminSettingsGroups();
+      const label = adminSettingsGroups.length === 1 ? "1 grup ditemukan." : `${adminSettingsGroups.length} grup ditemukan.`;
+      setStatus($("admin-settings-groups-status"), label, "success");
+    } catch (error) {
+      adminSettingsGroups = [];
+      adminSettingsOwnedKas = [];
+      renderAdminSettingsGroups();
+      setStatus($("admin-settings-groups-status"), error.message || "Daftar grup gagal dimuat.", "error");
+    }
+  }
+
+  async function installKasToAdminGroup(groupId, kasId, button) {
+    if (!groupId || !kasId) return;
+    const original = button?.innerHTML || "";
+    if (button) {
+      button.disabled = true;
+      button.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Install…';
+    }
+    setStatus($("admin-settings-groups-status"), "Meng-install Kas ke grup…");
+    try {
+      const data = await api("/api/groups/kas-install", {
+        method: "POST",
+        body: JSON.stringify({ groupId, kasId })
+      });
+      await loadAdminSettingsGroups();
+      setStatus($("admin-settings-groups-status"), data.message || "Kas berhasil di-install ke grup.", "success");
+    } catch (error) {
+      setStatus($("admin-settings-groups-status"), error.message || "Install Kas gagal.", "error");
+      if (button) {
+        button.disabled = false;
+        button.innerHTML = original;
+      }
+    }
+  }
+
   function openAdminSettings() {
     adminSettingsDraftOrder = normalizedAdminAppOrder();
     $("admin-settings-name").textContent = me?.name || "Pengguna PROxyz";
     renderAdminSettingsAppOrder();
     setStatus($("admin-settings-status"));
     $("admin-settings-dialog").showModal();
+    loadAdminSettingsGroups();
   }
 
   function renderMe() {
@@ -3948,6 +4086,20 @@ ${row.label}`))return;
   $("admin-settings-close").addEventListener("click", () => $("admin-settings-dialog").close());
   $("admin-settings-edit-name").addEventListener("click", () => { $("admin-settings-dialog").close(); openUserNameDialog(null, true); });
   $("admin-settings-reset-order").addEventListener("click", () => { adminSettingsDraftOrder = ADMIN_APP_KEYS.filter(key => appAvailability()[key]); renderAdminSettingsAppOrder(); });
+  $("admin-settings-groups-refresh").addEventListener("click", () => loadAdminSettingsGroups());
+  $("admin-settings-group-list").addEventListener("click", event => {
+    const button = event.target.closest("[data-group-install]");
+    if (!button) return;
+    const row = button.closest("[data-group-id]");
+    const select = row?.querySelector(".admin-settings-group-kas-select");
+    const kasId = String(select?.value || "").trim();
+    if (!kasId) {
+      setStatus($("admin-settings-groups-status"), "Pilih Kas yang akan di-install.", "error");
+      select?.focus();
+      return;
+    }
+    installKasToAdminGroup(button.dataset.groupInstall, kasId, button);
+  });
   $("admin-settings-app-list").addEventListener("click", event => {
     const button = event.target.closest("[data-move]");
     const row = event.target.closest("[data-app-key]");

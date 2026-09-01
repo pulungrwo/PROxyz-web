@@ -1,6 +1,6 @@
 {
-  "version": "1.1.7",
-  "updatedAt": "2026-08-31T00:10:00+07:00",
+  "version": "1.1.8",
+  "updatedAt": "2026-09-01T23:24:00+07:00",
   "uiBase": "PROxyz-SOURCE-20260829-2042",
   "features": [
     "admin-v0.9.3",
@@ -93,6 +93,9 @@
     "risma-tadarus-reward-wording",
     "admin-v1.1.7",
     "kompetisi-simple-3-systems",
-    "kompetisi-contextual-tabs-settings"
+    "kompetisi-contextual-tabs-settings",
+    "admin-v1.1.8",
+    "admin-whatsapp-group-list",
+    "kas-web-group-install"
   ]
 }
