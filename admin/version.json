@@ -1,6 +1,6 @@
 {
-  "version": "1.1.8",
-  "updatedAt": "2026-09-01T23:24:00+07:00",
+  "version": "1.1.9",
+  "updatedAt": "2026-09-02T00:48:00+07:00",
   "uiBase": "PROxyz-SOURCE-20260829-2042",
   "features": [
     "admin-v0.9.3",
@@ -95,7 +95,9 @@
     "kompetisi-simple-3-systems",
     "kompetisi-contextual-tabs-settings",
     "admin-v1.1.8",
-    "admin-whatsapp-group-list",
-    "kas-web-group-install"
+    "admin-v1.1.9",
+    "kas-settings-tab",
+    "kas-whatsapp-group-list",
+    "kas-group-install-from-settings"
   ]
 }

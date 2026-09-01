@@ -1516,7 +1516,7 @@ dialog[id^="risma-"] .icon-button{background:#edf7fd!important;color:#285c7d!imp
 @media(max-width:540px){#kompetisi-view .summary-grid.four{grid-template-columns:repeat(3,minmax(0,1fr))}#kompetisi-view .summary-grid.four>div{padding:9px 8px}}
 /* END KOMPETISI SIMPLE V1.1.7 */
 
-/* BEGIN ADMIN GROUP SETTINGS V1.1.8 */
+/* BEGIN KAS GROUP SETTINGS V1.1.9 */
 .admin-settings-groups-section{padding-top:12px;border-top:1px solid #eef1f4}
 .admin-settings-group-list{display:grid;gap:8px}
 .admin-settings-group-row{display:grid;gap:9px;padding:11px;border:1px solid #e4e7ec;border-radius:14px;background:#fff}
@@ -1534,4 +1534,15 @@ dialog[id^="risma-"] .icon-button{background:#edf7fd!important;color:#285c7d!imp
 .admin-settings-group-empty{display:flex;align-items:center;justify-content:center;gap:8px;min-height:66px;padding:12px;border:1px dashed #d0d5dd;border-radius:13px;background:#f8fafc;color:#667085;font-size:11.5px;text-align:center}
 #admin-settings-dialog{width:min(calc(100% - 24px),560px)}
 @media(max-width:520px){.admin-settings-group-actions{grid-template-columns:1fr}.admin-settings-group-install{width:100%}.admin-settings-group-head strong{white-space:normal;overflow-wrap:anywhere}}
-/* END ADMIN GROUP SETTINGS V1.1.8 */
+/* END KAS GROUP SETTINGS V1.1.9 */
+
+/* Kas > Pengaturan > Grup WhatsApp (V1.1.9) */
+.kas-group-settings-card{display:grid;gap:10px;margin-top:10px;padding:12px;border:1px solid #e4e7ec;border-radius:16px;background:#f8fafc}
+.kas-group-list{gap:9px}
+.kas-group-row{background:#fff}
+.kas-group-install-status{display:flex;align-items:center;min-height:24px}
+.kas-group-chip-installed{background:#ecfdf3;color:#067647}
+.kas-group-chip-installed i{margin-right:5px}
+.kas-group-actions{display:flex;justify-content:flex-end}
+.kas-group-install{min-width:112px}
+@media(max-width:520px){.kas-group-actions{display:grid}.kas-group-install{width:100%;min-width:0}}

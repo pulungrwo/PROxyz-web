@@ -1,7 +1,7 @@
 (() => {
   "use strict";
 
-  const ADMIN_BUILD = "1.1.8";
+  const ADMIN_BUILD = "1.1.9";
   const config = window.PROXYZ_ADMIN_CONFIG || {};
 
   async function checkAdminBuild() {
@@ -43,8 +43,7 @@
   let me = null;
   let sessionViewInitialized = false;
   let adminSettingsDraftOrder = [];
-  let adminSettingsGroups = [];
-  let adminSettingsOwnedKas = [];
+  let kasSettingsGroups = [];
   let challengeId = "";
   let challengeExpiresAt = 0;
   let activeView = ["kas", "bertunas", "galeri", "risma", "ternak", "kompetisi", "users"].includes(adminDeepLink.view) ? adminDeepLink.view : "";
@@ -524,22 +523,26 @@
     });
   }
 
-  function renderAdminSettingsGroups() {
-    const list = $("admin-settings-group-list");
+  function renderKasSettingsGroups() {
+    const list = $("kas-group-list");
     if (!list) return;
     list.replaceChildren();
 
-    if (!adminSettingsGroups.length) {
+    const isOwner = activeKasDetail?.role === "owner";
+    $("kas-groups-owner-note").hidden = isOwner;
+    $("kas-groups-count").textContent = `${kasSettingsGroups.length} grup`;
+
+    if (!kasSettingsGroups.length) {
       const empty = document.createElement("div");
       empty.className = "admin-settings-group-empty";
-      empty.innerHTML = '<i class="fa-solid fa-users-slash"></i><span>Belum ada grup yang dapat ditampilkan.</span>';
+      empty.innerHTML = '<i class="fa-solid fa-users-slash"></i><span>Belum ada grup WhatsApp yang dapat ditampilkan.</span>';
       list.append(empty);
       return;
     }
 
-    for (const group of adminSettingsGroups) {
+    for (const group of kasSettingsGroups) {
       const row = document.createElement("article");
-      row.className = "admin-settings-group-row";
+      row.className = "admin-settings-group-row kas-group-row";
       row.dataset.groupId = group.id;
 
       const head = document.createElement("div");
@@ -557,60 +560,31 @@
       head.append(icon, copy);
       row.append(head);
 
-      const installedIds = new Set((group.installedKas || []).map(item => item.id));
-      const installed = document.createElement("div");
-      installed.className = "admin-settings-group-installed";
-      if (group.installedKas?.length) {
-        for (const kas of group.installedKas) {
-          const chip = document.createElement("span");
-          chip.className = "admin-settings-group-chip";
-          chip.textContent = `${kas.nama || kas.id} · terpasang`;
-          installed.append(chip);
-        }
+      const installed = (group.installedKas || []).some(item => item.id === activeKas);
+      const status = document.createElement("div");
+      status.className = "kas-group-install-status";
+      if (installed) {
+        status.innerHTML = '<span class="admin-settings-group-chip kas-group-chip-installed"><i class="fa-solid fa-circle-check"></i> Kas ini sudah terpasang</span>';
       } else {
-        const note = document.createElement("span");
-        note.className = "admin-settings-group-note";
-        note.textContent = "Belum ada Kas Anda yang terpasang.";
-        installed.append(note);
+        status.innerHTML = '<span class="admin-settings-group-note">Kas ini belum terpasang di grup.</span>';
       }
-      row.append(installed);
+      row.append(status);
 
-      const availableKas = adminSettingsOwnedKas.filter(kas => !installedIds.has(kas.id));
       const actions = document.createElement("div");
-      actions.className = "admin-settings-group-actions";
-      const select = document.createElement("select");
-      select.className = "admin-settings-group-kas-select";
-      select.setAttribute("aria-label", `Pilih Kas untuk ${group.nama || "grup"}`);
-      const placeholder = document.createElement("option");
-      placeholder.value = "";
-      placeholder.textContent = availableKas.length ? "Pilih Kas…" : "Semua Kas sudah terpasang";
-      select.append(placeholder);
-      for (const kas of availableKas) {
-        const option = document.createElement("option");
-        option.value = kas.id;
-        option.textContent = kas.nama || kas.id;
-        select.append(option);
-      }
-      select.disabled = !group.isMember || !availableKas.length;
-
+      actions.className = "kas-group-actions";
       const install = document.createElement("button");
       install.type = "button";
-      install.className = "primary compact admin-settings-group-install";
+      install.className = installed ? "ghost compact kas-group-install" : "primary compact kas-group-install";
       install.dataset.groupInstall = group.id;
-      install.innerHTML = '<i class="fa-solid fa-download"></i> Install';
-      install.disabled = select.disabled;
-      actions.append(select, install);
+      install.innerHTML = installed ? '<i class="fa-solid fa-check"></i> Terpasang' : '<i class="fa-solid fa-download"></i> Install';
+      install.disabled = installed || !isOwner || !group.isMember;
+      actions.append(install);
       row.append(actions);
 
       if (!group.isMember) {
         const accessNote = document.createElement("small");
         accessNote.className = "admin-settings-group-access-note";
-        accessNote.textContent = "Grup ditampilkan karena Kas sudah terpasang; install baru hanya bisa pada grup yang dapat Anda akses.";
-        row.append(accessNote);
-      } else if (!adminSettingsOwnedKas.length) {
-        const accessNote = document.createElement("small");
-        accessNote.className = "admin-settings-group-access-note";
-        accessNote.textContent = "Hanya Owner Kas yang dapat melakukan install ke grup.";
+        accessNote.textContent = "Grup ditampilkan karena Kas pernah terpasang; install baru hanya tersedia untuk grup yang dapat diakses akun ini.";
         row.append(accessNote);
       }
 
@@ -618,40 +592,41 @@
     }
   }
 
-  async function loadAdminSettingsGroups() {
-    setStatus($("admin-settings-groups-status"), "Memuat daftar grup WhatsApp…");
+  async function loadKasSettingsGroups() {
+    if (!activeKas) return;
+    setStatus($("kas-groups-status"), "Memuat daftar grup WhatsApp…");
     try {
       const data = await api("/api/groups");
-      adminSettingsGroups = Array.isArray(data.groups) ? data.groups : [];
-      adminSettingsOwnedKas = Array.isArray(data.ownedKas) ? data.ownedKas : [];
-      renderAdminSettingsGroups();
-      const label = adminSettingsGroups.length === 1 ? "1 grup ditemukan." : `${adminSettingsGroups.length} grup ditemukan.`;
-      setStatus($("admin-settings-groups-status"), label, "success");
+      kasSettingsGroups = Array.isArray(data.groups) ? data.groups : [];
+      renderKasSettingsGroups();
+      const label = kasSettingsGroups.length === 1 ? "1 grup ditemukan." : `${kasSettingsGroups.length} grup ditemukan.`;
+      setStatus($("kas-groups-status"), label, "success");
     } catch (error) {
-      adminSettingsGroups = [];
-      adminSettingsOwnedKas = [];
-      renderAdminSettingsGroups();
-      setStatus($("admin-settings-groups-status"), error.message || "Daftar grup gagal dimuat.", "error");
+      kasSettingsGroups = [];
+      renderKasSettingsGroups();
+      setStatus($("kas-groups-status"), error.message || "Daftar grup gagal dimuat.", "error");
     }
   }
 
-  async function installKasToAdminGroup(groupId, kasId, button) {
-    if (!groupId || !kasId) return;
+  async function installActiveKasToGroup(groupId, button) {
+    if (!groupId || !activeKas) return;
     const original = button?.innerHTML || "";
     if (button) {
       button.disabled = true;
       button.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Install…';
     }
-    setStatus($("admin-settings-groups-status"), "Meng-install Kas ke grup…");
+    setStatus($("kas-groups-status"), "Meng-install Kas ke grup…");
     try {
       const data = await api("/api/groups/kas-install", {
         method: "POST",
-        body: JSON.stringify({ groupId, kasId })
+        body: JSON.stringify({ groupId, kasId: activeKas })
       });
-      await loadAdminSettingsGroups();
-      setStatus($("admin-settings-groups-status"), data.message || "Kas berhasil di-install ke grup.", "success");
+      await loadKas(activeKas);
+      if (activeKasTab !== "pengaturan") setKasTab("pengaturan", false);
+      await loadKasSettingsGroups();
+      setStatus($("kas-groups-status"), data.message || "Kas berhasil di-install ke grup.", "success");
     } catch (error) {
-      setStatus($("admin-settings-groups-status"), error.message || "Install Kas gagal.", "error");
+      setStatus($("kas-groups-status"), error.message || "Install Kas gagal.", "error");
       if (button) {
         button.disabled = false;
         button.innerHTML = original;
@@ -665,7 +640,6 @@
     renderAdminSettingsAppOrder();
     setStatus($("admin-settings-status"));
     $("admin-settings-dialog").showModal();
-    loadAdminSettingsGroups();
   }
 
   function renderMe() {
@@ -1025,9 +999,9 @@
 
 
   function setKasTab(tab, load = true) {
-    activeKasTab = ["transaksi", "laporan", "jadwal", "kategori", "pengelola"].includes(tab) ? tab : "transaksi";
+    activeKasTab = ["transaksi", "laporan", "jadwal", "kategori", "pengelola", "pengaturan"].includes(tab) ? tab : "transaksi";
     document.querySelectorAll("[data-kas-tab]").forEach(btn => btn.classList.toggle("active", btn.dataset.kasTab === activeKasTab));
-    ["transaksi", "laporan", "jadwal", "kategori", "pengelola"].forEach(name => {
+    ["transaksi", "laporan", "jadwal", "kategori", "pengelola", "pengaturan"].forEach(name => {
       const panel = $(`kas-${name}-panel`);
       if (panel) panel.hidden = name !== activeKasTab;
     });
@@ -1039,6 +1013,7 @@
     if (activeKasTab === "jadwal") await loadKasSchedules();
     else if (activeKasTab === "kategori") renderKasCategories();
     else if (activeKasTab === "pengelola") await loadKasManagers();
+    else if (activeKasTab === "pengaturan") await loadKasSettingsGroups();
     else if (activeKasTab === "laporan") {
       if (!$("kas-report-start").value) { setupKasReportPeriodPicker(); setKasReportMonth(); }
       await loadKasReport();
@@ -4086,19 +4061,11 @@ ${row.label}`))return;
   $("admin-settings-close").addEventListener("click", () => $("admin-settings-dialog").close());
   $("admin-settings-edit-name").addEventListener("click", () => { $("admin-settings-dialog").close(); openUserNameDialog(null, true); });
   $("admin-settings-reset-order").addEventListener("click", () => { adminSettingsDraftOrder = ADMIN_APP_KEYS.filter(key => appAvailability()[key]); renderAdminSettingsAppOrder(); });
-  $("admin-settings-groups-refresh").addEventListener("click", () => loadAdminSettingsGroups());
-  $("admin-settings-group-list").addEventListener("click", event => {
-    const button = event.target.closest("[data-group-install]");
-    if (!button) return;
-    const row = button.closest("[data-group-id]");
-    const select = row?.querySelector(".admin-settings-group-kas-select");
-    const kasId = String(select?.value || "").trim();
-    if (!kasId) {
-      setStatus($("admin-settings-groups-status"), "Pilih Kas yang akan di-install.", "error");
-      select?.focus();
-      return;
-    }
-    installKasToAdminGroup(button.dataset.groupInstall, kasId, button);
+  $("kas-groups-refresh").addEventListener("click", () => loadKasSettingsGroups());
+  $("kas-group-list").addEventListener("click", event => {
+    const install = event.target.closest("[data-group-install]");
+    if (!install || install.disabled) return;
+    installActiveKasToGroup(install.dataset.groupInstall, install);
   });
   $("admin-settings-app-list").addEventListener("click", event => {
     const button = event.target.closest("[data-move]");
