@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": 1788085605581,
+  "generatedAt": 1788345720347,
   "id": "01",
   "nama": "Lahan 300 m²",
   "lokasi": "",
@@ -34,12 +34,21 @@
   "summary": {
     "weightKg": 0,
     "harvestCount": 0,
-    "activityCount": 6,
+    "activityCount": 7,
     "pendingScheduleCount": 2
   },
   "financeVisible": false,
   "recentHarvest": [],
   "recentActivities": [
+    {
+      "date": "2026-09-02",
+      "cropId": "01",
+      "komoditas": "Cabai",
+      "category": "Penyemprotan",
+      "description": "Spray 15ml agrimec + 30ml ambition",
+      "note": "",
+      "hst": 20
+    },
     {
       "date": "2026-08-30",
       "cropId": "02",
@@ -121,5 +130,5 @@
       "status": "pending"
     }
   ],
-  "updatedAt": 1788085605581
+  "updatedAt": 1788345720347
 }
