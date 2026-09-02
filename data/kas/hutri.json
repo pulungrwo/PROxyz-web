@@ -19,8 +19,10 @@
       "kategori": "konsumsi",
       "kategoriNama": "Konsumsi",
       "keterangan": "Rapat",
+      "catatan": "",
       "nominal": 30000,
-      "label": []
+      "label": [],
+      "bukti": []
     },
     {
       "id": "hutri-260822-001",
@@ -30,8 +32,10 @@
       "kategori": "konsumsi",
       "kategoriNama": "Konsumsi",
       "keterangan": "Pasang dekor",
+      "catatan": "",
       "nominal": 50000,
-      "label": []
+      "label": [],
+      "bukti": []
     },
     {
       "id": "hutri-260821-002",
@@ -41,8 +45,10 @@
       "kategori": "konsumsi",
       "kategoriNama": "Konsumsi",
       "keterangan": "Akua",
+      "catatan": "buat hari H",
       "nominal": 80000,
-      "label": []
+      "label": [],
+      "bukti": []
     },
     {
       "id": "hutri-260821-001",
@@ -52,8 +58,10 @@
       "kategori": "acara/kegiatan",
       "kategoriNama": "Acara/Kegiatan",
       "keterangan": "Sewa Sound 2",
+      "catatan": "uang rokok buat adi",
       "nominal": 100000,
-      "label": []
+      "label": [],
+      "bukti": []
     },
     {
       "id": "hutri-260820-001",
@@ -63,8 +71,10 @@
       "kategori": "hadiah",
       "kategoriNama": "Hadiah",
       "keterangan": "Kertas Copy",
+      "catatan": "kertas jamet",
       "nominal": 28000,
-      "label": []
+      "label": [],
+      "bukti": []
     },
     {
       "id": "hutri-260819-001",
@@ -74,10 +84,12 @@
       "kategori": "hadiah",
       "kategoriNama": "Hadiah",
       "keterangan": "Celana Jamet",
+      "catatan": "",
       "nominal": 40000,
       "label": [
         "belanja"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "hutri-260817-006",
@@ -87,10 +99,12 @@
       "kategori": "lainnya",
       "kategoriNama": "Lainnya",
       "keterangan": "Dekorasi",
+      "catatan": "",
       "nominal": 124000,
       "label": [
         "belanja"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "hutri-260817-005",
@@ -100,10 +114,12 @@
       "kategori": "konsumsi",
       "kategoriNama": "Konsumsi",
       "keterangan": "Jenguk Uti Rahmat",
+      "catatan": "",
       "nominal": 60000,
       "label": [
         "belanja"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "hutri-260817-004",
@@ -113,10 +129,12 @@
       "kategori": "hadiah",
       "kategoriNama": "Hadiah",
       "keterangan": "Hadiah & Akomodasi",
+      "catatan": "Dzaky Grosir 886+15+20, DIY 150, Makan 106, Bensin 100, Parkir 12",
       "nominal": 1289000,
       "label": [
         "belanja"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "hutri-260817-003",
@@ -126,10 +144,12 @@
       "kategori": "hadiah",
       "kategoriNama": "Hadiah",
       "keterangan": "Spidol",
+      "catatan": "",
       "nominal": 9000,
       "label": [
         "belanja"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "hutri-260817-002",
@@ -139,10 +159,12 @@
       "kategori": "hadiah",
       "kategoriNama": "Hadiah",
       "keterangan": "Solasi",
+      "catatan": "",
       "nominal": 20000,
       "label": [
         "belanja"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "hutri-260817-001",
@@ -152,10 +174,12 @@
       "kategori": "hadiah",
       "kategoriNama": "Hadiah",
       "keterangan": "Kertas Copy",
+      "catatan": "",
       "nominal": 25000,
       "label": [
         "belanja"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "hutri-260816-007",
@@ -165,10 +189,12 @@
       "kategori": "perlengkapan",
       "kategoriNama": "Perlengkapan",
       "keterangan": "Gelas Akua",
+      "catatan": "",
       "nominal": 6000,
       "label": [
         "mulyono"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "hutri-260816-006",
@@ -178,10 +204,12 @@
       "kategori": "konsumsi",
       "kategoriNama": "Konsumsi",
       "keterangan": "Akua",
+      "catatan": "",
       "nominal": 42000,
       "label": [
         "mulyono"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "hutri-260816-005",
@@ -191,10 +219,12 @@
       "kategori": "konsumsi",
       "kategoriNama": "Konsumsi",
       "keterangan": "Martabak",
+      "catatan": "",
       "nominal": 12000,
       "label": [
         "mulyono"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "hutri-260816-004",
@@ -204,10 +234,12 @@
       "kategori": "konsumsi",
       "kategoriNama": "Konsumsi",
       "keterangan": "Gula Kopi",
+      "catatan": "",
       "nominal": 32000,
       "label": [
         "mulyono"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "hutri-260816-003",
@@ -217,10 +249,12 @@
       "kategori": "konsumsi",
       "kategoriNama": "Konsumsi",
       "keterangan": "Nasi Bungkus",
+      "catatan": "",
       "nominal": 130000,
       "label": [
         "mulyono"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "hutri-260816-002",
@@ -230,8 +264,10 @@
       "kategori": "perlengkapan",
       "kategoriNama": "Perlengkapan",
       "keterangan": "Pulpen",
+      "catatan": "",
       "nominal": 6000,
-      "label": []
+      "label": [],
+      "bukti": []
     },
     {
       "id": "hutri-260816-001",
@@ -241,10 +277,12 @@
       "kategori": "perlengkapan",
       "kategoriNama": "Perlengkapan",
       "keterangan": "Bensin",
+      "catatan": "",
       "nominal": 15000,
       "label": [
         "paisol"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "hutri-260815-006",
@@ -254,10 +292,12 @@
       "kategori": "konsumsi",
       "kategoriNama": "Konsumsi",
       "keterangan": "Gorengan",
+      "catatan": "",
       "nominal": 18000,
       "label": [
         "mulyono"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "hutri-260815-005",
@@ -267,10 +307,12 @@
       "kategori": "konsumsi",
       "kategoriNama": "Konsumsi",
       "keterangan": "Gula Aren",
+      "catatan": "",
       "nominal": 18000,
       "label": [
         "mulyono"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "hutri-260815-004",
@@ -280,10 +322,12 @@
       "kategori": "konsumsi",
       "kategoriNama": "Konsumsi",
       "keterangan": "Akua",
+      "catatan": "",
       "nominal": 60000,
       "label": [
         "mulyono"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "hutri-260815-003",
@@ -293,10 +337,12 @@
       "kategori": "perlengkapan",
       "kategoriNama": "Perlengkapan",
       "keterangan": "Bensin",
+      "catatan": "",
       "nominal": 15000,
       "label": [
         "paisol"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "hutri-260815-002",
@@ -306,10 +352,12 @@
       "kategori": "perlengkapan",
       "kategoriNama": "Perlengkapan",
       "keterangan": "Kerupuk",
+      "catatan": "",
       "nominal": 30000,
       "label": [
         "paisol"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "hutri-260815-001",
@@ -319,10 +367,12 @@
       "kategori": "perlengkapan",
       "kategoriNama": "Perlengkapan",
       "keterangan": "Terong",
+      "catatan": "",
       "nominal": 15000,
       "label": [
         "paisol"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "hutri-260814-001",
@@ -332,8 +382,10 @@
       "kategori": "acara/kegiatan",
       "kategoriNama": "Acara/Kegiatan",
       "keterangan": "Sewa Sound & Juri",
+      "catatan": "",
       "nominal": 750000,
-      "label": []
+      "label": [],
+      "bukti": []
     },
     {
       "id": "hutri-260813-008",
@@ -343,8 +395,10 @@
       "kategori": "perlengkapan",
       "kategoriNama": "Perlengkapan",
       "keterangan": "Kuas",
+      "catatan": "",
       "nominal": 6000,
-      "label": []
+      "label": [],
+      "bukti": []
     },
     {
       "id": "hutri-260813-002",
@@ -354,8 +408,10 @@
       "kategori": "konsumsi",
       "kategoriNama": "Konsumsi",
       "keterangan": "Mie Goreng",
+      "catatan": "konsumsi ngecat di tempat bpk dirjen pajak (hajar)",
       "nominal": 20000,
-      "label": []
+      "label": [],
+      "bukti": []
     },
     {
       "id": "hutri-260813-007",
@@ -365,10 +421,12 @@
       "kategori": "perlengkapan",
       "kategoriNama": "Perlengkapan",
       "keterangan": "Peluit",
+      "catatan": "",
       "nominal": 5000,
       "label": [
         "paisol"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "hutri-260813-006",
@@ -378,10 +436,12 @@
       "kategori": "perlengkapan",
       "kategoriNama": "Perlengkapan",
       "keterangan": "Bola Pimpong",
+      "catatan": "",
       "nominal": 15000,
       "label": [
         "paisol"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "hutri-260813-005",
@@ -391,10 +451,12 @@
       "kategori": "perlengkapan",
       "kategoriNama": "Perlengkapan",
       "keterangan": "Gelas Pop ice",
+      "catatan": "",
       "nominal": 12000,
       "label": [
         "paisol"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "hutri-260813-004",
@@ -404,10 +466,12 @@
       "kategori": "perlengkapan",
       "kategoriNama": "Perlengkapan",
       "keterangan": "Benang Nilon",
+      "catatan": "",
       "nominal": 7000,
       "label": [
         "paisol"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "hutri-260813-003",
@@ -417,10 +481,12 @@
       "kategori": "perlengkapan",
       "kategoriNama": "Perlengkapan",
       "keterangan": "Balon",
+      "catatan": "",
       "nominal": 20000,
       "label": [
         "paisol"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "hutri-260813-001",
@@ -430,10 +496,12 @@
       "kategori": "perlengkapan",
       "kategoriNama": "Perlengkapan",
       "keterangan": "Bola Kaki",
+      "catatan": "",
       "nominal": 48000,
       "label": [
         "paisol"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "hutri-260811-001",
@@ -443,8 +511,10 @@
       "kategori": "iuran",
       "kategoriNama": "Iuran",
       "keterangan": "Sumbangan Warga",
+      "catatan": "Mul 515 k, Rizki 237 k, Putri 60 k",
       "nominal": 852000,
-      "label": []
+      "label": [],
+      "bukti": []
     },
     {
       "id": "hutri-260809-009",
@@ -454,8 +524,10 @@
       "kategori": "donatur",
       "kategoriNama": "Donatur",
       "keterangan": "Donatur Tanjung Bulan",
+      "catatan": "",
       "nominal": 850000,
-      "label": []
+      "label": [],
+      "bukti": []
     },
     {
       "id": "hutri-260809-008",
@@ -465,8 +537,10 @@
       "kategori": "perlengkapan",
       "kategoriNama": "Perlengkapan",
       "keterangan": "Tali Rafia",
+      "catatan": "",
       "nominal": 17000,
-      "label": []
+      "label": [],
+      "bukti": []
     },
     {
       "id": "hutri-260809-007",
@@ -476,8 +550,10 @@
       "kategori": "konsumsi",
       "kategoriNama": "Konsumsi",
       "keterangan": "Gotong Royong",
+      "catatan": "15 bungkus Nasi & Air minum",
       "nominal": 172000,
-      "label": []
+      "label": [],
+      "bukti": []
     },
     {
       "id": "hutri-260809-006",
@@ -487,8 +563,10 @@
       "kategori": "konsumsi",
       "kategoriNama": "Konsumsi",
       "keterangan": "Gotong Royong",
+      "catatan": "gula, kopi, gorengan, air minum",
       "nominal": 100000,
-      "label": []
+      "label": [],
+      "bukti": []
     },
     {
       "id": "hutri-260809-005",
@@ -498,8 +576,10 @@
       "kategori": "konsumsi",
       "kategoriNama": "Konsumsi",
       "keterangan": "Hari H",
+      "catatan": "buat makan-makan",
       "nominal": 1100000,
-      "label": []
+      "label": [],
+      "bukti": []
     },
     {
       "id": "hutri-260809-004",
@@ -509,8 +589,10 @@
       "kategori": "perlengkapan",
       "kategoriNama": "Perlengkapan",
       "keterangan": "Undangan",
+      "catatan": "",
       "nominal": 50000,
-      "label": []
+      "label": [],
+      "bukti": []
     },
     {
       "id": "hutri-260809-003",
@@ -520,8 +602,10 @@
       "kategori": "konsumsi",
       "kategoriNama": "Konsumsi",
       "keterangan": "Rapat",
+      "catatan": "",
       "nominal": 100000,
-      "label": []
+      "label": [],
+      "bukti": []
     },
     {
       "id": "hutri-260809-001",
@@ -531,9 +615,11 @@
       "kategori": "hasil usaha",
       "kategoriNama": "Hasil Usaha",
       "keterangan": "Dari Dusun",
+      "catatan": "Panen singkong di balai dusun",
       "nominal": 2900000,
-      "label": []
+      "label": [],
+      "bukti": []
     }
   ],
-  "updatedAt": 1787816947632
+  "updatedAt": 1788371855841
 }

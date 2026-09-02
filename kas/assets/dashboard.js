@@ -148,7 +148,7 @@
       if (month !== "all" && dateParts(tx.tanggal).month !== month) return false;
       if (type !== "all" && tx.jenis !== type) return false;
       if (!query) return true;
-      return [tx.keterangan, tx.kategoriNama, tx.kategori, tx.nomor, ...(Array.isArray(tx.label) ? tx.label : [])]
+      return [tx.keterangan, tx.catatan, tx.kategoriNama, tx.kategori, tx.nomor, ...(Array.isArray(tx.label) ? tx.label : [])]
         .join(" ").toLocaleLowerCase("id-ID").includes(query);
     });
   }
@@ -183,10 +183,34 @@
       meta.appendChild(create("span", "", tx.kategoriNama || tx.kategori || "Lainnya"));
       if (tx.nomor) meta.appendChild(create("span", "", `No. ${tx.nomor}`));
       main.appendChild(meta);
+      if (tx.catatan) {
+        const note = create("p", "transaction-note");
+        note.appendChild(create("strong", "", "Catatan: "));
+        note.appendChild(document.createTextNode(String(tx.catatan)));
+        main.appendChild(note);
+      }
       if (Array.isArray(tx.label) && tx.label.length) {
         const tags = create("div", "tags");
         tx.label.slice(0, 5).forEach(label => tags.appendChild(create("span", "tag", `#${String(label).replace(/^#/, "")}`)));
         main.appendChild(tags);
+      }
+      if (Array.isArray(tx.bukti) && tx.bukti.length) {
+        const evidence = create("div", "transaction-evidence");
+        for (const proof of tx.bukti) {
+          if (!proof?.url) continue;
+          const link = create("a", "transaction-evidence-link");
+          link.href = proof.url;
+          link.target = "_blank";
+          link.rel = "noopener";
+          link.setAttribute("aria-label", `Buka ${proof.id || "foto bukti"}`);
+          const img = create("img", "transaction-evidence-image");
+          img.src = proof.url;
+          img.alt = proof.id || "Foto bukti transaksi";
+          img.loading = "lazy";
+          link.appendChild(img);
+          evidence.appendChild(link);
+        }
+        if (evidence.childElementCount) main.appendChild(evidence);
       }
       row.appendChild(main);
       row.appendChild(create("div", "transaction-amount", formatAmount(tx)));

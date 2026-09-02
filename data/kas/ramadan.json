@@ -19,8 +19,10 @@
       "kategori": "hasil usaha",
       "kategoriNama": "Hasil Usaha",
       "keterangan": "Panen Timun",
+      "catatan": "Pakpuk",
       "nominal": 620000,
-      "label": []
+      "label": [],
+      "bukti": []
     },
     {
       "id": "ramadan-260321-001",
@@ -30,11 +32,13 @@
       "kategori": "hadiah",
       "kategoriNama": "Hadiah",
       "keterangan": "THR 1447H",
+      "catatan": "",
       "nominal": 620000,
       "label": [
         "1447h"
-      ]
+      ],
+      "bukti": []
     }
   ],
-  "updatedAt": 1787816947666
+  "updatedAt": 1788371855869
 }

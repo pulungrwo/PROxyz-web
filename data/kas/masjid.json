@@ -19,8 +19,21 @@
       "kategori": "pembangunan & renovasi",
       "kategoriNama": "Pembangunan & Renovasi",
       "keterangan": "Pasang Plafon",
+      "catatan": "",
       "nominal": 11137000,
-      "label": []
+      "label": [],
+      "bukti": [
+        {
+          "id": "BUKTI1",
+          "url": "https://media.pulungriswanto.my.id/bukti/kas/qm1BxDiUfXWIPgqz/BUKTI1.jpg",
+          "mimeType": "image/jpeg"
+        },
+        {
+          "id": "BUKTI2",
+          "url": "https://media.pulungriswanto.my.id/bukti/kas/e0bwQ2FWfMIcimIC/BUKTI2.jpg",
+          "mimeType": "image/jpeg"
+        }
+      ]
     },
     {
       "id": "masjid-260830-002",
@@ -30,10 +43,12 @@
       "kategori": "konsumsi",
       "kategoriNama": "Konsumsi",
       "keterangan": "Pasang Plafon",
+      "catatan": "Nasi bungkus 20k, gorengan 10k",
       "nominal": 30000,
       "label": [
         "plafon"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "masjid-260830-001",
@@ -43,10 +58,12 @@
       "kategori": "pembangunan & renovasi",
       "kategoriNama": "Pembangunan & Renovasi",
       "keterangan": "Paku",
+      "catatan": "",
       "nominal": 10000,
       "label": [
         "plafon"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "masjid-260829-011",
@@ -56,8 +73,10 @@
       "kategori": "perlengkapan",
       "kategoriNama": "Perlengkapan",
       "keterangan": "Fitting Lampu",
+      "catatan": "#plafon",
       "nominal": 15000,
-      "label": []
+      "label": [],
+      "bukti": []
     },
     {
       "id": "masjid-260829-010",
@@ -67,10 +86,12 @@
       "kategori": "konsumsi",
       "kategoriNama": "Konsumsi",
       "keterangan": "Air Minum",
+      "catatan": "",
       "nominal": 7000,
       "label": [
         "plafon"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "masjid-260829-009",
@@ -80,8 +101,10 @@
       "kategori": "perlengkapan",
       "kategoriNama": "Perlengkapan",
       "keterangan": "Lem Korea",
+      "catatan": "",
       "nominal": 7000,
-      "label": []
+      "label": [],
+      "bukti": []
     },
     {
       "id": "masjid-260829-008",
@@ -91,8 +114,10 @@
       "kategori": "konsumsi",
       "kategoriNama": "Konsumsi",
       "keterangan": "Upah Pasang TOA & GRC",
+      "catatan": "",
       "nominal": 200000,
-      "label": []
+      "label": [],
+      "bukti": []
     },
     {
       "id": "masjid-260829-007",
@@ -102,8 +127,10 @@
       "kategori": "konsumsi",
       "kategoriNama": "Konsumsi",
       "keterangan": "Gula Kopi",
+      "catatan": "",
       "nominal": 20000,
-      "label": []
+      "label": [],
+      "bukti": []
     },
     {
       "id": "masjid-260829-006",
@@ -113,10 +140,12 @@
       "kategori": "konsumsi",
       "kategoriNama": "Konsumsi",
       "keterangan": "Pasang Plafon",
+      "catatan": "Nasi bungkus 20 k\nGorengan 20 k",
       "nominal": 40000,
       "label": [
         "plafon"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "masjid-260829-005",
@@ -126,8 +155,10 @@
       "kategori": "konsumsi",
       "kategoriNama": "Konsumsi",
       "keterangan": "Pasang TOA & GRC",
+      "catatan": "Gorengan 30 k\nRokok 30 k\nNasi Bungkus 40 k",
       "nominal": 100000,
-      "label": []
+      "label": [],
+      "bukti": []
     },
     {
       "id": "masjid-260829-004",
@@ -137,9 +168,17 @@
       "kategori": "peralatan",
       "kategoriNama": "Peralatan",
       "keterangan": "Lampu",
+      "catatan": "",
       "nominal": 123000,
       "label": [
         "plafon"
+      ],
+      "bukti": [
+        {
+          "id": "BUKTI1",
+          "url": "https://media.pulungriswanto.my.id/bukti/kas/7shyqwIEFyxnExpd/BUKTI1.jpg",
+          "mimeType": "image/jpeg"
+        }
       ]
     },
     {
@@ -150,8 +189,16 @@
       "kategori": "pembangunan & renovasi",
       "kategoriNama": "Pembangunan & Renovasi",
       "keterangan": "GRC + paku",
+      "catatan": "Buat nutup bolongan atap masjid",
       "nominal": 195000,
-      "label": []
+      "label": [],
+      "bukti": [
+        {
+          "id": "BUKTI1",
+          "url": "https://media.pulungriswanto.my.id/bukti/kas/pwUEZqS44YYTkeVf/BUKTI1.jpg",
+          "mimeType": "image/jpeg"
+        }
+      ]
     },
     {
       "id": "masjid-260829-002",
@@ -161,8 +208,16 @@
       "kategori": "peralatan",
       "kategoriNama": "Peralatan",
       "keterangan": "Corong Toa",
+      "catatan": "Toa 50w = 940 k\nToa 25w = 730 k",
       "nominal": 1670000,
-      "label": []
+      "label": [],
+      "bukti": [
+        {
+          "id": "BUKTI1",
+          "url": "https://media.pulungriswanto.my.id/bukti/kas/EZtnB12XwvJYRdS-/BUKTI1.jpg",
+          "mimeType": "image/jpeg"
+        }
+      ]
     },
     {
       "id": "masjid-260829-001",
@@ -172,8 +227,10 @@
       "kategori": "konsumsi",
       "kategoriNama": "Konsumsi",
       "keterangan": "Gula Kopi",
+      "catatan": "#plafon",
       "nominal": 19000,
-      "label": []
+      "label": [],
+      "bukti": []
     },
     {
       "id": "masjid-260828-002",
@@ -183,8 +240,10 @@
       "kategori": "operasional",
       "kategoriNama": "Operasional",
       "keterangan": "Marbot",
+      "catatan": "Periode pembayaran: 4 September 2026",
       "nominal": 25000,
-      "label": []
+      "label": [],
+      "bukti": []
     },
     {
       "id": "masjid-260828-001",
@@ -194,8 +253,10 @@
       "kategori": "operasional",
       "kategoriNama": "Operasional",
       "keterangan": "Marbot",
+      "catatan": "Periode pembayaran: 28 Agustus 2026",
       "nominal": 25000,
-      "label": []
+      "label": [],
+      "bukti": []
     },
     {
       "id": "masjid-260828-005",
@@ -205,9 +266,17 @@
       "kategori": "perlengkapan",
       "kategoriNama": "Perlengkapan",
       "keterangan": "Kabel putih",
+      "catatan": "",
       "nominal": 210000,
       "label": [
         "plafon"
+      ],
+      "bukti": [
+        {
+          "id": "BUKTI1",
+          "url": "https://media.pulungriswanto.my.id/bukti/kas/uqMIAgUfhapUz22c/BUKTI1.jpg",
+          "mimeType": "image/jpeg"
+        }
       ]
     },
     {
@@ -218,10 +287,12 @@
       "kategori": "konsumsi",
       "kategoriNama": "Konsumsi",
       "keterangan": "Pasang Plafon",
+      "catatan": "Nasi bungkus + gorengan",
       "nominal": 30000,
       "label": [
         "plafon"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "masjid-260828-003",
@@ -231,8 +302,10 @@
       "kategori": "infak",
       "kategoriNama": "Infak",
       "keterangan": "Infak Jumat",
+      "catatan": "",
       "nominal": 34000,
-      "label": []
+      "label": [],
+      "bukti": []
     },
     {
       "id": "masjid-260827-005",
@@ -242,8 +315,10 @@
       "kategori": "perlengkapan",
       "kategoriNama": "Perlengkapan",
       "keterangan": "Alat pel lantai",
+      "catatan": "",
       "nominal": 30000,
-      "label": []
+      "label": [],
+      "bukti": []
     },
     {
       "id": "masjid-260827-004",
@@ -253,10 +328,12 @@
       "kategori": "konsumsi",
       "kategoriNama": "Konsumsi",
       "keterangan": "Air Minum",
+      "catatan": "",
       "nominal": 7000,
       "label": [
         "plafon"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "masjid-260827-003",
@@ -266,10 +343,12 @@
       "kategori": "konsumsi",
       "kategoriNama": "Konsumsi",
       "keterangan": "Gula Kopi",
+      "catatan": "",
       "nominal": 19000,
       "label": [
         "plafon"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "masjid-260827-002",
@@ -279,10 +358,12 @@
       "kategori": "konsumsi",
       "kategoriNama": "Konsumsi",
       "keterangan": "Pasang plafon",
+      "catatan": "",
       "nominal": 20000,
       "label": [
         "plafon"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "masjid-260827-001",
@@ -292,10 +373,12 @@
       "kategori": "pembangunan & renovasi",
       "kategoriNama": "Pembangunan & Renovasi",
       "keterangan": "Paku",
+      "catatan": "",
       "nominal": 10000,
       "label": [
         "plafon"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "masjid-260826-001",
@@ -305,8 +388,10 @@
       "kategori": "hasil usaha",
       "kategoriNama": "Hasil Usaha",
       "keterangan": "Panen singkong",
+      "catatan": "",
       "nominal": 17000000,
-      "label": []
+      "label": [],
+      "bukti": []
     },
     {
       "id": "masjid-260821-002",
@@ -316,8 +401,10 @@
       "kategori": "infak",
       "kategoriNama": "Infak",
       "keterangan": "Infak Jumat",
+      "catatan": "",
       "nominal": 33000,
-      "label": []
+      "label": [],
+      "bukti": []
     },
     {
       "id": "masjid-260821-001",
@@ -327,10 +414,12 @@
       "kategori": "operasional",
       "kategoriNama": "Operasional",
       "keterangan": "Marbot",
+      "catatan": "Pembayaran rutin: 21 Agustus 2026",
       "nominal": 25000,
       "label": [
         "marbot"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "masjid-260814-002",
@@ -340,10 +429,12 @@
       "kategori": "operasional",
       "kategoriNama": "Operasional",
       "keterangan": "Marbot",
+      "catatan": "",
       "nominal": 25000,
       "label": [
         "marbot"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "masjid-260814-001",
@@ -353,8 +444,10 @@
       "kategori": "infak",
       "kategoriNama": "Infak",
       "keterangan": "Infak Jumat",
+      "catatan": "",
       "nominal": 17000,
-      "label": []
+      "label": [],
+      "bukti": []
     },
     {
       "id": "masjid-260807-001",
@@ -364,8 +457,10 @@
       "kategori": "infak",
       "kategoriNama": "Infak",
       "keterangan": "Infak Jumat",
+      "catatan": "",
       "nominal": 26000,
-      "label": []
+      "label": [],
+      "bukti": []
     },
     {
       "id": "masjid-260807-002",
@@ -375,10 +470,12 @@
       "kategori": "operasional",
       "kategoriNama": "Operasional",
       "keterangan": "Marbot",
+      "catatan": "",
       "nominal": 25000,
       "label": [
         "marbot"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "masjid-260731-001",
@@ -388,8 +485,10 @@
       "kategori": "infak",
       "kategoriNama": "Infak",
       "keterangan": "Infak Jumat",
+      "catatan": "",
       "nominal": 30000,
-      "label": []
+      "label": [],
+      "bukti": []
     },
     {
       "id": "masjid-260731-002",
@@ -399,10 +498,12 @@
       "kategori": "operasional",
       "kategoriNama": "Operasional",
       "keterangan": "Marbot",
+      "catatan": "",
       "nominal": 25000,
       "label": [
         "marbot"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "masjid-260724-001",
@@ -412,8 +513,10 @@
       "kategori": "infak",
       "kategoriNama": "Infak",
       "keterangan": "Infak Jumat",
+      "catatan": "",
       "nominal": 30000,
-      "label": []
+      "label": [],
+      "bukti": []
     },
     {
       "id": "masjid-260724-002",
@@ -423,10 +526,12 @@
       "kategori": "operasional",
       "kategoriNama": "Operasional",
       "keterangan": "Marbot",
+      "catatan": "",
       "nominal": 25000,
       "label": [
         "marbot"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "masjid-260717-001",
@@ -436,10 +541,12 @@
       "kategori": "operasional",
       "kategoriNama": "Operasional",
       "keterangan": "Marbot",
+      "catatan": "",
       "nominal": 25000,
       "label": [
         "marbot"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "masjid-260712-001",
@@ -449,8 +556,10 @@
       "kategori": "acara/kegiatan",
       "kategoriNama": "Acara/Kegiatan",
       "keterangan": "Pengajian Annisa",
+      "catatan": "",
       "nominal": 300000,
-      "label": []
+      "label": [],
+      "bukti": []
     },
     {
       "id": "masjid-260712-002",
@@ -460,8 +569,10 @@
       "kategori": "infak",
       "kategoriNama": "Infak",
       "keterangan": "Infak ibu²",
+      "catatan": "",
       "nominal": 1370000,
-      "label": []
+      "label": [],
+      "bukti": []
     },
     {
       "id": "masjid-260710-001",
@@ -471,8 +582,10 @@
       "kategori": "infak",
       "kategoriNama": "Infak",
       "keterangan": "Infak Jumat",
+      "catatan": "",
       "nominal": 25000,
-      "label": []
+      "label": [],
+      "bukti": []
     },
     {
       "id": "masjid-260703-001",
@@ -482,8 +595,10 @@
       "kategori": "infak",
       "kategoriNama": "Infak",
       "keterangan": "Infak Jumat",
+      "catatan": "",
       "nominal": 33000,
-      "label": []
+      "label": [],
+      "bukti": []
     },
     {
       "id": "masjid-260703-002",
@@ -493,10 +608,12 @@
       "kategori": "operasional",
       "kategoriNama": "Operasional",
       "keterangan": "Marbot",
+      "catatan": "",
       "nominal": 25000,
       "label": [
         "marbot"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "masjid-260626-001",
@@ -506,8 +623,10 @@
       "kategori": "infak",
       "kategoriNama": "Infak",
       "keterangan": "Infak Jumat",
+      "catatan": "",
       "nominal": 22000,
-      "label": []
+      "label": [],
+      "bukti": []
     },
     {
       "id": "masjid-260626-002",
@@ -517,10 +636,12 @@
       "kategori": "operasional",
       "kategoriNama": "Operasional",
       "keterangan": "Marbot",
+      "catatan": "",
       "nominal": 25000,
       "label": [
         "marbot"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "masjid-260619-001",
@@ -530,8 +651,10 @@
       "kategori": "infak",
       "kategoriNama": "Infak",
       "keterangan": "Infak Jumat",
+      "catatan": "",
       "nominal": 20000,
-      "label": []
+      "label": [],
+      "bukti": []
     },
     {
       "id": "masjid-260612-001",
@@ -541,8 +664,10 @@
       "kategori": "infak",
       "kategoriNama": "Infak",
       "keterangan": "Infak Jumat",
+      "catatan": "",
       "nominal": 20000,
-      "label": []
+      "label": [],
+      "bukti": []
     },
     {
       "id": "masjid-260605-001",
@@ -552,8 +677,10 @@
       "kategori": "konsumsi",
       "kategoriNama": "Konsumsi",
       "keterangan": "Konsumsi Kirim Doa",
+      "catatan": "",
       "nominal": 73000,
-      "label": []
+      "label": [],
+      "bukti": []
     },
     {
       "id": "masjid-260605-002",
@@ -563,8 +690,10 @@
       "kategori": "infak",
       "kategoriNama": "Infak",
       "keterangan": "Infak Jumat",
+      "catatan": "",
       "nominal": 30000,
-      "label": []
+      "label": [],
+      "bukti": []
     },
     {
       "id": "masjid-260605-003",
@@ -574,8 +703,10 @@
       "kategori": "donatur",
       "kategoriNama": "Donatur",
       "keterangan": "Mbah Giarti",
+      "catatan": "",
       "nominal": 1000000,
-      "label": []
+      "label": [],
+      "bukti": []
     },
     {
       "id": "masjid-260529-001",
@@ -585,8 +716,10 @@
       "kategori": "infak",
       "kategoriNama": "Infak",
       "keterangan": "Infak Jumat",
+      "catatan": "",
       "nominal": 32000,
-      "label": []
+      "label": [],
+      "bukti": []
     },
     {
       "id": "masjid-260527-001",
@@ -596,8 +729,10 @@
       "kategori": "acara/kegiatan",
       "kategoriNama": "Acara/Kegiatan",
       "keterangan": "Idul Adha",
+      "catatan": "",
       "nominal": 480000,
-      "label": []
+      "label": [],
+      "bukti": []
     },
     {
       "id": "masjid-260527-002",
@@ -607,8 +742,10 @@
       "kategori": "infak",
       "kategoriNama": "Infak",
       "keterangan": "Infak Karet",
+      "catatan": "",
       "nominal": 320000,
-      "label": []
+      "label": [],
+      "bukti": []
     },
     {
       "id": "masjid-260527-003",
@@ -618,8 +755,10 @@
       "kategori": "konsumsi",
       "kategoriNama": "Konsumsi",
       "keterangan": "Konsumsi Kurban",
+      "catatan": "",
       "nominal": 57000,
-      "label": []
+      "label": [],
+      "bukti": []
     },
     {
       "id": "masjid-260524-001",
@@ -629,8 +768,10 @@
       "kategori": "acara/kegiatan",
       "kategoriNama": "Acara/Kegiatan",
       "keterangan": "Gotong Royong",
+      "catatan": "air minum 20 k, gorengan 50 k, gula 10 k, kopi 10 k",
       "nominal": 90000,
-      "label": []
+      "label": [],
+      "bukti": []
     },
     {
       "id": "masjid-260522-001",
@@ -640,8 +781,10 @@
       "kategori": "infak",
       "kategoriNama": "Infak",
       "keterangan": "Infak Jumat",
+      "catatan": "",
       "nominal": 25000,
-      "label": []
+      "label": [],
+      "bukti": []
     },
     {
       "id": "masjid-260515-001",
@@ -651,8 +794,10 @@
       "kategori": "infak",
       "kategoriNama": "Infak",
       "keterangan": "Infak Jumat",
+      "catatan": "",
       "nominal": 25000,
-      "label": []
+      "label": [],
+      "bukti": []
     },
     {
       "id": "masjid-260508-001",
@@ -662,8 +807,10 @@
       "kategori": "infak",
       "kategoriNama": "Infak",
       "keterangan": "Infak Jumat",
+      "catatan": "",
       "nominal": 50000,
-      "label": []
+      "label": [],
+      "bukti": []
     },
     {
       "id": "masjid-260501-001",
@@ -673,8 +820,10 @@
       "kategori": "infak",
       "kategoriNama": "Infak",
       "keterangan": "Infak Jumat",
+      "catatan": "",
       "nominal": 12000,
-      "label": []
+      "label": [],
+      "bukti": []
     },
     {
       "id": "masjid-260424-001",
@@ -684,8 +833,10 @@
       "kategori": "infak",
       "kategoriNama": "Infak",
       "keterangan": "Infak Jumat",
+      "catatan": "",
       "nominal": 10000,
-      "label": []
+      "label": [],
+      "bukti": []
     },
     {
       "id": "masjid-260417-001",
@@ -695,8 +846,10 @@
       "kategori": "infak",
       "kategoriNama": "Infak",
       "keterangan": "Infak Jumat",
+      "catatan": "",
       "nominal": 25000,
-      "label": []
+      "label": [],
+      "bukti": []
     },
     {
       "id": "masjid-260410-001",
@@ -706,8 +859,10 @@
       "kategori": "infak",
       "kategoriNama": "Infak",
       "keterangan": "Infak Jumat",
+      "catatan": "",
       "nominal": 19000,
-      "label": []
+      "label": [],
+      "bukti": []
     },
     {
       "id": "masjid-260403-001",
@@ -717,8 +872,10 @@
       "kategori": "infak",
       "kategoriNama": "Infak",
       "keterangan": "Infak Jumat",
+      "catatan": "",
       "nominal": 64000,
-      "label": []
+      "label": [],
+      "bukti": []
     },
     {
       "id": "masjid-260321-001",
@@ -728,10 +885,12 @@
       "kategori": "acara/kegiatan",
       "kategoriNama": "Acara/Kegiatan",
       "keterangan": "Idul Fitri",
+      "catatan": "",
       "nominal": 609500,
       "label": [
         "1447h"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "masjid-260320-001",
@@ -741,10 +900,12 @@
       "kategori": "infak",
       "kategoriNama": "Infak",
       "keterangan": "Infak Jumat",
+      "catatan": "",
       "nominal": 45000,
       "label": [
         "1447h"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "masjid-260319-001",
@@ -754,10 +915,12 @@
       "kategori": "donatur",
       "kategoriNama": "Donatur",
       "keterangan": "Bu Tari",
+      "catatan": "",
       "nominal": 100000,
       "label": [
         "1447h"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "masjid-260319-002",
@@ -767,10 +930,12 @@
       "kategori": "konsumsi",
       "kategoriNama": "Konsumsi",
       "keterangan": "Konsumsi Ngecat",
+      "catatan": "",
       "nominal": 25000,
       "label": [
         "1447h"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "masjid-260318-001",
@@ -780,10 +945,12 @@
       "kategori": "konsumsi",
       "kategoriNama": "Konsumsi",
       "keterangan": "Gula Kopi",
+      "catatan": "",
       "nominal": 25000,
       "label": [
         "1447h"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "masjid-260317-002",
@@ -793,10 +960,12 @@
       "kategori": "pemeliharaan",
       "kategoriNama": "Pemeliharaan",
       "keterangan": "Tiner",
+      "catatan": "",
       "nominal": 20000,
       "label": [
         "1447h"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "masjid-260317-003",
@@ -806,10 +975,12 @@
       "kategori": "perlengkapan",
       "kategoriNama": "Perlengkapan",
       "keterangan": "Kuas",
+      "catatan": "",
       "nominal": 10000,
       "label": [
         "1447h"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "masjid-260317-004",
@@ -819,10 +990,12 @@
       "kategori": "pemeliharaan",
       "kategoriNama": "Pemeliharaan",
       "keterangan": "Cat Emas",
+      "catatan": "",
       "nominal": 100000,
       "label": [
         "1447h"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "masjid-260317-005",
@@ -832,10 +1005,12 @@
       "kategori": "konsumsi",
       "kategoriNama": "Konsumsi",
       "keterangan": "Konsumsi Ngecat",
+      "catatan": "",
       "nominal": 83000,
       "label": [
         "1447h"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "masjid-260317-006",
@@ -845,10 +1020,12 @@
       "kategori": "perlengkapan",
       "kategoriNama": "Perlengkapan",
       "keterangan": "Gembok",
+      "catatan": "",
       "nominal": 10000,
       "label": [
         "1447h"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "masjid-260317-001",
@@ -858,10 +1035,12 @@
       "kategori": "pemeliharaan",
       "kategoriNama": "Pemeliharaan",
       "keterangan": "Cat Putih 5kg",
+      "catatan": "",
       "nominal": 100000,
       "label": [
         "1447h"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "masjid-260316-001",
@@ -871,10 +1050,12 @@
       "kategori": "pemeliharaan",
       "kategoriNama": "Pemeliharaan",
       "keterangan": "Obat Rumput",
+      "catatan": "",
       "nominal": 60000,
       "label": [
         "1447h"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "masjid-260316-002",
@@ -884,10 +1065,12 @@
       "kategori": "pemeliharaan",
       "kategoriNama": "Pemeliharaan",
       "keterangan": "Cat Emas",
+      "catatan": "Bukti foto: https://pulungriswanto.my.id/kas/bukti/cat emas.jpg",
       "nominal": 100000,
       "label": [
         "1447h"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "masjid-260316-003",
@@ -897,10 +1080,12 @@
       "kategori": "perlengkapan",
       "kategoriNama": "Perlengkapan",
       "keterangan": "Kuas",
+      "catatan": "",
       "nominal": 12000,
       "label": [
         "1447h"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "masjid-260316-004",
@@ -910,10 +1095,12 @@
       "kategori": "pemeliharaan",
       "kategoriNama": "Pemeliharaan",
       "keterangan": "Tiner",
+      "catatan": "",
       "nominal": 10000,
       "label": [
         "1447h"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "masjid-260316-005",
@@ -923,10 +1110,12 @@
       "kategori": "pembangunan & renovasi",
       "kategoriNama": "Pembangunan & Renovasi",
       "keterangan": "Paku",
+      "catatan": "",
       "nominal": 10000,
       "label": [
         "1447h"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "masjid-260316-006",
@@ -936,10 +1125,12 @@
       "kategori": "konsumsi",
       "kategoriNama": "Konsumsi",
       "keterangan": "Air Minum",
+      "catatan": "",
       "nominal": 7000,
       "label": [
         "1447h"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "masjid-260316-007",
@@ -949,10 +1140,12 @@
       "kategori": "peralatan",
       "kategoriNama": "Peralatan",
       "keterangan": "Lampu",
+      "catatan": "",
       "nominal": 70000,
       "label": [
         "1447h"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "masjid-260315-001",
@@ -962,10 +1155,12 @@
       "kategori": "pemeliharaan",
       "kategoriNama": "Pemeliharaan",
       "keterangan": "Cat Biru 20kg",
+      "catatan": "Bukti foto: https://pulungriswanto.my.id/kas/bukti/cat tembok.jpg",
       "nominal": 500000,
       "label": [
         "1447h"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "masjid-260315-002",
@@ -975,10 +1170,12 @@
       "kategori": "perlengkapan",
       "kategoriNama": "Perlengkapan",
       "keterangan": "Kuas",
+      "catatan": "",
       "nominal": 50000,
       "label": [
         "1447h"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "masjid-260315-003",
@@ -988,10 +1185,12 @@
       "kategori": "konsumsi",
       "kategoriNama": "Konsumsi",
       "keterangan": "Konsumsi Ngecat",
+      "catatan": "",
       "nominal": 97000,
       "label": [
         "1447h"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "masjid-260314-001",
@@ -1001,10 +1200,12 @@
       "kategori": "perlengkapan",
       "kategoriNama": "Perlengkapan",
       "keterangan": "Double Tape",
+      "catatan": "",
       "nominal": 30000,
       "label": [
         "1447h"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "masjid-260314-002",
@@ -1014,10 +1215,12 @@
       "kategori": "perlengkapan",
       "kategoriNama": "Perlengkapan",
       "keterangan": "Sendok",
+      "catatan": "",
       "nominal": 12000,
       "label": [
         "1447h"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "masjid-260314-003",
@@ -1027,10 +1230,12 @@
       "kategori": "konsumsi",
       "kategoriNama": "Konsumsi",
       "keterangan": "Gula Kopi",
+      "catatan": "",
       "nominal": 35000,
       "label": [
         "1447h"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "masjid-260313-001",
@@ -1040,10 +1245,12 @@
       "kategori": "infak",
       "kategoriNama": "Infak",
       "keterangan": "Infak Jumat",
+      "catatan": "",
       "nominal": 33000,
       "label": [
         "1447h"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "masjid-260313-002",
@@ -1053,10 +1260,12 @@
       "kategori": "peralatan",
       "kategoriNama": "Peralatan",
       "keterangan": "Kaligrafi Al-Baqarah 153",
+      "catatan": "Bukti foto: https://pulungriswanto.my.id/kas/bukti/kaligrafi.jpg",
       "nominal": 77000,
       "label": [
         "1447h"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "masjid-260313-003",
@@ -1066,10 +1275,12 @@
       "kategori": "konsumsi",
       "kategoriNama": "Konsumsi",
       "keterangan": "Konsumsi Khataman",
+      "catatan": "",
       "nominal": 25000,
       "label": [
         "1447h"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "masjid-260312-002",
@@ -1079,10 +1290,12 @@
       "kategori": "perlengkapan",
       "kategoriNama": "Perlengkapan",
       "keterangan": "Spidol",
+      "catatan": "",
       "nominal": 10000,
       "label": [
         "1447h"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "masjid-260312-001",
@@ -1092,10 +1305,12 @@
       "kategori": "peralatan",
       "kategoriNama": "Peralatan",
       "keterangan": "Kaligrafi Allah Muhammad",
+      "catatan": "",
       "nominal": 87000,
       "label": [
         "1447h"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "masjid-260311-001",
@@ -1105,10 +1320,12 @@
       "kategori": "peralatan",
       "kategoriNama": "Peralatan",
       "keterangan": "Kotak Amal",
+      "catatan": "Bukti foto: https://pulungriswanto.my.id/kas/bukti/kotak amal.png",
       "nominal": 68000,
       "label": [
         "1447h"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "masjid-260307-001",
@@ -1118,10 +1335,12 @@
       "kategori": "konsumsi",
       "kategoriNama": "Konsumsi",
       "keterangan": "Air Minum",
+      "catatan": "",
       "nominal": 7000,
       "label": [
         "1447h"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "masjid-260306-001",
@@ -1131,10 +1350,12 @@
       "kategori": "infak",
       "kategoriNama": "Infak",
       "keterangan": "Infak Jumat",
+      "catatan": "",
       "nominal": 16000,
       "label": [
         "1447h"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "masjid-260303-001",
@@ -1144,10 +1365,12 @@
       "kategori": "acara/kegiatan",
       "kategoriNama": "Acara/Kegiatan",
       "keterangan": "Rompi Kurban",
+      "catatan": "Bukti foto: https://pulungriswanto.my.id/kas/bukti/rompi kurban.png",
       "nominal": 477000,
       "label": [
         "1447h"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "masjid-260303-002",
@@ -1157,10 +1380,12 @@
       "kategori": "operasional",
       "kategoriNama": "Operasional",
       "keterangan": "Listrik + Air",
+      "catatan": "",
       "nominal": 50000,
       "label": [
         "1447h"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "masjid-260227-001",
@@ -1170,10 +1395,12 @@
       "kategori": "infak",
       "kategoriNama": "Infak",
       "keterangan": "Infak Jumat",
+      "catatan": "",
       "nominal": 30000,
       "label": [
         "1447h"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "masjid-260226-001",
@@ -1183,10 +1410,12 @@
       "kategori": "konsumsi",
       "kategoriNama": "Konsumsi",
       "keterangan": "Gula Kopi",
+      "catatan": "2 sachet kopi ibu anak + 1 box teh sarimurni",
       "nominal": 17000,
       "label": [
         "1447h"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "masjid-260226-002",
@@ -1196,10 +1425,12 @@
       "kategori": "peralatan",
       "kategoriNama": "Peralatan",
       "keterangan": "Papan Tulis",
+      "catatan": "biaya admin BRILINK + 5000\nBukti foto: https://pulungriswanto.my.id/kas/bukti/papan tulis.jpg",
       "nominal": 214000,
       "label": [
         "1447h"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "masjid-260225-001",
@@ -1209,10 +1440,12 @@
       "kategori": "peralatan",
       "kategoriNama": "Peralatan",
       "keterangan": "Galon",
+      "catatan": "",
       "nominal": 48000,
       "label": [
         "1447h"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "masjid-260225-002",
@@ -1222,10 +1455,12 @@
       "kategori": "peralatan",
       "kategoriNama": "Peralatan",
       "keterangan": "Pompa Galon",
+      "catatan": "",
       "nominal": 30000,
       "label": [
         "1447h"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "masjid-260225-003",
@@ -1235,10 +1470,12 @@
       "kategori": "konsumsi",
       "kategoriNama": "Konsumsi",
       "keterangan": "Gula Kopi",
+      "catatan": "Gula 1kg 17500 + 2 renceng Gula Aren 35000",
       "nominal": 52500,
       "label": [
         "1447h"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "masjid-260224-001",
@@ -1248,10 +1485,12 @@
       "kategori": "peralatan",
       "kategoriNama": "Peralatan",
       "keterangan": "Teko Listrik",
+      "catatan": "Bukti foto: https://pulungriswanto.my.id/kas/bukti/teko-listrik.jpg",
       "nominal": 96000,
       "label": [
         "1447h"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "masjid-260221-001",
@@ -1261,10 +1500,12 @@
       "kategori": "peralatan",
       "kategoriNama": "Peralatan",
       "keterangan": "Clip On",
+      "catatan": "beli clip on shorush m1 + biaya admin BRILink 5 rb\nBukti foto: https://pulungriswanto.my.id/kas/bukti/clip-on-m1.jpg",
       "nominal": 257000,
       "label": [
         "1447h"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "masjid-260221-002",
@@ -1274,10 +1515,12 @@
       "kategori": "pemeliharaan",
       "kategoriNama": "Pemeliharaan",
       "keterangan": "Instalasi Lampu",
+      "catatan": "pasang lampu penerangan dan benerin kabel-kabel yg putus nyuruh RT Ucok",
       "nominal": 50000,
       "label": [
         "1447h"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "masjid-260220-001",
@@ -1287,10 +1530,12 @@
       "kategori": "hasil usaha",
       "kategoriNama": "Hasil Usaha",
       "keterangan": "Panen Jagung",
+      "catatan": "laba bersih ±9.500.000 dibagi 2, bagian masjid dibulatkan mendapat 5 juta.",
       "nominal": 5000000,
       "label": [
         "1447h"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "masjid-260220-002",
@@ -1300,10 +1545,12 @@
       "kategori": "pemeliharaan",
       "kategoriNama": "Pemeliharaan",
       "keterangan": "Pasang Kaca",
+      "catatan": "Bukti foto: https://pulungriswanto.my.id/kas/bukti/IMG-20260219-WA0000.jpg",
       "nominal": 1500000,
       "label": [
         "1447h"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "masjid-260220-003",
@@ -1313,10 +1560,12 @@
       "kategori": "konsumsi",
       "kategoriNama": "Konsumsi",
       "keterangan": "Utang Makan2",
+      "catatan": "utang makan2 gotong royong dimasjid bulan agustus 2025 kepada ibu eli.",
       "nominal": 330000,
       "label": [
         "1447h"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "masjid-260220-004",
@@ -1326,10 +1575,12 @@
       "kategori": "infak",
       "kategoriNama": "Infak",
       "keterangan": "Infak Jumat",
+      "catatan": "",
       "nominal": 57000,
       "label": [
         "1447h"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "masjid-260220-005",
@@ -1339,10 +1590,12 @@
       "kategori": "perlengkapan",
       "kategoriNama": "Perlengkapan",
       "keterangan": "Keset",
+      "catatan": "",
       "nominal": 66000,
       "label": [
         "1447h"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "masjid-260220-006",
@@ -1352,10 +1605,12 @@
       "kategori": "perlengkapan",
       "kategoriNama": "Perlengkapan",
       "keterangan": "Sapu",
+      "catatan": "",
       "nominal": 20000,
       "label": [
         "1447h"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "masjid-260220-007",
@@ -1365,10 +1620,12 @@
       "kategori": "perlengkapan",
       "kategoriNama": "Perlengkapan",
       "keterangan": "Gelas",
+      "catatan": "",
       "nominal": 13000,
       "label": [
         "1447h"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "masjid-260220-008",
@@ -1378,10 +1635,12 @@
       "kategori": "perlengkapan",
       "kategoriNama": "Perlengkapan",
       "keterangan": "Sikat WC",
+      "catatan": "",
       "nominal": 11000,
       "label": [
         "1447h"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "masjid-260220-009",
@@ -1391,10 +1650,12 @@
       "kategori": "peralatan",
       "kategoriNama": "Peralatan",
       "keterangan": "Kipas Angin",
+      "catatan": "2 kipas angin infico 18 inch + paku 10 ribu\nBukti foto: https://pulungriswanto.my.id/kas/bukti/kipas-angin.jpg",
       "nominal": 410000,
       "label": [
         "1447h"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "masjid-260219-001",
@@ -1404,10 +1665,12 @@
       "kategori": "konsumsi",
       "kategoriNama": "Konsumsi",
       "keterangan": "Gula Kopi",
+      "catatan": "",
       "nominal": 10000,
       "label": [
         "1447h"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "masjid-260218-001",
@@ -1417,10 +1680,12 @@
       "kategori": "konsumsi",
       "kategoriNama": "Konsumsi",
       "keterangan": "Air Minum",
+      "catatan": "beli air gelas 2 dus untuk makan2 awal tarawih.",
       "nominal": 38000,
       "label": [
         "1447h"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "masjid-260218-002",
@@ -1430,10 +1695,12 @@
       "kategori": "konsumsi",
       "kategoriNama": "Konsumsi",
       "keterangan": "Gula Kopi",
+      "catatan": "",
       "nominal": 20000,
       "label": [
         "1447h"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "masjid-260215-001",
@@ -1443,10 +1710,12 @@
       "kategori": "acara/kegiatan",
       "kategoriNama": "Acara/Kegiatan",
       "keterangan": "Gotong Royong",
+      "catatan": "",
       "nominal": 16000,
       "label": [
         "1447h"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "masjid-260215-002",
@@ -1456,10 +1725,12 @@
       "kategori": "peralatan",
       "kategoriNama": "Peralatan",
       "keterangan": "Lampu",
+      "catatan": "beli lampu merk sukaku 20Watt sebanyak 4 buah dengan garansi 18 bulan\nBukti foto: https://blogger.googleusercontent.com/img/a/AVvXsEjBRkjaBuZFBmspT28T3LIhqMKzsPe-WMeea4tQiqO2veCyWuaDBL5RLEULR6B3-FX9g8fbU74rH4ILcWM_EJyrCtd2rH3xejwy73tRXfF7y2Aea6zWcyiPuHm8dIvXvDegeaS3nVGNjY-ekAN8BzxT7tyhZmkF_c53ONXkqBxSuNCXkjCa1HFl6vg0zsYo",
       "nominal": 146000,
       "label": [
         "1447h"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "masjid-260213-001",
@@ -1469,10 +1740,12 @@
       "kategori": "infak",
       "kategoriNama": "Infak",
       "keterangan": "Infak Jumat",
+      "catatan": "",
       "nominal": 5000,
       "label": [
         "1447h"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "masjid-260212-001",
@@ -1482,10 +1755,12 @@
       "kategori": "peralatan",
       "kategoriNama": "Peralatan",
       "keterangan": "Clip On",
+      "catatan": "Bukti foto: https://blogger.googleusercontent.com/img/a/AVvXsEg5ajkYJVqQ76olyKiwwS5oZ0_ZtxQkia6k4eC7wR97H71vFJpumOlptBNGrhnjPZrj1TZDnNsOqYCB2UAwU3ArzzKgNHzD-w8Z-sUbVlq20CNmKdBaOLFnxGB--9lNHtCsXPbSN9oIJjIRaXqETI3YUnEcIZgPJmBC5lZ-wQHviXtjq_hZh4uirdlquqB9",
       "nominal": 95000,
       "label": [
         "1447h"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "masjid-260208-001",
@@ -1495,10 +1770,12 @@
       "kategori": "pemeliharaan",
       "kategoriNama": "Pemeliharaan",
       "keterangan": "Obat Rumput",
+      "catatan": "beli obat pembakar merk Gosongin",
       "nominal": 45000,
       "label": [
         "1447h"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "masjid-260207-001",
@@ -1508,10 +1785,12 @@
       "kategori": "perlengkapan",
       "kategoriNama": "Perlengkapan",
       "keterangan": "Ember",
+      "catatan": "Bukti foto: https://blogger.googleusercontent.com/img/a/AVvXsEiRknPlkizl1pltts37USjkaYlmbBZOEVG6ZdN_GrPGYIzButKDcGSgPtwlx7Yezi9OOvvnB9kfsbA8x9hD0omDGXWDW7acLWFZaAW4ni2PuidJdr3zHtVMG1x490PibyR3LDwXb0bvPkcTeunP_zBofxqES9KEa4q0SpdwunNw-8RY6G4ntSmPdWD7sfRR",
       "nominal": 16000,
       "label": [
         "1447h"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "masjid-260207-002",
@@ -1521,10 +1800,12 @@
       "kategori": "perlengkapan",
       "kategoriNama": "Perlengkapan",
       "keterangan": "Stop Kran",
+      "catatan": "",
       "nominal": 15000,
       "label": [
         "1447h"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "masjid-260207-003",
@@ -1534,10 +1815,12 @@
       "kategori": "pemeliharaan",
       "kategoriNama": "Pemeliharaan",
       "keterangan": "Lem Pipa",
+      "catatan": "",
       "nominal": 10000,
       "label": [
         "1447h"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "masjid-260206-001",
@@ -1547,10 +1830,12 @@
       "kategori": "infak",
       "kategoriNama": "Infak",
       "keterangan": "Infak Jumat",
+      "catatan": "",
       "nominal": 10000,
       "label": [
         "1447h"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "masjid-260130-001",
@@ -1560,10 +1845,12 @@
       "kategori": "infak",
       "kategoriNama": "Infak",
       "keterangan": "Infak Jumat",
+      "catatan": "",
       "nominal": 12000,
       "label": [
         "1447h"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "masjid-260128-001",
@@ -1573,10 +1860,12 @@
       "kategori": "perlengkapan",
       "kategoriNama": "Perlengkapan",
       "keterangan": "Batu Jam",
+      "catatan": "membeli 5 batu jam dinding sekalian untuk cadangan.",
       "nominal": 15000,
       "label": [
         "1447h"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "masjid-260127-001",
@@ -1586,10 +1875,12 @@
       "kategori": "sosial",
       "kategoriNama": "Sosial",
       "keterangan": "Ambulance Fania❤️",
+      "catatan": "",
       "nominal": 150000,
       "label": [
         "1447h"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "masjid-260123-001",
@@ -1599,10 +1890,12 @@
       "kategori": "infak",
       "kategoriNama": "Infak",
       "keterangan": "Infak Jumat",
+      "catatan": "",
       "nominal": 17000,
       "label": [
         "1447h"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "masjid-260116-001",
@@ -1612,10 +1905,12 @@
       "kategori": "infak",
       "kategoriNama": "Infak",
       "keterangan": "Infak Jumat",
+      "catatan": "",
       "nominal": 20000,
       "label": [
         "1447h"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "masjid-260109-001",
@@ -1625,10 +1920,12 @@
       "kategori": "infak",
       "kategoriNama": "Infak",
       "keterangan": "Infak Jumat",
+      "catatan": "",
       "nominal": 65000,
       "label": [
         "1447h"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "masjid-251226-001",
@@ -1638,10 +1935,12 @@
       "kategori": "infak",
       "kategoriNama": "Infak",
       "keterangan": "Infak Jumat",
+      "catatan": "",
       "nominal": 25000,
       "label": [
         "1447h"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "masjid-251219-001",
@@ -1651,10 +1950,12 @@
       "kategori": "infak",
       "kategoriNama": "Infak",
       "keterangan": "Infak Jumat",
+      "catatan": "",
       "nominal": 15000,
       "label": [
         "1447h"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "masjid-251212-001",
@@ -1664,10 +1965,12 @@
       "kategori": "hasil usaha",
       "kategoriNama": "Hasil Usaha",
       "keterangan": "Jual Kayu",
+      "catatan": "jual 4 kayu kepada bapak nurman wibowo",
       "nominal": 50000,
       "label": [
         "1447h"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "masjid-251212-002",
@@ -1677,10 +1980,12 @@
       "kategori": "infak",
       "kategoriNama": "Infak",
       "keterangan": "Infak Jumat",
+      "catatan": "",
       "nominal": 17000,
       "label": [
         "1447h"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "masjid-251205-001",
@@ -1690,10 +1995,12 @@
       "kategori": "infak",
       "kategoriNama": "Infak",
       "keterangan": "Infak Jumat",
+      "catatan": "",
       "nominal": 20000,
       "label": [
         "1447h"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "masjid-251121-001",
@@ -1703,10 +2010,12 @@
       "kategori": "infak",
       "kategoriNama": "Infak",
       "keterangan": "Infak Jumat",
+      "catatan": "",
       "nominal": 15000,
       "label": [
         "1447h"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "masjid-251114-001",
@@ -1716,10 +2025,12 @@
       "kategori": "hasil usaha",
       "kategoriNama": "Hasil Usaha",
       "keterangan": "Jual Kayu",
+      "catatan": "jual sisa kayu reng kepada bapak nurman wibowo.",
       "nominal": 215000,
       "label": [
         "1447h"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "masjid-251114-002",
@@ -1729,10 +2040,12 @@
       "kategori": "infak",
       "kategoriNama": "Infak",
       "keterangan": "Infak Jumat",
+      "catatan": "",
       "nominal": 12000,
       "label": [
         "1447h"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "masjid-251107-001",
@@ -1742,10 +2055,12 @@
       "kategori": "infak",
       "kategoriNama": "Infak",
       "keterangan": "Infak Jumat",
+      "catatan": "",
       "nominal": 5000,
       "label": [
         "1447h"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "masjid-251102-001",
@@ -1755,10 +2070,12 @@
       "kategori": "pemeliharaan",
       "kategoriNama": "Pemeliharaan",
       "keterangan": "Obat Rumput",
+      "catatan": "beli obat semprot khusus lulangan (pronate 200 SL)",
       "nominal": 65000,
       "label": [
         "1447h"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "masjid-251031-001",
@@ -1768,10 +2085,12 @@
       "kategori": "infak",
       "kategoriNama": "Infak",
       "keterangan": "Infak Jumat",
+      "catatan": "",
       "nominal": 14000,
       "label": [
         "1447h"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "masjid-251024-001",
@@ -1781,10 +2100,12 @@
       "kategori": "infak",
       "kategoriNama": "Infak",
       "keterangan": "Infak Jumat",
+      "catatan": "",
       "nominal": 30000,
       "label": [
         "1447h"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "masjid-251017-001",
@@ -1794,10 +2115,12 @@
       "kategori": "infak",
       "kategoriNama": "Infak",
       "keterangan": "Infak Jumat",
+      "catatan": "",
       "nominal": 12000,
       "label": [
         "1447h"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "masjid-251010-001",
@@ -1807,10 +2130,12 @@
       "kategori": "infak",
       "kategoriNama": "Infak",
       "keterangan": "Infak Jumat",
+      "catatan": "",
       "nominal": 5000,
       "label": [
         "1447h"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "masjid-251004-001",
@@ -1820,10 +2145,12 @@
       "kategori": "pemeliharaan",
       "kategoriNama": "Pemeliharaan",
       "keterangan": "Servis Ampli",
+      "catatan": "ampli diperbaiki oleh RT umbul tempe widoro kandang",
       "nominal": 100000,
       "label": [
         "1447h"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "masjid-251003-001",
@@ -1833,10 +2160,12 @@
       "kategori": "infak",
       "kategoriNama": "Infak",
       "keterangan": "Infak Jumat",
+      "catatan": "",
       "nominal": 15000,
       "label": [
         "1447h"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "masjid-250928-001",
@@ -1846,10 +2175,12 @@
       "kategori": "acara/kegiatan",
       "kategoriNama": "Acara/Kegiatan",
       "keterangan": "Pengajian Annisa",
+      "catatan": "Uang amplop penceramah pengajian annisa di tanjung bulan\nBukti video: https://vt.tiktok.com/ZSDtkmYgy/",
       "nominal": 400000,
       "label": [
         "1447h"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "masjid-250926-001",
@@ -1859,10 +2190,12 @@
       "kategori": "infak",
       "kategoriNama": "Infak",
       "keterangan": "Infak Jumat",
+      "catatan": "",
       "nominal": 15000,
       "label": [
         "1447h"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "masjid-250921-001",
@@ -1872,10 +2205,12 @@
       "kategori": "perlengkapan",
       "kategoriNama": "Perlengkapan",
       "keterangan": "Alat Kebersihan",
+      "catatan": "beli sapu lidi dan wiper lantai",
       "nominal": 35000,
       "label": [
         "1447h"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "masjid-250921-002",
@@ -1885,10 +2220,12 @@
       "kategori": "acara/kegiatan",
       "kategoriNama": "Acara/Kegiatan",
       "keterangan": "Gotong Royong",
+      "catatan": "konsumsi bersih2 masjid\nBukti video: https://vt.tiktok.com/ZSDGbd7hX/",
       "nominal": 17500,
       "label": [
         "1447h"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "masjid-250919-001",
@@ -1898,10 +2235,12 @@
       "kategori": "infak",
       "kategoriNama": "Infak",
       "keterangan": "Infak Jumat",
+      "catatan": "",
       "nominal": 12000,
       "label": [
         "1447h"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "masjid-250919-002",
@@ -1911,10 +2250,12 @@
       "kategori": "konsumsi",
       "kategoriNama": "Konsumsi",
       "keterangan": "Konsumsi Rapat",
+      "catatan": "rapat dewan kemakmuran masjid dan persiapan tuan rumah pengajian Annisa",
       "nominal": 53000,
       "label": [
         "1447h"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "masjid-250916-001",
@@ -1924,10 +2265,12 @@
       "kategori": "pemeliharaan",
       "kategoriNama": "Pemeliharaan",
       "keterangan": "Obat Rumput",
+      "catatan": "beli online Herbisida GluBest 65.000 + biaya admin brilink 5.000\nBukti foto: https://pulungriswanto.my.id/kas/bukti/obat-lulangan-16sep2025.jpg",
       "nominal": 70000,
       "label": [
         "1447h"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "masjid-250912-001",
@@ -1937,10 +2280,12 @@
       "kategori": "infak",
       "kategoriNama": "Infak",
       "keterangan": "Infak Jumat",
+      "catatan": "",
       "nominal": 35000,
       "label": [
         "1447h"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "masjid-250829-001",
@@ -1950,10 +2295,12 @@
       "kategori": "infak",
       "kategoriNama": "Infak",
       "keterangan": "Infak Jumat",
+      "catatan": "",
       "nominal": 15000,
       "label": [
         "1447h"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "masjid-250823-001",
@@ -1963,10 +2310,12 @@
       "kategori": "peralatan",
       "kategoriNama": "Peralatan",
       "keterangan": "Amplifier",
+      "catatan": "Pembelian amplifier 2000watt 4 channel\nBukti foto: https://pulungriswanto.my.id/kas/bukti/beli-ampli-masjid-2000watt-4channel.jpg",
       "nominal": 514000,
       "label": [
         "1447h"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "masjid-250822-001",
@@ -1976,10 +2325,12 @@
       "kategori": "infak",
       "kategoriNama": "Infak",
       "keterangan": "Infak Jumat",
+      "catatan": "",
       "nominal": 35000,
       "label": [
         "1447h"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "masjid-250822-002",
@@ -1989,10 +2340,12 @@
       "kategori": "peralatan",
       "kategoriNama": "Peralatan",
       "keterangan": "Mic Toa",
+      "catatan": "Harga mic 225.000 dan untuk beli bensin motor bapak RT Suhdi 10.000\nBukti foto: https://pulungriswanto.my.id/kas/bukti/Screenshot_20250822-170932.jpg",
       "nominal": 235000,
       "label": [
         "1447h"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "masjid-250815-001",
@@ -2002,10 +2355,12 @@
       "kategori": "infak",
       "kategoriNama": "Infak",
       "keterangan": "Infak Jumat",
+      "catatan": "",
       "nominal": 30000,
       "label": [
         "1447h"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "masjid-250815-002",
@@ -2015,10 +2370,12 @@
       "kategori": "infak",
       "kategoriNama": "Infak",
       "keterangan": "Infak Karet",
+      "catatan": "Kotak infak ditempat ibu eli",
       "nominal": 150000,
       "label": [
         "1447h"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "masjid-250808-001",
@@ -2028,10 +2385,12 @@
       "kategori": "hasil usaha",
       "kategoriNama": "Hasil Usaha",
       "keterangan": "Panen Jagung",
+      "catatan": "Untung bersih ±7.300.000 dibagi 2 dengan pengelola lahan, pengelola membulatkan 4.000.000 untuk kas masjid (detailnya tanyakan kepada BPK. Nurman).",
       "nominal": 4000000,
       "label": [
         "1447h"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "masjid-250808-002",
@@ -2041,10 +2400,12 @@
       "kategori": "lainnya",
       "kategoriNama": "Lainnya",
       "keterangan": "Saldo Awal",
+      "catatan": "Sisa uang infak dan sumbangan warga yang di pegang oleh bapak Suhdi selaku bendahara lama, sisa 824 RB digenapkan 825.\nBukti foto: https://pulungriswanto.my.id/kas/bukti/IMG_20250812_171022_375.jpg",
       "nominal": 825000,
       "label": [
         "1447h"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "masjid-250808-003",
@@ -2054,10 +2415,12 @@
       "kategori": "pemeliharaan",
       "kategoriNama": "Pemeliharaan",
       "keterangan": "Pasang Kaca",
+      "catatan": "Pemesanan pasang kaca kepada mas SAKIP tanjung sari 2\nBukti foto: https://pulungriswanto.my.id/kas/bukti/IMG-20250811-WA0006.jpg",
       "nominal": 3000000,
       "label": [
         "1447h"
-      ]
+      ],
+      "bukti": []
     },
     {
       "id": "masjid-250808-004",
@@ -2067,11 +2430,13 @@
       "kategori": "sosial",
       "kategoriNama": "Sosial",
       "keterangan": "Untuk RISMA",
+      "catatan": "Bantuan 500 ribu untuk modal RISMA mengelola lahan 2 Rante.",
       "nominal": 500000,
       "label": [
         "1447h"
-      ]
+      ],
+      "bukti": []
     }
   ],
-  "updatedAt": 1788278275441
+  "updatedAt": 1788371855800
 }
