@@ -1,7 +1,7 @@
 (() => {
   "use strict";
 
-  const ADMIN_BUILD = "1.2.7";
+  const ADMIN_BUILD = "1.3.0";
   const config = window.PROXYZ_ADMIN_CONFIG || {};
 
   async function checkAdminBuild() {
@@ -1608,7 +1608,8 @@
     if (![...$("tx-category").options].some(opt => opt.value === tx.kategori)) { const opt = document.createElement("option"); opt.value = tx.kategori; opt.textContent = tx.kategoriNama || tx.kategori; $("tx-category").appendChild(opt); }
     $("tx-category").value = tx.kategori;
     $("tx-amount").value = formatNominalText(tx.nominal);
-    $("tx-description").value = tx.keterangan;
+    $("tx-description").value = tx.keteranganDasar || tx.keterangan || "";
+    $("tx-variant").value = tx.varian || "";
     $("tx-note").value = tx.catatan || "";
     $("tx-tags").value = (tx.label || []).map(x => `#${x}`).join(" ");
     $("tx-date").value = timestampToDate(tx.tanggal);
@@ -4290,7 +4291,7 @@ ${row.label}`))return;
     const nominal = parseNominalText($("tx-amount").value);
     if (!nominal) return setStatus($("form-status"), "Nominal belum valid.", "error");
     const isEdit = Boolean(ref);
-    const payload = { jenis: $("tx-type").value, nominal, kategori: $("tx-category").value, keterangan: $("tx-description").value.trim(), catatan: $("tx-note").value.trim(), label: parseTags($("tx-tags").value), tanggal: transactionTimestampFromForm($("tx-date").value, isEdit ? kasEditingTimestamp : 0) };
+    const payload = { jenis: $("tx-type").value, nominal, kategori: $("tx-category").value, keteranganDasar: $("tx-description").value.trim(), varian: $("tx-variant").value.trim(), catatan: $("tx-note").value.trim(), label: parseTags($("tx-tags").value), tanggal: transactionTimestampFromForm($("tx-date").value, isEdit ? kasEditingTimestamp : 0) };
     if (ref) payload.alasan = $("tx-reason").value.trim() || "Edit melalui Web PROxyz";
     const submitScrollY = window.scrollY || window.pageYOffset || 0;
     setStatus($("form-status"), "Menyimpan…");

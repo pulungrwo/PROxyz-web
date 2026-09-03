@@ -1,6 +1,6 @@
 {
-  "version": "1.2.7",
-  "updatedAt": "2026-09-03T19:55:00+07:00",
+  "version": "1.3.0",
+  "updatedAt": "2026-09-03T22:50:00+07:00",
   "uiBase": "PROxyz-SOURCE-20260829-2042",
   "features": [
     "admin-v0.9.3",
@@ -122,6 +122,10 @@
     "admin-v1.2.5",
     "kas-report-legacy-null-guard",
     "group-catalog-id-guard",
-    "admin-backend-runtime-health"
+    "admin-backend-runtime-health",
+    "admin-v1.3.0",
+    "kas-transaction-variant",
+    "kas-report-group-by-base-description",
+    "kas-category-safe-merge-v130"
   ]
 }
