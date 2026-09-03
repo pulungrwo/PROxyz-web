@@ -167,7 +167,7 @@
       "jenis": "keluar",
       "kategori": "peralatan & perlengkapan",
       "kategoriNama": "Peralatan & Perlengkapan",
-      "keterangan": "Lampu",
+      "keterangan": "Lampu Sukaku 50w",
       "catatan": "",
       "nominal": 123000,
       "label": [
@@ -2546,5 +2546,5 @@
       "bukti": []
     }
   ],
-  "updatedAt": 1788452446161
+  "updatedAt": 1788452535676
 }
