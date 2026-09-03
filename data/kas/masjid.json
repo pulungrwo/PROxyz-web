@@ -6,11 +6,24 @@
   "saldo": {
     "awal": 0,
     "masuk": 32338500,
-    "keluar": 25516000,
-    "akhir": 6822500
+    "keluar": 28516000,
+    "akhir": 3822500
   },
-  "jumlahTransaksi": 165,
+  "jumlahTransaksi": 166,
   "transactions": [
+    {
+      "id": "masjid-260902-001",
+      "nomor": "166",
+      "tanggal": 1788282695000,
+      "jenis": "keluar",
+      "kategori": "pembangunan & renovasi",
+      "kategoriNama": "Pembangunan & Renovasi",
+      "keterangan": "Pintu + Kaca DP",
+      "catatan": "",
+      "nominal": 3000000,
+      "label": [],
+      "bukti": []
+    },
     {
       "id": "masjid-260831-001",
       "nomor": "165",
@@ -2546,5 +2559,5 @@
       "bukti": []
     }
   ],
-  "updatedAt": 1788454312325
+  "updatedAt": 1788455496289
 }
