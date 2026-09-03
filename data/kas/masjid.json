@@ -1272,12 +1272,18 @@
       "kategori": "peralatan",
       "kategoriNama": "Peralatan",
       "keterangan": "Kaligrafi Al-Baqarah 153",
-      "catatan": "Bukti foto: https://pulungriswanto.my.id/kas/bukti/kaligrafi.jpg",
+      "catatan": "",
       "nominal": 77000,
       "label": [
         "1447h"
       ],
-      "bukti": []
+      "bukti": [
+        {
+          "id": "BUKTI1",
+          "url": "https://media.pulungriswanto.my.id/bukti/kas/Ir40u-orbTMSZ3kQ/BUKTI1.jpg",
+          "mimeType": "image/jpeg"
+        }
+      ]
     },
     {
       "id": "masjid-260313-003",
@@ -2462,5 +2468,5 @@
       "bukti": []
     }
   ],
-  "updatedAt": 1788447884034
+  "updatedAt": 1788448046349
 }
