@@ -2394,12 +2394,18 @@
       "kategori": "peralatan",
       "kategoriNama": "Peralatan",
       "keterangan": "Amplifier",
-      "catatan": "Pembelian amplifier 2000watt 4 channel\nBukti foto: https://pulungriswanto.my.id/kas/bukti/beli-ampli-masjid-2000watt-4channel.jpg",
+      "catatan": "",
       "nominal": 514000,
       "label": [
         "1447h"
       ],
-      "bukti": []
+      "bukti": [
+        {
+          "id": "BUKTI1",
+          "url": "https://media.pulungriswanto.my.id/bukti/kas/3GZ1MaJ72IYA6KbF/BUKTI1.jpg",
+          "mimeType": "image/jpeg"
+        }
+      ]
     },
     {
       "id": "masjid-250822-001",
@@ -2528,5 +2534,5 @@
       "bukti": []
     }
   ],
-  "updatedAt": 1788449283571
+  "updatedAt": 1788449421618
 }
