@@ -2496,12 +2496,18 @@
       "kategori": "lainnya",
       "kategoriNama": "Lainnya",
       "keterangan": "Saldo Awal",
-      "catatan": "Sisa uang infak dan sumbangan warga yang di pegang oleh bapak Suhdi selaku bendahara lama, sisa 824 RB digenapkan 825.\nBukti foto: https://pulungriswanto.my.id/kas/bukti/IMG_20250812_171022_375.jpg",
+      "catatan": "Sisa uang infak dan sumbangan warga yang di pegang oleh bapak Suhdi selaku bendahara lama, sisa 824 RB digenapkan 825",
       "nominal": 825000,
       "label": [
         "1447h"
       ],
-      "bukti": []
+      "bukti": [
+        {
+          "id": "BUKTI1",
+          "url": "https://media.pulungriswanto.my.id/bukti/kas/Tgfwnl7J6CNus5Hd/BUKTI1.jpg",
+          "mimeType": "image/jpeg"
+        }
+      ]
     },
     {
       "id": "masjid-250808-003",
@@ -2540,5 +2546,5 @@
       "bukti": []
     }
   ],
-  "updatedAt": 1788449548485
+  "updatedAt": 1788449674820
 }
