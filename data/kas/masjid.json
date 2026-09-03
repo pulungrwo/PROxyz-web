@@ -1550,7 +1550,13 @@
       "label": [
         "1447h"
       ],
-      "bukti": []
+      "bukti": [
+        {
+          "id": "BUKTI1",
+          "url": "https://media.pulungriswanto.my.id/bukti/kas/9FGdV34iK0Gb4dUd/BUKTI1.jpg",
+          "mimeType": "image/jpeg"
+        }
+      ]
     },
     {
       "id": "masjid-260220-003",
@@ -2444,5 +2450,5 @@
       "bukti": []
     }
   ],
-  "updatedAt": 1788445347516
+  "updatedAt": 1788445533650
 }
