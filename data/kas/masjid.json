@@ -1704,12 +1704,18 @@
       "kategori": "peralatan",
       "kategoriNama": "Peralatan",
       "keterangan": "Kipas Angin",
-      "catatan": "2 kipas angin infico 18 inch + paku 10 ribu\nBukti foto: https://pulungriswanto.my.id/kas/bukti/kipas-angin.jpg",
+      "catatan": "2 kipas angin infico 18 inch + paku 10 ribu",
       "nominal": 410000,
       "label": [
         "1447h"
       ],
-      "bukti": []
+      "bukti": [
+        {
+          "id": "BUKTI1",
+          "url": "https://media.pulungriswanto.my.id/bukti/kas/VANEr-wPoevkeTSe/BUKTI1.jpg",
+          "mimeType": "image/jpeg"
+        }
+      ]
     },
     {
       "id": "masjid-260219-001",
@@ -2498,5 +2504,5 @@
       "bukti": []
     }
   ],
-  "updatedAt": 1788448654096
+  "updatedAt": 1788448873901
 }
