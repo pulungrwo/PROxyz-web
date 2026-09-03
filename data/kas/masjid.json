@@ -929,7 +929,7 @@
       "jenis": "keluar",
       "kategori": "konsumsi",
       "kategoriNama": "Konsumsi",
-      "keterangan": "Konsumsi Ngecat",
+      "keterangan": "Ngecat",
       "catatan": "",
       "nominal": 25000,
       "label": [
@@ -1004,7 +1004,7 @@
       "jenis": "keluar",
       "kategori": "konsumsi",
       "kategoriNama": "Konsumsi",
-      "keterangan": "Konsumsi Ngecat",
+      "keterangan": "Ngecat",
       "catatan": "",
       "nominal": 83000,
       "label": [
@@ -1196,7 +1196,7 @@
       "jenis": "keluar",
       "kategori": "konsumsi",
       "kategoriNama": "Konsumsi",
-      "keterangan": "Konsumsi Ngecat",
+      "keterangan": "Ngecat",
       "catatan": "",
       "nominal": 97000,
       "label": [
@@ -1292,7 +1292,7 @@
       "jenis": "keluar",
       "kategori": "konsumsi",
       "kategoriNama": "Konsumsi",
-      "keterangan": "Konsumsi Khataman",
+      "keterangan": "Khataman",
       "catatan": "",
       "nominal": 25000,
       "label": [
@@ -2327,7 +2327,7 @@
       "jenis": "keluar",
       "kategori": "konsumsi",
       "kategoriNama": "Konsumsi",
-      "keterangan": "Konsumsi Rapat",
+      "keterangan": "Rapat",
       "catatan": "rapat dewan kemakmuran masjid dan persiapan tuan rumah pengajian Annisa",
       "nominal": 53000,
       "label": [
@@ -2546,5 +2546,5 @@
       "bukti": []
     }
   ],
-  "updatedAt": 1788452732944
+  "updatedAt": 1788452978843
 }
