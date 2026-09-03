@@ -1386,10 +1386,10 @@
       "nomor": "071",
       "tanggal": 1772514000000,
       "jenis": "keluar",
-      "kategori": "acara/kegiatan",
-      "kategoriNama": "Acara/Kegiatan",
+      "kategori": "perlengkapan",
+      "kategoriNama": "Perlengkapan",
       "keterangan": "Rompi Kurban",
-      "catatan": "Bukti foto: https://pulungriswanto.my.id/kas/bukti/rompi kurban.png",
+      "catatan": "",
       "nominal": 477000,
       "label": [
         "1447h"
@@ -2480,5 +2480,5 @@
       "bukti": []
     }
   ],
-  "updatedAt": 1788448231001
+  "updatedAt": 1788448316587
 }
