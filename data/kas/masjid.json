@@ -676,7 +676,7 @@
       "jenis": "keluar",
       "kategori": "konsumsi",
       "kategoriNama": "Konsumsi",
-      "keterangan": "Konsumsi Kirim Doa",
+      "keterangan": "Kirim Doa",
       "catatan": "",
       "nominal": 73000,
       "label": [],
@@ -754,7 +754,7 @@
       "jenis": "keluar",
       "kategori": "konsumsi",
       "kategoriNama": "Konsumsi",
-      "keterangan": "Konsumsi Kurban",
+      "keterangan": "Kurban",
       "catatan": "",
       "nominal": 57000,
       "label": [],
@@ -2546,5 +2546,5 @@
       "bukti": []
     }
   ],
-  "updatedAt": 1788452535676
+  "updatedAt": 1788452732944
 }
