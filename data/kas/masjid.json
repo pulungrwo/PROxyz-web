@@ -1338,12 +1338,18 @@
       "kategori": "peralatan",
       "kategoriNama": "Peralatan",
       "keterangan": "Kotak Amal",
-      "catatan": "Bukti foto: https://pulungriswanto.my.id/kas/bukti/kotak amal.png",
+      "catatan": "",
       "nominal": 68000,
       "label": [
         "1447h"
       ],
-      "bukti": []
+      "bukti": [
+        {
+          "id": "BUKTI1",
+          "url": "https://media.pulungriswanto.my.id/bukti/kas/n2_FdInltBvhi56T/BUKTI1.jpg",
+          "mimeType": "image/jpeg"
+        }
+      ]
     },
     {
       "id": "masjid-260307-001",
@@ -2468,5 +2474,5 @@
       "bukti": []
     }
   ],
-  "updatedAt": 1788448046349
+  "updatedAt": 1788448139361
 }
