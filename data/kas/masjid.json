@@ -1161,12 +1161,18 @@
       "kategori": "pemeliharaan",
       "kategoriNama": "Pemeliharaan",
       "keterangan": "Cat Biru 20kg",
-      "catatan": "Bukti foto: https://pulungriswanto.my.id/kas/bukti/cat tembok.jpg",
+      "catatan": "",
       "nominal": 500000,
       "label": [
         "1447h"
       ],
-      "bukti": []
+      "bukti": [
+        {
+          "id": "BUKTI1",
+          "url": "https://media.pulungriswanto.my.id/bukti/kas/kyVZpddJA_gd7XUP/BUKTI1.jpg",
+          "mimeType": "image/jpeg"
+        }
+      ]
     },
     {
       "id": "masjid-260315-002",
@@ -2456,5 +2462,5 @@
       "bukti": []
     }
   ],
-  "updatedAt": 1788447753471
+  "updatedAt": 1788447884034
 }
