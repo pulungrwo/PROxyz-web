@@ -1,7 +1,7 @@
 (() => {
   "use strict";
 
-  const ADMIN_BUILD = "1.3.2";
+  const ADMIN_BUILD = "1.3.3";
   const config = window.PROXYZ_ADMIN_CONFIG || {};
 
   async function checkAdminBuild() {
@@ -1012,9 +1012,9 @@
 
 
   function setKasTab(tab, load = true) {
-    activeKasTab = ["transaksi", "laporan", "jadwal", "kategori", "pengelola", "pengaturan"].includes(tab) ? tab : "transaksi";
+    activeKasTab = ["transaksi", "laporan", "jadwal", "kategori", "pengaturan"].includes(tab) ? tab : "transaksi";
     document.querySelectorAll("[data-kas-tab]").forEach(btn => btn.classList.toggle("active", btn.dataset.kasTab === activeKasTab));
-    ["transaksi", "laporan", "jadwal", "kategori", "pengelola", "pengaturan"].forEach(name => {
+    ["transaksi", "laporan", "jadwal", "kategori", "pengaturan"].forEach(name => {
       const panel = $(`kas-${name}-panel`);
       if (panel) panel.hidden = name !== activeKasTab;
     });
@@ -1025,8 +1025,7 @@
     if (!activeKas) return;
     if (activeKasTab === "jadwal") await loadKasSchedules();
     else if (activeKasTab === "kategori") renderKasCategories();
-    else if (activeKasTab === "pengelola") await loadKasManagers();
-    else if (activeKasTab === "pengaturan") await loadKasSettingsGroups();
+    else if (activeKasTab === "pengaturan") await Promise.all([loadKasManagers(), loadKasSettingsGroups()]);
     else if (activeKasTab === "laporan") {
       if (!$("kas-report-start").value) { setupKasReportPeriodPicker(); setKasReportMonth(); }
       await loadKasReportGroups(true);
