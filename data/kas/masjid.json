@@ -1821,7 +1821,7 @@
       "kategori": "peralatan",
       "kategoriNama": "Peralatan",
       "keterangan": "Clip On",
-      "catatan": "Bukti foto: https://blogger.googleusercontent.com/img/a/AVvXsEg5ajkYJVqQ76olyKiwwS5oZ0_ZtxQkia6k4eC7wR97H71vFJpumOlptBNGrhnjPZrj1TZDnNsOqYCB2UAwU3ArzzKgNHzD-w8Z-sUbVlq20CNmKdBaOLFnxGB--9lNHtCsXPbSN9oIJjIRaXqETI3YUnEcIZgPJmBC5lZ-wQHviXtjq_hZh4uirdlquqB9",
+      "catatan": "",
       "nominal": 95000,
       "label": [
         "1447h"
@@ -1862,7 +1862,13 @@
       "label": [
         "1447h"
       ],
-      "bukti": []
+      "bukti": [
+        {
+          "id": "BUKTI1",
+          "url": "https://media.pulungriswanto.my.id/bukti/kas/WrQAtvj3tmcv3rFO/BUKTI1.jpg",
+          "mimeType": "image/jpeg"
+        }
+      ]
     },
     {
       "id": "masjid-260207-002",
@@ -2516,5 +2522,5 @@
       "bukti": []
     }
   ],
-  "updatedAt": 1788449056422
+  "updatedAt": 1788449140975
 }
