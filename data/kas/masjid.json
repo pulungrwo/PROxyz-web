@@ -1521,12 +1521,18 @@
       "kategori": "peralatan",
       "kategoriNama": "Peralatan",
       "keterangan": "Teko Listrik",
-      "catatan": "Bukti foto: https://pulungriswanto.my.id/kas/bukti/teko-listrik.jpg",
+      "catatan": "",
       "nominal": 96000,
       "label": [
         "1447h"
       ],
-      "bukti": []
+      "bukti": [
+        {
+          "id": "BUKTI1",
+          "url": "https://media.pulungriswanto.my.id/bukti/kas/BIN8CcbDw47C0-9Y/BUKTI1.jpg",
+          "mimeType": "image/jpeg"
+        }
+      ]
     },
     {
       "id": "masjid-260221-001",
@@ -2486,5 +2492,5 @@
       "bukti": []
     }
   ],
-  "updatedAt": 1788448425973
+  "updatedAt": 1788448536038
 }
