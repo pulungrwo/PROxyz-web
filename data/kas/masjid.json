@@ -2430,12 +2430,18 @@
       "kategori": "peralatan",
       "kategoriNama": "Peralatan",
       "keterangan": "Mic Toa",
-      "catatan": "Harga mic 225.000 dan untuk beli bensin motor bapak RT Suhdi 10.000\nBukti foto: https://pulungriswanto.my.id/kas/bukti/Screenshot_20250822-170932.jpg",
+      "catatan": "Harga mic 225.000 dan untuk beli bensin motor bapak RT Suhdi 10.000",
       "nominal": 235000,
       "label": [
         "1447h"
       ],
-      "bukti": []
+      "bukti": [
+        {
+          "id": "BUKTI1",
+          "url": "https://media.pulungriswanto.my.id/bukti/kas/s64QrMqeMqhJBpH-/BUKTI1.jpg",
+          "mimeType": "image/jpeg"
+        }
+      ]
     },
     {
       "id": "masjid-250815-001",
@@ -2534,5 +2540,5 @@
       "bukti": []
     }
   ],
-  "updatedAt": 1788449421618
+  "updatedAt": 1788449548485
 }
