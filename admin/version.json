@@ -1,6 +1,6 @@
 {
-  "version": "1.2.4",
-  "updatedAt": "2026-09-03T19:30:00+07:00",
+  "version": "1.2.5",
+  "updatedAt": "2026-09-03T19:45:00+07:00",
   "uiBase": "PROxyz-SOURCE-20260829-2042",
   "features": [
     "admin-v0.9.3",
@@ -118,6 +118,10 @@
     "baileys-no-user-gate",
     "quiet-group-no-forced-reconnect",
     "stale-socket-event-guard",
-    "admin-send-live-probe"
+    "admin-send-live-probe",
+    "admin-v1.2.5",
+    "kas-report-legacy-null-guard",
+    "group-catalog-id-guard",
+    "admin-backend-runtime-health"
   ]
 }

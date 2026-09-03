@@ -1,7 +1,7 @@
 (() => {
   "use strict";
 
-  const ADMIN_BUILD = "1.2.4";
+  const ADMIN_BUILD = "1.2.5";
   const config = window.PROXYZ_ADMIN_CONFIG || {};
 
   async function checkAdminBuild() {
@@ -1164,7 +1164,7 @@
       const data = await api("/api/groups");
       kasReportGroups = Array.isArray(data.groups) ? data.groups : [];
       renderKasReportGroups(resetSelection);
-      const installed = kasReportGroups.filter(group => (group.installedKas || []).some(item => item.id === activeKas));
+      const installed = kasReportGroups.filter(group => group && group.id && (group.installedKas || []).some(item => item && item.id === activeKas));
       if (installed.length && data.liveCatalogAvailable === false) {
         setStatus($("kas-report-group-status"), `${installed.length} grup ter-install · dimuat dari konfigurasi Kas dan tetap dapat dipilih.`, "success");
       }
