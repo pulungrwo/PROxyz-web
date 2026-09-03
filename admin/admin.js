@@ -1,7 +1,7 @@
 (() => {
   "use strict";
 
-  const ADMIN_BUILD = "1.2.1";
+  const ADMIN_BUILD = "1.2.2";
   const config = window.PROXYZ_ADMIN_CONFIG || {};
 
   async function checkAdminBuild() {
@@ -601,10 +601,17 @@
       kasSettingsGroups = Array.isArray(data.groups) ? data.groups : [];
       renderKasSettingsGroups();
       const label = kasSettingsGroups.length === 1 ? "1 grup ditemukan." : `${kasSettingsGroups.length} grup ditemukan.`;
-      setStatus($("kas-groups-status"), label, "success");
+      if (data.liveCatalogAvailable === false) {
+        setStatus($("kas-groups-status"), `${label} Grup terpasang tetap dimuat dari konfigurasi Kas; install grup baru tersedia setelah sinkronisasi WhatsApp siap.`);
+      } else {
+        setStatus($("kas-groups-status"), label, "success");
+      }
     } catch (error) {
-      kasSettingsGroups = [];
-      renderKasSettingsGroups();
+      const list = $("kas-group-list");
+      if (list) {
+        list.replaceChildren();
+        list.appendChild(emptyBox("Daftar grup belum dapat dimuat. Data install Kas tidak diubah."));
+      }
       setStatus($("kas-groups-status"), error.message || "Daftar grup gagal dimuat.", "error");
     }
   }
@@ -1155,9 +1162,20 @@
       const data = await api("/api/groups");
       kasReportGroups = Array.isArray(data.groups) ? data.groups : [];
       renderKasReportGroups(resetSelection);
+      const installed = kasReportGroups.filter(group => (group.installedKas || []).some(item => item.id === activeKas));
+      if (installed.length && data.liveCatalogAvailable === false) {
+        setStatus($("kas-report-group-status"), `${installed.length} grup ter-install · dimuat dari konfigurasi Kas dan tetap dapat dipilih.`, "success");
+      }
     } catch (error) {
-      kasReportGroups = [];
-      renderKasReportGroups(resetSelection);
+      const list = $("kas-report-group-list");
+      if (list) {
+        list.replaceChildren();
+        const unavailable = document.createElement("div");
+        unavailable.className = "kas-report-group-empty";
+        unavailable.textContent = "Daftar tujuan grup belum dapat dimuat. Status install Kas tidak diubah.";
+        list.appendChild(unavailable);
+      }
+      updateKasReportGroupSelectAll();
       setStatus($("kas-report-group-status"), error.message || "Daftar grup gagal dimuat.", "error");
     }
   }

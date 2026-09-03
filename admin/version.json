@@ -1,5 +1,5 @@
 {
-  "version": "1.2.1",
+  "version": "1.2.2",
   "updatedAt": "2026-09-03T17:35:00+07:00",
   "uiBase": "PROxyz-SOURCE-20260829-2042",
   "features": [
@@ -104,6 +104,10 @@
     "kas-report-group-target-selection",
     "kas-admin-public-link",
     "kas-pdf-evidence-links",
-    "kas-public-category-cards"
+    "kas-public-category-cards",
+    "admin-v1.2.2",
+    "kas-group-offline-fallback",
+    "kas-installed-groups-without-live-wa",
+    "kas-group-status-no-false-empty"
   ]
 }
