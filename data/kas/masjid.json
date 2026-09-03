@@ -2343,12 +2343,18 @@
       "kategori": "pemeliharaan",
       "kategoriNama": "Pemeliharaan",
       "keterangan": "Obat Rumput",
-      "catatan": "beli online Herbisida GluBest 65.000 + biaya admin brilink 5.000\nBukti foto: https://pulungriswanto.my.id/kas/bukti/obat-lulangan-16sep2025.jpg",
+      "catatan": "beli online Herbisida GluBest 65.000 + biaya admin brilink 5.000",
       "nominal": 70000,
       "label": [
         "1447h"
       ],
-      "bukti": []
+      "bukti": [
+        {
+          "id": "BUKTI1",
+          "url": "https://media.pulungriswanto.my.id/bukti/kas/ixZ9J9Fbvb-z892o/BUKTI1.jpg",
+          "mimeType": "image/jpeg"
+        }
+      ]
     },
     {
       "id": "masjid-250912-001",
@@ -2522,5 +2528,5 @@
       "bukti": []
     }
   ],
-  "updatedAt": 1788449175792
+  "updatedAt": 1788449283571
 }
