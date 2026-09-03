@@ -178,9 +178,12 @@
 
       const row = create("article", `transaction ${tx.jenis}`);
       const main = create("div", "transaction-main");
+      const categoryCard = create("div", "transaction-category-card");
+      categoryCard.appendChild(create("span", "transaction-category-label", tx.jenis === "masuk" ? "Pemasukan" : "Pengeluaran"));
+      categoryCard.appendChild(create("strong", "transaction-category-name", tx.kategoriNama || tx.kategori || "Lainnya"));
+      main.appendChild(categoryCard);
       main.appendChild(create("p", "transaction-title", tx.keterangan || "Tanpa keterangan"));
       const meta = create("div", "transaction-meta");
-      meta.appendChild(create("span", "", tx.kategoriNama || tx.kategori || "Lainnya"));
       if (tx.nomor) meta.appendChild(create("span", "", `No. ${tx.nomor}`));
       main.appendChild(meta);
       if (tx.catatan) {

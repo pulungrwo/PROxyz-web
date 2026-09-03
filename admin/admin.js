@@ -1,7 +1,7 @@
 (() => {
   "use strict";
 
-  const ADMIN_BUILD = "1.1.9";
+  const ADMIN_BUILD = "1.2.1";
   const config = window.PROXYZ_ADMIN_CONFIG || {};
 
   async function checkAdminBuild() {
@@ -44,6 +44,7 @@
   let sessionViewInitialized = false;
   let adminSettingsDraftOrder = [];
   let kasSettingsGroups = [];
+  let kasReportGroups = [];
   let challengeId = "";
   let challengeExpiresAt = 0;
   let activeView = ["kas", "bertunas", "galeri", "risma", "ternak", "kompetisi", "users"].includes(adminDeepLink.view) ? adminDeepLink.view : "";
@@ -934,6 +935,11 @@
     const data = await api(`/api/kas/${encodeURIComponent(id)}`);
     activeKasDetail = data.kas;
     updateKasReportTargetButtons();
+    const kasPublicLink = $("kas-public-link");
+    if (kasPublicLink) {
+      kasPublicLink.href = data.kas.publicUrl || `https://pulungriswanto.my.id/kas/${encodeURIComponent(data.kas.id || activeKas)}`;
+      kasPublicLink.innerHTML = `<i class="fa-solid fa-arrow-up-right-from-square"></i> ${data.kas.webAccess?.visibility === "private" ? "Lihat halaman Kas" : "Lihat halaman Kas publik"}`;
+    }
     $("kas-name").textContent = data.kas.nama;
     $("kas-balance").textContent = rupiah.format(data.kas.saldo.akhir || 0);
     $("kas-in").textContent = wholeNumber.format(data.kas.saldo.masuk || 0);
@@ -1016,6 +1022,7 @@
     else if (activeKasTab === "pengaturan") await loadKasSettingsGroups();
     else if (activeKasTab === "laporan") {
       if (!$("kas-report-start").value) { setupKasReportPeriodPicker(); setKasReportMonth(); }
+      await loadKasReportGroups(true);
       await loadKasReport();
     }
   }
@@ -1067,6 +1074,92 @@
     $("kas-report-start").value = `${year}-01-01`;
     $("kas-report-end").value = `${year}-12-31`;
     updateKasReportShortcutLabels();
+  }
+
+  function kasReportShowCount() {
+    return document.querySelector('input[name="kas-report-count-mode"]:checked')?.value === "on";
+  }
+
+  function selectedKasReportGroupIds() {
+    return [...document.querySelectorAll('#kas-report-group-list input[data-kas-report-group-id]:checked')]
+      .map(input => String(input.dataset.kasReportGroupId || "").trim())
+      .filter(Boolean);
+  }
+
+  function updateKasReportGroupSelectAll() {
+    const all = $("kas-report-groups-all");
+    if (!all) return;
+    const boxes = [...document.querySelectorAll('#kas-report-group-list input[data-kas-report-group-id]')];
+    const checked = boxes.filter(input => input.checked).length;
+    all.disabled = boxes.length === 0;
+    all.checked = boxes.length > 0 && checked === boxes.length;
+    all.indeterminate = checked > 0 && checked < boxes.length;
+  }
+
+  function renderKasReportGroups(resetSelection = true) {
+    const section = $("kas-report-group-targets");
+    const list = $("kas-report-group-list");
+    if (!section || !list) return;
+
+    const isPrivate = kasReportIsPrivate();
+    const previous = resetSelection ? new Set() : new Set(selectedKasReportGroupIds());
+    section.hidden = isPrivate;
+    list.replaceChildren();
+    if (isPrivate) {
+      setStatus($("kas-report-group-status"));
+      return;
+    }
+    const installed = kasReportGroups.filter(group => (group.installedKas || []).some(item => item.id === activeKas));
+
+    if (!installed.length) {
+      const empty = document.createElement("div");
+      empty.className = "kas-report-group-empty";
+      empty.textContent = "Kas ini belum ter-install di grup WhatsApp mana pun.";
+      list.appendChild(empty);
+      setStatus($("kas-report-group-status"), "Install Kas ke grup melalui tab Pengaturan terlebih dahulu.");
+      updateKasReportGroupSelectAll();
+      return;
+    }
+
+    for (const group of installed) {
+      const label = document.createElement("label");
+      label.className = "kas-report-group-check";
+      const input = document.createElement("input");
+      input.type = "checkbox";
+      input.dataset.kasReportGroupId = group.id;
+      input.checked = resetSelection || previous.has(group.id);
+      const copy = document.createElement("span");
+      const name = document.createElement("strong");
+      name.textContent = group.nama || "Grup WhatsApp";
+      const meta = document.createElement("small");
+      const count = Number(group.participantCount || 0);
+      meta.textContent = count ? `${count} anggota · Kas ter-install` : "Kas ter-install";
+      copy.append(name, meta);
+      label.append(input, copy);
+      list.appendChild(label);
+    }
+
+    setStatus($("kas-report-group-status"), `${installed.length} grup ter-install · default dicentang semua.`, "success");
+    updateKasReportGroupSelectAll();
+  }
+
+  async function loadKasReportGroups(resetSelection = true) {
+    if (!activeKas) return;
+    if (kasReportIsPrivate()) {
+      kasReportGroups = [];
+      renderKasReportGroups(resetSelection);
+      return;
+    }
+    setStatus($("kas-report-group-status"), "Memuat grup ter-install…");
+    try {
+      const data = await api("/api/groups");
+      kasReportGroups = Array.isArray(data.groups) ? data.groups : [];
+      renderKasReportGroups(resetSelection);
+    } catch (error) {
+      kasReportGroups = [];
+      renderKasReportGroups(resetSelection);
+      setStatus($("kas-report-group-status"), error.message || "Daftar grup gagal dimuat.", "error");
+    }
   }
 
   async function loadKasReport() {
@@ -1135,6 +1228,8 @@
 
   function updateKasReportTargetButtons() {
     const isPrivate = kasReportIsPrivate();
+    const groupTargets = $("kas-report-group-targets");
+    if (groupTargets) groupTargets.hidden = isPrivate;
     const pdfTarget = $("kas-report-wa-pdf-target");
     const complete = $("kas-report-wa-complete");
     const simple = $("kas-report-wa-simple");
@@ -1159,6 +1254,10 @@
     if (!start || !end) return alert("Buat laporan terlebih dahulu.");
 
     const isPrivate = kasReportIsPrivate();
+    const groupIds = isPrivate ? [] : selectedKasReportGroupIds();
+    if (!isPrivate && action !== "pdf_self" && !groupIds.length) {
+      return setStatus($("kas-report-status"), "Pilih minimal satu grup tujuan.", "error");
+    }
     const destination = isPrivate ? "pengakses web" : "grup";
     const labels = {
       pdf_self: "Mengirim PDF ke WhatsApp Anda…",
@@ -1177,7 +1276,9 @@
           mulai: dateToTimestamp(start),
           selesai: dateToTimestamp(end),
           action,
-          catatan: $("kas-report-note")?.value.trim() || ""
+          catatan: $("kas-report-note")?.value.trim() || "",
+          tampilkanJumlahTransaksi: kasReportShowCount(),
+          groupIds: isPrivate ? undefined : groupIds
         })
       });
       setStatus($("kas-report-status"), result.message || "Laporan berhasil dikirim.", "success");
@@ -4121,6 +4222,14 @@ ${row.label}`))return;
   $("kas-report-month-select").addEventListener("change", updateKasReportShortcutLabels);
   $("kas-report-year-select").addEventListener("change", updateKasReportShortcutLabels);
   $("kas-report-load").addEventListener("click", () => loadKasReport().catch(showError));
+  $("kas-report-groups-all").addEventListener("change", event => {
+    const checked = Boolean(event.target.checked);
+    document.querySelectorAll('#kas-report-group-list input[data-kas-report-group-id]').forEach(input => { input.checked = checked; });
+    updateKasReportGroupSelectAll();
+  });
+  $("kas-report-group-list").addEventListener("change", event => {
+    if (event.target.matches('input[data-kas-report-group-id]')) updateKasReportGroupSelectAll();
+  });
   $("kas-report-wa-pdf").addEventListener("click", () => sendKasReportWhatsApp("pdf_self").catch(showError));
   $("kas-report-wa-pdf-target").addEventListener("click", () => sendKasReportWhatsApp("pdf_group").catch(showError));
   $("kas-report-wa-complete").addEventListener("click", () => sendKasReportWhatsApp("complete_group").catch(showError));

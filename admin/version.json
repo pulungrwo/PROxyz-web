@@ -1,6 +1,6 @@
 {
-  "version": "1.1.9",
-  "updatedAt": "2026-09-02T00:48:00+07:00",
+  "version": "1.2.1",
+  "updatedAt": "2026-09-03T17:35:00+07:00",
   "uiBase": "PROxyz-SOURCE-20260829-2042",
   "features": [
     "admin-v0.9.3",
@@ -98,6 +98,12 @@
     "admin-v1.1.9",
     "kas-settings-tab",
     "kas-whatsapp-group-list",
-    "kas-group-install-from-settings"
+    "kas-group-install-from-settings",
+    "admin-v1.2.1",
+    "kas-report-nx-option",
+    "kas-report-group-target-selection",
+    "kas-admin-public-link",
+    "kas-pdf-evidence-links",
+    "kas-public-category-cards"
   ]
 }

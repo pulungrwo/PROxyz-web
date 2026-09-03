@@ -143,6 +143,13 @@ a { color: inherit; }
 }
 .transaction:last-child { border-bottom: 0; }
 .transaction-main { min-width: 0; }
+.transaction-category-card { display: inline-grid; gap: 1px; max-width: 100%; margin: 0 0 8px; padding: 7px 10px; border: 1px solid var(--border); border-radius: 11px; background: var(--soft); }
+.transaction-category-label { color: var(--muted); font-size: 8.5px; line-height: 1.2; font-weight: 850; letter-spacing: .07em; text-transform: uppercase; }
+.transaction-category-name { color: var(--text); font-size: 11.5px; line-height: 1.3; font-weight: 820; overflow-wrap: anywhere; }
+.transaction.masuk .transaction-category-card { border-color: #c7ead7; background: var(--positive-bg); }
+.transaction.masuk .transaction-category-label,.transaction.masuk .transaction-category-name { color: var(--positive); }
+.transaction.keluar .transaction-category-card { border-color: #f3d0cd; background: var(--negative-bg); }
+.transaction.keluar .transaction-category-label,.transaction.keluar .transaction-category-name { color: var(--negative); }
 .transaction-title { margin: 0; font-size: 14px; font-weight: 750; overflow-wrap: anywhere; }
 .transaction-meta { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; color: var(--muted); font-size: 11px; }
 .transaction-meta span:not(:last-child)::after { content: "·"; margin-left: 6px; }
