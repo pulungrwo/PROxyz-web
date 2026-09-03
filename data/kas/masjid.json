@@ -1785,12 +1785,18 @@
       "kategori": "peralatan",
       "kategoriNama": "Peralatan",
       "keterangan": "Lampu",
-      "catatan": "beli lampu merk sukaku 20Watt sebanyak 4 buah dengan garansi 18 bulan\nBukti foto: https://blogger.googleusercontent.com/img/a/AVvXsEjBRkjaBuZFBmspT28T3LIhqMKzsPe-WMeea4tQiqO2veCyWuaDBL5RLEULR6B3-FX9g8fbU74rH4ILcWM_EJyrCtd2rH3xejwy73tRXfF7y2Aea6zWcyiPuHm8dIvXvDegeaS3nVGNjY-ekAN8BzxT7tyhZmkF_c53ONXkqBxSuNCXkjCa1HFl6vg0zsYo",
+      "catatan": "beli lampu merk sukaku 20Watt sebanyak 4",
       "nominal": 146000,
       "label": [
         "1447h"
       ],
-      "bukti": []
+      "bukti": [
+        {
+          "id": "BUKTI1",
+          "url": "https://media.pulungriswanto.my.id/bukti/kas/sZVWmoiB0kWGUAVi/BUKTI1.jpg",
+          "mimeType": "image/jpeg"
+        }
+      ]
     },
     {
       "id": "masjid-260213-001",
@@ -1820,7 +1826,13 @@
       "label": [
         "1447h"
       ],
-      "bukti": []
+      "bukti": [
+        {
+          "id": "BUKTI1",
+          "url": "https://media.pulungriswanto.my.id/bukti/kas/jfO7qjsYB4DK5P1B/BUKTI1.jpg",
+          "mimeType": "image/jpeg"
+        }
+      ]
     },
     {
       "id": "masjid-260208-001",
@@ -2504,5 +2516,5 @@
       "bukti": []
     }
   ],
-  "updatedAt": 1788448873901
+  "updatedAt": 1788449056422
 }
