@@ -147,20 +147,25 @@
               <label>Sampai tanggal<input id="kas-report-end" type="date"></label>
             </div>
 
-            <section class="kas-report-options-card" aria-label="Pilihan laporan">
-              <div class="mini-section-title"><span>Tampilan keterangan</span><b>nX</b></div>
-              <div class="kas-report-count-options">
-                <label class="kas-report-choice"><input type="radio" name="kas-report-count-mode" value="off" checked><span><b>Tanpa nX</b><small>Default · hanya tampilkan keterangan</small></span></label>
-                <label class="kas-report-choice"><input type="radio" name="kas-report-count-mode" value="on"><span><b>Dengan nX</b><small>Contoh: (3x) Konsumsi</small></span></label>
-              </div>
-            </section>
+            <details class="kas-report-advanced">
+              <summary><span><i class="fa-solid fa-sliders" aria-hidden="true"></i> Lanjutan</span><i class="fa-solid fa-chevron-down kas-report-advanced-chevron" aria-hidden="true"></i></summary>
+              <div class="kas-report-advanced-body">
+                <section class="kas-report-options-card" aria-label="Jumlah transaksi">
+                  <div class="mini-section-title"><span>Jumlah transaksi</span><small class="muted">Opsional</small></div>
+                  <div class="kas-report-count-options">
+                    <label class="kas-report-choice"><input type="radio" name="kas-report-count-mode" value="off" checked><span><b>Sembunyikan jumlah transaksi</b><small>Default · hanya tampilkan keterangan</small></span></label>
+                    <label class="kas-report-choice"><input type="radio" name="kas-report-count-mode" value="on"><span><b>Tampilkan jumlah transaksi</b><small>Contoh: (3x) Konsumsi</small></span></label>
+                  </div>
+                </section>
 
-            <section id="kas-report-group-targets" class="kas-report-options-card" aria-label="Grup tujuan">
-              <div class="mini-section-title"><span>Kirim ke grup ter-install</span><label class="kas-report-select-all"><input id="kas-report-groups-all" type="checkbox" checked> Semua</label></div>
-              <p class="muted small kas-report-group-hint">Semua grup otomatis dicentang. Hapus centang pada grup yang tidak ingin menerima laporan.</p>
-              <div id="kas-report-group-list" class="kas-report-group-list"></div>
-              <p id="kas-report-group-status" class="status"></p>
-            </section>
+                <section id="kas-report-group-targets" class="kas-report-options-card" aria-label="Grup tujuan">
+                  <div class="mini-section-title"><span>Kirim ke grup ter-install</span><label class="kas-report-select-all"><input id="kas-report-groups-all" type="checkbox" checked> Semua</label></div>
+                  <p class="muted small kas-report-group-hint">Semua grup otomatis dicentang. Hapus centang pada grup yang tidak ingin menerima laporan.</p>
+                  <div id="kas-report-group-list" class="kas-report-group-list"></div>
+                  <p id="kas-report-group-status" class="status"></p>
+                </section>
+              </div>
+            </details>
 
             <button id="kas-report-load" class="primary full" type="button">Buat laporan</button>
             <p id="kas-report-status" class="status"></p>
@@ -1093,6 +1098,6 @@
   <dialog id="gallery-bulk-dialog"><form id="gallery-bulk-form" method="dialog" class="dialog-form"><div class="section-head"><div><p class="eyebrow">Edit beberapa foto</p><h2>Kelompokkan kejadian</h2></div><button id="close-gallery-bulk" class="icon-button" type="button">×</button></div><p class="muted small"><b id="gallery-bulk-dialog-count">0 foto</b> akan dijadikan satu kelompok di galeri publik.</p><label>Judul kejadian<input id="gallery-bulk-caption" maxlength="160" placeholder="Contoh: Makan Kerupuk Agustusan 2024" required></label><label>Tanggal dokumentasi<input id="gallery-bulk-date" type="date" required></label><p class="muted small">Semua foto terpilih akan memakai satu judul dan satu tanggal. Foto tidak dihapus atau diunggah ulang ke penyimpanan Galeri.</p><p id="gallery-bulk-status" class="status"></p><button class="primary full" type="submit">Simpan & kelompokkan</button></form></dialog>
 
   <script src="./config.js?v=242"></script>
-  <script src="./admin.js?v=1.2.6" defer></script>
+  <script src="./admin.js?v=1.2.7" defer></script>
 </body>
 </html>

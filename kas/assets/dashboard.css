@@ -143,13 +143,18 @@ a { color: inherit; }
 }
 .transaction:last-child { border-bottom: 0; }
 .transaction-main { min-width: 0; }
-.transaction-category-card { display: inline-grid; gap: 1px; max-width: 100%; margin: 0 0 8px; padding: 7px 10px; border: 1px solid var(--border); border-radius: 11px; background: var(--soft); }
-.transaction-category-label { color: var(--muted); font-size: 8.5px; line-height: 1.2; font-weight: 850; letter-spacing: .07em; text-transform: uppercase; }
-.transaction-category-name { color: var(--text); font-size: 11.5px; line-height: 1.3; font-weight: 820; overflow-wrap: anywhere; }
-.transaction.masuk .transaction-category-card { border-color: #c7ead7; background: var(--positive-bg); }
-.transaction.masuk .transaction-category-label,.transaction.masuk .transaction-category-name { color: var(--positive); }
-.transaction.keluar .transaction-category-card { border-color: #f3d0cd; background: var(--negative-bg); }
-.transaction.keluar .transaction-category-label,.transaction.keluar .transaction-category-name { color: var(--negative); }
+.transaction-category-card {
+  position: relative; display: inline-flex; align-items: center; max-width: calc(100% - 8px); min-height: 28px; margin: 0 0 8px 8px; padding: 5px 11px 5px 14px;
+  border: 1px solid currentColor; border-left: 0; border-radius: 5px 10px 10px 5px; background: var(--soft); color: var(--muted); box-shadow: 0 3px 10px rgba(16,24,40,.06);
+}
+.transaction-category-card::before {
+  content: ""; position: absolute; left: -8px; top: 50%; width: 16px; height: 16px; transform: translateY(-50%) rotate(45deg);
+  border-left: 1px solid currentColor; border-bottom: 1px solid currentColor; border-radius: 3px 0 3px 0; background: inherit;
+}
+.transaction-category-tag-hole { position: absolute; z-index: 1; left: 1px; top: 50%; width: 5px; height: 5px; transform: translateY(-50%); border-radius: 50%; background: #fff; box-shadow: inset 0 0 0 1px rgba(16,24,40,.12); }
+.transaction-category-name { position: relative; z-index: 1; color: inherit; font-size: 11.5px; line-height: 1.3; font-weight: 820; overflow-wrap: anywhere; }
+.transaction.masuk .transaction-category-card { border-color: #75c99c; background: var(--positive-bg); color: var(--positive); }
+.transaction.keluar .transaction-category-card { border-color: #e89a93; background: var(--negative-bg); color: var(--negative); }
 .transaction-title { margin: 0; font-size: 14px; font-weight: 750; overflow-wrap: anywhere; }
 .transaction-meta { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; color: var(--muted); font-size: 11px; }
 .transaction-meta span:not(:last-child)::after { content: "·"; margin-left: 6px; }
