@@ -111,8 +111,8 @@
       "nomor": "158",
       "tanggal": 1787979600000,
       "jenis": "keluar",
-      "kategori": "konsumsi",
-      "kategoriNama": "Konsumsi",
+      "kategori": "honor & jasa",
+      "kategoriNama": "Honor & Jasa",
       "keterangan": "Upah Pasang TOA & GRC",
       "catatan": "",
       "nominal": 200000,
@@ -2546,5 +2546,5 @@
       "bukti": []
     }
   ],
-  "updatedAt": 1788454187581
+  "updatedAt": 1788454312325
 }
