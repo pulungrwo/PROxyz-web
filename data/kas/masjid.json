@@ -1542,10 +1542,10 @@
       "nomor": "054",
       "tanggal": 1771563600000,
       "jenis": "keluar",
-      "kategori": "pemeliharaan",
-      "kategoriNama": "Pemeliharaan",
+      "kategori": "pembangunan & renovasi",
+      "kategoriNama": "Pembangunan & Renovasi",
       "keterangan": "Pasang Kaca",
-      "catatan": "Bukti foto: https://pulungriswanto.my.id/kas/bukti/IMG-20260219-WA0000.jpg",
+      "catatan": "",
       "nominal": 1500000,
       "label": [
         "1447h"
@@ -2450,5 +2450,5 @@
       "bukti": []
     }
   ],
-  "updatedAt": 1788445533650
+  "updatedAt": 1788447558606
 }
