@@ -131,18 +131,35 @@ a { color: inherit; }
 .filter-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .filter-row select { padding: 0 10px; }
 
-.transaction-list { margin-top: 8px; }
-.date-group { padding-top: 14px; }
-.date-heading { margin: 0 0 6px; color: var(--muted); font-size: 12px; font-weight: 800; }
+.transaction-list { margin-top: 10px; }
+.date-group { padding-top: 16px; }
+.date-group + .date-group { margin-top: 4px; }
+.date-heading { margin: 0 0 10px 2px; color: var(--muted); font-size: 12px; font-weight: 800; }
 .transaction {
+  position: relative;
   display: grid;
-  grid-template-columns: 1fr auto;
+  grid-template-columns: minmax(0, 1fr) auto;
   gap: 12px;
-  padding: 14px 2px;
-  border-bottom: 1px solid var(--border);
+  margin: 0 0 10px;
+  padding: 15px 14px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--surface);
+  box-shadow: 0 4px 14px rgba(16,24,40,.045);
+  overflow: hidden;
 }
-.transaction:last-child { border-bottom: 0; }
-.transaction-main { min-width: 0; }
+.transaction::after {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 3px;
+  border-radius: 16px 0 0 16px;
+  background: #98a2b3;
+}
+.transaction.masuk::after { background: var(--positive); }
+.transaction.keluar::after { background: var(--negative); }
+.transaction:last-child { margin-bottom: 0; }
+.transaction-main { min-width: 0; padding-left: 2px; }
 .transaction-category-card {
   position: relative; display: inline-flex; align-items: center; max-width: calc(100% - 8px); min-height: 28px; margin: 0 0 8px 8px; padding: 5px 11px 5px 14px;
   border: 1px solid currentColor; border-left: 0; border-radius: 5px 10px 10px 5px; background: var(--soft); color: var(--muted); box-shadow: 0 3px 10px rgba(16,24,40,.06);
@@ -222,7 +239,7 @@ a { color: inherit; }
   .summary-card { padding: 15px; }
   .transactions-section { padding: 19px 14px; }
   .filter-row { grid-template-columns: 1fr; }
-  .transaction { gap: 8px; }
+  .transaction { gap: 8px; padding: 14px 12px; }
   .transaction-amount { font-size: 13px; }
   .proxyz-footer { gap: 5px 9px; }
   .proxyz-footer-meta { width: 100%; }
