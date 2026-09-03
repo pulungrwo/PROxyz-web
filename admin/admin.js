@@ -1,7 +1,7 @@
 (() => {
   "use strict";
 
-  const ADMIN_BUILD = "1.2.2";
+  const ADMIN_BUILD = "1.2.3";
   const config = window.PROXYZ_ADMIN_CONFIG || {};
 
   async function checkAdminBuild() {
@@ -1140,7 +1140,9 @@
       name.textContent = group.nama || "Grup WhatsApp";
       const meta = document.createElement("small");
       const count = Number(group.participantCount || 0);
-      meta.textContent = count ? `${count} anggota · Kas ter-install` : "Kas ter-install";
+      meta.textContent = count
+        ? `${count} anggota · Kas ter-install`
+        : (group.cached ? "Kas ter-install · nama tersimpan" : "Kas ter-install");
       copy.append(name, meta);
       label.append(input, copy);
       list.appendChild(label);
