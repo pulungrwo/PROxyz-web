@@ -1542,12 +1542,18 @@
       "kategori": "peralatan",
       "kategoriNama": "Peralatan",
       "keterangan": "Clip On",
-      "catatan": "beli clip on shorush m1 + biaya admin BRILink 5 rb\nBukti foto: https://pulungriswanto.my.id/kas/bukti/clip-on-m1.jpg",
+      "catatan": "beli clip on shorush m1 + biaya admin BRILink 5 rb",
       "nominal": 257000,
       "label": [
         "1447h"
       ],
-      "bukti": []
+      "bukti": [
+        {
+          "id": "BUKTI1",
+          "url": "https://media.pulungriswanto.my.id/bukti/kas/IeisnSfb8WJj3-UE/BUKTI1.jpg",
+          "mimeType": "image/jpeg"
+        }
+      ]
     },
     {
       "id": "masjid-260221-002",
@@ -2492,5 +2498,5 @@
       "bukti": []
     }
   ],
-  "updatedAt": 1788448536038
+  "updatedAt": 1788448654096
 }
