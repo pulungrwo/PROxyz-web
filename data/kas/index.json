@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "updatedAt": 1788449674820,
+  "updatedAt": 1788451477491,
   "kas": [
     {
       "idKas": "mbamar",
@@ -20,7 +20,7 @@
       "idKas": "hutri",
       "nama": "Kas HUT RI Tanjung Bulan",
       "visibility": "public",
-      "updatedAt": 1788371855841,
+      "updatedAt": 1788451477491,
       "url": "/kas/hutri/",
       "saldo": -74000,
       "jumlahTransaksi": 43
@@ -29,7 +29,7 @@
       "idKas": "masjid",
       "nama": "Kas Masjid Al-Huda Tanjung Bulan",
       "visibility": "public",
-      "updatedAt": 1788449674820,
+      "updatedAt": 1788451477464,
       "url": "/kas/masjid/",
       "saldo": 6822500,
       "jumlahTransaksi": 165
