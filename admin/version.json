@@ -1,6 +1,6 @@
 {
-  "version": "1.2.3",
-  "updatedAt": "2026-09-03T18:45:00+07:00",
+  "version": "1.2.4",
+  "updatedAt": "2026-09-03T19:30:00+07:00",
   "uiBase": "PROxyz-SOURCE-20260829-2042",
   "features": [
     "admin-v0.9.3",
@@ -113,6 +113,11 @@
     "whatsapp-active-socket-guard",
     "kas-group-name-cache",
     "kas-group-metadata-fallback",
-    "kas-report-socket-wait"
+    "kas-report-socket-wait",
+    "kas-wa-socket-v1.2.4",
+    "baileys-no-user-gate",
+    "quiet-group-no-forced-reconnect",
+    "stale-socket-event-guard",
+    "admin-send-live-probe"
   ]
 }
