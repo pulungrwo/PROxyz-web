@@ -1065,12 +1065,18 @@
       "kategori": "pemeliharaan",
       "kategoriNama": "Pemeliharaan",
       "keterangan": "Cat Emas",
-      "catatan": "Bukti foto: https://pulungriswanto.my.id/kas/bukti/cat emas.jpg",
+      "catatan": "",
       "nominal": 100000,
       "label": [
         "1447h"
       ],
-      "bukti": []
+      "bukti": [
+        {
+          "id": "BUKTI1",
+          "url": "https://media.pulungriswanto.my.id/bukti/kas/IOAgT0HqYIuZBBDa/BUKTI1.jpg",
+          "mimeType": "image/jpeg"
+        }
+      ]
     },
     {
       "id": "masjid-260316-003",
@@ -2450,5 +2456,5 @@
       "bukti": []
     }
   ],
-  "updatedAt": 1788447558606
+  "updatedAt": 1788447753471
 }
