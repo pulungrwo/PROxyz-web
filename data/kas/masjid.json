@@ -1857,7 +1857,7 @@
       "kategori": "perlengkapan",
       "kategoriNama": "Perlengkapan",
       "keterangan": "Ember",
-      "catatan": "Bukti foto: https://blogger.googleusercontent.com/img/a/AVvXsEiRknPlkizl1pltts37USjkaYlmbBZOEVG6ZdN_GrPGYIzButKDcGSgPtwlx7Yezi9OOvvnB9kfsbA8x9hD0omDGXWDW7acLWFZaAW4ni2PuidJdr3zHtVMG1x490PibyR3LDwXb0bvPkcTeunP_zBofxqES9KEa4q0SpdwunNw-8RY6G4ntSmPdWD7sfRR",
+      "catatan": "",
       "nominal": 16000,
       "label": [
         "1447h"
@@ -2522,5 +2522,5 @@
       "bukti": []
     }
   ],
-  "updatedAt": 1788449140975
+  "updatedAt": 1788449175792
 }
