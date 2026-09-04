@@ -1633,3 +1633,21 @@ dialog[id^="risma-"] .icon-button{background:#edf7fd!important;color:#285c7d!imp
   .tx-field-label{font-size:12.5px}
   .tx-field-label .muted{font-size:.72em}
 }
+
+/* BEGIN GLOBAL MODULE MANAGER V134 */
+.admin-module-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+.admin-module-grid label:last-child{grid-column:1/-1}
+.admin-module-group-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.admin-module-installed-groups{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}
+.admin-module-group-chip{display:inline-flex;align-items:center;gap:6px;padding:7px 9px;border:1px solid #d0d5dd;border-radius:999px;background:#fff;color:#344054;font-size:11px;font-weight:750}
+.admin-module-group-chip i{color:#128c7e}
+.admin-module-empty{padding:12px;border:1px dashed #d0d5dd;border-radius:12px;background:#f8fafc;color:#667085;font-size:11.5px;line-height:1.45}
+.admin-module-instance-list{display:grid;gap:8px;margin-top:10px}
+.admin-module-instance-card{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 11px;border:1px solid #e4e7ec;border-radius:12px;background:#fff}
+.admin-module-instance-copy{display:grid;gap:2px;min-width:0}.admin-module-instance-copy strong{font-size:12.5px;color:#101828;overflow-wrap:anywhere}.admin-module-instance-copy span{font-size:10.5px;color:#667085}
+.admin-module-instance-actions{display:flex;gap:6px;flex:0 0 auto}
+.admin-module-editor-fields{display:grid;gap:10px}
+.admin-module-editor-fields textarea{resize:vertical}
+.per-app-group-settings{margin-left:auto;white-space:nowrap}
+@media(max-width:560px){.admin-module-grid{grid-template-columns:1fr}.admin-module-grid label:last-child{grid-column:auto}.admin-module-group-actions{grid-template-columns:1fr}.admin-module-instance-card{align-items:flex-start}.admin-module-instance-actions{flex-direction:column}}
+/* END GLOBAL MODULE MANAGER V134 */

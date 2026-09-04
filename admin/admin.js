@@ -1,7 +1,7 @@
 (() => {
   "use strict";
 
-  const ADMIN_BUILD = "1.3.3";
+  const ADMIN_BUILD = "1.3.4";
   const config = window.PROXYZ_ADMIN_CONFIG || {};
 
   async function checkAdminBuild() {
@@ -4699,5 +4699,133 @@ ${row.label}`))return;
   }
   syncProxyzAppSwitcherLabel();
   /* END PROxyz NAVBAR JS V092 */
+
+  /* BEGIN GLOBAL MODULE MANAGER V134 */
+  let globalModuleRows = [];
+  let globalModuleGroups = [];
+
+  function globalModuleById(id){ return globalModuleRows.find(row => row.id === id) || null; }
+  function globalInstance(moduleId, instanceId){ return globalModuleById(moduleId)?.instances?.find(row => row.id === instanceId) || null; }
+  function optionEl(value, text){ const opt=document.createElement("option"); opt.value=value; opt.textContent=text; return opt; }
+
+  async function loadGlobalModuleManager({ preserve = true } = {}) {
+    const prevModule = preserve ? $("admin-module-group-module")?.value : "";
+    const prevCrud = preserve ? $("admin-module-crud-module")?.value : "";
+    const data = await api("/api/admin/module-manager");
+    globalModuleRows = Array.isArray(data.modules) ? data.modules : [];
+    globalModuleGroups = Array.isArray(data.groups) ? data.groups : [];
+    renderGlobalModuleSelectors(prevModule, prevCrud);
+    renderGlobalGroupManager();
+    renderGlobalCrudList();
+    ensurePerAppGroupButtons();
+  }
+
+  function renderGlobalModuleSelectors(prevModule = "", prevCrud = "") {
+    const groupSel = $("admin-module-group-module");
+    const crudSel = $("admin-module-crud-module");
+    if (!groupSel || !crudSel) return;
+    groupSel.replaceChildren(); crudSel.replaceChildren();
+    for (const row of globalModuleRows) {
+      groupSel.appendChild(optionEl(row.id, row.label));
+      crudSel.appendChild(optionEl(row.id, row.label));
+    }
+    if ([...groupSel.options].some(x=>x.value===prevModule)) groupSel.value=prevModule;
+    if ([...crudSel.options].some(x=>x.value===prevCrud)) crudSel.value=prevCrud;
+    renderGlobalInstanceOptions();
+  }
+
+  function renderGlobalInstanceOptions() {
+    const moduleId = $("admin-module-group-module")?.value || "";
+    const sel = $("admin-module-group-instance"); if (!sel) return;
+    const previous = sel.value; sel.replaceChildren();
+    const mod = globalModuleById(moduleId);
+    for (const row of mod?.instances || []) sel.appendChild(optionEl(row.id, `${row.nama} · ${row.id}`));
+    if ([...sel.options].some(x=>x.value===previous)) sel.value=previous;
+    const groupSel=$("admin-module-group-group"); if(groupSel){ const pg=groupSel.value; groupSel.replaceChildren(); for(const g of globalModuleGroups) groupSel.appendChild(optionEl(g.id,g.nama)); if([...groupSel.options].some(x=>x.value===pg))groupSel.value=pg; }
+    renderGlobalGroupManager();
+  }
+
+  function renderGlobalGroupManager() {
+    const moduleId=$("admin-module-group-module")?.value||"";
+    const instanceId=$("admin-module-group-instance")?.value||"";
+    const instance=globalInstance(moduleId,instanceId);
+    const box=$("admin-module-installed-groups"); if(!box)return;
+    box.replaceChildren();
+    const groups=instance?.groups||[];
+    if(!groups.length){ const e=document.createElement("div"); e.className="admin-module-empty"; e.textContent="Belum ter-install di grup mana pun."; box.appendChild(e); return; }
+    for(const id of groups){ const g=globalModuleGroups.find(x=>x.id===id); const chip=document.createElement("span"); chip.className="admin-module-group-chip"; const icon=document.createElement("i"); icon.className="fa-brands fa-whatsapp"; const text=document.createElement("span"); text.textContent=g?.nama||`Grup · ${id.split("@")[0].slice(-6)}`; chip.append(icon,text); box.appendChild(chip); }
+  }
+
+  async function globalGroupAction(action){
+    const moduleId=$("admin-module-group-module").value, instanceId=$("admin-module-group-instance").value, groupId=$("admin-module-group-group").value;
+    if(!moduleId||!instanceId||!groupId)return setStatus($("admin-module-group-status"),"Pilih aplikasi, data, dan grup.","error");
+    setStatus($("admin-module-group-status"),action==="install"?"Meng-install…":"Meng-uninstall…");
+    try{ await api("/api/admin/module-manager",{method:"POST",body:JSON.stringify({action,moduleId,instanceId,groupId})}); await loadGlobalModuleManager(); setStatus($("admin-module-group-status"),action==="install"?"Berhasil di-install ke grup.":"Berhasil di-uninstall dari grup.","success"); }
+    catch(e){setStatus($("admin-module-group-status"),e.message,"error");}
+  }
+
+  function renderGlobalCrudList(){
+    const moduleId=$("admin-module-crud-module")?.value||""; const mod=globalModuleById(moduleId); const list=$("admin-module-instance-list"); if(!list)return; list.replaceChildren();
+    $("admin-module-create").hidden=!mod?.crud;
+    if(!mod?.crud){ const e=document.createElement("div"); e.className="admin-module-empty"; e.textContent=`${mod?.label||"Modul"} adalah aplikasi singleton; pengelolaan utamanya dilakukan di halaman aplikasi, sedangkan install/uninstall grup tersedia di atas.`; list.appendChild(e); return; }
+    if(!(mod.instances||[]).length){ const e=document.createElement("div"); e.className="admin-module-empty"; e.textContent=`Belum ada ${mod.instanceLabel||"data"}.`; list.appendChild(e); return; }
+    for(const row of mod.instances){
+      const card=document.createElement("article"); card.className="admin-module-instance-card";
+      const copy=document.createElement("div"); copy.className="admin-module-instance-copy"; const strong=document.createElement("strong"); strong.textContent=row.nama; const small=document.createElement("span"); small.textContent=`${row.id} · ${(row.groups||[]).length} grup`; copy.append(strong,small);
+      const actions=document.createElement("div"); actions.className="admin-module-instance-actions";
+      const edit=document.createElement("button"); edit.type="button"; edit.className="ghost compact"; edit.innerHTML='<i class="fa-solid fa-pen"></i> Edit'; edit.onclick=()=>openGlobalModuleEditor("edit",moduleId,row.id);
+      const del=document.createElement("button"); del.type="button"; del.className="danger-soft compact"; del.innerHTML='<i class="fa-solid fa-trash"></i>'; del.onclick=()=>deleteGlobalModuleInstance(moduleId,row.id,row.nama);
+      actions.append(edit,del); card.append(copy,actions); list.appendChild(card);
+    }
+  }
+
+  function makeEditorField(field, value, mode){
+    const label=document.createElement("label"); label.textContent=field.label;
+    let input;
+    if(field.type==="textarea"){input=document.createElement("textarea"); input.rows=3;}
+    else if(field.type==="select"||field.type==="group"){input=document.createElement("select"); const options=field.type==="group"?globalModuleGroups.map(x=>[x.id,x.nama]):(field.options||[]).map(x=>typeof x==="object"?[x.value,x.label]:[x,x]); for(const [v,t] of options)input.appendChild(optionEl(v,t));}
+    else {input=document.createElement("input"); input.type=field.type||"text";}
+    input.dataset.field=field.key; if(field.required)input.required=true; if(field.placeholder)input.placeholder=field.placeholder; if(field.createOnly&&mode==="edit")input.disabled=true; if(value!==undefined&&value!==null)input.value=String(value); label.appendChild(input); return label;
+  }
+
+  function openGlobalModuleEditor(mode,moduleId,instanceId=""){
+    const mod=globalModuleById(moduleId); if(!mod?.crud)return; const inst=globalInstance(moduleId,instanceId);
+    $("admin-module-editor-mode").value=mode; $("admin-module-editor-module").value=moduleId; $("admin-module-editor-instance").value=instanceId;
+    $("admin-module-editor-title").textContent=`${mode==="edit"?"Edit":"Buat"} ${mod.instanceLabel||mod.label}`;
+    const fields=$("admin-module-editor-fields"); fields.replaceChildren(); for(const field of mod.fields||[])fields.appendChild(makeEditorField(field,inst?.data?.[field.key],mode));
+    setStatus($("admin-module-editor-status")); $("admin-module-editor-dialog").showModal();
+  }
+
+  async function submitGlobalModuleEditor(event){
+    event.preventDefault(); const mode=$("admin-module-editor-mode").value,moduleId=$("admin-module-editor-module").value,instanceId=$("admin-module-editor-instance").value; const data={};
+    $("admin-module-editor-fields").querySelectorAll("[data-field]").forEach(el=>{if(!el.disabled)data[el.dataset.field]=el.value;});
+    setStatus($("admin-module-editor-status"),"Menyimpan…");
+    try{ await api("/api/admin/module-manager",{method:"POST",body:JSON.stringify({action:mode==="edit"?"edit":"create",moduleId,instanceId,data})}); $("admin-module-editor-dialog").close(); await loadGlobalModuleManager({preserve:false}); setStatus($("admin-module-crud-status"),"Data aplikasi berhasil disimpan.","success"); }
+    catch(e){setStatus($("admin-module-editor-status"),e.message,"error");}
+  }
+
+  async function deleteGlobalModuleInstance(moduleId,instanceId,nama){
+    if(!confirm(`Hapus ${nama}?\n\nData akan dibuatkan snapshot arsip internal sebelum dihapus.`))return;
+    try{await api("/api/admin/module-manager",{method:"POST",body:JSON.stringify({action:"delete",moduleId,instanceId})}); await loadGlobalModuleManager(); setStatus($("admin-module-crud-status"),`${nama} dihapus dan snapshot arsip dibuat.`,"success");}catch(e){setStatus($("admin-module-crud-status"),e.message,"error");}
+  }
+
+  function currentInstanceForModule(moduleId){ if(moduleId==="kas")return activeKas; if(moduleId==="gallery")return activeGallery; if(moduleId==="bertunas")return activeBertunas; if(moduleId==="ternak")return activeTernak; if(moduleId==="kompetisi")return activeCompetition; if(moduleId==="risma")return "risma"; return ""; }
+  function ensurePerAppGroupButtons(){
+    const map={kas:"kas-content",gallery:"gallery-content",bertunas:"bertunas-content",risma:"risma-content",ternak:"ternak-content",kompetisi:"competition-content"};
+    for(const [moduleId,contentId] of Object.entries(map)){ const root=$(contentId); if(!root||root.querySelector(`[data-global-group-module="${moduleId}"]`))continue; const btn=document.createElement("button"); btn.type="button"; btn.className="ghost compact per-app-group-settings"; btn.dataset.globalGroupModule=moduleId; btn.innerHTML='<i class="fa-brands fa-whatsapp"></i> Grup'; btn.addEventListener("click",async()=>{ await loadGlobalModuleManager(); $("admin-settings-dialog").showModal(); $("admin-module-group-module").value=moduleId; renderGlobalInstanceOptions(); const id=currentInstanceForModule(moduleId); if(id&&[...$("admin-module-group-instance").options].some(x=>x.value===id))$("admin-module-group-instance").value=id; renderGlobalGroupManager(); $("admin-module-group-module").scrollIntoView({behavior:"smooth",block:"center"}); }); const hero=root.querySelector(".hero-head,.section-head,.kas-hero")||root; hero.appendChild(btn); }
+  }
+
+  $("admin-settings-open")?.addEventListener("click",()=>loadGlobalModuleManager({preserve:false}).catch(e=>setStatus($("admin-module-group-status"),e.message,"error")));
+  $("admin-module-refresh")?.addEventListener("click",()=>loadGlobalModuleManager().catch(e=>setStatus($("admin-module-group-status"),e.message,"error")));
+  $("admin-module-group-module")?.addEventListener("change",renderGlobalInstanceOptions);
+  $("admin-module-group-instance")?.addEventListener("change",renderGlobalGroupManager);
+  $("admin-module-install")?.addEventListener("click",()=>globalGroupAction("install"));
+  $("admin-module-uninstall")?.addEventListener("click",()=>globalGroupAction("uninstall"));
+  $("admin-module-crud-module")?.addEventListener("change",renderGlobalCrudList);
+  $("admin-module-create")?.addEventListener("click",()=>openGlobalModuleEditor("create",$("admin-module-crud-module").value));
+  $("admin-module-editor-close")?.addEventListener("click",()=>$("admin-module-editor-dialog").close());
+  $("admin-module-editor-form")?.addEventListener("submit",submitGlobalModuleEditor);
+  queueMicrotask(ensurePerAppGroupButtons);
+  /* END GLOBAL MODULE MANAGER V134 */
 
 })();
