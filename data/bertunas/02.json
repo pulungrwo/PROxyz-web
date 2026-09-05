@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": 1788607804738,
+  "generatedAt": 1788607948299,
   "id": "02",
   "nama": "Samping Rumah",
   "lokasi": "",
@@ -64,5 +64,5 @@
       "status": "pending"
     }
   ],
-  "updatedAt": 1788607804738
+  "updatedAt": 1788607948299
 }
