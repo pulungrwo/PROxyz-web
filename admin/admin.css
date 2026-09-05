@@ -1651,3 +1651,9 @@ dialog[id^="risma-"] .icon-button{background:#edf7fd!important;color:#285c7d!imp
 .per-app-group-settings{margin-left:auto;white-space:nowrap}
 @media(max-width:560px){.admin-module-grid{grid-template-columns:1fr}.admin-module-grid label:last-child{grid-column:auto}.admin-module-group-actions{grid-template-columns:1fr}.admin-module-instance-card{align-items:flex-start}.admin-module-instance-actions{flex-direction:column}}
 /* END GLOBAL MODULE MANAGER V134 */
+
+
+/* PROxyz Master V1.5.0 — Health / Diagnostik */
+.admin-diagnostics-summary{display:flex;align-items:center;gap:8px;padding:10px 11px;border:1px solid #e4e7ec;border-radius:12px;background:#f8fafc;color:#475467;font-size:12px;font-weight:780}
+.admin-diagnostics-summary.ok{border-color:#b7dfc9;background:#f0fbf5;color:#087443}.admin-diagnostics-summary.warn{border-color:#f1d59c;background:#fff9eb;color:#9a6700}.admin-diagnostics-summary.error{border-color:#f0b8b2;background:#fff4f3;color:#b42318}
+.admin-diagnostics-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.admin-diagnostic-card{display:flex;align-items:flex-start;gap:8px;min-width:0;padding:10px;border:1px solid #e4e7ec;border-radius:12px;background:#fff}.admin-diagnostic-card>i{margin-top:2px;color:#667085}.admin-diagnostic-card>div{display:grid;gap:2px;min-width:0}.admin-diagnostic-card strong{font-size:11.5px;color:#101828}.admin-diagnostic-card span{font-size:10.3px;line-height:1.35;color:#667085;overflow-wrap:anywhere}.admin-diagnostic-card.ok>i{color:#12a05c}.admin-diagnostic-card.warn>i{color:#d99a00}.admin-diagnostic-card.error>i{color:#d92d20}@media(max-width:560px){.admin-diagnostics-grid{grid-template-columns:1fr}}

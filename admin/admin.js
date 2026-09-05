@@ -1,7 +1,7 @@
 (() => {
   "use strict";
 
-  const ADMIN_BUILD = "1.3.4";
+  const ADMIN_BUILD = "1.5.0";
   const config = window.PROXYZ_ADMIN_CONFIG || {};
 
   async function checkAdminBuild() {
@@ -4734,6 +4734,36 @@ ${row.label}`))return;
     renderGlobalInstanceOptions();
   }
 
+
+  function diagnosticsIcon(status){
+    if(status==="ok") return "fa-circle-check";
+    if(status==="error") return "fa-circle-xmark";
+    return "fa-triangle-exclamation";
+  }
+
+  function renderAdminDiagnostics(payload){
+    const data=payload?.diagnostics||payload||{};
+    const checks=Array.isArray(data.checks)?data.checks:[];
+    const grid=$("admin-diagnostics-grid"); if(!grid)return;
+    grid.replaceChildren();
+    for(const item of checks){
+      const card=document.createElement("article"); card.className=`admin-diagnostic-card ${item.status||"warn"}`;
+      const icon=document.createElement("i"); icon.className=`fa-solid ${diagnosticsIcon(item.status)}`;
+      const copy=document.createElement("div"); const title=document.createElement("strong"); title.textContent=item.label||item.id||"Komponen"; const detail=document.createElement("span"); detail.textContent=item.detail||"-"; copy.append(title,detail); card.append(icon,copy); grid.appendChild(card);
+    }
+    const summary=$("admin-diagnostics-summary"); if(summary){
+      const status=data.status||"warn"; summary.className=`admin-diagnostics-summary ${status}`;
+      summary.innerHTML=`<i class="fa-solid ${diagnosticsIcon(status)}"></i><span>${status==="ok"?"Semua komponen utama sehat":status==="error"?`${Number(data.errors||0)} masalah perlu diperbaiki`:`${Number(data.warnings||0)} peringatan, tidak ada error fatal`}</span>`;
+    }
+    setStatus($("admin-diagnostics-status"),`Diperiksa ${new Date(Number(data.checkedAt||Date.now())).toLocaleTimeString("id-ID",{hour:"2-digit",minute:"2-digit"})} · Media ${data.mediaPipeline||"-"}`, data.status==="error"?"error":"success");
+  }
+
+  async function loadAdminDiagnostics(){
+    setStatus($("admin-diagnostics-status"),"Memeriksa komponen PROxyz…");
+    try{ const data=await api("/api/admin/diagnostics"); renderAdminDiagnostics(data); }
+    catch(error){ setStatus($("admin-diagnostics-status"),error.message||"Diagnostik gagal dijalankan.","error"); }
+  }
+
   function renderGlobalInstanceOptions() {
     const moduleId = $("admin-module-group-module")?.value || "";
     const sel = $("admin-module-group-instance"); if (!sel) return;
@@ -4815,8 +4845,9 @@ ${row.label}`))return;
     for(const [moduleId,contentId] of Object.entries(map)){ const root=$(contentId); if(!root||root.querySelector(`[data-global-group-module="${moduleId}"]`))continue; const btn=document.createElement("button"); btn.type="button"; btn.className="ghost compact per-app-group-settings"; btn.dataset.globalGroupModule=moduleId; btn.innerHTML='<i class="fa-brands fa-whatsapp"></i> Grup'; btn.addEventListener("click",async()=>{ await loadGlobalModuleManager(); $("admin-settings-dialog").showModal(); $("admin-module-group-module").value=moduleId; renderGlobalInstanceOptions(); const id=currentInstanceForModule(moduleId); if(id&&[...$("admin-module-group-instance").options].some(x=>x.value===id))$("admin-module-group-instance").value=id; renderGlobalGroupManager(); $("admin-module-group-module").scrollIntoView({behavior:"smooth",block:"center"}); }); const hero=root.querySelector(".hero-head,.section-head,.kas-hero")||root; hero.appendChild(btn); }
   }
 
-  $("admin-settings-open")?.addEventListener("click",()=>loadGlobalModuleManager({preserve:false}).catch(e=>setStatus($("admin-module-group-status"),e.message,"error")));
+  $("admin-settings-open")?.addEventListener("click",()=>{ loadGlobalModuleManager({preserve:false}).catch(e=>setStatus($("admin-module-group-status"),e.message,"error")); loadAdminDiagnostics().catch(()=>{}); });
   $("admin-module-refresh")?.addEventListener("click",()=>loadGlobalModuleManager().catch(e=>setStatus($("admin-module-group-status"),e.message,"error")));
+  $("admin-diagnostics-refresh")?.addEventListener("click",()=>loadAdminDiagnostics());
   $("admin-module-group-module")?.addEventListener("change",renderGlobalInstanceOptions);
   $("admin-module-group-instance")?.addEventListener("change",renderGlobalGroupManager);
   $("admin-module-install")?.addEventListener("click",()=>globalGroupAction("install"));
