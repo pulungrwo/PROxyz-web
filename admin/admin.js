@@ -1,7 +1,7 @@
 (() => {
   "use strict";
 
-  const ADMIN_BUILD = "1.5.0";
+  const ADMIN_BUILD = "1.5.1";
   const config = window.PROXYZ_ADMIN_CONFIG || {};
 
   async function checkAdminBuild() {
@@ -1888,7 +1888,7 @@
     btCropScope = previousScope || BT_ALL_CROPS;
     renderBertunasContext();
     await loadBertunasLists();
-    $("bertunas-content").hidden = false;
+    $("bertunas-content").hidden = false;document.querySelectorAll(".subtab[data-bt-tab]").forEach(x=>x.classList.toggle("active",x.dataset.btTab==="aktivitas"));for(const n of ["transaksi","aktivitas","jadwal","laporan","tunas","pengaturan"])$("bt-"+n+"-panel").hidden=n!=="aktivitas";
   }
 
   function renderBertunasContext() {
@@ -1937,7 +1937,7 @@
     renderBtCropOverview();
   }
 
-  function makeBtCropCard({ id, title, subtitle, active, summary = {}, scheduleSummary = {}, activityCount = 0, all = false }) {
+  function makeBtCropCard({ id, title, subtitle, active, summary = {}, scheduleSummary = {}, activityCount = 0, all = false, hst = null }) {
     const card = document.createElement("button");
     card.type = "button";
     card.className = `crop-card${active ? " active" : ""}${all ? " crop-card-all" : ""}`;
@@ -1952,7 +1952,7 @@
     const badge = document.createElement("span");
     badge.className = "crop-status";
     badge.textContent = active ? "Dilihat" : (all ? "Semua" : "Buka");
-    top.append(names, badge);
+    top.append(names, badge); if(!all&&hst!==null){const h=document.createElement("span");h.className="crop-hst-orb";h.innerHTML=`<b>${number.format(hst)}</b><small>HST</small>`;top.appendChild(h);}
 
     const stats = document.createElement("div");
     stats.className = "crop-card-stats";
@@ -2007,7 +2007,7 @@
         active: btCropScope === crop.id,
         summary: crop.summary || {},
         scheduleSummary: crop.scheduleSummary || {},
-        activityCount: Number(crop.activityCount || 0)
+        activityCount: Number(crop.activityCount || 0), hst: currentHst
       }));
     }
     if (!crops.length) grid.appendChild(emptyBox("Belum ada tanaman pada Musim Tanam ini."));
@@ -2110,9 +2110,11 @@
     input.id = `bt-field-${name}`; input.dataset.name = name; wrap.appendChild(input); return wrap;
   }
 
+  function btMoneyPlus(name){const i=$("bt-field-"+name);if(!i)return;const r=document.createElement("div");r.className="bt-money-row";i.parentNode.insertBefore(r,i);r.appendChild(i);const b=document.createElement("button");b.type="button";b.className="ghost";b.textContent="+000";b.onclick=()=>{const d=String(i.value||"").replace(/\D/g,"");i.value=d?String(Number(d)*1000):"1000";};r.appendChild(b);}
+
   function btTargetCropOptions(type) {
     const crops = btCurrentSeason()?.crops || [];
-    const rows = crops.map(crop => ({ value: crop.id, label: `${crop.komoditas} · Tanaman ${crop.id}` }));
+    const rows = crops.map(crop => ({ value: crop.id, label: `${crop.komoditas} · Tanaman ${crop.id}` })); rows.unshift({value:"__all__",label:"Semua tanaman"});
     if (type === "expense") rows.unshift({ value: "__shared__", label: "Umum / Lahan · biaya bersama" });
     return rows;
   }
@@ -2125,12 +2127,12 @@
     const catsA = btDetail.activityCategories || [];
     const catsE = btDetail.expenseCategories || [];
     const add = (...nodes) => nodes.forEach(node => fields.appendChild(node));
-    if (btIsAllCrops()) add(fieldHtml("targetCrop", type === "expense" ? "Untuk tanaman / lahan" : "Tanaman", "select", btTargetCropOptions(type)));
+    add(fieldHtml("targetCrop","Tanaman","select",btTargetCropOptions(type)));
     if (type === "expense") { $("bt-form-title").textContent = "Tambah biaya"; add(fieldHtml("amount","Nominal","number"), fieldHtml("category","Kategori","select",catsE), fieldHtml("description","Keterangan"), fieldHtml("note","Catatan","textarea"), fieldHtml("date","Tanggal","date")); }
     if (type === "harvest") { $("bt-form-title").textContent = "Tambah panen"; add(fieldHtml("weight","Berat (kg)","number"), fieldHtml("amount","Total penjualan","number"), fieldHtml("description","Keterangan"), fieldHtml("note","Catatan","textarea"), fieldHtml("date","Tanggal","date")); }
     if (type === "activity") { $("bt-form-title").textContent = "Tambah aktivitas"; add(fieldHtml("category","Kategori","select",catsA), fieldHtml("description","Kegiatan"), fieldHtml("note","Catatan","textarea"), fieldHtml("date","Tanggal","date"), fieldHtml("expenseRef","Nomor biaya terkait (opsional)")); }
     if (type === "schedule") { $("bt-form-title").textContent = "Tambah jadwal"; add(fieldHtml("category","Kategori","select",catsA), fieldHtml("description","Kegiatan"), fieldHtml("target","Target (contoh: 14 HST / 30-08-2026)"), fieldHtml("note","Catatan","textarea")); }
-    const date = $("bt-field-date"); if (date) date.value = todayJakarta();
+    const date = $("bt-field-date"); if (date) date.value = todayJakarta(); if(type==="expense"||type==="harvest")btMoneyPlus("amount");
     $("bt-form-mode").textContent = btScopeLabel(); setStatus($("bt-form-status")); $("bt-dialog").showModal();
   }
 
@@ -4304,18 +4306,19 @@ ${row.label}`))return;
     } catch (error) { setStatus($("form-status"), error.message, "error"); }
   });
 
+  function renderBtReport(){const h=$("bt-report-summary"),x=btIsAllCrops()?(btDetail?.summary||{}):(btDetail?.cropSummary||{});if(h)h.innerHTML=[["Biaya",rupiah.format(x.expense||0)],["Omzet",rupiah.format(x.revenue??x.harvestRevenue??0)],["Laba",rupiah.format(x.profit??x.profitBeforeShared??0)],["Panen",`${number.format(x.weightKg||0)} kg`]].map(([a,b])=>`<div><span>${a}</span><b>${b}</b></div>`).join("");}
+  function renderBtTunas(){const h=$("bt-tunas-summary");if(h)h.innerHTML='<p class="muted">Ringkasan Tunas mengikuti Musim Tanam aktif.</p>'; }
+
   // Bertunas events
   $("bertunas-select").addEventListener("change", () => loadBertunas($("bertunas-select").value).catch(showError));
   $("bt-season").addEventListener("change", () => reloadBertunasForContext({ resetCrop: true }).catch(showError));
   $("bt-refresh").addEventListener("click", () => reloadBertunasForContext().catch(showError));
-  $("bt-add-expense").addEventListener("click", () => openBtCreate("expense"));
-  $("bt-add-harvest").addEventListener("click", () => openBtCreate("harvest"));
-  $("bt-add-activity").addEventListener("click", () => openBtCreate("activity"));
-  $("bt-add-schedule").addEventListener("click", () => openBtCreate("schedule"));
+  $("bt-fab").onclick=()=>$("bt-fab-menu").hidden=!$("bt-fab-menu").hidden;document.querySelectorAll("[data-bt-create]").forEach(b=>b.onclick=()=>{$("bt-fab-menu").hidden=true;openBtCreate(b.dataset.btCreate);});
+  $("bt-set-planting").onclick=async()=>{if(btIsAllCrops())return alert("Pilih satu tanaman terlebih dahulu.");const d=prompt("Tanggal tanam (YYYY-MM-DD):",btCurrentCrop()?.plantingDate||todayJakarta());if(d){await api(`/api/bertunas/${encodeURIComponent(activeBertunas)}/tanam`,{method:"POST",body:JSON.stringify({seasonId:btSelectedSeason(),cropId:btCropScope,date:d})});await reloadBertunasForContext();}};
   $("bt-close-dialog").addEventListener("click", () => $("bt-dialog").close());
   document.querySelectorAll(".subtab[data-bt-tab]").forEach(el => el.addEventListener("click", () => {
     document.querySelectorAll(".subtab[data-bt-tab]").forEach(x => x.classList.toggle("active", x === el));
-    for (const name of ["transaksi","aktivitas","jadwal"]) $("bt-"+name+"-panel").hidden = name !== el.dataset.btTab;
+    for(const name of ["transaksi","aktivitas","jadwal","laporan","tunas","pengaturan"])$("bt-"+name+"-panel").hidden=name!==el.dataset.btTab;if(el.dataset.btTab==="laporan")renderBtReport();if(el.dataset.btTab==="tunas")renderBtTunas();
   }));
   $("bt-form").addEventListener("submit", async event => {
     event.preventDefault(); if (!btFormState) return; setStatus($("bt-form-status"), "Menyimpan…");
@@ -4326,15 +4329,13 @@ ${row.label}`))return;
           const target = $("bt-field-targetCrop")?.value || "";
           if (target === "__shared__") { body.cropId = ""; body.shared = true; }
           else { body.cropId = target; body.shared = false; }
-        } else if (btFormState.type === "expense") {
-          body.shared = false;
-        }
+        } else { const target=$("bt-field-targetCrop")?.value||btCropScope; body.cropId=target==="__all__"?"":target; body.allCrops=target==="__all__"; body.shared=btFormState.type==="expense"&&target==="__all__"; }
         document.querySelectorAll("#bt-fields [data-name]").forEach(el => {
           if (el.dataset.name === "targetCrop") return;
           body[el.dataset.name] = el.type === "number" ? Number(el.value) : el.value.trim();
         });
         if (btFormState.type !== "expense") delete body.shared;
-        if (["harvest","activity","schedule"].includes(btFormState.type) && !body.cropId) throw new Error("Pilih tanaman terlebih dahulu.");
+        if(body.allCrops&&btFormState.type==="harvest")throw new Error("Panen harus dipilih per tanaman agar hasil tidak terduplikasi."); if(body.allCrops&&["activity","schedule"].includes(btFormState.type)){const ep=btFormState.type==="activity"?"aktivitas":"jadwal";for(const c of btCurrentSeason()?.crops||[]){const one={...body,cropId:c.id};delete one.allCrops;await api(`/api/bertunas/${encodeURIComponent(activeBertunas)}/${ep}`,{method:"POST",body:JSON.stringify(one)});}$("bt-dialog").close();await reloadBertunasForContext();return;} if (["harvest","activity","schedule"].includes(btFormState.type) && !body.cropId) throw new Error("Pilih tanaman terlebih dahulu.");
         const endpoint = btFormState.type === "expense" ? "biaya" : btFormState.type === "harvest" ? "panen" : btFormState.type === "activity" ? "aktivitas" : "jadwal";
         await api(`/api/bertunas/${encodeURIComponent(activeBertunas)}/${endpoint}`, { method: "POST", body: JSON.stringify(body) });
       } else {
@@ -4417,7 +4418,7 @@ ${row.label}`))return;
   });
 
   $("risma-coupon-type").addEventListener("change",()=>{rismaCouponType=$("risma-coupon-type").value;renderRismaCoupons();});
-  $("risma-coupon-add").addEventListener("click",()=>{$("risma-coupon-add-form").reset();fillRismaCouponCountSelect($("risma-coupon-add-count"),1);setStatus($("risma-coupon-add-status"));$("risma-coupon-add-dialog").showModal();});
+  $("risma-coupon-add").addEventListener("click",()=>{$("risma-coupon-add-form").reset();const t=$("risma-coupon-add-type");t.replaceChildren(...(rismaDetail?.couponTypes||[]).filter(x=>x?.enabled!==false).map(x=>new Option(x.label||x.type,x.type)));if([...t.options].some(o=>o.value===rismaCouponType))t.value=rismaCouponType;fillRismaCouponCountSelect($("risma-coupon-add-count"),1);setStatus($("risma-coupon-add-status"));$("risma-coupon-add-dialog").showModal();});
   $("close-risma-coupon-add").addEventListener("click",()=>$("risma-coupon-add-dialog").close());
   $("risma-coupon-add-form").addEventListener("submit",async event=>{
     event.preventDefault();
@@ -4427,7 +4428,7 @@ ${row.label}`))return;
       try{
         const name=String($("risma-coupon-add-name").value||"").trim();
         const count=Number($("risma-coupon-add-count").value||1);
-        const data=await api(`/api/risma/coupon/${encodeURIComponent(rismaCouponType)}`,{method:"POST",body:JSON.stringify({text:`${name} ${count}`,allowSimilar})});
+        const selectedType=$("risma-coupon-add-type")?.value||rismaCouponType; const data=await api(`/api/risma/coupon/${encodeURIComponent(selectedType)}`,{method:"POST",body:JSON.stringify({text:`${name} ${count}`,allowSimilar})}); rismaCouponType=selectedType;if($("risma-coupon-type"))$("risma-coupon-type").value=selectedType;
         if(data.needsConfirmation&&!allowSimilar){const names=(data.similar||[]).map(x=>x.input?.name).filter(Boolean).join(", ");if(!confirm(`Ada nama yang mirip${names?`: ${names}`:""}. Tetap tambahkan?`))return;allowSimilar=true;continue;}
         $("risma-coupon-add-dialog").close();await loadRisma();break;
       }catch(error){setStatus($("risma-coupon-add-status"),error.message,"error");break;}
