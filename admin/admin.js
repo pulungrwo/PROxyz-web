@@ -4147,6 +4147,15 @@ ${row.label}`))return;
   function creatorPlatformIcon(platform){ return CREATOR_PLATFORM_META[platform]?.icon || "fa-solid fa-share-nodes"; }
   function creatorPlatformLabel(platform){ return CREATOR_PLATFORM_META[platform]?.label || platform || "Platform"; }
 
+  function creatorEscapeHtml(value){
+    return String(value ?? "")
+      .replace(/&/g,"&amp;")
+      .replace(/</g,"&lt;")
+      .replace(/>/g,"&gt;")
+      .replace(/"/g,"&quot;")
+      .replace(/'/g,"&#039;");
+  }
+
   async function loadCreator(){
     setStatus($("creator-status"),"Memuat Creator…");
     const data=await api("/api/creator"); creatorData=data; renderCreator();
@@ -4163,7 +4172,7 @@ ${row.label}`))return;
     renderCreatorContents(); renderCreatorPerformance(); renderCreatorAccounts();
   }
 
-  function creatorEmpty(text){ const el=document.createElement("div"); el.className="creator-empty"; el.innerHTML=`<i class="fa-solid fa-clapperboard"></i><span>${escapeHtml(text)}</span>`; return el; }
+  function creatorEmpty(text){ const el=document.createElement("div"); el.className="creator-empty"; el.innerHTML=`<i class="fa-solid fa-clapperboard"></i><span>${creatorEscapeHtml(text)}</span>`; return el; }
 
   function renderCreatorContents(){
     const list=$("creator-content-list"); if(!list)return; list.replaceChildren();
@@ -4215,7 +4224,7 @@ ${row.label}`))return;
     const rows=creatorData?.performance||[]; if(!rows.length){list.append(creatorEmpty("Belum ada data performa. Catat views setelah konten diposting."));return;}
     rows.slice(0,30).forEach((row,index)=>{
       const card=document.createElement("article");card.className="creator-performance-card";
-      card.innerHTML=`<span class="creator-rank">${index+1}</span><span class="creator-performance-platform"><i class="${creatorPlatformIcon(row.platform)}"></i></span><div><strong>${escapeHtml(row.title||row.contentId)}</strong><span>${creatorPlatformLabel(row.platform)} · ${wholeNumber.format(row.views||0)} views</span></div><div class="creator-performance-score"><strong>${number.format(row.engagement||0)}%</strong><span>engagement</span></div>`;
+      card.innerHTML=`<span class="creator-rank">${index+1}</span><span class="creator-performance-platform"><i class="${creatorPlatformIcon(row.platform)}"></i></span><div><strong>${creatorEscapeHtml(row.title||row.contentId)}</strong><span>${creatorPlatformLabel(row.platform)} · ${wholeNumber.format(row.views||0)} views</span></div><div class="creator-performance-score"><strong>${number.format(row.engagement||0)}%</strong><span>engagement</span></div>`;
       list.append(card);
     });
   }
@@ -4223,7 +4232,7 @@ ${row.label}`))return;
   function renderCreatorAccounts(){
     const list=$("creator-account-list"); if(!list)return; list.replaceChildren(); const rows=creatorData?.dashboard?.accounts||[];
     if(!rows.length){list.append(creatorEmpty("Belum ada akun media sosial yang disimpan."));return;}
-    for(const row of rows){const card=document.createElement("article");card.className="creator-account-card";const lead=document.createElement("div");lead.className="creator-account-lead";lead.innerHTML=`<span class="creator-account-icon"><i class="${creatorPlatformIcon(row.platform)}"></i></span><div><strong>${escapeHtml(row.name||row.handle)}</strong><span>${creatorPlatformLabel(row.platform)} · @${escapeHtml(row.handle||"")}</span></div>`;const del=document.createElement("button");del.type="button";del.className="icon-button";del.innerHTML='<i class="fa-solid fa-trash-can"></i>';del.addEventListener("click",async()=>{if(!confirm(`Hapus akun ${creatorPlatformLabel(row.platform)} @${row.handle}?`))return;await api(`/api/creator/accounts/${encodeURIComponent(row.id)}`,{method:"DELETE",body:"{}"});await loadCreator();});card.append(lead,del);list.append(card);}
+    for(const row of rows){const card=document.createElement("article");card.className="creator-account-card";const lead=document.createElement("div");lead.className="creator-account-lead";lead.innerHTML=`<span class="creator-account-icon"><i class="${creatorPlatformIcon(row.platform)}"></i></span><div><strong>${creatorEscapeHtml(row.name||row.handle)}</strong><span>${creatorPlatformLabel(row.platform)} · @${creatorEscapeHtml(row.handle||"")}</span></div>`;const del=document.createElement("button");del.type="button";del.className="icon-button";del.innerHTML='<i class="fa-solid fa-trash-can"></i>';del.addEventListener("click",async()=>{if(!confirm(`Hapus akun ${creatorPlatformLabel(row.platform)} @${row.handle}?`))return;await api(`/api/creator/accounts/${encodeURIComponent(row.id)}`,{method:"DELETE",body:"{}"});await loadCreator();});card.append(lead,del);list.append(card);}
   }
 
   function switchCreatorTab(tab){
