@@ -10,7 +10,7 @@
   <meta http-equiv="Expires" content="0">
   <title>Admin PROxyz</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
-  <link rel="stylesheet" href="./admin.css?v=1.5.1">
+  <link rel="stylesheet" href="./admin.css?v=1.5.2">
 </head>
 <body>
   <main class="shell">
@@ -30,6 +30,7 @@
           <span title="Galeri"><i class="fa-solid fa-images"></i></span>
           <span title="RISMA"><i class="fa-solid fa-star"></i></span>
           <span title="Ternak"><i class="fa-solid fa-cow"></i></span>
+          <span title="Creator"><i class="fa-solid fa-clapperboard"></i></span>
           <span title="Pengguna"><i class="fa-solid fa-users-gear"></i></span>
         </div>
         <section id="whatsapp-login-panel" class="stack auth-form whatsapp-login-panel">
@@ -90,6 +91,7 @@
           <button id="tab-risma" class="app-tab" type="button" data-view="risma" aria-label="RISMA" title="RISMA" hidden><i class="fa-solid fa-star"></i><span class="app-tab-label">RISMA</span></button>
           <button id="tab-ternak" class="app-tab" type="button" data-view="ternak" aria-label="Ternak" title="Ternak" hidden><i class="fa-solid fa-cow"></i><span class="app-tab-label">Ternak</span></button>
           <button id="tab-kompetisi" class="app-tab" type="button" data-view="kompetisi" aria-label="Kompetisi" title="Kompetisi" hidden><i class="fa-solid fa-trophy"></i><span class="app-tab-label">Kompetisi</span></button>
+          <button id="tab-creator" class="app-tab" type="button" data-view="creator" aria-label="Creator" title="Creator" hidden><i class="fa-solid fa-clapperboard"></i><span class="app-tab-label">Creator</span></button>
           <button id="tab-users" class="app-tab" type="button" data-view="users" aria-label="Pengguna" title="Pengguna" hidden><i class="fa-solid fa-users-gear"></i><span class="app-tab-label">Pengguna</span></button>
         </div>
       </nav>
@@ -833,6 +835,77 @@
         </section>
       </section>
 
+      <section id="creator-view" class="app-section" hidden>
+        <section class="hero hero-dark creator-hero">
+          <div class="creator-hero-copy">
+            <p class="eyebrow">Media sosial</p>
+            <h2><i class="fa-solid fa-clapperboard"></i> Creator</h2>
+            <p>Rencanakan, jadwalkan, dan ukur performa TikTok, YouTube, dan Instagram dari satu tempat.</p>
+            <div class="creator-network-row" aria-label="Platform Creator">
+              <span><i class="fa-brands fa-tiktok"></i> TikTok</span>
+              <span><i class="fa-brands fa-youtube"></i> YouTube</span>
+              <span><i class="fa-brands fa-instagram"></i> Instagram</span>
+            </div>
+          </div>
+          <button id="creator-refresh" class="ghost compact creator-refresh" type="button"><i class="fa-solid fa-rotate"></i> Segarkan</button>
+        </section>
+
+        <section class="creator-summary-grid" aria-label="Ringkasan Creator">
+          <article><span>Total konten</span><strong id="creator-total">0</strong></article>
+          <article><span>Siap posting</span><strong id="creator-ready">0</strong></article>
+          <article><span>Terjadwal</span><strong id="creator-scheduled">0</strong></article>
+          <article><span>Diposting</span><strong id="creator-posted">0</strong></article>
+        </section>
+
+        <section class="panel creator-idea-panel">
+          <div class="section-head"><div><p class="eyebrow">Asisten ide</p><h2>Ide & hook konten</h2></div><span class="creator-ai-badge"><i class="fa-solid fa-wand-magic-sparkles"></i> Creator</span></div>
+          <div class="creator-idea-input"><input id="creator-idea-topic" maxlength="160" placeholder="Contoh: timun umur 25 HST"><button id="creator-idea-generate" class="primary" type="button"><i class="fa-solid fa-lightbulb"></i> Buat ide</button></div>
+          <p id="creator-idea-status" class="status"></p>
+          <div id="creator-idea-list" class="creator-idea-list"></div>
+        </section>
+
+        <nav class="subtabs creator-subtabs" aria-label="Fitur Creator">
+          <button class="subtab active" type="button" data-creator-tab="konten"><i class="fa-solid fa-clapperboard"></i><span>Konten</span></button>
+          <button class="subtab" type="button" data-creator-tab="analitik"><i class="fa-solid fa-chart-line"></i><span>Analitik</span></button>
+          <button class="subtab" type="button" data-creator-tab="akun"><i class="fa-solid fa-at"></i><span>Akun</span></button>
+        </nav>
+
+        <section id="creator-konten-panel" class="panel creator-panel">
+          <div class="section-head"><div><p class="eyebrow">Pipeline</p><h2>Konten</h2></div></div>
+          <form id="creator-content-form" class="creator-add-form">
+            <label>Judul / topik<input id="creator-content-title" maxlength="180" placeholder="Contoh: Cara memilih timun siap panen" required></label>
+            <div class="creator-platform-picker" aria-label="Platform tujuan">
+              <label><input type="checkbox" data-creator-platform value="tiktok" checked><span><i class="fa-brands fa-tiktok"></i>TikTok</span></label>
+              <label><input type="checkbox" data-creator-platform value="youtube" checked><span><i class="fa-brands fa-youtube"></i>YouTube</span></label>
+              <label><input type="checkbox" data-creator-platform value="instagram" checked><span><i class="fa-brands fa-instagram"></i>Instagram</span></label>
+            </div>
+            <label>Catatan <span class="muted">(opsional)</span><textarea id="creator-content-notes" rows="2" maxlength="500" placeholder="Hook, shot, CTA, atau catatan produksi"></textarea></label>
+            <button class="primary full" type="submit"><i class="fa-solid fa-plus"></i> Tambah konten</button>
+            <p id="creator-content-status" class="status"></p>
+          </form>
+          <div id="creator-content-list" class="creator-content-list"></div>
+        </section>
+
+        <section id="creator-analitik-panel" class="panel creator-panel" hidden>
+          <div class="section-head"><div><p class="eyebrow">Performa</p><h2>Konten terbaik</h2></div><span class="muted small">Diurutkan dari views tertinggi</span></div>
+          <p class="muted small">Masukkan performa setiap konten setelah diposting. Creator menghitung engagement dari like + komentar terhadap views.</p>
+          <div id="creator-performance-list" class="creator-performance-list"></div>
+        </section>
+
+        <section id="creator-akun-panel" class="panel creator-panel" hidden>
+          <div class="section-head"><div><p class="eyebrow">Channel</p><h2>Akun media sosial</h2></div><b id="creator-account-count" class="creator-count-badge">0/3 akun</b></div>
+          <form id="creator-account-form" class="creator-account-form">
+            <label>Platform<select id="creator-account-platform"><option value="tiktok">TikTok</option><option value="youtube">YouTube</option><option value="instagram">Instagram</option></select></label>
+            <label>Username / channel<input id="creator-account-handle" maxlength="100" placeholder="bertunas.official" required></label>
+            <label>Nama tampilan <span class="muted">(opsional)</span><input id="creator-account-name" maxlength="100" placeholder="Bertunas Official"></label>
+            <button class="primary" type="submit"><i class="fa-solid fa-plus"></i> Tambah akun</button>
+          </form>
+          <p id="creator-account-status" class="status"></p>
+          <div id="creator-account-list" class="creator-account-list"></div>
+        </section>
+        <p id="creator-status" class="status" aria-live="polite"></p>
+      </section>
+
       <section id="users-view" class="app-section" hidden>
         <section class="panel">
           <div class="section-head">
@@ -1137,7 +1210,23 @@
 
   <dialog id="gallery-bulk-dialog"><form id="gallery-bulk-form" method="dialog" class="dialog-form"><div class="section-head"><div><p class="eyebrow">Edit beberapa foto</p><h2>Kelompokkan kejadian</h2></div><button id="close-gallery-bulk" class="icon-button" type="button">×</button></div><p class="muted small"><b id="gallery-bulk-dialog-count">0 foto</b> akan dijadikan satu kelompok di galeri publik.</p><label>Judul kejadian<input id="gallery-bulk-caption" maxlength="160" placeholder="Contoh: Makan Kerupuk Agustusan 2024" required></label><label>Tanggal dokumentasi<input id="gallery-bulk-date" type="date" required></label><p class="muted small">Semua foto terpilih akan memakai satu judul dan satu tanggal. Foto tidak dihapus atau diunggah ulang ke penyimpanan Galeri.</p><p id="gallery-bulk-status" class="status"></p><button class="primary full" type="submit">Simpan & kelompokkan</button></form></dialog>
 
+  <dialog id="creator-metric-dialog">
+    <form id="creator-metric-form" class="dialog-form">
+      <div class="section-head"><div><p class="eyebrow">Creator</p><h2>Catat performa</h2><p id="creator-metric-title" class="muted small"></p></div><button id="close-creator-metric" class="icon-button" type="button">×</button></div>
+      <input id="creator-metric-content-id" type="hidden">
+      <label>Platform<select id="creator-metric-platform"><option value="tiktok">TikTok</option><option value="youtube">YouTube</option><option value="instagram">Instagram</option></select></label>
+      <div class="creator-metric-grid">
+        <label>Views<input id="creator-metric-views" type="number" inputmode="numeric" min="0" placeholder="0" required></label>
+        <label>Like<input id="creator-metric-likes" type="number" inputmode="numeric" min="0" placeholder="0"></label>
+        <label>Komentar<input id="creator-metric-comments" type="number" inputmode="numeric" min="0" placeholder="0"></label>
+        <label>Follower/Sub baru<input id="creator-metric-followers" type="number" inputmode="numeric" min="0" placeholder="0"></label>
+      </div>
+      <p id="creator-metric-status" class="status"></p>
+      <button class="primary full" type="submit"><i class="fa-solid fa-chart-line"></i> Simpan performa</button>
+    </form>
+  </dialog>
+
   <script src="./config.js?v=242"></script>
-  <script src="./admin.js?v=1.5.1" defer></script>
+  <script src="./admin.js?v=1.5.2" defer></script>
 </body>
 </html>
