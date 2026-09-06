@@ -4146,15 +4146,9 @@ ${row.label}`))return;
 
   function creatorPlatformIcon(platform){ return CREATOR_PLATFORM_META[platform]?.icon || "fa-solid fa-share-nodes"; }
   function creatorPlatformLabel(platform){ return CREATOR_PLATFORM_META[platform]?.label || platform || "Platform"; }
-
-  function creatorEscapeHtml(value){
-    return String(value ?? "")
-      .replace(/&/g,"&amp;")
-      .replace(/</g,"&lt;")
-      .replace(/>/g,"&gt;")
-      .replace(/"/g,"&quot;")
-      .replace(/'/g,"&#039;");
-  }
+  function creatorEscapeHtml(value){ return String(value ?? "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;"); }
+  function creatorRelativeTime(ts){ const n=Number(ts||0); if(!n)return "Belum pernah"; const d=Math.max(0,Date.now()-n); if(d<60000)return "Baru saja"; if(d<3600000)return `${Math.floor(d/60000)} mnt lalu`; if(d<86400000)return `${Math.floor(d/3600000)} jam lalu`; return new Date(n).toLocaleDateString("id-ID",{day:"numeric",month:"short"}); }
+  function creatorCompact(n){ return new Intl.NumberFormat("id-ID",{notation:Number(n)>=10000?"compact":"standard",maximumFractionDigits:1}).format(Number(n)||0); }
 
   async function loadCreator(){
     setStatus($("creator-status"),"Memuat Creator…");
@@ -4168,11 +4162,21 @@ ${row.label}`))return;
     $("creator-ready").textContent=wholeNumber.format(counts.siap||0);
     $("creator-scheduled").textContent=wholeNumber.format(counts.jadwal||0);
     $("creator-posted").textContent=wholeNumber.format(counts.posting||0);
-    $("creator-account-count").textContent=`${(d.accounts||[]).length}/3 akun`;
-    renderCreatorContents(); renderCreatorPerformance(); renderCreatorAccounts();
+    renderCreatorConnectionSummary(); renderCreatorContents(); renderCreatorPerformance(); renderCreatorAccounts();
   }
 
   function creatorEmpty(text){ const el=document.createElement("div"); el.className="creator-empty"; el.innerHTML=`<i class="fa-solid fa-clapperboard"></i><span>${creatorEscapeHtml(text)}</span>`; return el; }
+
+  function creatorConnection(platform){ return (creatorData?.connections||[]).find(row=>row.platform===platform)||{platform,label:creatorPlatformLabel(platform),configured:false,connected:false,missing:[]}; }
+
+  function renderCreatorConnectionSummary(){
+    const row=$("creator-connection-summary"); if(!row)return; row.replaceChildren();
+    for(const platform of ["tiktok","youtube","instagram"]){
+      const c=creatorConnection(platform); const chip=document.createElement("button"); chip.type="button"; chip.className=`creator-network-chip ${c.connected?"connected":c.configured?"ready":"setup"}`;
+      chip.innerHTML=`<i class="${creatorPlatformIcon(platform)}"></i><span>${creatorPlatformLabel(platform)}</span><b>${c.connected?"Terhubung":c.configured?"Siap":"Setup"}</b>`;
+      chip.addEventListener("click",()=>{switchCreatorTab("akun"); document.getElementById(`creator-connect-${platform}`)?.scrollIntoView({behavior:"smooth",block:"center"});}); row.append(chip);
+    }
+  }
 
   function renderCreatorContents(){
     const list=$("creator-content-list"); if(!list)return; list.replaceChildren();
@@ -4189,11 +4193,11 @@ ${row.label}`))return;
       const del=document.createElement("button"); del.type="button"; del.className="icon-button creator-delete"; del.title="Hapus konten"; del.innerHTML='<i class="fa-solid fa-trash-can"></i>'; del.addEventListener("click",()=>deleteCreatorContent(row)); head.append(del);
       card.append(head);
       const controls=document.createElement("div"); controls.className="creator-content-controls";
-      const status=document.createElement("select"); status.dataset.creatorStatus=row.id;
+      const status=document.createElement("select"); status.dataset.creatorStatus=row.id; status.setAttribute("aria-label","Status konten");
       for(const [key,label] of Object.entries(CREATOR_STATUS_LABEL)){const o=document.createElement("option");o.value=key;o.textContent=label;if(row.status===key)o.selected=true;status.append(o);}
-      const schedule=document.createElement("input"); schedule.type="datetime-local"; schedule.dataset.creatorSchedule=row.id; schedule.value=creatorDateTimeLocal(row.scheduledFor);
-      const save=document.createElement("button"); save.type="button"; save.className="ghost compact"; save.innerHTML='<i class="fa-solid fa-floppy-disk"></i> Simpan'; save.addEventListener("click",()=>saveCreatorContent(row.id,status.value,schedule.value,save));
-      const metric=document.createElement("button"); metric.type="button"; metric.className="primary compact"; metric.innerHTML='<i class="fa-solid fa-chart-line"></i> Performa'; metric.addEventListener("click",()=>openCreatorMetric(row));
+      const schedule=document.createElement("input"); schedule.type="datetime-local"; schedule.dataset.creatorSchedule=row.id; schedule.value=creatorDateTimeLocal(row.scheduledFor); schedule.setAttribute("aria-label","Jadwal posting");
+      const save=document.createElement("button"); save.type="button"; save.className="ghost compact"; save.innerHTML='<i class="fa-solid fa-floppy-disk"></i><span>Simpan</span>'; save.addEventListener("click",()=>saveCreatorContent(row.id,status.value,schedule.value,save));
+      const metric=document.createElement("button"); metric.type="button"; metric.className="primary compact"; metric.innerHTML='<i class="fa-solid fa-chart-line"></i><span>Performa</span>'; metric.addEventListener("click",()=>openCreatorMetric(row));
       controls.append(status,schedule,save,metric); card.append(controls);
       if(row.notes){const notes=document.createElement("p");notes.className="muted small creator-content-notes";notes.textContent=row.notes;card.append(notes);}
       list.append(card);
@@ -4208,7 +4212,7 @@ ${row.label}`))return;
   }
 
   async function saveCreatorContent(id,status,scheduledFor,button){
-    const original=button.innerHTML; button.disabled=true; button.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> Menyimpan';
+    const original=button.innerHTML; button.disabled=true; button.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i><span>Menyimpan</span>';
     try{await api(`/api/creator/contents/${encodeURIComponent(id)}`,{method:"PATCH",body:JSON.stringify({status,scheduledFor})});await loadCreator();}
     catch(error){setStatus($("creator-status"),error.message,"error");}
     finally{button.disabled=false;button.innerHTML=original;}
@@ -4229,10 +4233,48 @@ ${row.label}`))return;
     });
   }
 
+  async function connectCreatorPlatform(platform,button){
+    const original=button.innerHTML; button.disabled=true; button.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> Menyiapkan…';
+    try{ const data=await api(`/api/creator/connect/${platform}`,{method:"POST",body:"{}"}); if(!data.authUrl)throw new Error("URL otorisasi tidak tersedia."); location.href=data.authUrl; }
+    catch(error){ setStatus($("creator-account-status"),error.message,"error"); button.disabled=false; button.innerHTML=original; }
+  }
+
+  async function syncCreatorPlatform(platform,button){
+    const original=button.innerHTML; button.disabled=true; button.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i>';
+    try{await api(`/api/creator/sync/${platform}`,{method:"POST",body:"{}"});setStatus($("creator-account-status"),`${creatorPlatformLabel(platform)} berhasil disinkronkan.`,"success");await loadCreator();}
+    catch(error){setStatus($("creator-account-status"),error.message,"error");}
+    finally{button.disabled=false;button.innerHTML=original;}
+  }
+
+  async function disconnectCreatorPlatform(platform){
+    if(!confirm(`Putuskan koneksi ${creatorPlatformLabel(platform)} dari PROxyz Creator?`))return;
+    try{await api(`/api/creator/disconnect/${platform}`,{method:"POST",body:"{}"});setStatus($("creator-account-status"),`${creatorPlatformLabel(platform)} diputuskan.`,"success");await loadCreator();}
+    catch(error){setStatus($("creator-account-status"),error.message,"error");}
+  }
+
   function renderCreatorAccounts(){
-    const list=$("creator-account-list"); if(!list)return; list.replaceChildren(); const rows=creatorData?.dashboard?.accounts||[];
-    if(!rows.length){list.append(creatorEmpty("Belum ada akun media sosial yang disimpan."));return;}
-    for(const row of rows){const card=document.createElement("article");card.className="creator-account-card";const lead=document.createElement("div");lead.className="creator-account-lead";lead.innerHTML=`<span class="creator-account-icon"><i class="${creatorPlatformIcon(row.platform)}"></i></span><div><strong>${creatorEscapeHtml(row.name||row.handle)}</strong><span>${creatorPlatformLabel(row.platform)} · @${creatorEscapeHtml(row.handle||"")}</span></div>`;const del=document.createElement("button");del.type="button";del.className="icon-button";del.innerHTML='<i class="fa-solid fa-trash-can"></i>';del.addEventListener("click",async()=>{if(!confirm(`Hapus akun ${creatorPlatformLabel(row.platform)} @${row.handle}?`))return;await api(`/api/creator/accounts/${encodeURIComponent(row.id)}`,{method:"DELETE",body:"{}"});await loadCreator();});card.append(lead,del);list.append(card);}
+    const list=$("creator-account-list"); if(!list)return; list.replaceChildren();
+    const manualRows=creatorData?.dashboard?.accounts||[];
+    const connections=creatorData?.connections||[];
+    $("creator-account-count").textContent=`${connections.filter(c=>c.connected).length}/3 terhubung`;
+    for(const platform of ["tiktok","youtube","instagram"]){
+      const c=creatorConnection(platform); const profile=c.profile||{}; const manual=manualRows.find(r=>r.platform===platform);
+      const card=document.createElement("article"); card.className=`creator-connect-card ${c.connected?"connected":""}`; card.id=`creator-connect-${platform}`;
+      const avatar=profile.avatar ? `<img src="${creatorEscapeHtml(profile.avatar)}" alt="">` : `<i class="${creatorPlatformIcon(platform)}"></i>`;
+      const headline=c.connected ? (profile.name||manual?.name||creatorPlatformLabel(platform)) : creatorPlatformLabel(platform);
+      const handle=profile.handle ? `@${profile.handle}` : manual?.handle ? `@${manual.handle}` : c.configured ? "Siap dihubungkan" : "Belum dikonfigurasi";
+      const stats=c.connected ? `<div class="creator-account-stats"><span><b>${creatorCompact(profile.followers||0)}</b>Follower/Sub</span><span><b>${creatorCompact(profile.posts||0)}</b>Konten</span>${profile.views!==undefined?`<span><b>${creatorCompact(profile.views||0)}</b>Views</span>`:""}</div>` : "";
+      card.innerHTML=`<div class="creator-connect-head"><span class="creator-account-avatar">${avatar}</span><div class="creator-connect-copy"><div><strong>${creatorEscapeHtml(headline)}</strong><span class="creator-connection-badge ${c.connected?"ok":c.configured?"ready":"setup"}">${c.connected?'<i class="fa-solid fa-circle-check"></i> Terhubung':c.configured?'Siap dihubungkan':'Perlu setup API'}</span></div><span>${creatorEscapeHtml(handle)}</span></div></div>${stats}<div class="creator-connect-meta"><span><i class="fa-solid fa-clock"></i> ${c.connected?`Sync ${creatorRelativeTime(c.lastSyncAt)}`:(c.missing?.length?creatorEscapeHtml(c.missing.join(" · ")):"OAuth resmi")}</span>${c.error?`<span class="creator-sync-error">${creatorEscapeHtml(c.error)}</span>`:""}</div><div class="creator-connect-actions"></div>`;
+      const actions=card.querySelector(".creator-connect-actions");
+      if(c.connected){
+        const sync=document.createElement("button");sync.type="button";sync.className="primary compact";sync.innerHTML='<i class="fa-solid fa-rotate"></i> Sinkronkan';sync.addEventListener("click",()=>syncCreatorPlatform(platform,sync));actions.append(sync);
+        if(profile.url){const open=document.createElement("a");open.className="ghost compact button-link";open.href=profile.url;open.target="_blank";open.rel="noopener";open.innerHTML='<i class="fa-solid fa-arrow-up-right-from-square"></i> Buka akun';actions.append(open);}
+        const off=document.createElement("button");off.type="button";off.className="ghost compact danger-text";off.innerHTML='<i class="fa-solid fa-link-slash"></i>';off.title="Putuskan koneksi";off.addEventListener("click",()=>disconnectCreatorPlatform(platform));actions.append(off);
+      }else{
+        const connect=document.createElement("button");connect.type="button";connect.className="primary compact";connect.disabled=!c.configured;connect.innerHTML=`<i class="fa-solid fa-link"></i> ${c.configured?"Hubungkan":"Setup API dulu"}`;connect.addEventListener("click",()=>connectCreatorPlatform(platform,connect));actions.append(connect);
+      }
+      list.append(card);
+    }
   }
 
   function switchCreatorTab(tab){
@@ -4248,6 +4290,7 @@ ${row.label}`))return;
   function openCreatorMetric(row){
     $("creator-metric-content-id").value=row.id; $("creator-metric-title").textContent=`${row.id} · ${row.title}`; $("creator-metric-platform").value=(row.platforms||[])[0]||"tiktok"; for(const id of ["creator-metric-views","creator-metric-likes","creator-metric-comments","creator-metric-followers"])$(id).value=""; setStatus($("creator-metric-status")); $("creator-metric-dialog").showModal();
   }
+
 
   // ---------- EVENTS ----------
   hydrateAdminIcons();

@@ -1,6 +1,6 @@
 {
-  "version": "1.5.3",
-  "updatedAt": "2026-09-06T14:10:16.404Z",
+  "version": "1.5.4",
+  "updatedAt": "2026-09-06T14:32:41.742Z",
   "uiBase": "PROxyz-SOURCE-20260829-2042",
   "features": [
     "admin-v0.9.3",
@@ -144,6 +144,10 @@
     "kas-pdf-full-evidence-url-v151",
     "creator-web",
     "creator-runtime-fix",
-    "creator-regression-check"
+    "creator-regression-check",
+    "creator-v2-oauth-connect",
+    "creator-account-auto-sync",
+    "creator-mobile-responsive-v2",
+    "creator-secure-token-store"
   ]
 }

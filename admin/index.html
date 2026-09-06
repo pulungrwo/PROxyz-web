@@ -10,7 +10,7 @@
   <meta http-equiv="Expires" content="0">
   <title>Admin PROxyz</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
-  <link rel="stylesheet" href="./admin.css?v=1.5.3">
+  <link rel="stylesheet" href="./admin.css?v=1.5.4">
 </head>
 <body>
   <main class="shell">
@@ -841,11 +841,7 @@
             <p class="eyebrow">Media sosial</p>
             <h2><i class="fa-solid fa-clapperboard"></i> Creator</h2>
             <p>Rencanakan, jadwalkan, dan ukur performa TikTok, YouTube, dan Instagram dari satu tempat.</p>
-            <div class="creator-network-row" aria-label="Platform Creator">
-              <span><i class="fa-brands fa-tiktok"></i> TikTok</span>
-              <span><i class="fa-brands fa-youtube"></i> YouTube</span>
-              <span><i class="fa-brands fa-instagram"></i> Instagram</span>
-            </div>
+            <div id="creator-connection-summary" class="creator-network-row" aria-label="Status koneksi platform"></div>
           </div>
           <button id="creator-refresh" class="ghost compact creator-refresh" type="button"><i class="fa-solid fa-rotate"></i> Segarkan</button>
         </section>
@@ -893,15 +889,19 @@
         </section>
 
         <section id="creator-akun-panel" class="panel creator-panel" hidden>
-          <div class="section-head"><div><p class="eyebrow">Channel</p><h2>Akun media sosial</h2></div><b id="creator-account-count" class="creator-count-badge">0/3 akun</b></div>
-          <form id="creator-account-form" class="creator-account-form">
-            <label>Platform<select id="creator-account-platform"><option value="tiktok">TikTok</option><option value="youtube">YouTube</option><option value="instagram">Instagram</option></select></label>
-            <label>Username / channel<input id="creator-account-handle" maxlength="100" placeholder="bertunas.official" required></label>
-            <label>Nama tampilan <span class="muted">(opsional)</span><input id="creator-account-name" maxlength="100" placeholder="Bertunas Official"></label>
-            <button class="primary" type="submit"><i class="fa-solid fa-plus"></i> Tambah akun</button>
-          </form>
+          <div class="section-head"><div><p class="eyebrow">Koneksi resmi</p><h2>Akun media sosial</h2><p class="muted small">Hubungkan akun melalui OAuth resmi. PROxyz tidak pernah meminta password media sosial Anda.</p></div><b id="creator-account-count" class="creator-count-badge">0/3 terhubung</b></div>
           <p id="creator-account-status" class="status"></p>
-          <div id="creator-account-list" class="creator-account-list"></div>
+          <div id="creator-account-list" class="creator-account-list creator-connect-list"></div>
+          <details class="creator-manual-fallback">
+            <summary><i class="fa-solid fa-pen-to-square"></i> Tambah akun manual</summary>
+            <p class="muted small">Gunakan hanya jika API platform belum dikonfigurasi. Data statistik akun manual tidak tersinkron otomatis.</p>
+            <form id="creator-account-form" class="creator-account-form">
+              <label>Platform<select id="creator-account-platform"><option value="tiktok">TikTok</option><option value="youtube">YouTube</option><option value="instagram">Instagram</option></select></label>
+              <label>Username / channel<input id="creator-account-handle" maxlength="100" placeholder="bertunas.official" required></label>
+              <label>Nama tampilan <span class="muted">(opsional)</span><input id="creator-account-name" maxlength="100" placeholder="Bertunas Official"></label>
+              <button class="primary" type="submit"><i class="fa-solid fa-plus"></i> Tambah manual</button>
+            </form>
+          </details>
         </section>
         <p id="creator-status" class="status" aria-live="polite"></p>
       </section>
@@ -1227,6 +1227,6 @@
   </dialog>
 
   <script src="./config.js?v=242"></script>
-  <script src="./admin.js?v=1.5.3" defer></script>
+  <script src="./admin.js?v=1.5.4" defer></script>
 </body>
 </html>
