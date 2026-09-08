@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": 1788837047560,
+  "generatedAt": 1788837188631,
   "totalProjects": 2,
   "totalWeightKg": 0,
   "totalHarvestCount": 0,
@@ -13,6 +13,12 @@
     },
     {
       "komoditas": "Kacang Panjang",
+      "weightKg": 0,
+      "harvestCount": 0,
+      "projectCount": 1
+    },
+    {
+      "komoditas": "Timun",
       "weightKg": 0,
       "harvestCount": 0,
       "projectCount": 1
@@ -63,11 +69,17 @@
           "komoditas": "Cabai",
           "weightKg": 0,
           "harvestCount": 0
+        },
+        {
+          "id": "02",
+          "komoditas": "Timun",
+          "weightKg": 0,
+          "harvestCount": 0
         }
       ],
       "weightKg": 0,
       "harvestCount": 0,
-      "updatedAt": 1788837047560
+      "updatedAt": 1788837188631
     }
   ]
 }

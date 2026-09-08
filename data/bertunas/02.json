@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": 1788837047560,
+  "generatedAt": 1788837188631,
   "id": "02",
   "nama": "Samping Rumah",
   "lokasi": "",
@@ -10,11 +10,20 @@
     "nama": "Musim 01",
     "status": "aktif"
   },
-  "activeCropId": "01",
+  "activeCropId": "02",
   "crops": [
     {
       "id": "01",
       "komoditas": "Cabai",
+      "category": "hortikultura",
+      "plantingDate": "",
+      "status": "aktif",
+      "weightKg": 0,
+      "harvestCount": 0
+    },
+    {
+      "id": "02",
+      "komoditas": "Timun",
       "category": "hortikultura",
       "plantingDate": "",
       "status": "aktif",
@@ -64,5 +73,5 @@
       "status": "pending"
     }
   ],
-  "updatedAt": 1788837047560
+  "updatedAt": 1788837188631
 }
