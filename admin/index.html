@@ -10,7 +10,7 @@
   <meta http-equiv="Expires" content="0">
   <title>Admin PROxyz</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
-  <link rel="stylesheet" href="./admin.css?v=1.5.4">
+  <link rel="stylesheet" href="./admin.css?v=1.5.5">
 </head>
 <body>
   <main class="shell">
@@ -1227,7 +1227,7 @@
   </dialog>
 
   <script src="./config.js?v=242"></script>
-  <script src="./admin.js?v=1.5.4" defer></script>
+  <script src="./admin.js?v=1.5.5" defer></script>
 <dialog id="risma-invite-print-confirm-dialog">
   <form method="dialog" class="dialog-form risma-publish-dialog">
     <div class="section-head">
@@ -1253,11 +1253,14 @@
       <button id="risma-invite-followup-close" class="icon-button" type="button" aria-label="Tutup"><i class="fa-solid fa-xmark"></i></button>
     </div>
     <div id="risma-invite-followup-number" class="risma-letter-badge"><i class="fa-solid fa-hashtag"></i><span>Nomor surat</span><strong>-</strong></div>
-    <p class="muted small">PDF sudah dikirim ke WhatsApp Anda. Pilih tindakan lanjutan.</p>
+    <div class="risma-letter-badge risma-event-badge"><i class="fa-solid fa-calendar-check"></i><span>Kegiatan</span><strong id="risma-invite-followup-event">-</strong></div>
+    <p class="muted small">PDF sudah dikirim ke WhatsApp Anda dan undangan sudah masuk Arsip Publikasi. Pilih tindakan lanjutan.</p>
     <div class="risma-followup-grid">
       <button id="risma-invite-followup-pdf" class="ghost" type="button"><i class="fa-solid fa-file-pdf"></i><span><strong>Kirim PDF ke Grup</strong><small>Bagikan PDF yang sama</small></span></button>
-      <button id="risma-invite-followup-text" class="ghost" type="button"><i class="fa-brands fa-whatsapp"></i><span><strong>Undangan Text WA</strong><small>Bagikan teks undangan ke grup</small></span></button>
-      <button id="risma-invite-followup-skip" class="ghost" type="button"><i class="fa-solid fa-forward"></i><span><strong>Lewati</strong><small>Selesai tanpa kirim ke grup</small></span></button>
+      <button id="risma-invite-followup-text" class="ghost" type="button"><i class="fa-brands fa-whatsapp"></i><span><strong>Undangan Text WA ke Grup</strong><small>Bagikan teks undangan ke grup</small></span></button>
+      <button id="risma-invite-followup-person-pdf" class="ghost" type="button"><i class="fa-solid fa-user"></i><span><strong>Kirim PDF ke Perorangan</strong><small>Masukkan nomor WhatsApp tujuan</small></span></button>
+      <button id="risma-invite-followup-person-text" class="ghost" type="button"><i class="fa-solid fa-user"></i><span><strong>Kirim Text WA ke Perorangan</strong><small>Masukkan nomor WhatsApp tujuan</small></span></button>
+      <button id="risma-invite-followup-skip" class="ghost" type="button"><i class="fa-solid fa-forward"></i><span><strong>Lewati</strong><small>Selesai tanpa kirim ke grup/perorangan</small></span></button>
     </div>
     <p id="risma-invite-followup-status" class="status"></p>
   </form>

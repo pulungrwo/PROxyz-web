@@ -1714,7 +1714,7 @@ dialog[id^="risma-"] .icon-button{background:#edf7fd!important;color:#285c7d!imp
 .risma-publish-confirm-card p{margin:0;font-size:13px;line-height:1.5;color:#667085}
 .risma-dialog-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px}
 .risma-letter-badge{display:flex;align-items:center;gap:10px;padding:13px 14px;border-radius:14px;background:#101828;color:#fff}
-.risma-letter-badge>i{opacity:.7}.risma-letter-badge span{font-size:12px;opacity:.7}.risma-letter-badge strong{margin-left:auto;font-size:16px;letter-spacing:.03em}
+.risma-letter-badge>i{opacity:.7}.risma-letter-badge span{font-size:12px;opacity:.7}.risma-letter-badge strong{margin-left:auto;font-size:16px;letter-spacing:.03em}.risma-event-badge{margin-top:8px}.risma-event-badge strong{max-width:70%;text-align:right;overflow-wrap:anywhere}.risma-archive-info .risma-archive-letter,.risma-archive-info .risma-archive-event{font-size:10px;color:#344054;font-weight:700}.risma-archive-info .risma-archive-event{color:#475467}
 .risma-followup-grid{display:grid;gap:9px}
 .risma-followup-grid button{display:flex;align-items:center;gap:12px;text-align:left;border:1px solid #e4e7ec}
 .risma-followup-grid button>i{width:24px;text-align:center;font-size:17px}

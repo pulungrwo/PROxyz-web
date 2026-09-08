@@ -2237,7 +2237,7 @@
     $("risma-publish-rules-preview").disabled = !period;
     $("risma-publish-rules-send").disabled = !period || groupBlocked;
     $("risma-publish-rules-pdf").disabled = !period;
-    for (const id of ["risma-publish-announce-send","risma-publish-invite-send"]) $(id).disabled = groupBlocked;
+    for (const id of ["risma-publish-announce-send","risma-publish-invite-send"]) { const el=$(id); if(el) el.disabled = groupBlocked; }
 
     if (owner) {
       $("risma-owner-period-year").value = period && !simulation ? String(period.hijriYear || "") : String((rismaDetail.periods || []).find(x => !x.isSimulation && x.status === "active")?.hijriYear || "");
@@ -2782,9 +2782,11 @@
       const box = $("risma-invite-followup-number");
       const strong = box ? box.querySelector("strong") : null;
       if(strong) strong.textContent = result.letterNumber || "-";
+      const eventEl = $("risma-invite-followup-event");
+      if(eventEl) eventEl.textContent = result.event || "-";
       setStatus($("risma-invite-followup-status"));
       $("risma-invite-followup-dialog").showModal();
-      if(typeof loadRismaPublications === "function") loadRismaPublications();
+      if(typeof loadRismaArchives === "function") await loadRismaArchives();
     }catch(error){
       setStatus(status, error?.message || "Gagal menerbitkan undangan.", "error");
     }finally{
@@ -2803,20 +2805,25 @@
       setStatus(status, "Arsip undangan terbit tidak ditemukan.", "error");
       return;
     }
-    const ids = ["risma-invite-followup-pdf","risma-invite-followup-text","risma-invite-followup-skip"];
-    ids.forEach(id => $(id).disabled = true);
-    setStatus(status, action === "pdf" ? "Mengirim PDF ke grup…" : "Mengirim teks undangan ke grup…");
+    const ids = ["risma-invite-followup-pdf","risma-invite-followup-text","risma-invite-followup-person-pdf","risma-invite-followup-person-text","risma-invite-followup-skip"];
+    ids.forEach(id => { const el=$(id); if(el) el.disabled = true; });
+    let personPhone = "";
+    if(action === "person-pdf" || action === "person-text") {
+      personPhone = String(prompt("Nomor WhatsApp tujuan (contoh 081234567890):", "") || "").trim();
+      if(!personPhone) { ids.forEach(id => { const el=$(id); if(el) el.disabled = false; }); return; }
+    }
+    setStatus(status, action === "pdf" ? "Mengirim PDF ke grup…" : action === "text" ? "Mengirim teks undangan ke grup…" : action === "person-pdf" ? "Mengirim PDF ke perorangan…" : "Mengirim teks undangan ke perorangan…");
     try{
       const result = await api("/api/risma/publication/followup", {
         method:"POST",
-        body:JSON.stringify({action,archiveId:rismaIssuedInvitation.archiveId})
+        body:JSON.stringify({action,archiveId:rismaIssuedInvitation.archiveId,phone:personPhone})
       });
       setStatus(status, result.message || "Undangan berhasil dibagikan.", "success");
       setTimeout(() => dialog.close(), 900);
     }catch(error){
       setStatus(status, error?.message || "Gagal membagikan undangan.", "error");
     }finally{
-      ids.forEach(id => $(id).disabled = false);
+      ids.forEach(id => { const el=$(id); if(el) el.disabled = false; });
     }
   }
 
@@ -3069,8 +3076,13 @@
       const icon=document.createElement("span");icon.className="risma-log-icon";icon.innerHTML=`<i class="fa-solid ${rismaArchiveIcon(row.kind||"")}"></i>`;
       const info=document.createElement("div");info.className="risma-archive-info";
       const title=document.createElement("strong");title.textContent=row.title||"Publikasi RISMA";
+      if(row.kind==="undangan") {
+        const number=document.createElement("span");number.className="risma-archive-letter";number.textContent=`Nomor surat: ${row.letterNumber||"-"}`;
+        const event=document.createElement("span");event.className="risma-archive-event";event.textContent=`Kegiatan: ${row.event||String(row.title||"").replace(/^Undangan\s*[-·:]?\s*/i,"")||"-"}`;
+        info.append(title,number,event);
+      } else info.append(title);
       const meta=document.createElement("span");meta.textContent=`${row.hijriYear?`Ramadan ${row.hijriYear} H · `:""}${row.dibuatPada?dateTimeFmt.format(new Date(row.dibuatPada)):"—"}`;
-      info.append(title,meta);
+      info.append(meta);
       const actions=document.createElement("div");actions.className="risma-archive-actions";
       const preview=button("Lihat","ghost compact",()=>rismaArchiveAction(row,"preview",card));preview.innerHTML='<i class="fa-solid fa-eye"></i> Lihat';
       const send=button("Kirim","ghost compact",()=>rismaArchiveAction(row,"send",card));send.innerHTML='<i class="fa-brands fa-whatsapp"></i> Kirim';

@@ -1,6 +1,6 @@
 {
-  "version": "1.5.4",
-  "updatedAt": "2026-09-06T14:32:41.742Z",
+  "version": "1.5.5",
+  "updatedAt": "2026-09-08T20:55:00+07:00",
   "uiBase": "PROxyz-SOURCE-20260829-2042",
   "features": [
     "admin-v0.9.3",
@@ -148,6 +148,7 @@
     "creator-v2-oauth-connect",
     "creator-account-auto-sync",
     "creator-mobile-responsive-v2",
-    "creator-secure-token-store"
+    "creator-secure-token-store",
+    "risma-invite-archive-refresh-letter-event-person-share"
   ]
 }
