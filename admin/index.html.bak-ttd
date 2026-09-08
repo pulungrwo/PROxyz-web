@@ -646,8 +646,8 @@
             </section>
 
             <section id="risma-signature-box" class="risma-owner-control" hidden>
-              <div class="risma-owner-control-head"><span class="risma-pub-icon"><i class="fa-solid fa-signature"></i></span><div><h3>Penandatangan PDF</h3><p class="muted small">Nama Pembina dan Ketua akan tampil otomatis pada PDF RISMA.</p></div></div>
-              <div class="context-grid"><label>Ketua RISMA<input id="risma-signature-chair" maxlength="80" placeholder="Nama Ketua"></label><label>Pembina RISMA<input id="risma-signature-advisor" maxlength="80" placeholder="Nama Pembina"></label></div>
+              <div class="risma-owner-control-head"><span class="risma-pub-icon"><i class="fa-solid fa-signature"></i></span><div><h3>Penandatangan PDF</h3><p class="muted small">Nama Ketua dan Sekretaris akan tampil otomatis pada PDF RISMA.</p></div></div>
+              <div class="context-grid"><label>Ketua RISMA<input id="risma-signature-chair" maxlength="80" placeholder="Nama Ketua"></label><label>Sekretaris RISMA<input id="risma-signature-secretary" maxlength="80" placeholder="Nama Sekretaris"></label></div>
               <button id="risma-signature-save" class="ghost full" type="button"><i class="fa-solid fa-floppy-disk"></i> Simpan penandatangan</button>
               <p id="risma-signature-status" class="status"></p>
             </section>

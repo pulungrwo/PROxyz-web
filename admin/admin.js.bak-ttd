@@ -2255,9 +2255,7 @@
       $("risma-simulation-reset").disabled = !simulation;
       $("risma-simulation-end").disabled = !simulation;
       $("risma-signature-chair").value = rismaDetail.signatures?.chair?.name || "";
-      $("risma-signature-advisor").value =
-        rismaDetail.signatures?.advisor?.name
-        || "";
+      $("risma-signature-secretary").value = rismaDetail.signatures?.secretary?.name || "";
       renderRismaPeriodHistory();
     }
     updateRismaCouponPrintSummary();
@@ -2977,10 +2975,10 @@ Nomor surat yang terhapus dapat dipakai kembali jika menjadi nomor terakhir.`))r
 
   async function saveRismaSignatures(){
     const chair=$("risma-signature-chair").value.trim();
-    const advisor=$("risma-signature-advisor").value.trim();
+    const secretary=$("risma-signature-secretary").value.trim();
     setStatus($("risma-signature-status"),"Menyimpan penandatangan…");
     try{
-      const data=await api("/api/risma/signatures",{method:"PUT",body:JSON.stringify({chair,advisor})});
+      const data=await api("/api/risma/signatures",{method:"PUT",body:JSON.stringify({chair,secretary})});
       rismaDetail=data.risma;renderRisma();setStatus($("risma-signature-status"),"Penandatangan PDF tersimpan.","success");
     }catch(error){setStatus($("risma-signature-status"),error.message,"error");}
   }
