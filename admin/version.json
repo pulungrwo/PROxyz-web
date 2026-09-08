@@ -149,6 +149,11 @@
     "creator-account-auto-sync",
     "creator-mobile-responsive-v2",
     "creator-secure-token-store",
-    "risma-invite-archive-refresh-letter-event-person-share"
+    "risma-invite-archive-refresh-letter-event-person-share",
+    "risma-invitation-simple-recipient-print",
+    "risma-invitation-letter-number-archive-fix",
+    "risma-invitation-native-share",
+    "risma-invitation-auto-archive-refresh",
+    "risma-header-logo-v1"
   ]
 }
