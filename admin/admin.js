@@ -4787,47 +4787,68 @@ ${row.label}`))return;
     const status = $("risma-publish-invite-status");
     const button = $("risma-publish-invite-print");
     if(!button) return;
-    button.disabled = true;
-    setStatus(status, "Menyiapkan PDF undangan untuk dicetak…");
-    try{
-      // Preview lebih dulu agar nomor surat / metadata terbaru ikut dipakai
-      // oleh payload bila backend mengembalikannya.
-      try{
-        const preview = await api("/api/risma/publication/preview", {
-          method:"POST",
-          body:JSON.stringify({kind:"invitation",data:rismaPublicationPayload("invitation")})
-        });
-        if(preview?.letterNumber) rismaInvitationLetterNumber = String(preview.letterNumber);
-      }catch(_){}
 
-      const payload = {
-        kind:"invitation",
-        data:rismaPublicationPayload("invitation")
-      };
-      const response = await apiRaw("/api/risma/publication/file", {
+    const event = String($("risma-publish-invite-event")?.value || "").trim();
+    const date = String($("risma-publish-invite-date")?.value || "").trim();
+    const time = String($("risma-publish-invite-time")?.value || "").trim();
+    const place = String($("risma-publish-invite-place")?.value || "").trim();
+
+    if(!event || !date || !time || !place){
+      setStatus(status, "Lengkapi Kegiatan, Tanggal, Waktu, dan Tempat sebelum menerbitkan.", "error");
+      return;
+    }
+
+    if(!confirm("Terbitkan undangan ini sekarang?\n\nPDF akan dibuat dan dikirim otomatis ke WhatsApp Anda. Setelah berhasil, undangan masuk arsip Terbit dan pilihan distribusi akan muncul.")) return;
+
+    button.disabled = true;
+    setStatus(status, "Menerbitkan undangan dan mengirim PDF ke WhatsApp Anda…");
+
+    try{
+      const payload = { kind:"invitation", data:rismaPublicationPayload("invitation") };
+
+      const published = await api("/api/risma/publication/pdf-self", {
         method:"POST",
         body:JSON.stringify(payload)
       });
-      const blob = await response.blob();
-      const url = URL.createObjectURL(blob);
-      const win = window.open(url, "_blank", "noopener,noreferrer");
-      if(!win){
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = "undangan-risma.pdf";
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
+
+      try{
+        const response = await apiRaw("/api/risma/publication/file", {
+          method:"POST",
+          body:JSON.stringify(payload)
+        });
+        if(response?.ok){
+          const blob = await response.blob();
+          const url = URL.createObjectURL(blob);
+          const win = window.open(url, "_blank", "noopener,noreferrer");
+          if(!win){
+            const a=document.createElement("a");
+            a.href=url;
+            a.download=published.fileName || "undangan-risma.pdf";
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+          }
+          setTimeout(()=>URL.revokeObjectURL(url),60000);
+        }
+      }catch(openError){
+        console.warn("[RISMA] PDF lokal tidak dapat dibuka:", openError?.message || openError);
       }
-      setStatus(status, "PDF undangan siap dicetak. Nomor surat resmi belum diarsipkan hanya karena membuka PDF.", "success");
-      setTimeout(() => URL.revokeObjectURL(url), 60000);
+
+      const distribution = $("risma-publish-invite-distribution");
+      if(distribution) distribution.hidden = false;
+      const publishedStatus = $("risma-publish-invite-published");
+      if(publishedStatus){
+        publishedStatus.hidden = false;
+        publishedStatus.textContent = "✓ UNDANGAN TERBIT — PDF sudah dikirim ke WhatsApp Anda. Pilihan distribusi tersedia.";
+        publishedStatus.className = "status success";
+      }
+      setStatus(status, published.message || "Undangan berhasil diterbitkan.", "success");
     }catch(error){
-      setStatus(status, error?.message || "Gagal membuat PDF undangan.", "error");
+      setStatus(status, error?.message || "Gagal menerbitkan undangan.", "error");
     }finally{
       button.disabled = false;
     }
   }
-
   function wireRismaInvitationDraftPrintV156(){
     const draft = $("risma-publish-invite-draft");
     const print = $("risma-publish-invite-print");
@@ -4844,8 +4865,10 @@ ${row.label}`))return;
 
   wireRismaInvitationDraftPrintV156();
   $("risma-publish-invite-preview").addEventListener("click",()=>previewRismaPublication("invitation","risma-publish-invite-status"));
-  $("risma-publish-invite-send").addEventListener("click",()=>sendRismaPublication("invitation","risma-publish-invite-status","Kirim undangan ini ke semua grup yang terinstal RISMA?"));
-  $("risma-publish-invite-pdf").addEventListener("click",()=>sendRismaPublicationPdf("invitation","risma-publish-invite-status"));
+  if($("risma-publish-invite-pdf-group")) $("risma-publish-invite-pdf-group").addEventListener("click",()=>runRismaShare("pdf-group"));
+  if($("risma-publish-invite-text-group")) $("risma-publish-invite-text-group").addEventListener("click",()=>runRismaShare("text-group"));
+  if($("risma-publish-invite-pdf-person")) $("risma-publish-invite-pdf-person").addEventListener("click",()=>runRismaShare("pdf-person"));
+  if($("risma-publish-invite-text-person")) $("risma-publish-invite-text-person").addEventListener("click",()=>runRismaShare("text-person"));
   $("risma-share-pdf-group").addEventListener("click",()=>runRismaShare("pdf-group"));
   $("risma-share-text-group").addEventListener("click",()=>runRismaShare("text-group"));
   $("risma-share-pdf-person").addEventListener("click",()=>runRismaShare("pdf-person"));

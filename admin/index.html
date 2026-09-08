@@ -525,7 +525,7 @@
               <details class="risma-pub-item" open>
                 <summary>
                   <span class="risma-pub-icon"><i class="fa-solid fa-envelope-open-text"></i></span>
-                  <span><strong>Buat Undangan</strong><small>Isi data undangan, lalu kirim ke grup atau PDF ke WhatsApp Anda.</small></span>
+                  <span><strong>Buat Undangan</strong><small>Isi data undangan. Simpan draft, pratinjau, atau terbitkan dengan Cetak.</small></span>
                   <i class="fa-solid fa-chevron-down risma-pub-chevron"></i>
                 </summary>
                 <div class="risma-pub-body">
@@ -539,11 +539,16 @@
                   <div class="risma-pub-actions">
                     <button id="risma-publish-invite-draft" class="ghost" type="button"><i class="fa-regular fa-floppy-disk"></i> Simpan Draft</button>
                     <button id="risma-publish-invite-print" class="primary" type="button"><i class="fa-solid fa-print"></i> Cetak</button>
-                    <button id="risma-publish-invite-send" class="primary" type="button"><i class="fa-brands fa-whatsapp"></i> Kirim grup</button>
-                    <button id="risma-publish-invite-pdf" class="ghost" type="button"><i class="fa-solid fa-file-pdf"></i> PDF ke saya</button>
                     <button id="risma-publish-invite-preview" class="ghost icon-only" type="button" title="Pratinjau"><i class="fa-solid fa-eye"></i></button>
                   </div>
                   <p id="risma-publish-invite-status" class="status"></p>
+                  <div id="risma-publish-invite-distribution" class="risma-pub-actions" hidden>
+                    <button id="risma-publish-invite-pdf-group" class="primary" type="button"><i class="fa-solid fa-file-pdf"></i> PDF ke Grup</button>
+                    <button id="risma-publish-invite-text-group" class="ghost" type="button"><i class="fa-brands fa-whatsapp"></i> Teks WA ke Grup</button>
+                    <button id="risma-publish-invite-pdf-person" class="primary" type="button"><i class="fa-solid fa-user"></i> PDF ke Perorangan</button>
+                    <button id="risma-publish-invite-text-person" class="ghost" type="button"><i class="fa-brands fa-whatsapp"></i> Teks WA ke Perorangan</button>
+                  </div>
+                  <p id="risma-publish-invite-published" class="status" hidden></p>
                 </div>
               </details>
 
