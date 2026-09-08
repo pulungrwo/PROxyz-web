@@ -1,6 +1,6 @@
 {
-  "version": "1.5.5",
-  "updatedAt": "2026-09-08T20:55:00+07:00",
+  "version": "1.5.6",
+  "updatedAt": "2026-09-09T00:38:55+07:00",
   "uiBase": "PROxyz-SOURCE-20260829-2042",
   "features": [
     "admin-v0.9.3",
@@ -154,6 +154,7 @@
     "risma-invitation-letter-number-archive-fix",
     "risma-invitation-native-share",
     "risma-invitation-auto-archive-refresh",
-    "risma-header-logo-v1"
+    "risma-header-logo-v1",
+    "risma-invite-draft-print-init-v156"
   ]
 }

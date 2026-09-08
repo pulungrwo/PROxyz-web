@@ -1,7 +1,7 @@
 (() => {
   "use strict";
 
-  const ADMIN_BUILD = "1.5.5";
+  const ADMIN_BUILD = "1.5.6";
   const config = window.PROXYZ_ADMIN_CONFIG || {};
 
   async function checkAdminBuild() {
@@ -4724,6 +4724,125 @@ ${row.label}`))return;
   $("risma-publish-announce-preview").addEventListener("click",()=>previewRismaPublication("announcement","risma-publish-announce-status"));
   $("risma-publish-announce-send").addEventListener("click",()=>sendRismaPublication("announcement","risma-publish-announce-status","Kirim pengumuman ini ke semua grup yang terinstal RISMA?"));
   $("risma-publish-announce-pdf").addEventListener("click",()=>sendRismaPublicationPdf("announcement","risma-publish-announce-status"));
+
+  /* RISMA V1.5.6 — draft + cetak */
+  const RISMA_INVITATION_DRAFT_KEY_V156 = "PROxyz.risma.invitationDraft.v2";
+
+  function saveRismaInvitationDraftV156(){
+    const data = rismaPublicationPayload("invitation");
+    const values = [
+      data.event, data.date, data.time, data.place, data.note
+    ];
+    if(!values.some(value => String(value || "").trim())){
+      setStatus($("risma-publish-invite-status"), "Draft masih kosong. Isi data undangan terlebih dahulu.", "error");
+      return;
+    }
+    try{
+      localStorage.setItem(RISMA_INVITATION_DRAFT_KEY_V156, JSON.stringify({
+        version: 2,
+        savedAt: Date.now(),
+        data: {
+          event: data.event || "",
+          date: data.date || "",
+          time: data.time || "",
+          place: data.place || "",
+          note: data.note || ""
+        }
+      }));
+      setStatus($("risma-publish-invite-status"), "Draft tersimpan di perangkat ini.", "success");
+    }catch(error){
+      setStatus($("risma-publish-invite-status"), "Gagal menyimpan draft di perangkat.", "error");
+    }
+  }
+
+  function loadRismaInvitationDraftV156(){
+    try{
+      const raw = localStorage.getItem(RISMA_INVITATION_DRAFT_KEY_V156);
+      if(!raw) return;
+      const data = JSON.parse(raw)?.data || {};
+      const fields = {
+        event: "risma-publish-invite-event",
+        date: "risma-publish-invite-date",
+        time: "risma-publish-invite-time",
+        place: "risma-publish-invite-place",
+        note: "risma-publish-invite-note"
+      };
+      let restored = false;
+      for(const [key,id] of Object.entries(fields)){
+        const el = $(id);
+        if(el && data[key] != null){
+          el.value = String(data[key]);
+          if(String(data[key]).trim()) restored = true;
+        }
+      }
+      if(restored){
+        setStatus($("risma-publish-invite-status"), "Draft terakhir dipulihkan. Belum dicetak.", "success");
+      }
+    }catch(error){
+      console.warn("[RISMA] Draft V1.5.6 tidak dapat dipulihkan:", error?.message || error);
+    }
+  }
+
+  async function printRismaInvitationV156(){
+    const status = $("risma-publish-invite-status");
+    const button = $("risma-publish-invite-print");
+    if(!button) return;
+    button.disabled = true;
+    setStatus(status, "Menyiapkan PDF undangan untuk dicetak…");
+    try{
+      // Preview lebih dulu agar nomor surat / metadata terbaru ikut dipakai
+      // oleh payload bila backend mengembalikannya.
+      try{
+        const preview = await api("/api/risma/publication/preview", {
+          method:"POST",
+          body:JSON.stringify({kind:"invitation",data:rismaPublicationPayload("invitation")})
+        });
+        if(preview?.letterNumber) rismaInvitationLetterNumber = String(preview.letterNumber);
+      }catch(_){}
+
+      const payload = {
+        kind:"invitation",
+        data:rismaPublicationPayload("invitation")
+      };
+      const response = await apiRaw("/api/risma/publication/file", {
+        method:"POST",
+        body:JSON.stringify(payload)
+      });
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+      const win = window.open(url, "_blank", "noopener,noreferrer");
+      if(!win){
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "undangan-risma.pdf";
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+      }
+      setStatus(status, "PDF undangan siap dicetak. Nomor surat resmi belum diarsipkan hanya karena membuka PDF.", "success");
+      setTimeout(() => URL.revokeObjectURL(url), 60000);
+    }catch(error){
+      setStatus(status, error?.message || "Gagal membuat PDF undangan.", "error");
+    }finally{
+      button.disabled = false;
+    }
+  }
+
+  function wireRismaInvitationDraftPrintV156(){
+    const draft = $("risma-publish-invite-draft");
+    const print = $("risma-publish-invite-print");
+    if(draft && !draft.dataset.v156Bound){
+      draft.dataset.v156Bound = "1";
+      draft.addEventListener("click", saveRismaInvitationDraftV156);
+    }
+    if(print && !print.dataset.v156Bound){
+      print.dataset.v156Bound = "1";
+      print.addEventListener("click", printRismaInvitationV156);
+    }
+    loadRismaInvitationDraftV156();
+  }
+
+  wireRismaInvitationDraftPrintV156();
   $("risma-publish-invite-preview").addEventListener("click",()=>previewRismaPublication("invitation","risma-publish-invite-status"));
   $("risma-publish-invite-send").addEventListener("click",()=>sendRismaPublication("invitation","risma-publish-invite-status","Kirim undangan ini ke semua grup yang terinstal RISMA?"));
   $("risma-publish-invite-pdf").addEventListener("click",()=>sendRismaPublicationPdf("invitation","risma-publish-invite-status"));
@@ -5120,7 +5239,9 @@ ${row.label}`))return;
   }
 
   async function deleteGlobalModuleInstance(moduleId,instanceId,nama){
-    if(!confirm(`Hapus ${nama}?\n\nData akan dibuatkan snapshot arsip internal sebelum dihapus.`))return;
+    if(!confirm(`Hapus ${nama}?
+
+Data akan dibuatkan snapshot arsip internal sebelum dihapus.`))return;
     try{await api("/api/admin/module-manager",{method:"POST",body:JSON.stringify({action:"delete",moduleId,instanceId})}); await loadGlobalModuleManager(); setStatus($("admin-module-crud-status"),`${nama} dihapus dan snapshot arsip dibuat.`,"success");}catch(e){setStatus($("admin-module-crud-status"),e.message,"error");}
   }
 

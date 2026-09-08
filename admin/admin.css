@@ -1719,3 +1719,8 @@ dialog[id^="risma-"] .icon-button{background:#edf7fd!important;color:#285c7d!imp
 .risma-share-actions button small{font-size:10.5px;color:#667085}
 .risma-share-actions .risma-share-skip{background:#f8fafc!important}
 @media(max-width:430px){.risma-share-dialog-body{padding:16px}.risma-share-meta>div{grid-template-columns:1fr}.risma-share-meta strong{text-align:left}.risma-share-actions button{min-height:58px}}
+
+/* RISMA V1.5.6 — draft + cetak */
+.risma-invite-actions-v156{display:flex;flex-wrap:wrap;gap:10px}
+.risma-invite-actions-v156 button{min-height:44px}
+@media(max-width:600px){.risma-invite-actions-v156 button{flex:1 1 100%}}
