@@ -537,10 +537,10 @@
                   </div>
                   <label>Tempat<input id="risma-publish-invite-place" maxlength="120" placeholder="Contoh: Masjid Al-Huda"></label>
                   <label>Catatan <span class="muted">(opsional)</span><textarea id="risma-publish-invite-note" rows="3" maxlength="500" placeholder="Catatan tambahan..."></textarea></label>
-                  <div class="risma-pub-actions">
-                    <button id="risma-publish-invite-send" class="primary" type="button"><i class="fa-brands fa-whatsapp"></i> Kirim grup</button>
-                    <button id="risma-publish-invite-pdf" class="ghost" type="button"><i class="fa-solid fa-file-pdf"></i> PDF ke saya</button>
-                    <button id="risma-publish-invite-preview" class="ghost icon-only" type="button" title="Pratinjau"><i class="fa-solid fa-eye"></i></button>
+                  <div class="risma-pub-actions risma-invite-actions">
+                    <button id="risma-publish-invite-draft" class="ghost" type="button"><i class="fa-regular fa-floppy-disk"></i> Simpan Draft</button>
+                    <button id="risma-publish-invite-print" class="primary" type="button"><i class="fa-solid fa-print"></i> Cetak</button>
+                    <button id="risma-publish-invite-preview" class="ghost" type="button"><i class="fa-solid fa-eye"></i> Pratinjau</button>
                   </div>
                   <p id="risma-publish-invite-status" class="status"></p>
                 </div>
@@ -1228,5 +1228,40 @@
 
   <script src="./config.js?v=242"></script>
   <script src="./admin.js?v=1.5.4" defer></script>
+<dialog id="risma-invite-print-confirm-dialog">
+  <form method="dialog" class="dialog-form risma-publish-dialog">
+    <div class="section-head">
+      <div><p class="eyebrow"><i class="fa-solid fa-file-circle-check"></i> Terbitkan Undangan</p><h2>Cetak &amp; terbitkan?</h2></div>
+      <button id="risma-invite-print-close" class="icon-button" type="button" aria-label="Tutup"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="risma-publish-confirm-card">
+      <i class="fa-solid fa-circle-info"></i>
+      <div><strong>Nomor surat resmi akan dibuat sekarang.</strong><p>Undangan masuk Arsip dan PDF otomatis dikirim ke WhatsApp Anda sebagai admin pembuat.</p></div>
+    </div>
+    <p id="risma-invite-print-confirm-status" class="status"></p>
+    <div class="risma-dialog-actions">
+      <button id="risma-invite-print-cancel" class="ghost" type="button"><i class="fa-solid fa-arrow-left"></i> Batal</button>
+      <button id="risma-invite-print-confirm" class="primary" type="button"><i class="fa-solid fa-print"></i> Ya, Cetak</button>
+    </div>
+  </form>
+</dialog>
+
+<dialog id="risma-invite-followup-dialog">
+  <form method="dialog" class="dialog-form risma-publish-dialog">
+    <div class="section-head">
+      <div><p class="eyebrow"><i class="fa-solid fa-paper-plane"></i> Undangan Terbit</p><h2>Bagikan undangan?</h2></div>
+      <button id="risma-invite-followup-close" class="icon-button" type="button" aria-label="Tutup"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div id="risma-invite-followup-number" class="risma-letter-badge"><i class="fa-solid fa-hashtag"></i><span>Nomor surat</span><strong>-</strong></div>
+    <p class="muted small">PDF sudah dikirim ke WhatsApp Anda. Pilih tindakan lanjutan.</p>
+    <div class="risma-followup-grid">
+      <button id="risma-invite-followup-pdf" class="ghost" type="button"><i class="fa-solid fa-file-pdf"></i><span><strong>Kirim PDF ke Grup</strong><small>Bagikan PDF yang sama</small></span></button>
+      <button id="risma-invite-followup-text" class="ghost" type="button"><i class="fa-brands fa-whatsapp"></i><span><strong>Undangan Text WA</strong><small>Bagikan teks undangan ke grup</small></span></button>
+      <button id="risma-invite-followup-skip" class="ghost" type="button"><i class="fa-solid fa-forward"></i><span><strong>Lewati</strong><small>Selesai tanpa kirim ke grup</small></span></button>
+    </div>
+    <p id="risma-invite-followup-status" class="status"></p>
+  </form>
+</dialog>
+
 </body>
 </html>

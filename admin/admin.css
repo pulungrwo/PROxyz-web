@@ -1703,3 +1703,21 @@ dialog[id^="risma-"] .icon-button{background:#edf7fd!important;color:#285c7d!imp
   #creator-metric-dialog{width:100vw;max-width:none;margin:auto 0 0;border-radius:22px 22px 0 0;max-height:82dvh}#creator-metric-dialog::backdrop{background:rgba(16,24,40,.52)}#creator-metric-dialog .dialog-form{max-height:82dvh;padding:14px 14px max(16px,env(safe-area-inset-bottom))}.creator-metric-grid{grid-template-columns:1fr 1fr;gap:8px}.creator-metric-grid label{font-size:.72rem}.creator-metric-grid input{padding:10px 9px}.creator-metric-form .section-head{position:sticky;top:-14px;background:#fff;z-index:1;padding-top:4px}
 }
 @media(max-width:360px){.creator-network-row{grid-template-columns:1fr}.creator-network-chip b{display:inline}.creator-content-controls{grid-template-columns:1fr}.creator-metric-grid{grid-template-columns:1fr 1fr}}
+
+
+/* RISMA invitation issue flow */
+.risma-invite-actions{grid-template-columns:1fr 1fr 1fr!important}
+.risma-publish-dialog{gap:14px}
+.risma-publish-confirm-card{display:flex;gap:12px;align-items:flex-start;padding:14px;border:1px solid #e4e7ec;border-radius:15px;background:#f8fafc;color:#344054}
+.risma-publish-confirm-card>i{font-size:20px;margin-top:2px}
+.risma-publish-confirm-card strong{display:block;margin-bottom:4px;color:#101828}
+.risma-publish-confirm-card p{margin:0;font-size:13px;line-height:1.5;color:#667085}
+.risma-dialog-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.risma-letter-badge{display:flex;align-items:center;gap:10px;padding:13px 14px;border-radius:14px;background:#101828;color:#fff}
+.risma-letter-badge>i{opacity:.7}.risma-letter-badge span{font-size:12px;opacity:.7}.risma-letter-badge strong{margin-left:auto;font-size:16px;letter-spacing:.03em}
+.risma-followup-grid{display:grid;gap:9px}
+.risma-followup-grid button{display:flex;align-items:center;gap:12px;text-align:left;border:1px solid #e4e7ec}
+.risma-followup-grid button>i{width:24px;text-align:center;font-size:17px}
+.risma-followup-grid button span{display:grid;gap:2px}
+.risma-followup-grid button small{font-size:11px;font-weight:500;color:#667085}
+@media(max-width:640px){.risma-invite-actions{grid-template-columns:1fr 1fr 1fr!important}.risma-invite-actions button{font-size:11px;padding:8px 6px}}
