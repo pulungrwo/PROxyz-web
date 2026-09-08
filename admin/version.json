@@ -155,6 +155,7 @@
     "risma-invitation-native-share",
     "risma-invitation-auto-archive-refresh",
     "risma-header-logo-v1",
-    "risma-invite-draft-print-init-v156"
+    "risma-invite-draft-print-init-v156",
+    "risma-invite-finalize-1.5.6"
   ]
 }
