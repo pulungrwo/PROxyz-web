@@ -1,7 +1,7 @@
 (() => {
   "use strict";
 
-  const ADMIN_BUILD = "1.5.8";
+  const ADMIN_BUILD = "1.5.9";
   const config = window.PROXYZ_ADMIN_CONFIG || {};
 
   async function checkAdminBuild() {
@@ -2241,7 +2241,7 @@
     $("risma-publish-rules-send").disabled = !period || groupBlocked;
     $("risma-publish-rules-pdf").disabled = !period;
     for (const id of ["risma-publish-announce-send","risma-publish-invite-send"]) setDisabled(id, groupBlocked);
-    for (const id of ["risma-publish-announce-preview","risma-publish-invite-preview","risma-publish-announce-pdf","risma-publish-invite-pdf"]) setDisabled(id, !period);
+    for (const id of ["risma-publish-announce-preview","risma-publish-announce-pdf","risma-publish-invite-pdf"]) setDisabled(id, !period);
 
     if (owner) {
       $("risma-owner-period-year").value = period && !simulation ? String(period.hijriYear || "") : String((rismaDetail.periods || []).find(x => !x.isSimulation && x.status === "active")?.hijriYear || "");
@@ -2969,11 +2969,7 @@
   async function shareRismaText(){
     const draft=rismaShareDraft;
     if(!draft?.text) throw new Error("Teks undangan belum tersedia.");
-    if(navigator.share){
-      await navigator.share({title:draft.title||"Undangan RISMA",text:draft.text});
-      return;
-    }
-    window.open(`https://wa.me/?text=${encodeURIComponent(draft.text)}`,"_blank","noopener,noreferrer");
+    window.location.href=`whatsapp://send?text=${encodeURIComponent(draft.text)}`;
   }
 
   async function shareRismaPdf(){
@@ -4728,6 +4724,28 @@ ${row.label}`))return;
   /* RISMA V1.5.6 — draft + cetak */
   const RISMA_INVITATION_DRAFT_KEY_V156 = "PROxyz.risma.invitationDraft.v2";
 
+  function clearRismaInvitationDraftAfterIssueV159(){
+    try{ localStorage.removeItem(RISMA_INVITATION_DRAFT_KEY_V156); }
+    catch(error){ console.warn("[RISMA] Draft undangan tidak dapat dihapus:", error?.message || error); }
+
+    const fields=[
+      "risma-publish-invite-event",
+      "risma-publish-invite-date",
+      "risma-publish-invite-time",
+      "risma-publish-invite-place",
+      "risma-publish-invite-note"
+    ];
+    fields.forEach(id=>{
+      const el=$(id);
+      if(!el)return;
+      el.value="";
+      el.dispatchEvent(new Event("input",{bubbles:true}));
+      el.dispatchEvent(new Event("change",{bubbles:true}));
+    });
+    rismaInvitationLetterNumber="";
+    rismaInvitationDraftKey="";
+  }
+
   function saveRismaInvitationDraftV156(){
     const data = rismaPublicationPayload("invitation");
     const values = [
@@ -4787,6 +4805,7 @@ ${row.label}`))return;
     const status = $("risma-publish-invite-status");
     const button = $("risma-publish-invite-print");
     if(!button) return;
+
     const required = [
       ["risma-publish-invite-event","Kegiatan"],
       ["risma-publish-invite-date","Tanggal"],
@@ -4794,20 +4813,49 @@ ${row.label}`))return;
       ["risma-publish-invite-place","Tempat"]
     ];
     const missing = required.filter(([id])=>!String($(id)?.value || "").trim()).map(([,label])=>label);
-    if(missing.length){ setStatus(status, `Lengkapi: ${missing.join(", ")}.`, "error"); return; }
-    if(!confirm("Terbitkan undangan ini sekarang?\n\nPDF akan langsung dikirim ke WhatsApp admin. Tidak ada file yang di-download ke perangkat. Setelah berhasil, pilihan distribusi akan muncul.")) return;
+    if(missing.length){
+      setStatus(status,`Lengkapi: ${missing.join(", ")}.`,"error");
+      return;
+    }
+
+    if(!confirm("Terbitkan undangan ini sekarang?\n\nPDF akan langsung dikirim ke WhatsApp admin. Tidak ada file yang di-download ke perangkat. Setelah berhasil, undangan masuk Arsip Publikasi dan menu Bagikan muncul.")) return;
+
     button.disabled=true;
     setStatus(status,"Menerbitkan undangan dan mengirim PDF ke WhatsApp admin…");
+    const issueData=rismaPublicationPayload("invitation");
+
     try{
-      const payload={kind:"invitation",data:rismaPublicationPayload("invitation")};
-      const result=await api("/api/risma/publication/pdf-self",{method:"POST",body:JSON.stringify(payload)});
-      const distribution=$("risma-publish-invite-distribution");
-      if(distribution) distribution.hidden=false;
-      const publishedStatus=$("risma-publish-invite-published");
-      if(publishedStatus){publishedStatus.hidden=false;publishedStatus.textContent="✓ UNDANGAN TERBIT — PDF sudah dikirim ke WhatsApp admin. Pilihan distribusi tersedia.";publishedStatus.className="status success";}
+      const result=await api("/api/risma/publication/pdf-self",{
+        method:"POST",
+        body:JSON.stringify({kind:"invitation",data:issueData})
+      });
+
+      if(result.archive) upsertRismaArchive(result.archive);
+      clearRismaInvitationDraftAfterIssueV159();
+
+      const published=$("risma-publish-invite-published");
+      if(published){
+        published.hidden=false;
+        published.textContent="✓ UNDANGAN TERBIT — PDF sudah dikirim ke WhatsApp admin dan arsip telah diperbarui.";
+        published.className="status success";
+      }
+
       setStatus(status,result.message || "Undangan berhasil diterbitkan.","success");
-    }catch(error){setStatus(status,error?.message || "Gagal menerbitkan undangan.","error");}
-    finally{button.disabled=false;}
+
+      openRismaShareDialog({
+        kind:"invitation",
+        data:issueData,
+        title:result.title || ("Undangan · "+(issueData.event || "RISMA")),
+        text:result.text || "",
+        letterNumber:result.letterNumber || issueData.letterNumber || "",
+        event:result.event || issueData.event || "",
+        fileName:result.fileName || ""
+      });
+    }catch(error){
+      setStatus(status,error?.message || "Gagal menerbitkan undangan.","error");
+    }finally{
+      button.disabled=false;
+    }
   }
   async function runRismaInviteDistribution(action){
     const status=$("risma-publish-invite-status");
