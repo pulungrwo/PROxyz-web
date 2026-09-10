@@ -1,7 +1,7 @@
 (() => {
   "use strict";
 
-  const ADMIN_BUILD = "1.5.11";
+  const ADMIN_BUILD = "1.5.12";
   const config = window.PROXYZ_ADMIN_CONFIG || {};
 
   async function checkAdminBuild() {
@@ -2985,9 +2985,17 @@
     const status=$("risma-share-status");
     const buttons=["risma-share-pdf-group","risma-share-text-group","risma-share-pdf-person","risma-share-text-person"];
     buttons.forEach(id=>setDisabled(id,true));
-    setStatus(status,"Membuka menu berbagi WhatsApp…");
+    const isGroup=action.endsWith("-group");
+    setStatus(status,isGroup ? "PROxyz sedang mengirim ke grup RISMA yang ter-install…" : "Membuka menu berbagi WhatsApp…");
     try{
-      if(action.startsWith("pdf")) await shareRismaPdf();
+      if(isGroup){
+        if(!rismaShareDraft?.kind) throw new Error("Data undangan untuk dikirim belum tersedia.");
+        const endpoint=action==="pdf-group" ? "/api/risma/publication/pdf-group" : "/api/risma/publication/share-group";
+        const result=await api(endpoint,{method:"POST",body:JSON.stringify({kind:rismaShareDraft.kind,data:rismaShareDraft.data})});
+        setStatus(status,result.message || `Berhasil dikirim ke ${result.sent || 0} grup RISMA.`,"success");
+        return;
+      }
+      if(action==="pdf-person") await shareRismaPdf();
       else await shareRismaText();
       setStatus(status,"Menu berbagi selesai dibuka.","success");
     }catch(error){
