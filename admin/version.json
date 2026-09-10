@@ -1,6 +1,6 @@
 {
-  "version": "1.5.15",
-  "updatedAt": "2026-09-10T21:30:00+07:00",
+  "version": "1.5.16",
+  "updatedAt": "2026-09-10T23:30:00+07:00",
   "uiBase": "PROxyz-SOURCE-20260829-2042",
   "features": [
     "admin-v0.9.3",
@@ -162,6 +162,13 @@
     "risma-coupon-issuer-space-v1513",
     "risma-coupon-elegant-thr-header-v1513",
     "risma-share-person-label-seseorang-v1513",
-    "risma-share-group-no-native-share"
+    "risma-share-group-no-native-share",
+    "risma-rank-solo-team-labels-v1516",
+    "risma-rank-pdf-one-page-columns-v1516",
+    "risma-coupon-signature-space-v1516",
+    "risma-no-signatures-except-invitation-v1516",
+    "risma-simulation-group-send-v1516",
+    "risma-team-member-points-v1516",
+    "risma-poin-rules-one-page-v1516"
   ]
 }

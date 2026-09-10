@@ -1332,7 +1332,7 @@ img,video,canvas,svg{max-width:100%}
 .risma-scoring-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
 .risma-scoring-grid label{min-width:0;gap:5px;font-size:11px;text-align:center}
 .risma-scoring-grid input{min-width:0;padding:9px 7px;text-align:center}
-/* Peringkat peserta pada tab Poin selalu: nama | poin | ubah | hapus. */
+/* Rank solo pada tab Poin selalu: nama | poin | ubah | hapus. */
 #risma-view .risma-score-line{display:grid!important;grid-template-columns:minmax(0,1fr) auto auto auto!important;grid-template-areas:none!important;gap:5px!important;align-items:center!important}
 #risma-view .risma-score-line>.risma-row-name{grid-area:auto!important;min-width:0!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important}
 #risma-view .risma-score-line>.score-pill{grid-area:auto!important;justify-self:auto!important;white-space:nowrap!important}

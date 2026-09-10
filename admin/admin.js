@@ -1,7 +1,7 @@
 (() => {
   "use strict";
 
-  const ADMIN_BUILD = "1.5.13";
+  const ADMIN_BUILD = "1.5.16";
   const config = window.PROXYZ_ADMIN_CONFIG || {};
 
   async function checkAdminBuild() {
@@ -2343,7 +2343,7 @@
 
   function renderRismaRankMark(el, index, disqualified = false) {
     el.textContent = disqualified ? "—" : String(index + 1);
-    el.setAttribute("aria-label", disqualified ? "Diskualifikasi" : `Peringkat ${index + 1}`);
+    el.setAttribute("aria-label", disqualified ? "Diskualifikasi" : `Rank ${index + 1}`);
   }
 
   function appendRismaRankCutoff(list, label) {
@@ -2394,7 +2394,7 @@
       const title = document.createElement("strong"); title.textContent = row.name;
       const average = document.createElement("b"); average.className = "risma-rank-points risma-team-average"; average.textContent = `Ø ${number.format(row.averagePoints || 0)} poin`;
       headline.append(title,average);
-      const memberNames = (row.members || []).map(x => x.name).join(" · ") || "Belum ada anggota";
+      const memberNames = (row.members || []).map(x => `${x.name} (${number.format(x.totalPoints || 0)} poin)`).join(" · ") || "Belum ada anggota";
       const meta = document.createElement("span"); meta.textContent = `Total ${number.format(row.totalPoints || 0)} poin · ${memberNames}`;
       info.append(headline,meta);
       card.append(rank,info);
