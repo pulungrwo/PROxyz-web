@@ -10,7 +10,7 @@
   <meta http-equiv="Expires" content="0">
   <title>Admin PROxyz</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
-  <link rel="stylesheet" href="./admin.css?v=1.5.12">
+  <link rel="stylesheet" href="./admin.css?v=1.5.13">
 </head>
 <body>
   <main class="shell">
@@ -645,7 +645,7 @@
             </section>
 
             <section id="risma-owner-simulation-box" class="risma-owner-control simulation" hidden>
-              <div class="risma-owner-control-head"><span class="risma-pub-icon"><i class="fa-solid fa-flask"></i></span><div><h3>Simulasi RISMA</h3><p id="risma-owner-simulation-note" class="muted small">Coba semua menu tanpa mengubah data asli. Saat simulasi aktif, pesan tidak dikirim ke grup.</p></div></div>
+              <div class="risma-owner-control-head"><span class="risma-pub-icon"><i class="fa-solid fa-flask"></i></span><div><h3>Simulasi RISMA</h3><p id="risma-owner-simulation-note" class="muted small">Coba semua menu tanpa mengubah data asli. Saat simulasi aktif, bot tetap dapat mengirim ke grup untuk pengujian.</p></div></div>
               <div class="risma-owner-inline"><label>Tahun simulasi<input id="risma-owner-simulation-year" type="number" min="1400" max="1600" placeholder="1448"></label><button id="risma-simulation-start" class="ghost" type="button"><i class="fa-solid fa-play"></i> Mulai kosong</button><button id="risma-simulation-seed" class="ghost" type="button"><i class="fa-solid fa-wand-magic-sparkles"></i> Data contoh</button></div>
               <div class="actions two"><button id="risma-simulation-reset" class="ghost" type="button"><i class="fa-solid fa-rotate-left"></i> Reset simulasi</button><button id="risma-simulation-end" class="danger-soft" type="button"><i class="fa-solid fa-circle-stop"></i> Selesai simulasi</button></div>
               <p id="risma-owner-simulation-status" class="status"></p>
@@ -952,8 +952,8 @@
       <div class="risma-share-actions">
         <button id="risma-share-pdf-group" class="ghost" type="button"><i class="fa-solid fa-file-pdf"></i><span><b>Bagikan PDF ke Grup</b><small>Bot PROxyz kirim ke semua grup RISMA ter-install</small></span></button>
         <button id="risma-share-text-group" class="ghost" type="button"><i class="fa-brands fa-whatsapp"></i><span><b>Undangan Text WA ke Grup</b><small>Bot PROxyz kirim ke semua grup RISMA ter-install</small></span></button>
-        <button id="risma-share-pdf-person" class="ghost" type="button"><i class="fa-solid fa-user"></i><span><b>Bagikan PDF ke Perorangan</b><small>Pilih penerima sendiri</small></span></button>
-        <button id="risma-share-text-person" class="ghost" type="button"><i class="fa-solid fa-user"></i><span><b>Undangan Text WA ke Perorangan</b><small>Pilih penerima sendiri</small></span></button>
+        <button id="risma-share-pdf-person" class="ghost" type="button"><i class="fa-solid fa-user"></i><span><b>Bagikan PDF ke Seseorang</b><small>Pilih penerima sendiri</small></span></button>
+        <button id="risma-share-text-person" class="ghost" type="button"><i class="fa-solid fa-user"></i><span><b>Undangan Text WA ke Seseorang</b><small>Pilih penerima sendiri</small></span></button>
         <button id="risma-share-skip" class="ghost risma-share-skip" type="button"><i class="fa-solid fa-forward"></i><span><b>Lewati</b><small>Selesai tanpa berbagi</small></span></button>
       </div>
       <p id="risma-share-status" class="status"></p>
@@ -1255,6 +1255,6 @@
   </dialog>
 
   <script src="./config.js?v=242"></script>
-  <script src="./admin.js?v=1.5.12" defer></script>
+  <script src="./admin.js?v=1.5.13" defer></script>
 </body>
 </html>

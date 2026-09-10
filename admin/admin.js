@@ -1,7 +1,7 @@
 (() => {
   "use strict";
 
-  const ADMIN_BUILD = "1.5.12";
+  const ADMIN_BUILD = "1.5.13";
   const config = window.PROXYZ_ADMIN_CONFIG || {};
 
   async function checkAdminBuild() {
@@ -2233,7 +2233,8 @@
     $("risma-coupon-add").disabled = !period;
     $("risma-print-coupon-pdf").disabled = !period;
 
-    const groupBlocked = simulation;
+    // Simulasi tetap boleh mengirim ke grup agar alur bot dapat diuji end-to-end.
+    const groupBlocked = false;
     $("risma-publish-rank-preview").disabled = !period || !hasScores;
     $("risma-publish-rank").disabled = !period || !hasScores || groupBlocked;
     $("risma-publish-rank-pdf").disabled = !period || !hasScores;
@@ -2252,8 +2253,8 @@
       $("risma-owner-period-create").disabled = Boolean(period);
       $("risma-owner-period-close").disabled = !period || simulation;
       $("risma-owner-simulation-note").textContent = simulation
-        ? `Simulasi Ramadan ${period.hijriYear} H aktif. Data asli tidak berubah dan pesan ke grup tidak dikirim.`
-        : "Coba semua menu tanpa mengubah data asli. Pesan ke grup tidak dikirim selama simulasi.";
+        ? `Simulasi Ramadan ${period.hijriYear} H aktif. Data asli tidak berubah. Pengiriman bot ke grup tetap aktif untuk pengujian.`
+        : "Coba semua menu tanpa mengubah data asli. Pengiriman bot ke grup tetap aktif saat simulasi.";
       $("risma-simulation-start").disabled = simulation;
       $("risma-simulation-seed").disabled = false;
       $("risma-simulation-reset").disabled = !simulation;
@@ -2805,8 +2806,8 @@
     rismaPendingPublishWeek=Number(week)||0;
     $("risma-week-publish-message").textContent=`Edit Minggu ${rismaPendingPublishWeek} sudah disimpan. Kirim update RISMA Poin terbaru ke grup?`;
     setStatus($("risma-week-publish-status"));
-    $("risma-week-publish-send").disabled=Boolean(rismaDetail?.activePeriod?.isSimulation);
-    if(rismaDetail?.activePeriod?.isSimulation) setStatus($("risma-week-publish-status"),"Mode simulasi: pesan ke grup tidak dikirim.","error");
+    $("risma-week-publish-send").disabled=false;
+    if(rismaDetail?.activePeriod?.isSimulation) setStatus($("risma-week-publish-status"),"Mode simulasi aktif: bot tetap akan mengirim ke grup untuk pengujian.","success");
     $("risma-week-publish-dialog").showModal();
   }
 
@@ -3011,7 +3012,9 @@
     if(!dialog)return;
     $("risma-share-number").textContent=draft.letterNumber||"-";
     $("risma-share-event").textContent=draft.event||"-";
-    $("risma-share-note").textContent="PDF sudah dikirim ke WhatsApp Anda dan undangan sudah masuk Arsip Publikasi. Pilih cara berbagi berikut.";
+    $("risma-share-note").textContent=rismaDetail?.activePeriod?.isSimulation
+      ? "PDF sudah dikirim ke WhatsApp Anda. Mode simulasi tidak mengubah data asli; bot tetap dapat mengirim ke grup."
+      : "PDF sudah dikirim ke WhatsApp Anda dan undangan sudah masuk Arsip Publikasi. Pilih cara berbagi berikut.";
     setStatus($("risma-share-status"));
     dialog.showModal();
   }
