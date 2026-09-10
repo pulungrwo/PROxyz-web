@@ -1,6 +1,6 @@
 {
-  "version": "1.5.16",
-  "updatedAt": "2026-09-10T23:30:00+07:00",
+  "version": "1.5.19",
+  "updatedAt": "2026-09-11T00:00:00+07:00",
   "uiBase": "PROxyz-SOURCE-20260829-2042",
   "features": [
     "admin-v0.9.3",
@@ -169,6 +169,7 @@
     "risma-no-signatures-except-invitation-v1516",
     "risma-simulation-group-send-v1516",
     "risma-team-member-points-v1516",
-    "risma-poin-rules-one-page-v1516"
+    "risma-poin-rules-one-page-v1516",
+    "risma-v3-rank-awards-stamp-space"
   ]
 }

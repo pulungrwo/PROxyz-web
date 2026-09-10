@@ -1,7 +1,7 @@
 (() => {
   "use strict";
 
-  const ADMIN_BUILD = "1.5.16";
+  const ADMIN_BUILD = "1.5.19";
   const config = window.PROXYZ_ADMIN_CONFIG || {};
 
   async function checkAdminBuild() {
@@ -2368,18 +2368,21 @@
     else scores.forEach((row,index) => {
       const card = document.createElement("article");
       card.className = `risma-rank-card participant risma-rank-row-card${row.disqualified?" disqualified":""}`;
-      const rank = document.createElement("span"); rank.className = "risma-rank-number"; renderRismaRankMark(rank,index,Boolean(row.disqualified));
+      const rank = document.createElement("span");
+      const winnerLimit = Number(rismaDetail?.settings?.individualWinnerCount||10);
+      rank.className = `risma-rank-number${!row.disqualified && index+1<=winnerLimit ? ` rank-award rank-award-${index+1}` : ""}`;
+      renderRismaRankMark(rank,index,Boolean(row.disqualified));
       const info = document.createElement("div"); info.className = "risma-rank-info";
       const headline = document.createElement("div"); headline.className = "risma-rank-name-line";
       const title = document.createElement("strong"); title.textContent = row.name; if(row.disqualified) title.className="risma-disqualified-name";
-      const points = document.createElement("b"); points.className = "risma-rank-points"; points.textContent = `${number.format(row.totalPoints || 0)} poin`;
+      const points = document.createElement("b");
+      points.className = `risma-rank-points${!row.disqualified && index+1<=winnerLimit ? ` rank-award rank-award-${index+1}` : ""}`; points.textContent = `${number.format(row.totalPoints || 0)} poin`;
       headline.append(title,points);
       if(row.disqualified){const badge=document.createElement("span");badge.className="risma-dq-badge";badge.textContent="DISKUALIFIKASI";headline.appendChild(badge);}
       const meta = document.createElement("span"); meta.textContent = participantWeekSummary(row);
       info.append(headline,meta);
       card.append(rank,info);
       participantList.appendChild(card);
-      const winnerLimit=Number(rismaDetail?.settings?.individualWinnerCount||10);
       const eligibleCount=scores.filter(item=>!item.disqualified).length;
       if(!row.disqualified && index+1===winnerLimit && eligibleCount>winnerLimit) appendRismaRankCutoff(participantList,`Batas penerima penghargaan · Top ${winnerLimit}`);
     });
@@ -2388,11 +2391,15 @@
     else teams.forEach((row,index) => {
       const card = document.createElement("article");
       card.className = "risma-rank-card team risma-rank-row-card risma-team-row-card";
-      const rank = document.createElement("span"); rank.className = "risma-rank-number"; renderRismaRankMark(rank,index);
+      const rank = document.createElement("span");
+      const teamWinnerLimit = Number(rismaDetail?.settings?.teamWinnerCount||3);
+      rank.className = `risma-rank-number${index+1<=teamWinnerLimit ? ` rank-award rank-award-${index+1}` : ""}`;
+      renderRismaRankMark(rank,index);
       const info = document.createElement("div"); info.className = "risma-rank-info";
       const headline = document.createElement("div"); headline.className = "risma-rank-name-line";
       const title = document.createElement("strong"); title.textContent = row.name;
-      const average = document.createElement("b"); average.className = "risma-rank-points risma-team-average"; average.textContent = `Ø ${number.format(row.averagePoints || 0)} poin`;
+      const average = document.createElement("b");
+      average.className = `risma-rank-points risma-team-average${index+1<=teamWinnerLimit ? ` rank-award rank-award-${index+1}` : ""}`; average.textContent = `Ø ${number.format(row.averagePoints || 0)} poin`;
       headline.append(title,average);
       const memberNames = (row.members || []).map(x => `${x.name} (${number.format(x.totalPoints || 0)} poin)`).join(" · ") || "Belum ada anggota";
       const meta = document.createElement("span"); meta.textContent = `Total ${number.format(row.totalPoints || 0)} poin · ${memberNames}`;

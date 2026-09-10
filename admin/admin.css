@@ -1724,3 +1724,11 @@ dialog[id^="risma-"] .icon-button{background:#edf7fd!important;color:#285c7d!imp
 .risma-invite-actions-v156{display:flex;flex-wrap:wrap;gap:10px}
 .risma-invite-actions-v156 button{min-height:44px}
 @media(max-width:600px){.risma-invite-actions-v156 button{flex:1 1 100%}}
+
+/* RISMA V3.0 — rank awards, separator, stamp-aware UI */
+#risma-view .risma-rank-section + .risma-rank-section{border-top:1px solid #cfe0ea;padding-top:18px;position:relative}
+#risma-view .risma-rank-section + .risma-rank-section::before{content:"RANK TIM";position:absolute;top:-8px;left:50%;transform:translateX(-50%);padding:0 10px;background:#fff;color:#2b80b9;font-size:9px;font-weight:900;letter-spacing:.08em}
+#risma-view .risma-rank-number.rank-award-1,#risma-view .risma-rank-points.rank-award-1{background:#fef3c7!important;color:#92400e!important;border-color:#f6d88a!important}
+#risma-view .risma-rank-number.rank-award-2,#risma-view .risma-rank-points.rank-award-2{background:#e5e7eb!important;color:#374151!important;border-color:#d1d5db!important}
+#risma-view .risma-rank-number.rank-award-3,#risma-view .risma-rank-points.rank-award-3{background:#fde7d9!important;color:#9a3412!important;border-color:#f4b894!important}
+#risma-view .risma-rank-number.rank-award:not(.rank-award-1):not(.rank-award-2):not(.rank-award-3),#risma-view .risma-rank-points.rank-award:not(.rank-award-1):not(.rank-award-2):not(.rank-award-3){background:#e8f5e9!important;color:#166534!important;border-color:#cce8d0!important}
