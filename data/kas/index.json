@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "updatedAt": 1789123003450,
+  "updatedAt": 1789316248544,
   "kas": [
     {
       "idKas": "mbamar",
@@ -38,10 +38,10 @@
       "idKas": "ramadan",
       "nama": "Kas Ramadan",
       "visibility": "public",
-      "updatedAt": 1788371855869,
+      "updatedAt": 1789316248544,
       "url": "/kas/ramadan/",
-      "saldo": 0,
-      "jumlahTransaksi": 2
+      "saldo": 900000,
+      "jumlahTransaksi": 3
     },
     {
       "idKas": "risma",

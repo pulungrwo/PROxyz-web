@@ -5,12 +5,25 @@
   "status": "aktif",
   "saldo": {
     "awal": 0,
-    "masuk": 620000,
+    "masuk": 1520000,
     "keluar": 620000,
-    "akhir": 0
+    "akhir": 900000
   },
-  "jumlahTransaksi": 2,
+  "jumlahTransaksi": 3,
   "transactions": [
+    {
+      "id": "ramadan-260913-001",
+      "nomor": "003",
+      "tanggal": 1789316248119,
+      "jenis": "masuk",
+      "kategori": "hasil usaha",
+      "kategoriNama": "Hasil Usaha",
+      "keterangan": "Panen Singkong",
+      "catatan": "",
+      "nominal": 900000,
+      "label": [],
+      "bukti": []
+    },
     {
       "id": "ramadan-260401-001",
       "nomor": "002",
@@ -40,5 +53,5 @@
       "bukti": []
     }
   ],
-  "updatedAt": 1788371855869
+  "updatedAt": 1789316248544
 }
