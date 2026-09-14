@@ -10,7 +10,7 @@
   <meta http-equiv="Expires" content="0">
   <title>Admin PROxyz</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
-  <link rel="stylesheet" href="./admin.css?v=1.5.20">
+  <link rel="stylesheet" href="./admin.css?v=1.5.19">
 </head>
 <body>
   <main class="shell">
@@ -111,11 +111,6 @@
               <div><span>Masuk</span><b id="kas-in">—</b></div>
               <div><span>Keluar</span><b id="kas-out">—</b></div>
             </div>
-          </section>
-
-          <section class="kas-primary-actions">
-            <button id="add-income" class="quick-card kas-action-card kas-action-income" type="button"><i class="fa-solid fa-arrow-trend-up"></i><b>Pemasukan</b></button>
-            <button id="add-expense" class="quick-card kas-action-card kas-action-expense" type="button"><i class="fa-solid fa-arrow-trend-down"></i><b>Pengeluaran</b></button>
           </section>
 
           <nav class="subtabs kas-subtabs" aria-label="Fitur Kas">
@@ -245,8 +240,14 @@
               </section>
             </div>
           </section>
+          <div class="kas-fab-wrap">
+            <div id="kas-fab-menu" class="kas-fab-menu" hidden>
+              <button id="kas-fab-income" type="button"><i class="fa-solid fa-arrow-trend-up"></i><span>Pemasukan</span></button>
+              <button id="kas-fab-expense" type="button"><i class="fa-solid fa-arrow-trend-down"></i><span>Pengeluaran</span></button>
+            </div>
+            <button id="kas-fab" class="kas-fab" type="button" aria-label="Tambah transaksi Kas" aria-expanded="false"><i class="fa-solid fa-plus"></i></button>
+          </div>
         </section>
-        <div class="kas-fab-wrap"><div id="kas-fab-menu" class="kas-fab-menu" hidden><button data-kas-create="masuk" type="button">Pemasukan</button><button data-kas-create="keluar" type="button">Pengeluaran</button></div><button id="kas-fab" class="kas-fab" type="button" aria-label="Tambah transaksi"><i class="fa-solid fa-plus"></i></button></div>
       </section>
 
       <section id="bertunas-view" class="app-section" hidden>
@@ -1256,6 +1257,6 @@
   </dialog>
 
   <script src="./config.js?v=242"></script>
-  <script src="./admin.js?v=1.5.20" defer></script>
+  <script src="./admin.js?v=1.5.19" defer></script>
 </body>
 </html>

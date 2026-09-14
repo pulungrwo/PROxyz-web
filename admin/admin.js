@@ -4565,10 +4565,21 @@ ${row.label}`))return;
   $("close-evidence-dialog").addEventListener("click", () => $("evidence-dialog").close());
   $("upload-evidence").addEventListener("click", uploadEvidence);
   $("refresh").addEventListener("click", () => loadKas(activeKas).catch(showError));
-  $("add-income").addEventListener("click", () => openKasCreate("masuk"));
-  $("add-expense").addEventListener("click", () => openKasCreate("keluar"));
-  $("kas-fab").addEventListener("click", () => { $("kas-fab-menu").hidden = !$("kas-fab-menu").hidden; });
-  document.querySelectorAll("[data-kas-create]").forEach(b => b.addEventListener("click", () => { $("kas-fab-menu").hidden = true; openKasCreate(b.dataset.kasCreate); }));
+  $("kas-fab").addEventListener("click", () => {
+    const menu = $("kas-fab-menu");
+    menu.hidden = !menu.hidden;
+    $("kas-fab").setAttribute("aria-expanded", String(!menu.hidden));
+  });
+  $("kas-fab-income").addEventListener("click", () => {
+    $("kas-fab-menu").hidden = true;
+    $("kas-fab").setAttribute("aria-expanded", "false");
+    openKasCreate("masuk");
+  });
+  $("kas-fab-expense").addEventListener("click", () => {
+    $("kas-fab-menu").hidden = true;
+    $("kas-fab").setAttribute("aria-expanded", "false");
+    openKasCreate("keluar");
+  });
   $("tx-type").addEventListener("change", updateKasCategories);
   $("tx-amount").addEventListener("input", () => formatNominalInput($("tx-amount")));
   $("tx-amount-thousand").addEventListener("click", () => {
