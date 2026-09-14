@@ -83,7 +83,7 @@
       "jenis": "keluar",
       "kategori": "pembangunan & renovasi",
       "kategoriNama": "Pembangunan & Renovasi",
-      "keterangan": "Pintu + Kaca DP",
+      "keterangan": "Pasang Pintu (DP)",
       "catatan": "",
       "nominal": 3000000,
       "label": [],
@@ -2624,5 +2624,5 @@
       "bukti": []
     }
   ],
-  "updatedAt": 1789393287467
+  "updatedAt": 1789393413953
 }
