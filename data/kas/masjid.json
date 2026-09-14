@@ -6,11 +6,24 @@
   "saldo": {
     "awal": 0,
     "masuk": 32389000,
-    "keluar": 28566000,
-    "akhir": 3823000
+    "keluar": 28576000,
+    "akhir": 3813000
   },
-  "jumlahTransaksi": 170,
+  "jumlahTransaksi": 171,
   "transactions": [
+    {
+      "id": "masjid-260911-004",
+      "nomor": "171",
+      "tanggal": 1789134086000,
+      "jenis": "keluar",
+      "kategori": "peralatan & perlengkapan",
+      "kategoriNama": "Peralatan & Perlengkapan",
+      "keterangan": "Pembersih Lantai",
+      "catatan": "",
+      "nominal": 10000,
+      "label": [],
+      "bukti": []
+    },
     {
       "id": "masjid-260911-003",
       "nomor": "170",
@@ -2611,5 +2624,5 @@
       "bukti": []
     }
   ],
-  "updatedAt": 1789123003450
+  "updatedAt": 1789393287467
 }
