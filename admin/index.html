@@ -10,7 +10,7 @@
   <meta http-equiv="Expires" content="0">
   <title>Admin PROxyz</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
-  <link rel="stylesheet" href="./admin.css?v=1.5.19">
+  <link rel="stylesheet" href="./admin.css?v=1.5.20">
 </head>
 <body>
   <main class="shell">
@@ -244,7 +244,13 @@
           
               </section>
             </div>
-          </section>
+          <div class="kas-fab-wrap">
+            <div id="kas-fab-menu" class="kas-fab-menu" hidden>
+              <button data-kas-create="masuk" type="button"><i class="fa-solid fa-arrow-trend-up" aria-hidden="true"></i><span>Pemasukan</span></button>
+              <button data-kas-create="keluar" type="button"><i class="fa-solid fa-arrow-trend-down" aria-hidden="true"></i><span>Pengeluaran</span></button>
+            </div>
+            <button id="kas-fab" class="kas-fab" type="button" aria-label="Tambah transaksi" aria-expanded="false" title="Tambah transaksi"><i class="fa-solid fa-plus"></i></button>
+          </div>
         </section>
       </section>
 
@@ -1255,6 +1261,6 @@
   </dialog>
 
   <script src="./config.js?v=242"></script>
-  <script src="./admin.js?v=1.5.19" defer></script>
+  <script src="./admin.js?v=1.5.20" defer></script>
 </body>
 </html>

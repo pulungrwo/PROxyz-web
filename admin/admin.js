@@ -1,7 +1,7 @@
 (() => {
   "use strict";
 
-  const ADMIN_BUILD = "1.5.19";
+  const ADMIN_BUILD = "1.5.20";
   const config = window.PROXYZ_ADMIN_CONFIG || {};
 
   async function checkAdminBuild() {
@@ -4567,6 +4567,19 @@ ${row.label}`))return;
   $("refresh").addEventListener("click", () => loadKas(activeKas).catch(showError));
   $("add-income").addEventListener("click", () => openKasCreate("masuk"));
   $("add-expense").addEventListener("click", () => openKasCreate("keluar"));
+  $("kas-fab").addEventListener("click", () => {
+    const menu = $("kas-fab-menu");
+    const expanded = menu.hidden;
+    menu.hidden = !expanded;
+    $("kas-fab").setAttribute("aria-expanded", String(expanded));
+  });
+  document.querySelectorAll("[data-kas-create]").forEach(buttonEl => {
+    buttonEl.addEventListener("click", () => {
+      $("kas-fab-menu").hidden = true;
+      $("kas-fab").setAttribute("aria-expanded", "false");
+      openKasCreate(buttonEl.dataset.kasCreate);
+    });
+  });
   $("tx-type").addEventListener("change", updateKasCategories);
   $("tx-amount").addEventListener("input", () => formatNominalInput($("tx-amount")));
   $("tx-amount-thousand").addEventListener("click", () => {
