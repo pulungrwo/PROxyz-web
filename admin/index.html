@@ -126,14 +126,6 @@
             <button class="subtab" type="button" data-kas-tab="pengaturan"><i class="fa-solid fa-sliders"></i><span>Pengaturan</span></button>
           </nav>
 
-          <div id="kas-fab-wrap" class="kas-fab-wrap">
-            <div id="kas-fab-menu" class="kas-fab-menu" hidden>
-              <button data-kas-create="masuk" type="button">Pemasukan</button>
-              <button data-kas-create="keluar" type="button">Pengeluaran</button>
-            </div>
-            <button id="kas-fab" class="kas-fab" type="button" aria-label="Tambah transaksi"><i class="fa-solid fa-plus"></i></button>
-          </div>
-
           <section id="kas-transaksi-panel" class="kas-panel panel">
             <div class="section-head"><div><p class="eyebrow">Riwayat</p><h2>Transaksi</h2></div><button id="refresh" class="ghost compact" type="button">Muat ulang</button></div>
             <input id="search" type="search" placeholder="Cari transaksi…">
@@ -255,6 +247,8 @@
           </section>
         </section>
       </section>
+
+      <div class="kas-fab-wrap"><div id="kas-fab-menu" class="kas-fab-menu" hidden><button data-kas-create="masuk" type="button">Pemasukan</button><button data-kas-create="keluar" type="button">Pengeluaran</button></div><button id="kas-fab" class="kas-fab" type="button" aria-label="Tambah transaksi"><i class="fa-solid fa-plus"></i></button></div>
 
       <section id="bertunas-view" class="app-section" hidden>
         <section class="panel compact-panel">
