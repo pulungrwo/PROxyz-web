@@ -1547,18 +1547,6 @@ dialog[id^="risma-"] .icon-button{background:#edf7fd!important;color:#285c7d!imp
 .kas-group-install{min-width:112px}
 @media(max-width:520px){.kas-group-actions{display:grid}.kas-group-install{width:100%;min-width:0}}
 
-/* Kas transaction FAB V1.5.20 — quick add seperti Bertunas */
-.kas-fab-wrap{position:fixed;right:18px;bottom:22px;z-index:35;display:grid;justify-items:end;gap:8px}
-.kas-fab{width:56px;height:56px;border:0;border-radius:50%;background:#173b2b;color:#fff;display:grid;place-items:center;box-shadow:0 12px 28px rgba(16,24,40,.28);cursor:pointer;font-size:19px}
-.kas-fab:focus-visible{outline:3px solid rgba(23,59,43,.24);outline-offset:3px}
-.kas-fab-menu{min-width:180px;padding:7px;background:#fff;border:1px solid #e4e7ec;border-radius:15px;box-shadow:0 16px 38px rgba(16,24,40,.22)}
-.kas-fab-menu button{display:flex;align-items:center;gap:9px;width:100%;border:0;background:transparent;color:#344054;text-align:left;padding:10px;border-radius:10px;font:inherit;font-size:12.5px;font-weight:800;cursor:pointer}
-.kas-fab-menu button:hover,.kas-fab-menu button:focus-visible{background:#f8fafc}
-.kas-fab-menu button i{width:28px;height:28px;display:grid;place-items:center;border-radius:9px;background:#f2f4f7;color:#475467}
-.kas-fab-menu button:first-child i{background:#ecfdf3;color:#067647}
-.kas-fab-menu button:last-child i{background:#fff1f0;color:#b42318}
-@media(max-width:540px){.kas-fab-wrap{right:16px;bottom:18px}.kas-fab{width:54px;height:54px}}
-
 /* Kas Report V1.2.1 — opsi nX, grup tujuan, link publik */
 .kas-public-link{display:inline-flex;align-items:center;justify-content:center;gap:7px;width:max-content;max-width:100%;margin:3px auto 13px;padding:7px 10px;border:1px solid rgba(255,255,255,.18);border-radius:10px;background:rgba(255,255,255,.09);color:#fff;text-decoration:none;font-size:11.5px;font-weight:780}
 .kas-public-link:hover{background:rgba(255,255,255,.15)}
@@ -1744,3 +1732,10 @@ dialog[id^="risma-"] .icon-button{background:#edf7fd!important;color:#285c7d!imp
 #risma-view .risma-rank-number.rank-award-2,#risma-view .risma-rank-points.rank-award-2{background:#e5e7eb!important;color:#374151!important;border-color:#d1d5db!important}
 #risma-view .risma-rank-number.rank-award-3,#risma-view .risma-rank-points.rank-award-3{background:#fde7d9!important;color:#9a3412!important;border-color:#f4b894!important}
 #risma-view .risma-rank-number.rank-award:not(.rank-award-1):not(.rank-award-2):not(.rank-award-3),#risma-view .risma-rank-points.rank-award:not(.rank-award-1):not(.rank-award-2):not(.rank-award-3){background:#e8f5e9!important;color:#166534!important;border-color:#cce8d0!important}
+
+/* KAS FIX V3.2.4 — floating transaction action */
+.kas-fab-wrap{position:fixed;right:18px;bottom:22px;z-index:35;display:grid;justify-items:end;gap:8px}
+.kas-fab{width:60px;height:60px;border:0;border-radius:999px;background:#153b2c;color:#fff;display:grid;place-items:center;font-size:21px;box-shadow:0 12px 30px rgba(16,24,40,.22);cursor:pointer}
+.kas-fab-menu{display:grid;gap:7px;min-width:150px;padding:9px;border:1px solid #e4e7ec;border-radius:15px;background:#fff;box-shadow:0 12px 28px rgba(16,24,40,.14)}
+.kas-fab-menu[hidden]{display:none!important}
+.kas-fab-menu button{border:1px solid #eaecf0;background:#f8fafc;color:#101828;padding:10px 12px;border-radius:11px;font-weight:800;text-align:left;cursor:pointer}

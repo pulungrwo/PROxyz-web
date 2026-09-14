@@ -744,24 +744,58 @@
     $("app-switcher-bar")?.setAttribute("aria-expanded", "false");
   }
 
-  function switchView(view) {
-    activeView = view;
-    if ($("app-tabs")) $("app-tabs").dataset.activeView = view;
-    for (const name of ["kas", "bertunas", "galeri", "risma", "ternak", "kompetisi", "creator", "users"]) {
-      $(`${name}-view`).hidden = name !== view;
-      $("tab-" + name).classList.toggle("active", name === view);
+  const ADMIN_VIEW_SECTIONS = {
+    kas: "kas-content",
+    bertunas: "bertunas-content",
+    galeri: "gallery-content",
+    risma: "risma-content",
+    ternak: "ternak-content",
+    kompetisi: "competition-content",
+    creator: "creator-view",
+    users: "users-view"
+  };
+  const ADMIN_VIEW_NAMES = Object.keys(ADMIN_VIEW_SECTIONS);
+
+  function getAdminViewSection(view) {
+    const id = ADMIN_VIEW_SECTIONS[view];
+    return id ? $(id) : null;
+  }
+
+  function setAdminViewVisibility(view) {
+    const safeView = ADMIN_VIEW_NAMES.includes(view) ? view : "";
+    for (const name of ADMIN_VIEW_NAMES) {
+      const section = getAdminViewSection(name);
+      if (section) section.hidden = name !== safeView;
+      const tab = $("tab-" + name);
+      if (tab) tab.classList.toggle("active", name === safeView);
     }
+    return safeView;
+  }
+
+  function reinforceAdminViewVisibility(view) {
+    if (!view || view !== activeView || $("app-view")?.hidden) return;
+    const section = getAdminViewSection(view);
+    if (section?.hidden) section.hidden = false;
+  }
+
+  function switchView(view) {
+    activeView = setAdminViewVisibility(view);
+    if ($("app-tabs")) $("app-tabs").dataset.activeView = activeView;
     collapseAppDock();
     syncProxyzAppSwitcherLabel();
-    requestAnimationFrame(syncAppDockFloating);
-    if (view === "kas" && !activeKas && me.kas?.length) loadKas(me.kas[0].id).catch(showError);
-    if (view === "bertunas" && !activeBertunas && me.bertunas?.length) loadBertunas(me.bertunas[0].id).catch(showError);
-    if (view === "galeri" && !activeGallery && me.galeri?.length) loadGallery(me.galeri[0].id).catch(showError);
-    if (view === "risma") loadRisma().catch(showError);
-    if (view === "ternak") loadTernakIndex().catch(showError);
-    if (view === "kompetisi") loadCompetitionIndex().catch(showError);
-    if (view === "creator") loadCreator().catch(showError);
-    if (view === "users" && me.isOwner) loadUsers().catch(showError);
+    requestAnimationFrame(() => {
+      reinforceAdminViewVisibility(activeView);
+      syncAppDockFloating();
+    });
+    setTimeout(() => reinforceAdminViewVisibility(activeView), 0);
+    if (activeView === "kas" && !activeKas && me?.kas?.length) loadKas(me.kas[0].id).catch(showError);
+    if (activeView === "bertunas" && !activeBertunas && me?.bertunas?.length) loadBertunas(me.bertunas[0].id).catch(showError);
+    if (activeView === "galeri" && !activeGallery && me?.galeri?.length) loadGallery(me.galeri[0].id).catch(showError);
+    if (activeView === "risma") loadRisma().catch(showError);
+    if (activeView === "ternak") loadTernakIndex().catch(showError);
+    if (activeView === "kompetisi") loadCompetitionIndex().catch(showError);
+    if (activeView === "creator") loadCreator().catch(showError);
+    if (activeView === "users" && me?.isOwner) loadUsers().catch(showError);
   }
 
   async function handleAdminDeepLink() {
@@ -4567,19 +4601,6 @@ ${row.label}`))return;
   $("refresh").addEventListener("click", () => loadKas(activeKas).catch(showError));
   $("add-income").addEventListener("click", () => openKasCreate("masuk"));
   $("add-expense").addEventListener("click", () => openKasCreate("keluar"));
-  $("kas-fab").addEventListener("click", () => {
-    const menu = $("kas-fab-menu");
-    const expanded = menu.hidden;
-    menu.hidden = !expanded;
-    $("kas-fab").setAttribute("aria-expanded", String(expanded));
-  });
-  document.querySelectorAll("[data-kas-create]").forEach(buttonEl => {
-    buttonEl.addEventListener("click", () => {
-      $("kas-fab-menu").hidden = true;
-      $("kas-fab").setAttribute("aria-expanded", "false");
-      openKasCreate(buttonEl.dataset.kasCreate);
-    });
-  });
   $("tx-type").addEventListener("change", updateKasCategories);
   $("tx-amount").addEventListener("input", () => formatNominalInput($("tx-amount")));
   $("tx-amount-thousand").addEventListener("click", () => {
@@ -4619,6 +4640,9 @@ ${row.label}`))return;
   $("bt-season").addEventListener("change", () => reloadBertunasForContext({ resetCrop: true }).catch(showError));
   $("bt-refresh").addEventListener("click", () => reloadBertunasForContext().catch(showError));
   $("bt-fab").onclick=()=>$("bt-fab-menu").hidden=!$("bt-fab-menu").hidden;document.querySelectorAll("[data-bt-create]").forEach(b=>b.onclick=()=>{$("bt-fab-menu").hidden=true;openBtCreate(b.dataset.btCreate);});
+  $("kas-fab").onclick=()=>{$("kas-fab-menu").hidden=!$("kas-fab-menu").hidden;};
+  document.querySelectorAll("[data-kas-create]").forEach(b=>b.onclick=()=>{$("kas-fab-menu").hidden=true;openKasCreate(b.dataset.kasCreate);});
+  document.addEventListener("click", event=>{ const fabWrap=$("kas-fab-wrap"); const btFabWrap=document.querySelector(".bt-fab-wrap"); if(fabWrap && !fabWrap.contains(event.target)) $("kas-fab-menu").hidden=true; if(btFabWrap && !btFabWrap.contains(event.target) && $("bt-fab-menu")) $("bt-fab-menu").hidden=true; });
   $("bt-set-planting").onclick=async()=>{if(btIsAllCrops())return alert("Pilih satu tanaman terlebih dahulu.");const d=prompt("Tanggal tanam (YYYY-MM-DD):",btCurrentCrop()?.plantingDate||todayJakarta());if(d){await api(`/api/bertunas/${encodeURIComponent(activeBertunas)}/tanam`,{method:"POST",body:JSON.stringify({seasonId:btSelectedSeason(),cropId:btCropScope,date:d})});await reloadBertunasForContext();}};
   $("bt-close-dialog").addEventListener("click", () => $("bt-dialog").close());
   document.querySelectorAll(".subtab[data-bt-tab]").forEach(el => el.addEventListener("click", () => {

@@ -1,6 +1,6 @@
 {
   "version": "1.5.20",
-  "updatedAt": "2026-09-14T19:30:00+07:00",
+  "updatedAt": "2026-09-11T00:00:00+07:00",
   "uiBase": "PROxyz-SOURCE-20260829-2042",
   "features": [
     "admin-v0.9.3",
@@ -170,7 +170,6 @@
     "risma-simulation-group-send-v1516",
     "risma-team-member-points-v1516",
     "risma-poin-rules-one-page-v1516",
-    "risma-v3-rank-awards-stamp-space",
-    "kas-web-transaction-create-fix-and-fab-v1520"
+    "risma-v3-rank-awards-stamp-space"
   ]
 }
