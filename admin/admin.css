@@ -1733,7 +1733,8 @@ dialog[id^="risma-"] .icon-button{background:#edf7fd!important;color:#285c7d!imp
 #risma-view .risma-rank-number.rank-award-3,#risma-view .risma-rank-points.rank-award-3{background:#fde7d9!important;color:#9a3412!important;border-color:#f4b894!important}
 #risma-view .risma-rank-number.rank-award:not(.rank-award-1):not(.rank-award-2):not(.rank-award-3),#risma-view .risma-rank-points.rank-award:not(.rank-award-1):not(.rank-award-2):not(.rank-award-3){background:#e8f5e9!important;color:#166534!important;border-color:#cce8d0!important}
 
-/* KAS FAB V3.2.6 */
+
+/* KAS FAB V3.2.7 — scoped by kas-view DOM ownership */
 .kas-fab-wrap{position:fixed;right:18px;bottom:22px;z-index:35;display:grid;justify-items:end;gap:8px}
 .kas-fab{width:56px;height:56px;border:0;border-radius:50%;background:#101828;color:#fff;box-shadow:0 12px 28px rgba(16,24,40,.28);display:grid;place-items:center;cursor:pointer}
 .kas-fab-menu{min-width:170px;padding:7px;background:#fff;border:1px solid #e4e7ec;border-radius:15px;box-shadow:0 16px 38px rgba(16,24,40,.22)}
