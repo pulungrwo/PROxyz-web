@@ -6,11 +6,24 @@
   "saldo": {
     "awal": 0,
     "masuk": 32389000,
-    "keluar": 28576000,
-    "akhir": 3813000
+    "keluar": 28826000,
+    "akhir": 3563000
   },
-  "jumlahTransaksi": 171,
+  "jumlahTransaksi": 172,
   "transactions": [
+    {
+      "id": "masjid-260917-001",
+      "nomor": "172",
+      "tanggal": 1789645717000,
+      "jenis": "keluar",
+      "kategori": "acara/kegiatan",
+      "kategoriNama": "Acara/Kegiatan",
+      "keterangan": "Sumbangan Maulid",
+      "catatan": "sumbangan untuk acara maulid nabi di ponpes desa sawojajar",
+      "nominal": 250000,
+      "label": [],
+      "bukti": []
+    },
     {
       "id": "masjid-260911-004",
       "nomor": "171",
@@ -2624,5 +2637,5 @@
       "bukti": []
     }
   ],
-  "updatedAt": 1789393413953
+  "updatedAt": 1789645719046
 }
