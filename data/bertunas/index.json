@@ -1,10 +1,16 @@
 {
   "schemaVersion": 1,
-  "generatedAt": 1790098471918,
+  "generatedAt": 1790098562240,
   "totalProjects": 3,
   "totalWeightKg": 0,
   "totalHarvestCount": 0,
   "commodities": [
+    {
+      "komoditas": "Alpukat Aligator",
+      "weightKg": 0,
+      "harvestCount": 0,
+      "projectCount": 1
+    },
     {
       "komoditas": "Cabai",
       "weightKg": 0,
@@ -175,11 +181,17 @@
           "komoditas": "Jambu Kristal",
           "weightKg": 0,
           "harvestCount": 0
+        },
+        {
+          "id": "08",
+          "komoditas": "Alpukat Aligator",
+          "weightKg": 0,
+          "harvestCount": 0
         }
       ],
       "weightKg": 0,
       "harvestCount": 0,
-      "updatedAt": 1790098471918
+      "updatedAt": 1790098562240
     }
   ]
 }

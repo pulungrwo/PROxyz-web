@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": 1790098471918,
+  "generatedAt": 1790098562240,
   "id": "03",
   "nama": "Kebunku",
   "lokasi": "",
@@ -10,7 +10,7 @@
     "nama": "Musim 01",
     "status": "aktif"
   },
-  "activeCropId": "07",
+  "activeCropId": "08",
   "crops": [
     {
       "id": "01",
@@ -74,6 +74,15 @@
       "status": "aktif",
       "weightKg": 0,
       "harvestCount": 0
+    },
+    {
+      "id": "08",
+      "komoditas": "Alpukat Aligator",
+      "category": "lainnya",
+      "plantingDate": "2025-06-04",
+      "status": "aktif",
+      "weightKg": 0,
+      "harvestCount": 0
     }
   ],
   "summary": {
@@ -86,5 +95,5 @@
   "recentHarvest": [],
   "recentActivities": [],
   "schedules": [],
-  "updatedAt": 1790098471918
+  "updatedAt": 1790098562240
 }
