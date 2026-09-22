@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": 1790098727276,
+  "generatedAt": 1790098818882,
   "id": "03",
   "nama": "Kebunku",
   "lokasi": "",
@@ -10,7 +10,7 @@
     "nama": "Musim 01",
     "status": "aktif"
   },
-  "activeCropId": "10",
+  "activeCropId": "11",
   "crops": [
     {
       "id": "01",
@@ -101,6 +101,15 @@
       "status": "aktif",
       "weightKg": 0,
       "harvestCount": 0
+    },
+    {
+      "id": "11",
+      "komoditas": "A Shine Muscat",
+      "category": "lainnya",
+      "plantingDate": "",
+      "status": "aktif",
+      "weightKg": 0,
+      "harvestCount": 0
     }
   ],
   "summary": {
@@ -113,5 +122,5 @@
   "recentHarvest": [],
   "recentActivities": [],
   "schedules": [],
-  "updatedAt": 1790098727276
+  "updatedAt": 1790098818882
 }
