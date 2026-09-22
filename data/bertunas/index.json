@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": 1790098562240,
+  "generatedAt": 1790098727276,
   "totalProjects": 3,
   "totalWeightKg": 0,
   "totalHarvestCount": 0,
@@ -61,6 +61,18 @@
     },
     {
       "komoditas": "Rambutan Binjai",
+      "weightKg": 0,
+      "harvestCount": 0,
+      "projectCount": 1
+    },
+    {
+      "komoditas": "Sirsak Madu",
+      "weightKg": 0,
+      "harvestCount": 0,
+      "projectCount": 1
+    },
+    {
+      "komoditas": "Srikaya Jumbo",
       "weightKg": 0,
       "harvestCount": 0,
       "projectCount": 1
@@ -187,11 +199,23 @@
           "komoditas": "Alpukat Aligator",
           "weightKg": 0,
           "harvestCount": 0
+        },
+        {
+          "id": "09",
+          "komoditas": "Sirsak Madu",
+          "weightKg": 0,
+          "harvestCount": 0
+        },
+        {
+          "id": "10",
+          "komoditas": "Srikaya Jumbo",
+          "weightKg": 0,
+          "harvestCount": 0
         }
       ],
       "weightKg": 0,
       "harvestCount": 0,
-      "updatedAt": 1790098562240
+      "updatedAt": 1790098727276
     }
   ]
 }

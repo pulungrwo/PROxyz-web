@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": 1790098562240,
+  "generatedAt": 1790098727276,
   "id": "03",
   "nama": "Kebunku",
   "lokasi": "",
@@ -10,7 +10,7 @@
     "nama": "Musim 01",
     "status": "aktif"
   },
-  "activeCropId": "08",
+  "activeCropId": "10",
   "crops": [
     {
       "id": "01",
@@ -83,6 +83,24 @@
       "status": "aktif",
       "weightKg": 0,
       "harvestCount": 0
+    },
+    {
+      "id": "09",
+      "komoditas": "Sirsak Madu",
+      "category": "lainnya",
+      "plantingDate": "2026-04-11",
+      "status": "aktif",
+      "weightKg": 0,
+      "harvestCount": 0
+    },
+    {
+      "id": "10",
+      "komoditas": "Srikaya Jumbo",
+      "category": "lainnya",
+      "plantingDate": "2026-04-11",
+      "status": "aktif",
+      "weightKg": 0,
+      "harvestCount": 0
     }
   ],
   "summary": {
@@ -95,5 +113,5 @@
   "recentHarvest": [],
   "recentActivities": [],
   "schedules": [],
-  "updatedAt": 1790098562240
+  "updatedAt": 1790098727276
 }
