@@ -1,12 +1,36 @@
 {
   "schemaVersion": 1,
-  "generatedAt": 1790098818882,
+  "generatedAt": 1790099155045,
   "totalProjects": 3,
   "totalWeightKg": 0,
   "totalHarvestCount": 0,
   "commodities": [
     {
+      "komoditas": "A GosV",
+      "weightKg": 0,
+      "harvestCount": 0,
+      "projectCount": 1
+    },
+    {
+      "komoditas": "A Isabella",
+      "weightKg": 0,
+      "harvestCount": 0,
+      "projectCount": 1
+    },
+    {
+      "komoditas": "A Jupiter",
+      "weightKg": 0,
+      "harvestCount": 0,
+      "projectCount": 1
+    },
+    {
       "komoditas": "A Shine Muscat",
+      "weightKg": 0,
+      "harvestCount": 0,
+      "projectCount": 1
+    },
+    {
+      "komoditas": "A Transfigurasi",
       "weightKg": 0,
       "harvestCount": 0,
       "projectCount": 1
@@ -223,11 +247,35 @@
           "komoditas": "A Shine Muscat",
           "weightKg": 0,
           "harvestCount": 0
+        },
+        {
+          "id": "12",
+          "komoditas": "A Isabella",
+          "weightKg": 0,
+          "harvestCount": 0
+        },
+        {
+          "id": "13",
+          "komoditas": "A Jupiter",
+          "weightKg": 0,
+          "harvestCount": 0
+        },
+        {
+          "id": "14",
+          "komoditas": "A GosV",
+          "weightKg": 0,
+          "harvestCount": 0
+        },
+        {
+          "id": "15",
+          "komoditas": "A Transfigurasi",
+          "weightKg": 0,
+          "harvestCount": 0
         }
       ],
       "weightKg": 0,
       "harvestCount": 0,
-      "updatedAt": 1790098818882
+      "updatedAt": 1790099155045
     }
   ]
 }

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": 1790098818882,
+  "generatedAt": 1790099155045,
   "id": "03",
   "nama": "Kebunku",
   "lokasi": "",
@@ -10,7 +10,7 @@
     "nama": "Musim 01",
     "status": "aktif"
   },
-  "activeCropId": "11",
+  "activeCropId": "15",
   "crops": [
     {
       "id": "01",
@@ -110,6 +110,42 @@
       "status": "aktif",
       "weightKg": 0,
       "harvestCount": 0
+    },
+    {
+      "id": "12",
+      "komoditas": "A Isabella",
+      "category": "lainnya",
+      "plantingDate": "2026-07-11",
+      "status": "aktif",
+      "weightKg": 0,
+      "harvestCount": 0
+    },
+    {
+      "id": "13",
+      "komoditas": "A Jupiter",
+      "category": "lainnya",
+      "plantingDate": "",
+      "status": "aktif",
+      "weightKg": 0,
+      "harvestCount": 0
+    },
+    {
+      "id": "14",
+      "komoditas": "A GosV",
+      "category": "lainnya",
+      "plantingDate": "",
+      "status": "aktif",
+      "weightKg": 0,
+      "harvestCount": 0
+    },
+    {
+      "id": "15",
+      "komoditas": "A Transfigurasi",
+      "category": "lainnya",
+      "plantingDate": "",
+      "status": "aktif",
+      "weightKg": 0,
+      "harvestCount": 0
     }
   ],
   "summary": {
@@ -122,5 +158,5 @@
   "recentHarvest": [],
   "recentActivities": [],
   "schedules": [],
-  "updatedAt": 1790098818882
+  "updatedAt": 1790099155045
 }
