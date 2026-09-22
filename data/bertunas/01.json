@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": 1789573795770,
+  "generatedAt": 1790096532090,
   "id": "01",
   "nama": "Lahan 300 m²",
   "lokasi": "",
@@ -34,12 +34,21 @@
   "summary": {
     "weightKg": 0,
     "harvestCount": 0,
-    "activityCount": 11,
-    "pendingScheduleCount": 1
+    "activityCount": 12,
+    "pendingScheduleCount": 0
   },
   "financeVisible": false,
   "recentHarvest": [],
   "recentActivities": [
+    {
+      "date": "2026-09-23",
+      "cropId": "01",
+      "komoditas": "Cabai",
+      "category": "Pemupukan",
+      "description": "Kocor NPK 16 1kg",
+      "note": "",
+      "hst": 41
+    },
     {
       "date": "2026-09-14",
       "cropId": "01",
@@ -140,19 +149,6 @@
       "hst": 5
     }
   ],
-  "schedules": [
-    {
-      "nomor": 7,
-      "cropId": "01",
-      "komoditas": "Cabai",
-      "category": "Pemupukan",
-      "description": "Kocor NPK 16 1kg",
-      "note": "",
-      "targetType": "hst",
-      "targetHst": 38,
-      "targetDate": "2026-09-20",
-      "status": "pending"
-    }
-  ],
-  "updatedAt": 1789573795770
+  "schedules": [],
+  "updatedAt": 1790096532090
 }
