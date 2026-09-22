@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
-  "generatedAt": 1790097237247,
-  "totalProjects": 2,
+  "generatedAt": 1790097352745,
+  "totalProjects": 3,
   "totalWeightKg": 0,
   "totalHarvestCount": 0,
   "commodities": [
@@ -10,6 +10,12 @@
       "weightKg": 0,
       "harvestCount": 0,
       "projectCount": 2
+    },
+    {
+      "komoditas": "Jambu Dalhari",
+      "weightKg": 0,
+      "harvestCount": 0,
+      "projectCount": 1
     },
     {
       "komoditas": "Kacang Panjang",
@@ -80,6 +86,28 @@
       "weightKg": 0,
       "harvestCount": 0,
       "updatedAt": 1790097237247
+    },
+    {
+      "id": "03",
+      "nama": "Kebunku",
+      "lokasi": "",
+      "luas": "",
+      "season": {
+        "id": "01",
+        "nama": "Musim 01",
+        "status": "aktif"
+      },
+      "crops": [
+        {
+          "id": "01",
+          "komoditas": "Jambu Dalhari",
+          "weightKg": 0,
+          "harvestCount": 0
+        }
+      ],
+      "weightKg": 0,
+      "harvestCount": 0,
+      "updatedAt": 1790097352745
     }
   ]
 }
