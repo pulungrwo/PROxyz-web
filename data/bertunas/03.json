@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": 1790099155045,
+  "generatedAt": 1790099559760,
   "id": "03",
   "nama": "Kebunku",
   "lokasi": "",
@@ -16,7 +16,7 @@
       "id": "01",
       "komoditas": "Jambu Dalhari",
       "category": "hortikultura",
-      "plantingDate": "",
+      "plantingDate": "2024-10-15",
       "status": "aktif",
       "weightKg": 0,
       "harvestCount": 0
@@ -25,7 +25,7 @@
       "id": "02",
       "komoditas": "Kelengkeng New Kristal",
       "category": "lainnya",
-      "plantingDate": "2024-10-10",
+      "plantingDate": "2024-10-15",
       "status": "aktif",
       "weightKg": 0,
       "harvestCount": 0
@@ -34,7 +34,7 @@
       "id": "03",
       "komoditas": "Mangga Mahatir",
       "category": "lainnya",
-      "plantingDate": "2024-10-10",
+      "plantingDate": "2024-10-15",
       "status": "aktif",
       "weightKg": 0,
       "harvestCount": 0
@@ -43,7 +43,7 @@
       "id": "04",
       "komoditas": "Rambutan Binjai",
       "category": "lainnya",
-      "plantingDate": "2024-10-10",
+      "plantingDate": "2024-10-15",
       "status": "aktif",
       "weightKg": 0,
       "harvestCount": 0
@@ -52,7 +52,7 @@
       "id": "05",
       "komoditas": "Nangka Merah",
       "category": "lainnya",
-      "plantingDate": "2024-10-10",
+      "plantingDate": "2024-10-15",
       "status": "aktif",
       "weightKg": 0,
       "harvestCount": 0
@@ -61,7 +61,7 @@
       "id": "06",
       "komoditas": "Jeruk BW",
       "category": "lainnya",
-      "plantingDate": "2024-10-10",
+      "plantingDate": "2024-10-15",
       "status": "aktif",
       "weightKg": 0,
       "harvestCount": 0
@@ -106,7 +106,7 @@
       "id": "11",
       "komoditas": "A Shine Muscat",
       "category": "lainnya",
-      "plantingDate": "",
+      "plantingDate": "2026-07-11",
       "status": "aktif",
       "weightKg": 0,
       "harvestCount": 0
@@ -158,5 +158,5 @@
   "recentHarvest": [],
   "recentActivities": [],
   "schedules": [],
-  "updatedAt": 1790099155045
+  "updatedAt": 1790099559760
 }
