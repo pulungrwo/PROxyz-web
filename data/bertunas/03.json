@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": 1790100929798,
+  "generatedAt": 1790101325842,
   "id": "03",
   "nama": "Kebunku",
   "lokasi": "",
@@ -151,12 +151,22 @@
   "summary": {
     "weightKg": 0,
     "harvestCount": 0,
-    "activityCount": 0,
+    "activityCount": 1,
     "pendingScheduleCount": 0
   },
   "financeVisible": false,
   "recentHarvest": [],
-  "recentActivities": [],
+  "recentActivities": [
+    {
+      "date": "2026-09-06",
+      "cropId": "01",
+      "komoditas": "Jambu Dalhari",
+      "category": "Lainnya",
+      "description": "Ngembang awal",
+      "note": "",
+      "hst": 691
+    }
+  ],
   "schedules": [],
-  "updatedAt": 1790100929798
+  "updatedAt": 1790101325842
 }
