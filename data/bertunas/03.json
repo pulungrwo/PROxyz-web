@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": 1790101325842,
+  "generatedAt": 1790101447607,
   "id": "03",
   "nama": "Kebunku",
   "lokasi": "",
@@ -151,7 +151,7 @@
   "summary": {
     "weightKg": 0,
     "harvestCount": 0,
-    "activityCount": 1,
+    "activityCount": 2,
     "pendingScheduleCount": 0
   },
   "financeVisible": false,
@@ -165,8 +165,17 @@
       "description": "Ngembang awal",
       "note": "",
       "hst": 691
+    },
+    {
+      "date": "2026-08-31",
+      "cropId": "03",
+      "komoditas": "Mangga Mahatir",
+      "category": "Lainnya",
+      "description": "Ngembang awal",
+      "note": "",
+      "hst": 685
     }
   ],
   "schedules": [],
-  "updatedAt": 1790101325842
+  "updatedAt": 1790101447607
 }
