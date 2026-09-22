@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": 1790097770385,
+  "generatedAt": 1790098210809,
   "totalProjects": 3,
   "totalWeightKg": 0,
   "totalHarvestCount": 0,
@@ -19,6 +19,30 @@
     },
     {
       "komoditas": "Kacang Panjang",
+      "weightKg": 0,
+      "harvestCount": 0,
+      "projectCount": 1
+    },
+    {
+      "komoditas": "Kelengkeng New Kristal",
+      "weightKg": 0,
+      "harvestCount": 0,
+      "projectCount": 1
+    },
+    {
+      "komoditas": "Mangga Mahatir",
+      "weightKg": 0,
+      "harvestCount": 0,
+      "projectCount": 1
+    },
+    {
+      "komoditas": "Nangka Merah",
+      "weightKg": 0,
+      "harvestCount": 0,
+      "projectCount": 1
+    },
+    {
+      "komoditas": "Rambutan Binjai",
       "weightKg": 0,
       "harvestCount": 0,
       "projectCount": 1
@@ -103,11 +127,35 @@
           "komoditas": "Jambu Dalhari",
           "weightKg": 0,
           "harvestCount": 0
+        },
+        {
+          "id": "02",
+          "komoditas": "Kelengkeng New Kristal",
+          "weightKg": 0,
+          "harvestCount": 0
+        },
+        {
+          "id": "03",
+          "komoditas": "Mangga Mahatir",
+          "weightKg": 0,
+          "harvestCount": 0
+        },
+        {
+          "id": "04",
+          "komoditas": "Rambutan Binjai",
+          "weightKg": 0,
+          "harvestCount": 0
+        },
+        {
+          "id": "05",
+          "komoditas": "Nangka Merah",
+          "weightKg": 0,
+          "harvestCount": 0
         }
       ],
       "weightKg": 0,
       "harvestCount": 0,
-      "updatedAt": 1790097770385
+      "updatedAt": 1790098210809
     }
   ]
 }
