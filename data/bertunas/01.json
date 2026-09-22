@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": 1790096532090,
+  "generatedAt": 1790096654645,
   "id": "01",
   "nama": "Lahan 300 m²",
   "lokasi": "",
@@ -34,20 +34,29 @@
   "summary": {
     "weightKg": 0,
     "harvestCount": 0,
-    "activityCount": 12,
+    "activityCount": 13,
     "pendingScheduleCount": 0
   },
   "financeVisible": false,
   "recentHarvest": [],
   "recentActivities": [
     {
-      "date": "2026-09-23",
+      "date": "2026-09-22",
+      "cropId": "01",
+      "komoditas": "Cabai",
+      "category": "Penyemprotan",
+      "description": "Spray 1 sdm Mutual + 2 sibiru + 3 mkp",
+      "note": "",
+      "hst": 40
+    },
+    {
+      "date": "2026-09-22",
       "cropId": "01",
       "komoditas": "Cabai",
       "category": "Pemupukan",
       "description": "Kocor NPK 16 1kg",
       "note": "",
-      "hst": 41
+      "hst": 40
     },
     {
       "date": "2026-09-14",
@@ -150,5 +159,5 @@
     }
   ],
   "schedules": [],
-  "updatedAt": 1790096532090
+  "updatedAt": 1790096654645
 }
