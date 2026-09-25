@@ -6,11 +6,37 @@
   "saldo": {
     "awal": 0,
     "masuk": 32389000,
-    "keluar": 28826000,
-    "akhir": 3563000
+    "keluar": 28876000,
+    "akhir": 3513000
   },
-  "jumlahTransaksi": 172,
+  "jumlahTransaksi": 174,
   "transactions": [
+    {
+      "id": "masjid-260925-002",
+      "nomor": "174",
+      "tanggal": 1790317557353,
+      "jenis": "keluar",
+      "kategori": "honor & jasa",
+      "kategoriNama": "Honor & Jasa",
+      "keterangan": "Marbot",
+      "catatan": "Periode pembayaran: 2 Oktober 2026",
+      "nominal": 25000,
+      "label": [],
+      "bukti": []
+    },
+    {
+      "id": "masjid-260925-001",
+      "nomor": "173",
+      "tanggal": 1790317545731,
+      "jenis": "keluar",
+      "kategori": "honor & jasa",
+      "kategoriNama": "Honor & Jasa",
+      "keterangan": "Marbot",
+      "catatan": "Periode pembayaran: 25 September 2026",
+      "nominal": 25000,
+      "label": [],
+      "bukti": []
+    },
     {
       "id": "masjid-260917-001",
       "nomor": "172",
@@ -2637,5 +2663,5 @@
       "bukti": []
     }
   ],
-  "updatedAt": 1789645719046
+  "updatedAt": 1790317557687
 }
