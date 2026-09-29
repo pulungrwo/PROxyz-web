@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": 1790097207850,
+  "generatedAt": 1790659769711,
   "id": "01",
   "nama": "Lahan 300 m²",
   "lokasi": "",
@@ -35,7 +35,7 @@
     "weightKg": 0,
     "harvestCount": 0,
     "activityCount": 13,
-    "pendingScheduleCount": 0
+    "pendingScheduleCount": 1
   },
   "financeVisible": false,
   "recentHarvest": [],
@@ -54,7 +54,7 @@
       "cropId": "01",
       "komoditas": "Cabai",
       "category": "Pemupukan",
-      "description": "Kocor NPK 16 1kg",
+      "description": "Kocor NPK 16 + mags",
       "note": "",
       "hst": 40
     },
@@ -158,6 +158,19 @@
       "hst": 5
     }
   ],
-  "schedules": [],
-  "updatedAt": 1790097207850
+  "schedules": [
+    {
+      "nomor": 8,
+      "cropId": "01",
+      "komoditas": "Cabai",
+      "category": "Pemupukan",
+      "description": "kocor grower + kalsium",
+      "note": "",
+      "targetType": "hst",
+      "targetHst": 50,
+      "targetDate": "2026-10-02",
+      "status": "pending"
+    }
+  ],
+  "updatedAt": 1790659769711
 }
