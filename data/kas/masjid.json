@@ -6,11 +6,24 @@
   "saldo": {
     "awal": 0,
     "masuk": 32442000,
-    "keluar": 28876000,
-    "akhir": 3566000
+    "keluar": 29876000,
+    "akhir": 2566000
   },
-  "jumlahTransaksi": 176,
+  "jumlahTransaksi": 177,
   "transactions": [
+    {
+      "id": "masjid-260929-001",
+      "nomor": "177",
+      "tanggal": 1790863426000,
+      "jenis": "keluar",
+      "kategori": "pembangunan & renovasi",
+      "kategoriNama": "Pembangunan & Renovasi",
+      "keterangan": "DP Pintu besi",
+      "catatan": "",
+      "nominal": 1000000,
+      "label": [],
+      "bukti": []
+    },
     {
       "id": "masjid-260925-003",
       "nomor": "176",
@@ -2689,5 +2702,5 @@
       "bukti": []
     }
   ],
-  "updatedAt": 1790318040070
+  "updatedAt": 1790777065279
 }
