@@ -6,8 +6,8 @@
   "saldo": {
     "awal": 0,
     "masuk": 32442000,
-    "keluar": 29876000,
-    "akhir": 2566000
+    "keluar": 30796000,
+    "akhir": 1646000
   },
   "jumlahTransaksi": 177,
   "transactions": [
@@ -161,9 +161,9 @@
       "jenis": "keluar",
       "kategori": "pembangunan & renovasi",
       "kategoriNama": "Pembangunan & Renovasi",
-      "keterangan": "Pasang Pintu (DP)",
+      "keterangan": "Pasang Pintu",
       "catatan": "",
-      "nominal": 3000000,
+      "nominal": 3920000,
       "label": [],
       "bukti": []
     },
@@ -2702,5 +2702,5 @@
       "bukti": []
     }
   ],
-  "updatedAt": 1790777065279
+  "updatedAt": 1790777143034
 }
