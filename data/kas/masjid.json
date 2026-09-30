@@ -162,7 +162,7 @@
       "kategori": "pembangunan & renovasi",
       "kategoriNama": "Pembangunan & Renovasi",
       "keterangan": "Pasang Pintu",
-      "catatan": "",
+      "catatan": "pasang 2 pintu + kaca",
       "nominal": 3920000,
       "label": [],
       "bukti": []
@@ -2702,5 +2702,5 @@
       "bukti": []
     }
   ],
-  "updatedAt": 1790777143034
+  "updatedAt": 1790777235829
 }
