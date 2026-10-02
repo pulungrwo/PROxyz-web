@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": 1790659769711,
+  "generatedAt": 1790909507514,
   "id": "01",
   "nama": "Lahan 300 m²",
   "lokasi": "",
@@ -34,12 +34,21 @@
   "summary": {
     "weightKg": 0,
     "harvestCount": 0,
-    "activityCount": 13,
+    "activityCount": 14,
     "pendingScheduleCount": 1
   },
   "financeVisible": false,
   "recentHarvest": [],
   "recentActivities": [
+    {
+      "date": "2026-10-01",
+      "cropId": "01",
+      "komoditas": "Cabai",
+      "category": "Penyemprotan",
+      "description": "spray sivanto 15ml",
+      "note": "",
+      "hst": 49
+    },
     {
       "date": "2026-09-22",
       "cropId": "01",
@@ -172,5 +181,5 @@
       "status": "pending"
     }
   ],
-  "updatedAt": 1790659769711
+  "updatedAt": 1790909507514
 }
