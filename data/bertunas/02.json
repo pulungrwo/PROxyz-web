@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": 1790782187771,
+  "generatedAt": 1790909415653,
   "id": "02",
   "nama": "Samping Rumah",
   "lokasi": "",
@@ -34,12 +34,21 @@
   "summary": {
     "weightKg": 0,
     "harvestCount": 0,
-    "activityCount": 4,
-    "pendingScheduleCount": 0
+    "activityCount": 5,
+    "pendingScheduleCount": 4
   },
   "financeVisible": false,
   "recentHarvest": [],
   "recentActivities": [
+    {
+      "date": "2026-10-02",
+      "cropId": "01",
+      "komoditas": "Cabai",
+      "category": "Pemupukan",
+      "description": "Kocor Ultradap + Ambition + Humigrow",
+      "note": "",
+      "hst": 5
+    },
     {
       "date": "2026-09-30",
       "cropId": "01",
@@ -77,6 +86,55 @@
       "hst": -33
     }
   ],
-  "schedules": [],
-  "updatedAt": 1790782187771
+  "schedules": [
+    {
+      "nomor": 3,
+      "cropId": "01",
+      "komoditas": "Cabai",
+      "category": "Pemupukan",
+      "description": "Kocor Ultradap + Ambition + Humigrow",
+      "note": "",
+      "targetType": "hst",
+      "targetHst": 10,
+      "targetDate": "2026-10-07",
+      "status": "pending"
+    },
+    {
+      "nomor": 4,
+      "cropId": "01",
+      "komoditas": "Cabai",
+      "category": "Pemupukan",
+      "description": "Kocor Ultradap + Ambition + Humigrow",
+      "note": "",
+      "targetType": "hst",
+      "targetHst": 15,
+      "targetDate": "2026-10-12",
+      "status": "pending"
+    },
+    {
+      "nomor": 5,
+      "cropId": "01",
+      "komoditas": "Cabai",
+      "category": "Pemupukan",
+      "description": "Kocor NPK 16 + Mags",
+      "note": "",
+      "targetType": "hst",
+      "targetHst": 20,
+      "targetDate": "2026-10-17",
+      "status": "pending"
+    },
+    {
+      "nomor": 6,
+      "cropId": "01",
+      "komoditas": "Cabai",
+      "category": "Pemupukan",
+      "description": "Kocor Npk 16 + Kalsium",
+      "note": "",
+      "targetType": "hst",
+      "targetHst": 30,
+      "targetDate": "2026-10-27",
+      "status": "pending"
+    }
+  ],
+  "updatedAt": 1790909415653
 }
