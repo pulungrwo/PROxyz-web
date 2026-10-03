@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": 1790960613772,
+  "generatedAt": 1791029936480,
   "id": "01",
   "nama": "Lahan 300 m²",
   "lokasi": "",
@@ -34,12 +34,21 @@
   "summary": {
     "weightKg": 0,
     "harvestCount": 0,
-    "activityCount": 15,
-    "pendingScheduleCount": 1
+    "activityCount": 16,
+    "pendingScheduleCount": 0
   },
   "financeVisible": false,
   "recentHarvest": [],
   "recentActivities": [
+    {
+      "date": "2026-10-02",
+      "cropId": "01",
+      "komoditas": "Cabai",
+      "category": "Pemupukan",
+      "description": "kocor 1 grower + ½ kalsium + ⅕ zk",
+      "note": "",
+      "hst": 50
+    },
     {
       "date": "2026-10-01",
       "cropId": "01",
@@ -176,19 +185,6 @@
       "hst": 5
     }
   ],
-  "schedules": [
-    {
-      "nomor": 8,
-      "cropId": "01",
-      "komoditas": "Cabai",
-      "category": "Pemupukan",
-      "description": "kocor grower + kalsium",
-      "note": "",
-      "targetType": "hst",
-      "targetHst": 50,
-      "targetDate": "2026-10-02",
-      "status": "pending"
-    }
-  ],
-  "updatedAt": 1790960613772
+  "schedules": [],
+  "updatedAt": 1791029936480
 }
