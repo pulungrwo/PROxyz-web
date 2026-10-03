@@ -1,6 +1,6 @@
 {
-  "version": "1.5.20",
-  "updatedAt": "2026-09-11T00:00:00+07:00",
+  "version": "1.5.21",
+  "updatedAt": "2026-10-04T00:30:00+07:00",
   "uiBase": "PROxyz-SOURCE-20260829-2042",
   "features": [
     "admin-v0.9.3",
@@ -170,6 +170,9 @@
     "risma-simulation-group-send-v1516",
     "risma-team-member-points-v1516",
     "risma-poin-rules-one-page-v1516",
-    "risma-v3-rank-awards-stamp-space"
+    "risma-v3-rank-awards-stamp-space",
+    "risma-tadarus-global-khatam-attendance-v1521",
+    "risma-jumat-coupon-manual-v1521",
+    "risma-fab-create-menu-v1521"
   ]
 }

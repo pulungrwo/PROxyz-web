@@ -1743,3 +1743,18 @@ dialog[id^="risma-"] .icon-button{background:#edf7fd!important;color:#285c7d!imp
 #risma-view .risma-rank-number.rank-award-2,#risma-view .risma-rank-points.rank-award-2{background:#e5e7eb!important;color:#374151!important;border-color:#d1d5db!important}
 #risma-view .risma-rank-number.rank-award-3,#risma-view .risma-rank-points.rank-award-3{background:#fde7d9!important;color:#9a3412!important;border-color:#f4b894!important}
 #risma-view .risma-rank-number.rank-award:not(.rank-award-1):not(.rank-award-2):not(.rank-award-3),#risma-view .risma-rank-points.rank-award:not(.rank-award-1):not(.rank-award-2):not(.rank-award-3){background:#e8f5e9!important;color:#166534!important;border-color:#cce8d0!important}
+
+/* RISMA Tadarus + FAB */
+.risma-fab-wrap{position:fixed;right:18px;bottom:22px;z-index:35;display:grid;justify-items:end;gap:8px}
+.risma-fab{width:58px;height:58px;border-radius:50%;background:#0f766e;color:#fff;box-shadow:0 12px 28px rgba(16,24,40,.28);display:grid;place-items:center;font-size:21px}
+.risma-fab-menu{min-width:210px;padding:7px;background:#fff;border:1px solid #e4e7ec;border-radius:15px;box-shadow:0 16px 38px rgba(16,24,40,.22)}
+.risma-fab-menu button{display:flex;align-items:center;gap:10px;width:100%;background:transparent;color:#344054;text-align:left;padding:11px 12px}
+.risma-fab-menu button:hover,.risma-fab-menu button:focus-visible{background:#f2f4f7}
+.risma-fab-menu i{width:20px;text-align:center}
+.risma-tadarus-participants{display:grid;gap:8px;margin:12px 0}.risma-tadarus-participant{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:11px 12px;background:#f8fafc;border:1px solid #eaecf0;border-radius:13px}.risma-tadarus-participant span{font-size:12px;color:#667085}
+#risma-coupons.risma-coupon-summary-inline .risma-coupon-mini-card{border:1px solid color-mix(in srgb,var(--coupon-primary,#101828) 15%,#e4e7ec);cursor:pointer;text-align:left;color:inherit}
+#risma-coupons.risma-coupon-summary-inline .risma-coupon-mini-card:focus-visible{outline:3px solid rgba(15,118,110,.18);outline-offset:2px}
+@media(max-width:640px){.risma-fab-wrap{right:16px;bottom:max(18px,env(safe-area-inset-bottom))}.risma-tadarus-participant{align-items:flex-start;flex-direction:column;gap:3px}}
+
+#risma-coupons.risma-coupon-summary-inline .risma-coupon-mini-card{display:grid;gap:2px}
+#risma-coupons.risma-coupon-summary-inline .risma-coupon-mini-pending{font-size:9.5px;color:#667085;line-height:1.25}

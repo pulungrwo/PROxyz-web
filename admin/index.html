@@ -474,6 +474,7 @@
             <button class="subtab active" type="button" data-risma-tab="rank"><i class="fa-solid fa-ranking-star"></i><span>Rank</span></button>
             <button class="subtab" type="button" data-risma-tab="poin"><i class="fa-solid fa-star"></i><span>Poin</span></button>
             <button class="subtab" type="button" data-risma-tab="kupon"><i class="fa-solid fa-ticket"></i><span>Kupon</span></button>
+            <button class="subtab" type="button" data-risma-tab="tadarus"><i class="fa-solid fa-book-quran"></i><span>Tadarus</span></button>
             <button class="subtab" type="button" data-risma-tab="publikasi"><i class="fa-solid fa-paper-plane"></i><span>Publikasi</span></button>
             <button class="subtab" type="button" data-risma-tab="pengaturan"><i class="fa-solid fa-sliders"></i><span>Pengaturan</span></button>
             <button class="subtab" type="button" data-risma-tab="pengelola"><i class="fa-solid fa-user-shield"></i><span>Pengelola</span></button>
@@ -513,9 +514,17 @@
               <div><p class="eyebrow"><i class="fa-solid fa-ticket"></i> Kupon</p><h2>Penerima kupon</h2><p class="muted small">Tambah penerima, lihat jumlah kupon, lalu tandai jika sudah dibagikan.</p></div>
               <button id="risma-coupon-add" class="primary compact" type="button"><i class="fa-solid fa-user-plus"></i> Penerima</button>
             </div>
-            <label>Jenis kupon<select id="risma-coupon-type"><option value="ngaji">Kupon Ngaji</option><option value="taraweh">Kupon Taraweh</option><option value="tadarus">Kupon Tadarus</option></select></label>
+            <label>Jenis kupon<select id="risma-coupon-type"><option value="ngaji">Kupon Ngaji</option><option value="taraweh">Kupon Taraweh</option><option value="tadarus">Kupon Tadarus</option><option value="jumat">Kupon Jumat</option></select></label>
             <div id="risma-coupon-summary" class="metric-grid risma-coupon-summary"></div>
             <div id="risma-coupon-list" class="list-stack"></div>
+          </section>
+
+          <section id="risma-tadarus-panel" class="risma-panel panel" hidden>
+            <div class="section-head risma-section-head"><div><p class="eyebrow"><i class="fa-solid fa-book-quran"></i> Presensi Tadarus</p><h2>Absensi Tadarus Harian</h2><p class="muted small">Tadarus dilakukan estafet. Status khatam berlaku untuk seluruh peserta, bukan per orang.</p></div><button id="risma-tadarus-open-attendance" class="primary compact" type="button"><i class="fa-solid fa-calendar-check"></i> Presensi hari ini</button></div>
+            <div class="metric-grid" id="risma-tadarus-summary"><span>0 hari</span></div>
+            <div id="risma-tadarus-participants" class="risma-tadarus-participants"></div>
+            <div class="section-head compact-head"><div><p class="eyebrow">Riwayat</p><h3>Hari Tadarus</h3></div></div>
+            <div id="risma-tadarus-days" class="list-stack"></div><p id="risma-tadarus-status" class="status"></p>
           </section>
 
           <section id="risma-publikasi-panel" class="risma-panel panel" hidden>
@@ -607,7 +616,7 @@
               </summary>
               <div class="risma-pub-body">
                 <div class="risma-coupon-print-grid">
-                  <label>Jenis kupon<select id="risma-print-coupon-type"><option value="semua">Semua kupon aktif</option><option value="ngaji">Kupon Ngaji</option><option value="taraweh">Kupon Taraweh</option><option value="tadarus">Kupon Tadarus</option></select></label>
+                  <label>Jenis kupon<select id="risma-print-coupon-type"><option value="semua">Semua kupon aktif</option><option value="ngaji">Kupon Ngaji</option><option value="taraweh">Kupon Taraweh</option><option value="tadarus">Kupon Tadarus</option><option value="jumat">Kupon Jumat</option></select></label>
                   <label>Layout<select id="risma-print-coupon-layout"><option value="4">4 kupon / lembar</option><option value="6" selected>6 kupon / lembar</option><option value="10">10 kupon / lembar</option></select></label>
                   <label>Jumlah lembar<input id="risma-print-coupon-sheets" type="number" min="1" max="100" value="1"></label>
                 </div>
@@ -677,7 +686,8 @@
                 <label>6x<input id="risma-setting-score-6" type="number" min="0" max="100" step="0.25" inputmode="decimal"></label>
                 <label>7x<input id="risma-setting-score-7" type="number" min="0" max="100" step="0.25" inputmode="decimal"></label>
               </div><small class="muted">Default: 1, 2, 3, 4, 6, 7,5, 9 poin. Perubahan menghitung ulang data minggu yang sudah tersimpan.</small></fieldset>
-              <fieldset class="toggle-fieldset"><legend>Kupon THR aktif</legend><label class="check-row"><input id="risma-setting-ngaji" type="checkbox"> Kupon Ngaji</label><label class="check-row"><input id="risma-setting-taraweh" type="checkbox"> Kupon Taraweh</label><label class="check-row"><input id="risma-setting-tadarus" type="checkbox"> Kupon Tadarus</label></fieldset>
+              <fieldset class="toggle-fieldset"><legend>Kupon THR aktif</legend><label class="check-row"><input id="risma-setting-ngaji" type="checkbox"> Kupon Ngaji</label><label class="check-row"><input id="risma-setting-taraweh" type="checkbox"> Kupon Taraweh</label><label class="check-row"><input id="risma-setting-tadarus" type="checkbox"> Kupon Tadarus</label><label class="check-row"><input id="risma-setting-jumat" type="checkbox"> Kupon Jumat</label></fieldset>
+              <fieldset class="toggle-fieldset"><legend>Presensi Tadarus</legend><label class="check-row"><input id="risma-setting-tadarus-auto-enabled" type="checkbox"> Aktifkan perhitungan kupon otomatis</label><div class="context-grid"><label>Minimal kehadiran (%)<input id="risma-tadarus-min" type="number" min="0" max="100" step="1"></label><label>Batas kupon 2 (%)<input id="risma-tadarus-second" type="number" min="0" max="100" step="1"></label><label>Batas kupon 3 (%)<input id="risma-tadarus-third" type="number" min="0" max="100" step="1"></label><label>Maksimal kupon<select id="risma-tadarus-max"><option value="1">1 kupon</option><option value="2">2 kupon</option><option value="3">3 kupon</option></select></label></div><label class="check-row"><input id="risma-tadarus-khatam" type="checkbox"> Tadarus sudah khatam</label><small class="muted">Status khatam berlaku untuk seluruh kelompok karena Tadarus dilakukan estafet. Kupon otomatis baru dibagikan setelah status ini aktif.</small></fieldset>
               <p id="risma-settings-status" class="status"></p><button class="primary full" type="submit"><i class="fa-solid fa-floppy-disk"></i> Simpan pengaturan</button>
             </form>
 
@@ -689,7 +699,7 @@
 
             <div class="section-head compact-head"><div><p class="eyebrow">Desain kupon</p><h3>Template Kupon THR</h3></div></div>
             <form id="risma-template-form" class="settings-stack">
-              <label>Jenis kupon<select id="risma-template-type"><option value="ngaji">Ngaji</option><option value="taraweh">Taraweh</option><option value="tadarus">Tadarus</option></select></label>
+              <label>Jenis kupon<select id="risma-template-type"><option value="ngaji">Ngaji</option><option value="taraweh">Taraweh</option><option value="tadarus">Tadarus</option><option value="jumat">Jumat</option></select></label>
               <label>Judul<input id="risma-template-title" maxlength="60" required></label>
               <label>Slogan<input id="risma-template-slogan" maxlength="100" required></label>
               <label>Catatan bawah<textarea id="risma-template-footer" rows="3" maxlength="240" required></textarea></label>
@@ -708,7 +718,14 @@
             <div id="risma-log-list" class="risma-log-list"></div>
             <p id="risma-log-status" class="status"></p>
           </section>
-        </section>
+        <div class="risma-fab-wrap" id="risma-fab-wrap">
+          <div id="risma-fab-menu" class="risma-fab-menu" hidden>
+            <button type="button" data-risma-fab="coupon"><i class="fa-solid fa-ticket"></i><span>Input Kupon</span></button>
+            <button type="button" data-risma-fab="point"><i class="fa-solid fa-star"></i><span>Input Poin</span></button>
+            <button type="button" data-risma-fab="tadarus"><i class="fa-solid fa-book-quran"></i><span>Presensi Tadarus</span></button>
+          </div>
+          <button id="risma-fab" class="risma-fab" type="button" aria-label="Tambah data RISMA" aria-expanded="false"><i class="fa-solid fa-plus"></i></button>
+        </div>
       </section>
 
 
@@ -1052,6 +1069,7 @@
   <dialog id="ternak-kind-dialog"><form id="ternak-kind-form" class="dialog-form"><div class="section-head"><div><p class="eyebrow">Jenis Ternak</p><h2>Tambah jenis baru</h2></div><button id="close-ternak-kind" class="icon-button" type="button">×</button></div><label>Nama jenis<input id="ternak-kind-name" maxlength="30" placeholder="Contoh: Domba" required></label><label>Kode ID usaha<input id="ternak-kind-prefix" maxlength="3" pattern="[A-Za-z][A-Za-z0-9]{0,2}" placeholder="Contoh: d" required></label><label>Mode pencatatan<select id="ternak-kind-mode"><option value="individu">Per ekor / individu</option><option value="batch">Kelompok / batch</option></select></label><p class="muted small">Jenis baru otomatis tersedia saat membuat usaha Ternak, termasuk dari WA.</p><p id="ternak-kind-status" class="status"></p><button class="primary full" type="submit">Tambah jenis</button></form></dialog>
 
   <dialog id="ternak-create-dialog"><form id="ternak-create-form" class="dialog-form"><div class="section-head"><div><p class="eyebrow">Ternak PROxyz</p><h2>Buat usaha ternak</h2></div><button id="close-ternak-create" class="icon-button" type="button">×</button></div><label>Jenis ternak<select id="ternak-create-kind"></select></label><label>Nama usaha/kandang<input id="ternak-create-name" maxlength="60" placeholder="Contoh: Kandang Kambing 01" required></label><p id="ternak-create-status" class="status"></p><button class="primary full" type="submit">Buat usaha</button></form></dialog>
+  <dialog id="risma-tadarus-attendance-dialog"><form id="risma-tadarus-attendance-form" class="dialog-form"><div class="section-head"><div><p class="eyebrow">Presensi Tadarus</p><h2>Catat kehadiran</h2></div><button id="risma-tadarus-close" class="icon-button" type="button">×</button></div><label>Tanggal<input id="risma-tadarus-date" type="date" required></label><div><p class="field-title">Peserta hadir</p><div id="risma-tadarus-participant-checks" class="stack"></div></div><p id="risma-tadarus-attendance-status" class="status"></p><button class="primary full" type="submit">Simpan presensi</button></form></dialog>
   <dialog id="ternak-item-dialog"><form id="ternak-item-form" class="dialog-form"><div class="section-head"><div><p class="eyebrow">Populasi Ternak</p><h2 id="ternak-item-title">Tambah ternak</h2></div><button id="close-ternak-item" class="icon-button" type="button">×</button></div><div id="ternak-item-individual" class="stack"><label>Nama <span class="muted">(opsional)</span><input id="ternak-item-name" maxlength="60" placeholder="Kosongkan jika tanpa nama"></label><label>Kelamin<select id="ternak-item-sex"><option value="betina">Betina</option><option value="jantan">Jantan</option></select></label><label>Fungsi<select id="ternak-item-function"></select></label></div><div id="ternak-item-batch" class="stack" hidden><label>Nama batch<input id="ternak-batch-name" maxlength="60"></label><label>Fungsi<select id="ternak-batch-function"></select></label><label>Jumlah awal<input id="ternak-batch-count" type="number" inputmode="numeric" min="1"></label></div><label>Asal<select id="ternak-item-origin"><option value="Beli">Beli</option><option value="Lahir">Lahir/Menetas</option><option value="Pindahan">Pindahan</option><option value="Lainnya">Lainnya</option></select></label><label>Tanggal masuk<input id="ternak-item-date" type="date" required></label><label id="ternak-item-cost-wrap">Harga beli / modal<input id="ternak-item-cost" inputmode="numeric" placeholder="0"></label><p id="ternak-item-status" class="status"></p><button class="primary full" type="submit">Simpan populasi</button></form></dialog>
   <dialog id="ternak-edit-dialog"><form id="ternak-edit-form" class="dialog-form"><div class="section-head"><div><p class="eyebrow">Populasi Ternak</p><h2 id="ternak-edit-title">Edit ternak</h2></div><button id="close-ternak-edit" class="icon-button" type="button">×</button></div><input id="ternak-edit-code" type="hidden"><div id="ternak-edit-individual" class="stack"><label>Nama <span class="muted">(opsional)</span><input id="ternak-edit-name" maxlength="60"></label><label>Kelamin<select id="ternak-edit-sex"><option value="betina">Betina</option><option value="jantan">Jantan</option></select></label><label>Fungsi<select id="ternak-edit-function"></select></label></div><div id="ternak-edit-batch" class="stack" hidden><label>Nama batch<input id="ternak-edit-batch-name" maxlength="60"></label><label>Fungsi<select id="ternak-edit-batch-function"></select></label></div><label>Asal<select id="ternak-edit-origin"><option value="Beli">Beli</option><option value="Lahir">Lahir/Menetas</option><option value="Pindahan">Pindahan</option><option value="Lainnya">Lainnya</option></select></label><label>Tanggal masuk<input id="ternak-edit-date" type="date" required></label><label>Harga beli / modal<input id="ternak-edit-cost" inputmode="numeric" placeholder="0"></label><p id="ternak-edit-status" class="status"></p><button class="primary full" type="submit">Simpan perubahan</button></form></dialog>
 
