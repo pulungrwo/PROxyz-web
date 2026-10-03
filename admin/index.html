@@ -10,7 +10,7 @@
   <meta http-equiv="Expires" content="0">
   <title>Admin PROxyz</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
-  <link rel="stylesheet" href="./admin.css?v=1.5.19">
+  <link rel="stylesheet" href="./admin.css?v=3.2.14">
 </head>
 <body>
   <main class="shell">
@@ -500,7 +500,7 @@
 
           <section id="risma-poin-panel" class="risma-panel panel" hidden>
             <div class="section-head risma-section-head">
-              <div><p class="eyebrow"><i class="fa-solid fa-star"></i> RISMA Poin</p><h2>Catat kehadiran</h2><p class="muted small">Pilih minggu, lalu masukkan peserta dan jumlah hadir.</p></div>
+              <div><p class="eyebrow"><i class="fa-solid fa-star"></i> RISMA Poin</p><h2>Input Poin Mingguan</h2><p class="muted small">Minggu harus diinput berurutan. Minggu berikutnya baru terbuka setelah minggu sebelumnya tersimpan.</p></div><button id="risma-poin-next" class="primary compact" type="button"><i class="fa-solid fa-plus"></i> Input minggu berikutnya</button>
             </div>
             <div id="risma-week-grid" class="week-grid risma-week-grid"></div>
             <div class="risma-info-strip">Minggu 1: masukkan nama peserta. Minggu berikutnya: pilih nama yang sudah ada atau tambahkan peserta baru.</div>
@@ -699,11 +699,11 @@
 
             <div class="section-head compact-head"><div><p class="eyebrow">Desain kupon</p><h3>Template Kupon THR</h3></div></div>
             <form id="risma-template-form" class="settings-stack">
-              <label>Jenis kupon<select id="risma-template-type"><option value="ngaji">Ngaji</option><option value="taraweh">Taraweh</option><option value="tadarus">Tadarus</option><option value="jumat">Jumat</option></select></label>
+              <label>Jenis kupon<select id="risma-template-type"><option value="ngaji">Ngaji</option><option value="jumat">Jumat</option><option value="taraweh">Tarawih</option><option value="tadarus">Tadarus</option></select></label>
               <label>Judul<input id="risma-template-title" maxlength="60" required></label>
               <label>Slogan<input id="risma-template-slogan" maxlength="100" required></label>
               <label>Catatan bawah<textarea id="risma-template-footer" rows="3" maxlength="240" required></textarea></label>
-              <label>Warna<select id="risma-template-palette"><option value="hijau">Hijau</option><option value="biru">Biru</option><option value="emas">Emas</option><option value="ungu">Ungu</option><option value="merah">Merah</option><option value="toska">Toska</option></select></label>
+              <label>Warna<select id="risma-template-palette"><option value="hijau">Hijau</option><option value="hijau-muda">Hijau Muda</option><option value="zamrud">Hijau Zamrud</option><option value="biru">Biru Muda</option><option value="emas">Emas</option><option value="ungu">Ungu</option><option value="merah">Merah</option><option value="toska">Toska</option></select></label>
               <div class="actions two"><button id="risma-template-reset" class="ghost" type="button"><i class="fa-solid fa-rotate-left"></i> Kembalikan</button><button class="primary" type="submit"><i class="fa-solid fa-floppy-disk"></i> Simpan template</button></div><p id="risma-template-status" class="status"></p>
             </form>
           </section>
@@ -1275,6 +1275,6 @@
   </dialog>
 
   <script src="./config.js?v=242"></script>
-  <script src="./admin.js?v=1.5.19" defer></script>
+  <script src="./admin.js?v=3.2.14" defer></script>
 </body>
 </html>
