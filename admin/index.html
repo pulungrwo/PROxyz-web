@@ -10,7 +10,7 @@
   <meta http-equiv="Expires" content="0">
   <title>Admin PROxyz</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
-  <link rel="stylesheet" href="./admin.css?v=3.2.14">
+  <link rel="stylesheet" href="./admin.css?v=3.2.16">
 </head>
 <body>
   <main class="shell">
@@ -514,7 +514,7 @@
               <div><p class="eyebrow"><i class="fa-solid fa-ticket"></i> Kupon</p><h2>Penerima kupon</h2><p class="muted small">Tambah penerima, lihat jumlah kupon, lalu tandai jika sudah dibagikan.</p></div>
               <button id="risma-coupon-add" class="primary compact" type="button"><i class="fa-solid fa-user-plus"></i> Penerima</button>
             </div>
-            <label>Jenis kupon<select id="risma-coupon-type"><option value="ngaji">Kupon Ngaji</option><option value="taraweh">Kupon Taraweh</option><option value="tadarus">Kupon Tadarus</option><option value="jumat">Kupon Jumat</option></select></label>
+            <label>Jenis kupon<select id="risma-coupon-type"><option value="ngaji">Kupon Ngaji</option><option value="jumat">Kupon Jumat</option><option value="taraweh">Kupon Tarawih</option><option value="tadarus">Kupon Tadarus</option></select></label>
             <div id="risma-coupon-summary" class="metric-grid risma-coupon-summary"></div>
             <div id="risma-coupon-list" class="list-stack"></div>
           </section>
@@ -616,7 +616,7 @@
               </summary>
               <div class="risma-pub-body">
                 <div class="risma-coupon-print-grid">
-                  <label>Jenis kupon<select id="risma-print-coupon-type"><option value="semua">Semua kupon aktif</option><option value="ngaji">Kupon Ngaji</option><option value="taraweh">Kupon Taraweh</option><option value="tadarus">Kupon Tadarus</option><option value="jumat">Kupon Jumat</option></select></label>
+                  <label>Jenis kupon<select id="risma-print-coupon-type"><option value="semua">Semua kupon aktif</option><option value="ngaji">Kupon Ngaji</option><option value="jumat">Kupon Jumat</option><option value="taraweh">Kupon Tarawih</option><option value="tadarus">Kupon Tadarus</option></select></label>
                   <label>Layout<select id="risma-print-coupon-layout"><option value="4">4 kupon / lembar</option><option value="6" selected>6 kupon / lembar</option><option value="10">10 kupon / lembar</option></select></label>
                   <label>Jumlah lembar<input id="risma-print-coupon-sheets" type="number" min="1" max="100" value="1"></label>
                 </div>
@@ -686,7 +686,7 @@
                 <label>6x<input id="risma-setting-score-6" type="number" min="0" max="100" step="0.25" inputmode="decimal"></label>
                 <label>7x<input id="risma-setting-score-7" type="number" min="0" max="100" step="0.25" inputmode="decimal"></label>
               </div><small class="muted">Default: 1, 2, 3, 4, 6, 7,5, 9 poin. Perubahan menghitung ulang data minggu yang sudah tersimpan.</small></fieldset>
-              <fieldset class="toggle-fieldset"><legend>Kupon THR aktif</legend><label class="check-row"><input id="risma-setting-ngaji" type="checkbox"> Kupon Ngaji</label><label class="check-row"><input id="risma-setting-taraweh" type="checkbox"> Kupon Taraweh</label><label class="check-row"><input id="risma-setting-tadarus" type="checkbox"> Kupon Tadarus</label><label class="check-row"><input id="risma-setting-jumat" type="checkbox"> Kupon Jumat</label></fieldset>
+              <fieldset class="toggle-fieldset"><legend>Kupon THR aktif</legend><label class="check-row"><input id="risma-setting-ngaji" type="checkbox"> Kupon Ngaji</label><label class="check-row"><input id="risma-setting-jumat" type="checkbox"> Kupon Jumat</label><label class="check-row"><input id="risma-setting-taraweh" type="checkbox"> Kupon Tarawih</label><label class="check-row"><input id="risma-setting-tadarus" type="checkbox"> Kupon Tadarus</label></fieldset>
               <fieldset class="toggle-fieldset"><legend>Presensi Tadarus</legend><label class="check-row"><input id="risma-setting-tadarus-auto-enabled" type="checkbox"> Aktifkan perhitungan kupon otomatis</label><div class="context-grid"><label>Minimal kehadiran (%)<input id="risma-tadarus-min" type="number" min="0" max="100" step="1"></label><label>Batas kupon 2 (%)<input id="risma-tadarus-second" type="number" min="0" max="100" step="1"></label><label>Batas kupon 3 (%)<input id="risma-tadarus-third" type="number" min="0" max="100" step="1"></label><label>Maksimal kupon<select id="risma-tadarus-max"><option value="1">1 kupon</option><option value="2">2 kupon</option><option value="3">3 kupon</option></select></label></div><label class="check-row"><input id="risma-tadarus-khatam" type="checkbox"> Tadarus sudah khatam</label><small class="muted">Status khatam berlaku untuk seluruh kelompok karena Tadarus dilakukan estafet. Kupon otomatis baru dibagikan setelah status ini aktif.</small></fieldset>
               <p id="risma-settings-status" class="status"></p><button class="primary full" type="submit"><i class="fa-solid fa-floppy-disk"></i> Simpan pengaturan</button>
             </form>
@@ -1275,6 +1275,6 @@
   </dialog>
 
   <script src="./config.js?v=242"></script>
-  <script src="./admin.js?v=3.2.14" defer></script>
+  <script src="./admin.js?v=3.2.16" defer></script>
 </body>
 </html>

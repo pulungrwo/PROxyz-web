@@ -2335,16 +2335,13 @@
       label.textContent = meta.label;
       const value = document.createElement("strong");
       value.textContent = `${wholeNumber.format(Number(row.coupons || 0))} kupon`;
-      const total = document.createElement("span");
-      total.className = "risma-coupon-mini-total";
-      total.textContent = "Total kupon";
+      const pendingLabel = document.createElement("span");
+      pendingLabel.className = "risma-coupon-mini-pending-label";
+      pendingLabel.textContent = "Belum dibagi";
       const pending = document.createElement("span");
       pending.className = "risma-coupon-mini-pending";
-      pending.textContent = `Belum dibagi ${wholeNumber.format(Number(row.pending || 0))} kupon`;
-      const people = document.createElement("span");
-      people.className = "risma-coupon-mini-people";
-      people.textContent = `${wholeNumber.format(Number(row.pendingRecipients || 0))} orang`;
-      card.append(label, value, total, pending, people);
+      pending.textContent = `${wholeNumber.format(Number(row.pending || 0))} kupon | ${wholeNumber.format(Number(row.pendingRecipients || 0))} orang`;
+      card.append(label, value, pendingLabel, pending);
       host.appendChild(card);
     });
   }
@@ -2757,8 +2754,8 @@
     if(group){ rismaCouponType=group.type; $("risma-coupon-type").value=group.type; }
     const summary=$("risma-coupon-summary"), list=$("risma-coupon-list"); summary.replaceChildren(); list.replaceChildren();
     if(!group){ summary.appendChild(emptyBox("Aktifkan periode untuk mengelola kupon.")); return; }
-    $("risma-coupon-add").disabled = group.type === "tadarus";
-    $("risma-coupon-add").title = group.type === "tadarus" ? "Kupon Tadarus dibagikan otomatis setelah khatam." : "Tambah penerima";
+    $("risma-coupon-add").disabled = false;
+    $("risma-coupon-add").title = group.type === "tadarus" ? "Tambah manual darurat; tetap mengikuti syarat khatam." : "Tambah penerima";
     for(const [label,value] of [["Penerima",group.stats.recipients],["Kupon",group.stats.coupons],["Sudah dibagi",group.stats.done],["Menunggu",group.stats.pending]]){
       const card=document.createElement("article"); card.className="metric-card"; card.innerHTML=`<span>${label}</span><b>${wholeNumber.format(value||0)}</b>`; summary.appendChild(card);
     }
@@ -4788,7 +4785,7 @@ ${row.label}`))return;
   });
 
   $("risma-coupon-type").addEventListener("change",()=>{rismaCouponType=$("risma-coupon-type").value;renderRismaCoupons();});
-  $("risma-coupon-add").addEventListener("click",()=>{$("risma-coupon-add-form").reset();const t=$("risma-coupon-add-type");const manualTypes=["ngaji","jumat","taraweh"];t.replaceChildren(...(rismaDetail?.couponTypes||[]).filter(x=>x?.enabled!==false && manualTypes.includes(String(x.type))).map(x=>new Option(x.label||x.type,x.type)));if([...t.options].some(o=>o.value===rismaCouponType))t.value=rismaCouponType;else if(t.options.length)t.value=t.options[0].value;fillRismaCouponCountSelect($("risma-coupon-add-count"),1);setStatus($("risma-coupon-add-status"));$("risma-coupon-add-dialog").showModal();});
+  $("risma-coupon-add").addEventListener("click",()=>{$("risma-coupon-add-form").reset();const t=$("risma-coupon-add-type");const manualTypes=["ngaji","jumat","taraweh","tadarus"];t.replaceChildren(...(rismaDetail?.couponTypes||[]).filter(x=>x?.enabled!==false && manualTypes.includes(String(x.type))).map(x=>new Option(x.label||x.type,x.type)));if([...t.options].some(o=>o.value===rismaCouponType))t.value=rismaCouponType;else if(t.options.length)t.value=t.options[0].value;fillRismaCouponCountSelect($("risma-coupon-add-count"),1);setStatus($("risma-coupon-add-status"));$("risma-coupon-add-dialog").showModal();});
   $("close-risma-coupon-add").addEventListener("click",()=>$("risma-coupon-add-dialog").close());
   $("risma-coupon-add-form").addEventListener("submit",async event=>{
     event.preventDefault();
@@ -5038,8 +5035,8 @@ ${row.label}`))return;
   function openRismaFabChoice(mode){
     const menu=$("risma-fab-menu"); if(!menu) return;
     if(mode==="coupon"){
-      const types=["ngaji","jumat","taraweh"].filter(type=>(rismaDetail?.couponTypes||[]).some(row=>row.type===type && row.enabled!==false));
-      menu.innerHTML=`<div class="risma-fab-title">Pilih jenis kupon</div>${types.map(type=>{const labels={ngaji:"Kupon Ngaji",jumat:"Kupon Jumat",taraweh:"Kupon Tarawih"};return `<button type="button" data-risma-coupon-choice="${type}"><i class="fa-solid fa-ticket"></i><span>${labels[type]}</span></button>`;}).join("")}<button type="button" class="risma-fab-back" data-risma-fab-back><i class="fa-solid fa-arrow-left"></i><span>Kembali</span></button>`;
+      const types=["ngaji","jumat","taraweh","tadarus"].filter(type=>(rismaDetail?.couponTypes||[]).some(row=>row.type===type && row.enabled!==false));
+      menu.innerHTML=`<div class="risma-fab-title">Pilih jenis kupon</div>${types.map(type=>{const labels={ngaji:"Kupon Ngaji",jumat:"Kupon Jumat",taraweh:"Kupon Tarawih",tadarus:"Kupon Tadarus (manual)"};return `<button type="button" data-risma-coupon-choice="${type}"><i class="fa-solid fa-ticket"></i><span>${labels[type]}</span></button>`;}).join("")}<button type="button" class="risma-fab-back" data-risma-fab-back><i class="fa-solid fa-arrow-left"></i><span>Kembali</span></button>`;
       menu.querySelectorAll("[data-risma-coupon-choice]").forEach(btn=>btn.addEventListener("click",()=>{rismaCouponType=btn.dataset.rismaCouponChoice;if($("risma-coupon-type"))$("risma-coupon-type").value=rismaCouponType;$("risma-coupon-add").click();}));
       menu.querySelector("[data-risma-fab-back]")?.addEventListener("click",rismaFabResetMenu);
       return;

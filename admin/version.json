@@ -1,6 +1,6 @@
 {
   "version": "1.5.21",
-  "updatedAt": "2026-10-04T01:05:00+07:00",
+  "updatedAt": "2026-10-04T20:15:00+07:00",
   "uiBase": "PROxyz-SOURCE-20260829-2042",
   "features": [
     "admin-v0.9.3",
@@ -178,6 +178,11 @@
     "risma-coupon-green-palette-v3214",
     "risma-fab-choice-flow-v3214",
     "risma-poin-sequential-input-v3214",
-    "admin-cache-bust-v3214"
+    "admin-cache-bust-v3214",
+    "risma-jumat-order-publication-v3215",
+    "risma-tadarus-manual-fallback-v3215",
+    "risma-coupon-card-format-v3215",
+    "risma-tarawih-label-unification-v3215",
+    "admin-cache-bust-v3215"
   ]
 }
