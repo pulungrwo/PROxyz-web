@@ -2459,14 +2459,14 @@
     if(!list||!summary) return;
     const rows=data?.rows||[];
     const khatamInput=$("risma-tadarus-khatam");
-    if(khatamInput){
+    if(khatamInput && khatamInput.dataset.saving !== "1"){
       const khatam=Boolean(data?.settings?.khatam ?? data?.khatam);
       khatamInput.checked=khatam;
       khatamInput.dataset.saved=khatam?"1":"0";
-      khatamInput.dataset.saving="0";
       syncRismaKhatamControl();
     }
-    summary.textContent=`${data?.totalDays||0} hari · ${data?.khatam?"Sudah khatam":"Belum khatam"}`;
+    const khatamState=Boolean(data?.settings?.khatam ?? data?.khatam);
+    summary.textContent=`${data?.totalDays||0} hari · ${khatamState?"Sudah khatam":"Belum khatam"}`;
     list.replaceChildren();
     if(!rows.length) list.appendChild(emptyBox("Belum ada presensi Tadarus."));
     else rows.slice().reverse().forEach(row=>{
@@ -2501,29 +2501,38 @@
   }
 
   async function saveRismaTadarusKhatam(){
-    const input=$("risma-tadarus-khatam"),status=$("risma-tadarus-settings-status"),button=$("risma-tadarus-khatam-save");
+    const input=$("risma-tadarus-khatam"),status=$("risma-tadarus-settings-status");
     if(!input || input.dataset.saving === "1") return;
-    const wanted=input.checked;
+    const wanted=Boolean(input.checked);
     const previous=input.dataset.saved === "1";
     input.dataset.saving="1";
-    if(button) button.disabled=true;
+    input.disabled=true;
     syncRismaKhatamControl();
     setStatus(status,"Menyimpan…");
     try{
       const data=await api("/api/risma/tadarus/settings",{method:"PUT",body:JSON.stringify({khatam:wanted})});
-      rismaDetail=data.risma;
-      rismaTadarusData=data.tadarus;
+      rismaDetail=data.risma || rismaDetail;
+      rismaTadarusData=data.tadarus || rismaTadarusData;
+      // Jangan render ulang seluruh panel di sini. Render penuh dapat mengembalikan
+      // response lama dan membuat checkbox terlihat kembali tidak tercentang.
+      input.checked=wanted;
       input.dataset.saved=wanted?"1":"0";
-      renderRismaTadarus(data.tadarus);
+      input.dataset.saving="0";
+      input.disabled=false;
+      syncRismaKhatamControl();
+      const summary=$("risma-tadarus-summary");
+      if(summary){
+        const totalDays=Number(data?.tadarus?.totalDays ?? rismaTadarusData?.totalDays ?? 0);
+        summary.textContent=`${totalDays} hari · ${wanted?"Sudah khatam":"Belum khatam"}`;
+      }
       setStatus(status,wanted?"Tadarus sudah khatam.":"Status khatam dibatalkan.","success");
     }catch(error){
       input.checked=previous;
       input.dataset.saved=previous?"1":"0";
+      input.dataset.saving="0";
+      input.disabled=false;
       syncRismaKhatamControl();
       setStatus(status,error.message,"error");
-    }finally{
-      input.dataset.saving="0";
-      if(button) button.disabled=false;
     }
   }
 
@@ -5289,7 +5298,6 @@ ${row.label}`))return;
   $("risma-tadarus-fab-attendance")?.addEventListener("click",()=>openRismaTadarusAttendance());
   $("risma-tadarus-open-attendance")?.addEventListener("click",()=>openRismaTadarusAttendance());
   $("risma-tadarus-khatam")?.addEventListener("change",()=>{ syncRismaKhatamControl(); saveRismaTadarusKhatam(); });
-  $("risma-tadarus-khatam-save")?.addEventListener("click",saveRismaTadarusKhatam);
   rismaFabResetMenu();
   $("risma-fab")?.addEventListener("click",()=>{const menu=$("risma-fab-menu");if(menu.hidden){rismaFabResetMenu();}menu.hidden=!menu.hidden;$("risma-fab").setAttribute("aria-expanded",String(!menu.hidden));});
   $("risma-template-type").addEventListener("change",syncRismaTemplateForm);

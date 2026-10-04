@@ -10,7 +10,7 @@
   <meta http-equiv="Expires" content="0">
   <title>Admin PROxyz</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
-  <link rel="stylesheet" href="./admin.css?v=3.2.22">
+  <link rel="stylesheet" href="./admin.css?v=3.2.23">
 </head>
 <body>
   <main class="shell">
@@ -522,18 +522,17 @@
           <section id="risma-tadarus-panel" class="risma-panel panel" hidden>
             <div class="section-head risma-section-head"><div><p class="eyebrow"><i class="fa-solid fa-book-quran"></i> Presensi Tadarus</p><h2>Absensi Tadarus Harian</h2><p class="muted small">Tadarus dilakukan estafet. Status khatam berlaku untuk seluruh peserta, bukan per orang.</p></div><button id="risma-tadarus-open-attendance" class="primary compact" type="button"><i class="fa-solid fa-calendar-check"></i> Presensi hari ini</button></div>
             <div class="metric-grid" id="risma-tadarus-summary"><span>0 hari</span></div>
+            <div id="risma-tadarus-participants" class="risma-tadarus-participants"></div>
+            <div class="section-head compact-head"><div><p class="eyebrow">Riwayat</p><h3>Hari Tadarus</h3></div></div>
+            <div id="risma-tadarus-days" class="list-stack"></div><p id="risma-tadarus-status" class="status"></p>
             <div class="risma-tadarus-settings risma-owner-tool">
-              <p class="eyebrow">Pengaturan Tadarus</p>
+              <p class="eyebrow">Pengaturan</p>
               <label class="risma-khatam-check" for="risma-tadarus-khatam">
                 <input id="risma-tadarus-khatam" type="checkbox">
                 <span>Tadarus sudah khatam</span>
               </label>
-              <button id="risma-tadarus-khatam-save" class="ghost compact" type="button"><i class="fa-solid fa-rotate"></i> Simpan ulang</button>
               <p id="risma-tadarus-settings-status" class="status"></p>
             </div>
-            <div id="risma-tadarus-participants" class="risma-tadarus-participants"></div>
-            <div class="section-head compact-head"><div><p class="eyebrow">Riwayat</p><h3>Hari Tadarus</h3></div></div>
-            <div id="risma-tadarus-days" class="list-stack"></div><p id="risma-tadarus-status" class="status"></p>
           </section>
 
           <section id="risma-publikasi-panel" class="risma-panel panel" hidden>
