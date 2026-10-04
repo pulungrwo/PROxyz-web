@@ -1923,10 +1923,50 @@ dialog[id^="risma-"] .icon-button{background:#edf7fd!important;color:#285c7d!imp
 .risma-tadarus-settings .check-row{margin:0;justify-content:flex-start}
 .risma-tadarus-settings .primary{justify-self:start}
 
+/* RISMA V3.2.20 — compact elegant coupon cards + reliable khatam toggle */
+.risma-hero-compact #risma-coupon-summary-row{
+  padding:10px!important;border:1px solid rgba(255,255,255,.82)!important;border-radius:20px!important;
+  background:rgba(255,255,255,.36)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.78)!important;
+}
+.risma-hero-compact #risma-coupons.risma-coupon-summary-inline{
+  display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:9px!important;
+}
+.risma-hero-compact #risma-coupons.risma-coupon-summary-inline .risma-coupon-mini-card{
+  min-width:0!important;min-height:112px!important;padding:14px 15px!important;display:grid!important;
+  grid-template-columns:1fr!important;grid-template-rows:auto auto auto auto!important;gap:3px!important;align-content:center!important;
+  text-align:left!important;border-radius:18px!important;background:#fff!important;
+  border:1px solid color-mix(in srgb,var(--coupon-primary,#344054) 16%,#e4eaf0)!important;
+  box-shadow:0 5px 14px rgba(15,23,42,.055),inset 0 1px 0 rgba(255,255,255,.9)!important;
+  transition:transform .16s ease,box-shadow .16s ease!important;
+}
+.risma-hero-compact #risma-coupons.risma-coupon-summary-inline .risma-coupon-mini-card:hover{transform:translateY(-1px);box-shadow:0 8px 18px rgba(15,23,42,.08),inset 0 1px 0 rgba(255,255,255,.9)!important}
+.risma-hero-compact #risma-coupons.risma-coupon-summary-inline .risma-coupon-mini-label{
+  display:block!important;margin:0!important;font-size:18px!important;line-height:1.05!important;font-weight:900!important;color:var(--coupon-primary,#1F2937)!important}
+.risma-hero-compact #risma-coupons.risma-coupon-summary-inline .risma-coupon-mini-value{
+  display:block!important;margin:1px 0 0!important;font-size:23px!important;line-height:1.02!important;font-weight:900!important;color:var(--coupon-primary,#101828)!important}
+.risma-hero-compact #risma-coupons.risma-coupon-summary-inline .risma-coupon-mini-pending-label{
+  display:block!important;margin:3px 0 0!important;font-size:10px!important;line-height:1.1!important;color:#667085!important;font-weight:750!important}
+.risma-hero-compact #risma-coupons.risma-coupon-summary-inline .risma-coupon-mini-pending{
+  display:block!important;font-size:12px!important;line-height:1.15!important;color:var(--coupon-primary,#344054)!important;font-weight:850!important;
+  white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
+@media(max-width:380px){
+  .risma-hero-compact #risma-coupon-summary-row{padding:8px!important}
+  .risma-hero-compact #risma-coupons.risma-coupon-summary-inline{gap:7px!important}
+  .risma-hero-compact #risma-coupons.risma-coupon-summary-inline .risma-coupon-mini-card{min-height:104px!important;padding:11px!important}
+  .risma-hero-compact #risma-coupons.risma-coupon-summary-inline .risma-coupon-mini-label{font-size:16px!important}
+  .risma-hero-compact #risma-coupons.risma-coupon-summary-inline .risma-coupon-mini-value{font-size:20px!important}
+  .risma-hero-compact #risma-coupons.risma-coupon-summary-inline .risma-coupon-mini-pending{font-size:10.5px!important}
+}
+
 /* RISMA V3.2.19 — input builder + khatam control */
-.risma-khatam-check{cursor:pointer;display:flex!important;align-items:center;gap:10px;min-height:44px;padding:10px 12px;border:1px solid #DCE7F0;border-radius:14px;background:#fff!important;pointer-events:auto!important}
-.risma-khatam-check input{width:22px;height:22px;min-width:22px;accent-color:#1687c8;cursor:pointer;pointer-events:auto!important}
-.risma-khatam-check span{font-weight:750;color:#182230}
+.risma-khatam-toggle{width:100%;display:flex;align-items:center;gap:11px;min-height:50px;padding:11px 13px;border:1px solid #DCE7F0;border-radius:15px;background:#fff!important;color:#182230!important;text-align:left;cursor:pointer;box-shadow:none!important}
+.risma-khatam-toggle:hover{border-color:#9fcfeb;background:#fafdff!important}
+.risma-khatam-toggle:focus-visible{outline:3px solid rgba(22,131,216,.2);outline-offset:2px}
+.risma-khatam-toggle .risma-khatam-box{width:23px;height:23px;min-width:23px;display:grid;place-items:center;border:2px solid #AAB8C4;border-radius:7px;background:#fff;color:transparent;transition:.16s ease}
+.risma-khatam-toggle .risma-khatam-box i{font-size:12px}
+.risma-khatam-toggle.is-checked{border-color:#8fd1b2;background:#f3fbf6!important}
+.risma-khatam-toggle.is-checked .risma-khatam-box{border-color:#138a5b;background:#138a5b;color:#fff}
+.risma-khatam-toggle>span:last-child{font-weight:800;font-size:15px}
 #risma-tadarus-settings-status{margin:0}
 .risma-entry-builder{margin:10px 0 14px;padding:14px;border:1px solid #E3EAF0;border-radius:16px;background:#F8FBFD}
 .risma-entry-builder .risma-entry-grid{margin:0}

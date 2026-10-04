@@ -524,7 +524,11 @@
             <div class="metric-grid" id="risma-tadarus-summary"><span>0 hari</span></div>
             <div class="risma-tadarus-settings risma-owner-tool">
               <p class="eyebrow">Pengaturan Tadarus</p>
-              <label class="check-row risma-khatam-check"><input id="risma-tadarus-khatam" type="checkbox"><span>Tadarus sudah khatam</span></label>
+              <input id="risma-tadarus-khatam" type="checkbox" hidden tabindex="-1" aria-hidden="true">
+              <button id="risma-tadarus-khatam-toggle" class="risma-khatam-toggle" type="button" aria-pressed="false">
+                <span class="risma-khatam-box" aria-hidden="true"><i class="fa-solid fa-check"></i></span>
+                <span>Tadarus sudah khatam</span>
+              </button>
               <button id="risma-tadarus-khatam-save" class="primary compact" type="button"><i class="fa-solid fa-check"></i> Simpan</button>
               <p id="risma-tadarus-settings-status" class="status"></p>
             </div>

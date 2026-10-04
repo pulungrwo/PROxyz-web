@@ -2445,7 +2445,10 @@
     if(!list||!summary) return;
     const rows=data?.rows||[];
     const khatamInput=$("risma-tadarus-khatam");
-    if(khatamInput) khatamInput.checked=Boolean(data?.settings?.khatam ?? data?.khatam);
+    if(khatamInput){
+      khatamInput.checked=Boolean(data?.settings?.khatam ?? data?.khatam);
+      syncRismaKhatamControl();
+    }
     summary.textContent=`${data?.totalDays||0} hari · ${data?.khatam?"Sudah khatam":"Belum khatam"}`;
     list.replaceChildren();
     if(!rows.length) list.appendChild(emptyBox("Belum ada presensi Tadarus."));
@@ -2465,10 +2468,25 @@
     }
   }
 
+  function syncRismaKhatamControl(){
+    const input=$("risma-tadarus-khatam"),toggle=$("risma-tadarus-khatam-toggle");
+    if(!input||!toggle)return;
+    const checked=Boolean(input.checked);
+    toggle.setAttribute("aria-pressed",String(checked));
+    toggle.classList.toggle("is-checked",checked);
+  }
+
+  function toggleRismaTadarusKhatam(){
+    const input=$("risma-tadarus-khatam");
+    if(!input)return;
+    input.checked=!input.checked;
+    syncRismaKhatamControl();
+  }
+
   function saveRismaTadarusKhatam(){
     const input=$("risma-tadarus-khatam"),status=$("risma-tadarus-settings-status");if(!input)return;
     const wanted=input.checked;
-    api("/api/risma/tadarus/settings",{method:"PUT",body:JSON.stringify({khatam:wanted})}).then(data=>{rismaDetail=data.risma;renderRisma();renderRismaTadarus(data.tadarus);setStatus(status,wanted?"Tadarus sudah khatam.":"Status khatam dibatalkan.","success");}).catch(error=>{input.checked=!wanted;setStatus(status,error.message,"error");});
+    api("/api/risma/tadarus/settings",{method:"PUT",body:JSON.stringify({khatam:wanted})}).then(data=>{rismaDetail=data.risma;renderRisma();renderRismaTadarus(data.tadarus);setStatus(status,wanted?"Tadarus sudah khatam.":"Status khatam dibatalkan.","success");}).catch(error=>{input.checked=!wanted;syncRismaKhatamControl();setStatus(status,error.message,"error");});
   }
 
   function participantWeekSummary(row) {
@@ -5232,6 +5250,7 @@ ${row.label}`))return;
   $("risma-tadarus-close")?.addEventListener("click",()=>$("risma-tadarus-attendance-dialog").close());
   $("risma-tadarus-fab-attendance")?.addEventListener("click",()=>openRismaTadarusAttendance());
   $("risma-tadarus-open-attendance")?.addEventListener("click",()=>openRismaTadarusAttendance());
+  $("risma-tadarus-khatam-toggle")?.addEventListener("click",toggleRismaTadarusKhatam);
   $("risma-tadarus-khatam-save")?.addEventListener("click",saveRismaTadarusKhatam);
   rismaFabResetMenu();
   $("risma-fab")?.addEventListener("click",()=>{const menu=$("risma-fab-menu");if(menu.hidden){rismaFabResetMenu();}menu.hidden=!menu.hidden;$("risma-fab").setAttribute("aria-expanded",String(!menu.hidden));});

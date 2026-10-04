@@ -1,6 +1,6 @@
 {
   "version": "1.5.21",
-  "updatedAt": "2026-10-04T22:55:00+07:00",
+  "updatedAt": "2026-10-05T00:20:00+07:00",
   "uiBase": "PROxyz-SOURCE-20260829-2042",
   "features": [
     "admin-v0.9.3",
@@ -196,6 +196,7 @@
     "risma-tadarus-batch-input-v3219",
     "risma-tadarus-edit-merge-date-v3219",
     "risma-tadarus-khatam-checkbox-v3219",
-    "risma-jumat-announcement-wording-v3219"
+    "risma-jumat-announcement-wording-v3219",
+    "risma-v3.2.20"
   ]
 }
