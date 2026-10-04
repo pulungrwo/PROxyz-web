@@ -2339,6 +2339,8 @@
       card.style.setProperty("--coupon-light", meta.palette.light);
       card.style.setProperty("--coupon-accent", meta.palette.accent);
       card.setAttribute("aria-label", `${meta.label}: ${wholeNumber.format(Number(row.coupons || 0))} kupon`);
+      const inner = document.createElement("span");
+      inner.className = "risma-coupon-mini-inner";
       const label = document.createElement("strong");
       label.className = "risma-coupon-mini-label";
       label.textContent = meta.label;
@@ -2350,8 +2352,9 @@
       pendingLabel.textContent = "belum dibagi";
       const pending = document.createElement("span");
       pending.className = "risma-coupon-mini-pending";
-      pending.textContent = `${wholeNumber.format(Number(row.pending || 0))} kupon untuk ${wholeNumber.format(Number(row.pendingRecipients || 0))} orang`;
-      card.append(label, value, pendingLabel, pending);
+      pending.textContent = `${wholeNumber.format(Number(row.pending || 0))} kupon · ${wholeNumber.format(Number(row.pendingRecipients || 0))} orang`;
+      inner.append(label, value, pendingLabel, pending);
+      card.appendChild(inner);
       host.appendChild(card);
     });
   }
@@ -2469,17 +2472,17 @@
   }
 
   function syncRismaKhatamControl(){
-    const input=$("risma-tadarus-khatam"),toggle=$("risma-tadarus-khatam-toggle");
-    if(!input||!toggle)return;
-    const checked=Boolean(input.checked);
-    toggle.setAttribute("aria-pressed",String(checked));
-    toggle.classList.toggle("is-checked",checked);
+    const input=$("risma-tadarus-khatam");
+    if(!input)return;
+    input.setAttribute("aria-checked",String(Boolean(input.checked)));
+    input.closest(".risma-khatam-check")?.classList.toggle("is-checked",Boolean(input.checked));
   }
 
   function toggleRismaTadarusKhatam(){
     const input=$("risma-tadarus-khatam");
     if(!input)return;
     input.checked=!input.checked;
+    input.dispatchEvent(new Event("change",{bubbles:true}));
     syncRismaKhatamControl();
   }
 
@@ -5250,7 +5253,7 @@ ${row.label}`))return;
   $("risma-tadarus-close")?.addEventListener("click",()=>$("risma-tadarus-attendance-dialog").close());
   $("risma-tadarus-fab-attendance")?.addEventListener("click",()=>openRismaTadarusAttendance());
   $("risma-tadarus-open-attendance")?.addEventListener("click",()=>openRismaTadarusAttendance());
-  $("risma-tadarus-khatam-toggle")?.addEventListener("click",toggleRismaTadarusKhatam);
+  $("risma-tadarus-khatam")?.addEventListener("change",syncRismaKhatamControl);
   $("risma-tadarus-khatam-save")?.addEventListener("click",saveRismaTadarusKhatam);
   rismaFabResetMenu();
   $("risma-fab")?.addEventListener("click",()=>{const menu=$("risma-fab-menu");if(menu.hidden){rismaFabResetMenu();}menu.hidden=!menu.hidden;$("risma-fab").setAttribute("aria-expanded",String(!menu.hidden));});
