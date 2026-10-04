@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": 1790960807839,
+  "generatedAt": 1791117359440,
   "id": "02",
   "nama": "Samping Rumah",
   "lokasi": "",
@@ -34,12 +34,21 @@
   "summary": {
     "weightKg": 0,
     "harvestCount": 0,
-    "activityCount": 5,
+    "activityCount": 6,
     "pendingScheduleCount": 4
   },
   "financeVisible": false,
   "recentHarvest": [],
   "recentActivities": [
+    {
+      "date": "2026-10-04",
+      "cropId": "01",
+      "komoditas": "Cabai",
+      "category": "Penyemprotan",
+      "description": "spray 1 mutual + 1 freshnill",
+      "note": "",
+      "hst": 7
+    },
     {
       "date": "2026-10-02",
       "cropId": "01",
@@ -136,5 +145,5 @@
       "status": "pending"
     }
   ],
-  "updatedAt": 1790960807839
+  "updatedAt": 1791117359440
 }
