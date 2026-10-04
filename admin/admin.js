@@ -5298,6 +5298,12 @@ ${row.label}`))return;
   $("risma-tadarus-fab-attendance")?.addEventListener("click",()=>openRismaTadarusAttendance());
   $("risma-tadarus-open-attendance")?.addEventListener("click",()=>openRismaTadarusAttendance());
   $("risma-tadarus-khatam")?.addEventListener("change",()=>{ syncRismaKhatamControl(); saveRismaTadarusKhatam(); });
+  $("risma-tadarus-khatam")?.closest(".risma-khatam-check")?.addEventListener("click",event=>{
+    const input=$("risma-tadarus-khatam");
+    if(!input || input.disabled || event.target===input) return;
+    event.preventDefault();
+    input.click();
+  });
   rismaFabResetMenu();
   $("risma-fab")?.addEventListener("click",()=>{const menu=$("risma-fab-menu");if(menu.hidden){rismaFabResetMenu();}menu.hidden=!menu.hidden;$("risma-fab").setAttribute("aria-expanded",String(!menu.hidden));});
   $("risma-template-type").addEventListener("change",syncRismaTemplateForm);
