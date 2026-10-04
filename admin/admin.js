@@ -2206,13 +2206,19 @@
   function switchRismaTab(tab) {
     const owner = rismaDetail?.role === "owner";
     const allowed = ["rank","poin","kupon","tadarus","publikasi","pengaturan","pengelola","log"];
+    const previousTab = activeRismaTab;
     activeRismaTab = allowed.includes(tab) ? tab : "rank";
     if (activeRismaTab === "log" && !owner) activeRismaTab = "rank";
     document.querySelectorAll("[data-risma-tab]").forEach(el => el.classList.toggle("active", el.dataset.rismaTab === activeRismaTab));
     for (const name of allowed) $("risma-"+name+"-panel").hidden = name !== activeRismaTab;
     if (activeRismaTab === "log" && owner) loadRismaLogs().catch(error => setStatus($("risma-log-status"), error.message, "error"));
     if (activeRismaTab === "publikasi" && !rismaArchives.length) loadRismaArchives().catch(error => setStatus($("risma-archive-status"), error.message, "error"));
-    if (activeRismaTab === "tadarus") loadRismaTadarus().catch(error => setStatus($("risma-tadarus-status"), error.message, "error"));
+    // Jangan memanggil load Tadarus setiap renderRisma(). Render ulang sebelumnya
+    // membuat request kedua yang dapat mengembalikan state lama dan menghapus
+    // centang Khatam yang baru saja dipilih. Muat hanya saat benar-benar masuk tab.
+    if (activeRismaTab === "tadarus" && (previousTab !== "tadarus" || !rismaTadarusData)) {
+      loadRismaTadarus().catch(error => setStatus($("risma-tadarus-status"), error.message, "error"));
+    }
   }
 
   function renderRisma() {
@@ -2347,14 +2353,18 @@
       const value = document.createElement("span");
       value.className = "risma-coupon-mini-value";
       value.textContent = `${wholeNumber.format(Number(row.coupons || 0))} Kupon`;
+      inner.append(label, value);
+
+      const pendingBox = document.createElement("span");
+      pendingBox.className = "risma-coupon-mini-pending-box";
       const pendingLabel = document.createElement("span");
       pendingLabel.className = "risma-coupon-mini-pending-label";
       pendingLabel.textContent = "belum dibagi";
       const pending = document.createElement("span");
       pending.className = "risma-coupon-mini-pending";
       pending.textContent = `${wholeNumber.format(Number(row.pending || 0))} kupon · ${wholeNumber.format(Number(row.pendingRecipients || 0))} orang`;
-      inner.append(label, value, pendingLabel, pending);
-      card.appendChild(inner);
+      pendingBox.append(pendingLabel, pending);
+      card.append(inner, pendingBox);
       host.appendChild(card);
     });
   }
@@ -2362,6 +2372,7 @@
   async function loadRismaTadarus(){
     const data=await api("/api/risma/tadarus");
     rismaDetail=data.risma;
+    rismaTadarusData=data.tadarus;
     renderRisma();
     renderRismaTadarus(data.tadarus);
   }
@@ -2449,7 +2460,10 @@
     const rows=data?.rows||[];
     const khatamInput=$("risma-tadarus-khatam");
     if(khatamInput){
-      khatamInput.checked=Boolean(data?.settings?.khatam ?? data?.khatam);
+      const khatam=Boolean(data?.settings?.khatam ?? data?.khatam);
+      khatamInput.checked=khatam;
+      khatamInput.dataset.saved=khatam?"1":"0";
+      khatamInput.dataset.saving="0";
       syncRismaKhatamControl();
     }
     summary.textContent=`${data?.totalDays||0} hari · ${data?.khatam?"Sudah khatam":"Belum khatam"}`;
@@ -2486,10 +2500,31 @@
     syncRismaKhatamControl();
   }
 
-  function saveRismaTadarusKhatam(){
-    const input=$("risma-tadarus-khatam"),status=$("risma-tadarus-settings-status");if(!input)return;
+  async function saveRismaTadarusKhatam(){
+    const input=$("risma-tadarus-khatam"),status=$("risma-tadarus-settings-status"),button=$("risma-tadarus-khatam-save");
+    if(!input || input.dataset.saving === "1") return;
     const wanted=input.checked;
-    api("/api/risma/tadarus/settings",{method:"PUT",body:JSON.stringify({khatam:wanted})}).then(data=>{rismaDetail=data.risma;renderRisma();renderRismaTadarus(data.tadarus);setStatus(status,wanted?"Tadarus sudah khatam.":"Status khatam dibatalkan.","success");}).catch(error=>{input.checked=!wanted;syncRismaKhatamControl();setStatus(status,error.message,"error");});
+    const previous=input.dataset.saved === "1";
+    input.dataset.saving="1";
+    if(button) button.disabled=true;
+    syncRismaKhatamControl();
+    setStatus(status,"Menyimpan…");
+    try{
+      const data=await api("/api/risma/tadarus/settings",{method:"PUT",body:JSON.stringify({khatam:wanted})});
+      rismaDetail=data.risma;
+      rismaTadarusData=data.tadarus;
+      input.dataset.saved=wanted?"1":"0";
+      renderRismaTadarus(data.tadarus);
+      setStatus(status,wanted?"Tadarus sudah khatam.":"Status khatam dibatalkan.","success");
+    }catch(error){
+      input.checked=previous;
+      input.dataset.saved=previous?"1":"0";
+      syncRismaKhatamControl();
+      setStatus(status,error.message,"error");
+    }finally{
+      input.dataset.saving="0";
+      if(button) button.disabled=false;
+    }
   }
 
   function participantWeekSummary(row) {
@@ -3130,8 +3165,8 @@
     const summary=$("risma-print-tarawih-attendance-summary");
     if(!summary) return;
     summary.textContent = week==="all"
-      ? "4 lembar A4 · 2 kartu/lembar · hitam putih · Minggu 1-4."
-      : `1 lembar A4 · 2 kartu/lembar · hitam putih · Minggu ${week}.`;
+      ? "4 lembar A4 · 2 kartu berdampingan · hitam putih · Minggu 1-4."
+      : `1 lembar A4 · 2 kartu berdampingan · hitam putih · Minggu ${week}.`;
   }
 
   async function printRismaTarawihAttendancePdf(){
@@ -5253,7 +5288,7 @@ ${row.label}`))return;
   $("risma-tadarus-close")?.addEventListener("click",()=>$("risma-tadarus-attendance-dialog").close());
   $("risma-tadarus-fab-attendance")?.addEventListener("click",()=>openRismaTadarusAttendance());
   $("risma-tadarus-open-attendance")?.addEventListener("click",()=>openRismaTadarusAttendance());
-  $("risma-tadarus-khatam")?.addEventListener("change",syncRismaKhatamControl);
+  $("risma-tadarus-khatam")?.addEventListener("change",()=>{ syncRismaKhatamControl(); saveRismaTadarusKhatam(); });
   $("risma-tadarus-khatam-save")?.addEventListener("click",saveRismaTadarusKhatam);
   rismaFabResetMenu();
   $("risma-fab")?.addEventListener("click",()=>{const menu=$("risma-fab-menu");if(menu.hidden){rismaFabResetMenu();}menu.hidden=!menu.hidden;$("risma-fab").setAttribute("aria-expanded",String(!menu.hidden));});
