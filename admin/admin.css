@@ -1922,3 +1922,18 @@ dialog[id^="risma-"] .icon-button{background:#edf7fd!important;color:#285c7d!imp
 .risma-tadarus-settings{display:grid;gap:10px;margin:14px 0;padding:14px;border:1px solid #DCE7F0;border-radius:18px;background:#F8FBFD}
 .risma-tadarus-settings .check-row{margin:0;justify-content:flex-start}
 .risma-tadarus-settings .primary{justify-self:start}
+
+/* RISMA V3.2.19 — input builder + khatam control */
+.risma-khatam-check{cursor:pointer;display:flex!important;align-items:center;gap:10px;min-height:44px;padding:10px 12px;border:1px solid #DCE7F0;border-radius:14px;background:#fff!important;pointer-events:auto!important}
+.risma-khatam-check input{width:22px;height:22px;min-width:22px;accent-color:#1687c8;cursor:pointer;pointer-events:auto!important}
+.risma-khatam-check span{font-weight:750;color:#182230}
+#risma-tadarus-settings-status{margin:0}
+.risma-entry-builder{margin:10px 0 14px;padding:14px;border:1px solid #E3EAF0;border-radius:16px;background:#F8FBFD}
+.risma-entry-builder .risma-entry-grid{margin:0}
+.risma-entry-builder .risma-entry-actions{margin-top:10px}
+.risma-week-draft-list{display:grid;gap:8px}
+.risma-week-draft-card{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:11px 12px;border:1px solid #E4EAF0;border-radius:14px;background:#fff}
+.risma-week-draft-card strong{display:block;font-size:15px}
+.risma-week-draft-card span{display:block;margin-top:2px;font-size:12px;color:#667085}
+.risma-draft-actions{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+@media(max-width:640px){.risma-week-draft-card{align-items:flex-start}.risma-draft-actions{flex-shrink:0}}

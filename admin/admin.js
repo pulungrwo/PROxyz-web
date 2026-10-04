@@ -105,6 +105,14 @@
   let rismaWeekDraft = [];
   let rismaWeekEditIndex = -1;
   let rismaWeekNewParticipantMode = true;
+  let rismaCouponDraft = [];
+  let rismaCouponEditIndex = -1;
+  let rismaCouponNewParticipantMode = false;
+  let rismaTadarusData = null;
+  let rismaTadarusDraft = [];
+  let rismaTadarusEditIndex = -1;
+  let rismaTadarusNewParticipantMode = false;
+  let rismaTadarusEditingDate = "";
   let rismaPublicationPreviewKind = "";
   let rismaInvitationLetterNumber = "";
   let rismaInvitationDraftKey = "";
@@ -2355,7 +2363,84 @@
     renderRismaTadarus(data.tadarus);
   }
 
+  function fillRismaTadarusParticipantSelect(){
+    const select=$("risma-tadarus-person-select");
+    if(!select) return;
+    const current=rismaTadarusEditIndex>=0 ? rismaTadarusDraft[rismaTadarusEditIndex]?.id : select.value;
+    const used=new Set(rismaTadarusDraft.map((row,index)=>index===rismaTadarusEditIndex?"":String(row.id||"")).filter(Boolean));
+    select.replaceChildren();
+    select.appendChild(new Option("Pilih peserta…",""));
+    for(const row of (rismaTadarusData?.participants||[]).filter(row=>String(row.id||"") && Number(row.attended||0)>=0)){
+      if(used.has(String(row.id))) continue;
+      select.appendChild(new Option(row.name,String(row.id)));
+    }
+    if(current && [...select.options].some(opt=>opt.value===String(current))) select.value=String(current);
+  }
+
+  function syncRismaTadarusBuilder(){
+    const input=$("risma-tadarus-person-name"), select=$("risma-tadarus-person-select"), toggle=$("risma-tadarus-new-toggle"), label=$("risma-tadarus-person-label");
+    if(!input||!select||!toggle||!label) return;
+    if(rismaTadarusNewParticipantMode){
+      input.hidden=false;select.hidden=true;toggle.textContent="Pilih peserta lama";label.firstChild.textContent="Nama peserta baru\n            ";
+    }else{
+      input.hidden=true;select.hidden=false;toggle.textContent="+ Peserta baru";label.firstChild.textContent="Pilih peserta\n            ";fillRismaTadarusParticipantSelect();
+    }
+  }
+
+  function renderRismaTadarusDraft(){
+    const list=$("risma-tadarus-draft-list"), count=$("risma-tadarus-draft-count");
+    if(!list||!count) return;
+    list.replaceChildren();count.textContent=`${rismaTadarusDraft.length} peserta`;
+    if(!rismaTadarusDraft.length){list.appendChild(emptyBox("Belum ada peserta di daftar input."));return;}
+    rismaTadarusDraft.forEach((row,index)=>{
+      const card=document.createElement("article");card.className="risma-week-draft-card";
+      const info=document.createElement("div");const title=document.createElement("strong");title.textContent=row.name;info.append(title);
+      const actions=document.createElement("div");actions.className="risma-draft-actions";
+      actions.append(rismaIconButton("Ubah","fa-pen","ghost compact",()=>{rismaTadarusEditIndex=index;rismaTadarusNewParticipantMode=!row.id;$("risma-tadarus-person-name").value=row.name;$("risma-tadarus-person-select").value=row.id||"";syncRismaTadarusBuilder();}),rismaIconButton("Hapus","fa-trash-can","danger-soft compact",()=>{rismaTadarusDraft.splice(index,1);rismaTadarusEditIndex=-1;syncRismaTadarusBuilder();renderRismaTadarusDraft();}));
+      card.append(info,actions);list.append(card);
+    });
+  }
+
+  function addRismaTadarusDraft(){
+    const name=rismaTadarusNewParticipantMode?String($("risma-tadarus-person-name")?.value||"").trim():String($("risma-tadarus-person-select")?.selectedOptions?.[0]?.textContent||"").trim();
+    const id=rismaTadarusNewParticipantMode?"":String($("risma-tadarus-person-select")?.value||"").trim();
+    if(!name){setStatus($("risma-tadarus-attendance-status"),"Pilih nama peserta atau masukkan nama baru.","error");return;}
+    const duplicate=rismaTadarusDraft.some((row,index)=>index!==rismaTadarusEditIndex && (id&&String(row.id)===id || (!id&&String(row.name).toLowerCase()===name.toLowerCase())));
+    if(duplicate){setStatus($("risma-tadarus-attendance-status"),"Peserta sudah ada di daftar input.","error");return;}
+    const row={id,name};
+    if(rismaTadarusEditIndex>=0) rismaTadarusDraft[rismaTadarusEditIndex]=row; else rismaTadarusDraft.push(row);
+    rismaTadarusEditIndex=-1;$("risma-tadarus-person-name").value="";$("risma-tadarus-person-select").value="";setStatus($("risma-tadarus-attendance-status"));syncRismaTadarusBuilder();renderRismaTadarusDraft();
+  }
+
+  async function openRismaTadarusAttendance(row=null){
+    if(!rismaTadarusData){
+      try{const data=await api("/api/risma/tadarus");rismaDetail=data.risma;rismaTadarusData=data.tadarus;}catch(error){alert(error.message);return;}
+    }
+    const data=rismaTadarusData;
+    const form=$("risma-tadarus-attendance-form"); if(!form) return;
+    form.reset();
+    rismaTadarusEditIndex=-1;
+    rismaTadarusEditingDate=row?.date||"";
+    rismaTadarusDraft=(row?.participantIds||[]).map(id=>{const p=(data?.participants||[]).find(x=>String(x.id)===String(id));return p?{id:String(p.id),name:p.name}:null;}).filter(Boolean);
+    rismaTadarusNewParticipantMode=false;
+    $("risma-tadarus-date").value=row?.date||new Date().toISOString().slice(0,10);
+    setStatus($("risma-tadarus-attendance-status"),row?"Edit presensi. Peserta yang dihapus dari daftar akan dihapus dari tanggal ini.":"");
+    syncRismaTadarusBuilder();renderRismaTadarusDraft();$("risma-tadarus-attendance-dialog").showModal();
+  }
+
+  async function saveRismaTadarusAttendance(event){
+    event.preventDefault();
+    if(!rismaTadarusDraft.length){setStatus($("risma-tadarus-attendance-status"),"Tambahkan minimal satu peserta.","error");return;}
+    const date=$("risma-tadarus-date").value;
+    try{
+      setStatus($("risma-tadarus-attendance-status"),"Menyimpan presensi…");
+      await api("/api/risma/tadarus/attendance",{method:"PUT",body:JSON.stringify({date,participants:rismaTadarusDraft,replace:Boolean(rismaTadarusEditingDate)})});
+      $("risma-tadarus-attendance-dialog").close();await loadRismaTadarus();
+    }catch(e){setStatus($("risma-tadarus-attendance-status"),e.message,"error");}
+  }
+
   function renderRismaTadarus(data){
+    rismaTadarusData=data||{};
     const list=$("risma-tadarus-days"), summary=$("risma-tadarus-summary");
     if(!list||!summary) return;
     const rows=data?.rows||[];
@@ -2363,56 +2448,27 @@
     if(khatamInput) khatamInput.checked=Boolean(data?.settings?.khatam ?? data?.khatam);
     summary.textContent=`${data?.totalDays||0} hari · ${data?.khatam?"Sudah khatam":"Belum khatam"}`;
     list.replaceChildren();
-    if(!rows.length){ list.appendChild(emptyBox("Belum ada presensi Tadarus.")); }
+    if(!rows.length) list.appendChild(emptyBox("Belum ada presensi Tadarus."));
     else rows.slice().reverse().forEach(row=>{
-      const card=document.createElement("article"); card.className="item-card";
-      const top=document.createElement("div"); top.className="item-top";
-      const meta=document.createElement("div"); const strong=document.createElement("strong"); strong.textContent=new Date(`${row.date}T00:00:00`).toLocaleDateString("id-ID",{weekday:"long",day:"2-digit",month:"short",year:"numeric"}); const sub=document.createElement("div"); sub.className="item-meta"; sub.textContent=`${(row.participantIds||[]).length} peserta hadir`; meta.append(strong,sub);
-      const del=document.createElement("button"); del.className="danger-soft compact"; del.textContent="Hapus"; del.onclick=async()=>{if(!confirm(`Hapus presensi ${row.date}?`))return; await api(`/api/risma/tadarus/attendance/${row.date}`,{method:"DELETE",body:"{}"}); await loadRismaTadarus();}; top.append(meta,del); card.append(top); list.append(card);
+      const card=document.createElement("article");card.className="item-card";
+      const top=document.createElement("div");top.className="item-top";
+      const meta=document.createElement("div");const strong=document.createElement("strong");strong.textContent=new Date(`${row.date}T00:00:00`).toLocaleDateString("id-ID",{weekday:"long",day:"2-digit",month:"short",year:"numeric"});const sub=document.createElement("div");sub.className="item-meta";sub.textContent=`${(row.participantIds||[]).length} peserta hadir`;meta.append(strong,sub);
+      const actions=document.createElement("div");actions.className="risma-draft-actions";
+      actions.append(rismaIconButton("Ubah","fa-pen","ghost compact",()=>openRismaTadarusAttendance(row)));
+      const del=rismaIconButton("Hapus","fa-trash-can","danger-soft compact",async()=>{if(!confirm(`Hapus presensi ${row.date}?`))return;await api(`/api/risma/tadarus/attendance/${row.date}`,{method:"DELETE",body:"{}"});await loadRismaTadarus();});actions.append(del);top.append(meta,actions);card.append(top);list.append(card);
     });
-    const participantList=$("risma-tadarus-participants"); if(participantList){
+    const participantList=$("risma-tadarus-participants");if(participantList){
       participantList.replaceChildren();
-      const attendedParticipants=(data?.participants||[])
-        .filter(row=>Number(row?.attended||0)>0)
-        .sort((a,b)=>(Number(b.attended||0)-Number(a.attended||0)) || String(a.name||"").localeCompare(String(b.name||""),"id"));
-      if(!attendedParticipants.length){
-        participantList.appendChild(emptyBox("Belum ada peserta yang tercatat hadir."));
-      } else attendedParticipants.forEach(row=>{
-        const card=document.createElement("div"); card.className="risma-tadarus-participant";
-        const name=document.createElement("strong"); name.textContent=row.name;
-        const meta=document.createElement("span"); meta.textContent=`${row.attended}/${row.totalDays} hari · ${row.percent}% · ${row.coupons} kupon`;
-        card.append(name,meta); participantList.append(card);
-      });
+      const attendedParticipants=(data?.participants||[]).filter(row=>Number(row?.attended||0)>0).sort((a,b)=>(Number(b.attended||0)-Number(a.attended||0))||String(a.name||"").localeCompare(String(b.name||""),"id"));
+      if(!attendedParticipants.length) participantList.appendChild(emptyBox("Belum ada peserta yang tercatat hadir."));
+      else attendedParticipants.forEach(row=>{const card=document.createElement("div");card.className="risma-tadarus-participant";const name=document.createElement("strong");name.textContent=row.name;const meta=document.createElement("span");meta.textContent=`${row.attended}/${row.totalDays} hari · ${row.percent}% · ${row.coupons} kupon`;card.append(name,meta);participantList.append(card);});
     }
   }
 
-  async function openRismaTadarusAttendance(){
-    const data=await api("/api/risma"); rismaDetail=data.risma; const participants=rismaDetail.scores||[];
-    const form=$("risma-tadarus-attendance-form"); form.reset(); $("risma-tadarus-date").value=new Date().toISOString().slice(0,10);
-    const host=$("risma-tadarus-participant-checks"); host.replaceChildren(); participants.forEach(p=>{const label=document.createElement("label"); label.className="check-row"; const cb=document.createElement("input"); cb.type="checkbox"; cb.value=p.id; const span=document.createElement("span"); span.textContent=p.name; label.append(cb,span); host.append(label);});
-    $("risma-tadarus-attendance-dialog").showModal();
-  }
-
-  async function saveRismaTadarusAttendance(event){
-    event.preventDefault(); const ids=[...document.querySelectorAll("#risma-tadarus-participant-checks input:checked")].map(x=>x.value);
-    try{setStatus($("risma-tadarus-attendance-status"),"Menyimpan…"); await api("/api/risma/tadarus/attendance",{method:"PUT",body:JSON.stringify({date:$("risma-tadarus-date").value,participantIds:ids})}); $("risma-tadarus-attendance-dialog").close(); await loadRismaTadarus();}catch(e){setStatus($("risma-tadarus-attendance-status"),e.message,"error");}
-  }
-
-  async function saveRismaTadarusKhatam(){
-    const input=$("risma-tadarus-khatam");
-    const status=$("risma-tadarus-settings-status");
-    if(!input) return;
-    try{
-      setStatus(status,"Menyimpan status khatam…");
-      const data=await api("/api/risma/tadarus/settings",{method:"PUT",body:JSON.stringify({khatam:input.checked})});
-      rismaDetail=data.risma;
-      renderRisma();
-      renderRismaTadarus(data.tadarus);
-      setStatus(status,input.checked?"Tadarus ditandai sudah khatam. Kupon otomatis dapat dibagikan sesuai aturan.":"Status khatam dibatalkan. Kupon Tadarus otomatis tidak akan dibagikan.","success");
-    }catch(error){
-      input.checked=!input.checked;
-      setStatus(status,error.message,"error");
-    }
+  function saveRismaTadarusKhatam(){
+    const input=$("risma-tadarus-khatam"),status=$("risma-tadarus-settings-status");if(!input)return;
+    const wanted=input.checked;
+    api("/api/risma/tadarus/settings",{method:"PUT",body:JSON.stringify({khatam:wanted})}).then(data=>{rismaDetail=data.risma;renderRisma();renderRismaTadarus(data.tadarus);setStatus(status,wanted?"Tadarus sudah khatam.":"Status khatam dibatalkan.","success");}).catch(error=>{input.checked=!wanted;setStatus(status,error.message,"error");});
   }
 
   function participantWeekSummary(row) {
@@ -4837,23 +4893,74 @@ ${row.label}`))return;
     }catch(error){setStatus($("risma-participant-status"),error.message,"error");}
   });
 
-  $("risma-coupon-type").addEventListener("change",()=>{rismaCouponType=$("risma-coupon-type").value;renderRismaCoupons();});
-  $("risma-coupon-add").addEventListener("click",()=>{$("risma-coupon-add-form").reset();const t=$("risma-coupon-add-type");const manualTypes=["ngaji","jumat","taraweh","tadarus"];t.replaceChildren(...(rismaDetail?.couponTypes||[]).filter(x=>x?.enabled!==false && manualTypes.includes(String(x.type))).map(x=>new Option(x.label||x.type,x.type)));if([...t.options].some(o=>o.value===rismaCouponType))t.value=rismaCouponType;else if(t.options.length)t.value=t.options[0].value;fillRismaCouponCountSelect($("risma-coupon-add-count"),1);setStatus($("risma-coupon-add-status"));$("risma-coupon-add-dialog").showModal();});
-  $("close-risma-coupon-add").addEventListener("click",()=>$("risma-coupon-add-dialog").close());
-  $("risma-coupon-add-form").addEventListener("submit",async event=>{
-    event.preventDefault();
-    let allowSimilar=false;
-    while(true){
-      setStatus($("risma-coupon-add-status"),"Memeriksa penerima…");
-      try{
-        const name=String($("risma-coupon-add-name").value||"").trim();
-        const count=Number($("risma-coupon-add-count").value||1);
-        const selectedType=$("risma-coupon-add-type")?.value||rismaCouponType; const data=await api(`/api/risma/coupon/${encodeURIComponent(selectedType)}`,{method:"POST",body:JSON.stringify({text:`${name} ${count}`,allowSimilar})}); rismaCouponType=selectedType;if($("risma-coupon-type"))$("risma-coupon-type").value=selectedType;
-        if(data.needsConfirmation&&!allowSimilar){const names=(data.similar||[]).map(x=>x.input?.name).filter(Boolean).join(", ");if(!confirm(`Ada nama yang mirip${names?`: ${names}`:""}. Tetap tambahkan?`))return;allowSimilar=true;continue;}
-        $("risma-coupon-add-dialog").close();await loadRisma();break;
-      }catch(error){setStatus($("risma-coupon-add-status"),error.message,"error");break;}
+  function fillRismaCouponParticipantSelect(){
+    const select=$("risma-coupon-add-person-select");if(!select)return;
+    const current=rismaCouponEditIndex>=0?rismaCouponDraft[rismaCouponEditIndex]?.id:select.value;
+    const used=new Set(rismaCouponDraft.map((row,index)=>index===rismaCouponEditIndex?"":String(row.id||"")).filter(Boolean));
+    select.replaceChildren();select.appendChild(new Option("Pilih peserta…",""));
+    for(const row of (rismaDetail?.scores||[]).filter(row=>!row.disqualified)){
+      if(used.has(String(row.id)))continue;
+      select.appendChild(new Option(row.name,String(row.id)));
     }
-  });
+    if(current&&[...select.options].some(opt=>opt.value===String(current)))select.value=String(current);
+  }
+
+  function syncRismaCouponBuilder(){
+    const input=$("risma-coupon-add-name"),select=$("risma-coupon-add-person-select"),toggle=$("risma-coupon-add-new-toggle"),label=$("risma-coupon-add-person-label");
+    if(!input||!select||!toggle||!label)return;
+    if(rismaCouponNewParticipantMode){input.hidden=false;select.hidden=true;toggle.textContent="Pilih peserta lama";label.firstChild.textContent="Nama penerima baru\n            ";}
+    else{input.hidden=true;select.hidden=false;toggle.textContent="+ Nama baru";label.firstChild.textContent="Pilih penerima\n            ";fillRismaCouponParticipantSelect();}
+    $("risma-coupon-add").disabled=!rismaDetail?.activePeriod;
+  }
+
+  function renderRismaCouponDraft(){
+    const list=$("risma-coupon-draft-list"),count=$("risma-coupon-draft-count");if(!list||!count)return;
+    list.replaceChildren();count.textContent=`${rismaCouponDraft.length} penerima`;
+    if(!rismaCouponDraft.length){list.appendChild(emptyBox("Belum ada penerima di daftar input."));return;}
+    rismaCouponDraft.forEach((row,index)=>{const card=document.createElement("article");card.className="risma-week-draft-card";const info=document.createElement("div");const title=document.createElement("strong");title.textContent=row.name;const meta=document.createElement("span");meta.textContent=`${row.count} kupon`;info.append(title,meta);const actions=document.createElement("div");actions.className="risma-draft-actions";actions.append(rismaIconButton("Ubah","fa-pen","ghost compact",()=>{rismaCouponEditIndex=index;rismaCouponNewParticipantMode=!row.id;$("risma-coupon-add-name").value=row.name;$("risma-coupon-add-count").value=String(row.count);$("risma-coupon-add-person-select").value=row.id||"";syncRismaCouponBuilder();}),rismaIconButton("Hapus","fa-trash-can","danger-soft compact",()=>{rismaCouponDraft.splice(index,1);rismaCouponEditIndex=-1;renderRismaCouponDraft();syncRismaCouponBuilder();}));card.append(info,actions);list.append(card);});
+  }
+
+  function addRismaCouponDraft(){
+    const id=rismaCouponNewParticipantMode?"":String($("risma-coupon-add-person-select")?.value||"").trim();
+    const name=rismaCouponNewParticipantMode?String($("risma-coupon-add-name")?.value||"").trim():String($("risma-coupon-add-person-select")?.selectedOptions?.[0]?.textContent||"").trim();
+    const count=Number($("risma-coupon-add-count")?.value||1);
+    if(!name){setStatus($("risma-coupon-add-status"),"Pilih penerima atau masukkan nama baru.","error");return;}
+    if(!Number.isInteger(count)||count<1){setStatus($("risma-coupon-add-status"),"Jumlah kupon tidak valid.","error");return;}
+    const duplicate=rismaCouponDraft.some((row,index)=>index!==rismaCouponEditIndex&&(id&&String(row.id)===id||(!id&&String(row.name).toLowerCase()===name.toLowerCase())));
+    if(duplicate){setStatus($("risma-coupon-add-status"),"Penerima sudah ada di daftar input.","error");return;}
+    const row={id,name,count};if(rismaCouponEditIndex>=0)rismaCouponDraft[rismaCouponEditIndex]=row;else rismaCouponDraft.push(row);
+    rismaCouponEditIndex=-1;$("risma-coupon-add-name").value="";$("risma-coupon-add-person-select").value="";setStatus($("risma-coupon-add-status"));syncRismaCouponBuilder();renderRismaCouponDraft();
+  }
+
+  function openRismaCouponAdd(){
+    $("risma-coupon-add-form").reset();rismaCouponDraft=[];rismaCouponEditIndex=-1;rismaCouponNewParticipantMode=false;
+    const t=$("risma-coupon-add-type"),manualTypes=["ngaji","jumat","taraweh","tadarus"];
+    t.replaceChildren(...(rismaDetail?.couponTypes||[]).filter(x=>x?.enabled!==false&&manualTypes.includes(String(x.type))).map(x=>new Option(x.label||x.type,x.type)));
+    if([...t.options].some(o=>o.value===rismaCouponType))t.value=rismaCouponType;else if(t.options.length)t.value=t.options[0].value;
+    fillRismaCouponCountSelect($("risma-coupon-add-count"),1);syncRismaCouponBuilder();renderRismaCouponDraft();setStatus($("risma-coupon-add-status"));$("risma-coupon-add-dialog").showModal();
+  }
+
+  async function saveRismaCouponDraft(){
+    if(!rismaCouponDraft.length){setStatus($("risma-coupon-add-status"),"Tambahkan minimal satu penerima.","error");return;}
+    const selectedType=$("risma-coupon-add-type")?.value||rismaCouponType;let allowSimilar=false;
+    while(true){
+      try{
+        setStatus($("risma-coupon-add-status"),"Menyimpan penerima…");
+        const text=rismaCouponDraft.map(row=>`${row.name} ${row.count}`).join("\n");
+        const data=await api(`/api/risma/coupon/${encodeURIComponent(selectedType)}`,{method:"POST",body:JSON.stringify({text,allowSimilar})});
+        if(data.needsConfirmation&&!allowSimilar){const names=(data.similar||[]).map(x=>x.input?.name).filter(Boolean).join(", ");if(!confirm(`Ada nama yang mirip${names?`: ${names}`:""}. Tetap tambahkan semua?`))return;allowSimilar=true;continue;}
+        rismaCouponType=selectedType;if($("risma-coupon-type"))$("risma-coupon-type").value=selectedType;$("risma-coupon-add-dialog").close();await loadRisma();return;
+      }catch(error){setStatus($("risma-coupon-add-status"),error.message,"error");return;}
+    }
+  }
+
+  $("risma-coupon-type").addEventListener("change",()=>{rismaCouponType=$("risma-coupon-type").value;renderRismaCoupons();});
+  $("risma-coupon-add").addEventListener("click",openRismaCouponAdd);
+  $("close-risma-coupon-add").addEventListener("click",()=>$("risma-coupon-add-dialog").close());
+  $("risma-coupon-add-form").addEventListener("submit",async event=>{event.preventDefault();await saveRismaCouponDraft();});
+  $("risma-coupon-add-entry").addEventListener("click",addRismaCouponDraft);
+  $("risma-coupon-add-new-toggle").addEventListener("click",()=>{rismaCouponEditIndex=-1;rismaCouponNewParticipantMode=!rismaCouponNewParticipantMode;syncRismaCouponBuilder();});
+  $("risma-coupon-add-type").addEventListener("change",()=>{rismaCouponType=$("risma-coupon-add-type").value;});
   $("close-risma-coupon-edit").addEventListener("click",()=>$("risma-coupon-edit-dialog").close());
   $("risma-coupon-edit-form").addEventListener("submit",async event=>{event.preventDefault();const no=$("risma-coupon-edit-no").value;setStatus($("risma-coupon-edit-status"),"Menyimpan…");try{await api(`/api/risma/coupon/${encodeURIComponent(rismaCouponType)}/${no}`,{method:"PATCH",body:JSON.stringify({name:$("risma-coupon-edit-name").value,count:Number($("risma-coupon-edit-count").value),allowSimilar:true})});$("risma-coupon-edit-dialog").close();await loadRisma();}catch(error){setStatus($("risma-coupon-edit-status"),error.message,"error");}});
 
@@ -5120,6 +5227,8 @@ ${row.label}`))return;
   });
 
   $("risma-tadarus-attendance-form")?.addEventListener("submit",saveRismaTadarusAttendance);
+  $("risma-tadarus-add-entry")?.addEventListener("click",addRismaTadarusDraft);
+  $("risma-tadarus-new-toggle")?.addEventListener("click",()=>{rismaTadarusEditIndex=-1;rismaTadarusNewParticipantMode=!rismaTadarusNewParticipantMode;syncRismaTadarusBuilder();});
   $("risma-tadarus-close")?.addEventListener("click",()=>$("risma-tadarus-attendance-dialog").close());
   $("risma-tadarus-fab-attendance")?.addEventListener("click",()=>openRismaTadarusAttendance());
   $("risma-tadarus-open-attendance")?.addEventListener("click",()=>openRismaTadarusAttendance());
