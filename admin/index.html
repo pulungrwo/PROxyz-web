@@ -522,6 +522,12 @@
           <section id="risma-tadarus-panel" class="risma-panel panel" hidden>
             <div class="section-head risma-section-head"><div><p class="eyebrow"><i class="fa-solid fa-book-quran"></i> Presensi Tadarus</p><h2>Absensi Tadarus Harian</h2><p class="muted small">Tadarus dilakukan estafet. Status khatam berlaku untuk seluruh peserta, bukan per orang.</p></div><button id="risma-tadarus-open-attendance" class="primary compact" type="button"><i class="fa-solid fa-calendar-check"></i> Presensi hari ini</button></div>
             <div class="metric-grid" id="risma-tadarus-summary"><span>0 hari</span></div>
+            <div class="risma-tadarus-settings risma-owner-tool">
+              <div><p class="eyebrow">Pengaturan Tadarus</p><h3>Status khatam</h3><p class="muted small">Khatam berlaku untuk seluruh kelompok karena Tadarus dilakukan secara estafet. Kupon Tadarus otomatis hanya dibagikan setelah status ini diaktifkan.</p></div>
+              <div class="check-row"><input id="risma-tadarus-khatam" type="checkbox"><span>Kelompok sudah khatam</span></div>
+              <button id="risma-tadarus-khatam-save" class="primary compact" type="button"><i class="fa-solid fa-check"></i> Simpan status khatam</button>
+              <p id="risma-tadarus-settings-status" class="status"></p>
+            </div>
             <div id="risma-tadarus-participants" class="risma-tadarus-participants"></div>
             <div class="section-head compact-head"><div><p class="eyebrow">Riwayat</p><h3>Hari Tadarus</h3></div></div>
             <div id="risma-tadarus-days" class="list-stack"></div><p id="risma-tadarus-status" class="status"></p>
@@ -628,6 +634,29 @@
 
             <details class="risma-pub-item risma-pub-utility">
               <summary>
+                <span class="risma-pub-icon"><i class="fa-solid fa-calendar-check"></i></span>
+                <span><strong>Kartu Kehadiran Tarawih</strong><small>Cetak kartu RISMA Poin hitam-putih, 2 kartu per lembar A4 untuk stempel harian.</small></span>
+                <i class="fa-solid fa-chevron-down risma-pub-chevron"></i>
+              </summary>
+              <div class="risma-pub-body">
+                <div class="risma-coupon-print-grid">
+                  <label>Minggu<select id="risma-print-tarawih-attendance-week">
+                    <option value="all" selected>Semua minggu (1-4)</option>
+                    <option value="1">Minggu 1 · 1-7 Ramadan</option>
+                    <option value="2">Minggu 2 · 8-14 Ramadan</option>
+                    <option value="3">Minggu 3 · 15-21 Ramadan</option>
+                    <option value="4">Minggu 4 · 22-28 Ramadan</option>
+                  </select></label>
+                </div>
+                <div id="risma-print-tarawih-attendance-summary" class="risma-info-strip small">4 lembar A4 · 2 kartu/lembar · hitam putih · Minggu 1-4.</div>
+                <p class="muted small">Nama ditulis manual dengan spidol. Setiap kotak hari dibiarkan kosong untuk stempel; tidak ada lingkaran cetak di dalamnya.</p>
+                <div class="risma-pub-actions"><button id="risma-print-tarawih-attendance-pdf" class="primary" type="button"><i class="fa-solid fa-file-pdf"></i> PDF ke saya</button></div>
+                <p id="risma-print-tarawih-attendance-status" class="status"></p>
+              </div>
+            </details>
+
+            <details class="risma-pub-item risma-pub-utility">
+              <summary>
                 <span class="risma-pub-icon"><i class="fa-solid fa-box-archive"></i></span>
                 <span><strong>Arsip Publikasi</strong><small>Buka kembali publikasi lama untuk pratinjau, kirim ulang, atau cetak PDF tanpa membuat ulang.</small></span>
                 <i class="fa-solid fa-chevron-down risma-pub-chevron"></i>
@@ -687,7 +716,7 @@
                 <label>7x<input id="risma-setting-score-7" type="number" min="0" max="100" step="0.25" inputmode="decimal"></label>
               </div><small class="muted">Default: 1, 2, 3, 4, 6, 7,5, 9 poin. Perubahan menghitung ulang data minggu yang sudah tersimpan.</small></fieldset>
               <fieldset class="toggle-fieldset"><legend>Kupon THR aktif</legend><label class="check-row"><input id="risma-setting-ngaji" type="checkbox"> Kupon Ngaji</label><label class="check-row"><input id="risma-setting-jumat" type="checkbox"> Kupon Jumat</label><label class="check-row"><input id="risma-setting-taraweh" type="checkbox"> Kupon Tarawih</label><label class="check-row"><input id="risma-setting-tadarus" type="checkbox"> Kupon Tadarus</label></fieldset>
-              <fieldset class="toggle-fieldset"><legend>Presensi Tadarus</legend><label class="check-row"><input id="risma-setting-tadarus-auto-enabled" type="checkbox"> Aktifkan perhitungan kupon otomatis</label><div class="context-grid"><label>Minimal kehadiran (%)<input id="risma-tadarus-min" type="number" min="0" max="100" step="1"></label><label>Batas kupon 2 (%)<input id="risma-tadarus-second" type="number" min="0" max="100" step="1"></label><label>Batas kupon 3 (%)<input id="risma-tadarus-third" type="number" min="0" max="100" step="1"></label><label>Maksimal kupon<select id="risma-tadarus-max"><option value="1">1 kupon</option><option value="2">2 kupon</option><option value="3">3 kupon</option></select></label></div><label class="check-row"><input id="risma-tadarus-khatam" type="checkbox"> Tadarus sudah khatam</label><small class="muted">Status khatam berlaku untuk seluruh kelompok karena Tadarus dilakukan estafet. Kupon otomatis baru dibagikan setelah status ini aktif.</small></fieldset>
+              <fieldset class="toggle-fieldset"><legend>Presensi Tadarus</legend><label class="check-row"><input id="risma-setting-tadarus-auto-enabled" type="checkbox"> Aktifkan perhitungan kupon otomatis</label><div class="context-grid"><label>Minimal kehadiran (%)<input id="risma-tadarus-min" type="number" min="0" max="100" step="1"></label><label>Batas kupon 2 (%)<input id="risma-tadarus-second" type="number" min="0" max="100" step="1"></label><label>Batas kupon 3 (%)<input id="risma-tadarus-third" type="number" min="0" max="100" step="1"></label><label>Maksimal kupon<select id="risma-tadarus-max"><option value="1">1 kupon</option><option value="2">2 kupon</option><option value="3">3 kupon</option></select></label></div><small class="muted">Status khatam diatur langsung dari tab Tadarus.</small></fieldset>
               <p id="risma-settings-status" class="status"></p><button class="primary full" type="submit"><i class="fa-solid fa-floppy-disk"></i> Simpan pengaturan</button>
             </form>
 
@@ -1275,6 +1304,6 @@
   </dialog>
 
   <script src="./config.js?v=242"></script>
-  <script src="./admin.js?v=3.2.16" defer></script>
+  <script src="./admin.js?v=3.2.18" defer></script>
 </body>
 </html>

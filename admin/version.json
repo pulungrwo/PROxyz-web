@@ -1,6 +1,6 @@
 {
   "version": "1.5.21",
-  "updatedAt": "2026-10-04T20:15:00+07:00",
+  "updatedAt": "2026-10-04T22:46:00+07:00",
   "uiBase": "PROxyz-SOURCE-20260829-2042",
   "features": [
     "admin-v0.9.3",
@@ -183,6 +183,14 @@
     "risma-tadarus-manual-fallback-v3215",
     "risma-coupon-card-format-v3215",
     "risma-tarawih-label-unification-v3215",
-    "admin-cache-bust-v3215"
+    "admin-cache-bust-v3215",
+    "risma-tadarus-attendance-only-had-v3217",
+    "risma-coupon-inner-card-v3217",
+    "risma-tarawih-attendance-card-pdf-v3217",
+    "risma-tarawih-attendance-no-circles-v3217",
+    "risma-cache-bust-v3217",
+    "risma-coupon-pending-people-wording-v3218",
+    "risma-tadarus-khatam-tab-control-v3218",
+    "risma-tarawih-attendance-guard-fix-v3218"
   ]
 }
