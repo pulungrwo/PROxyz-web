@@ -2289,72 +2289,26 @@ dialog[id^="risma-"] .icon-button{background:#edf7fd!important;color:#285c7d!imp
   #risma-view .risma-coupon-summary-inline .risma-coupon-mini-pending{font-size:10px!important}
 }
 
-
-/* RISMA V3.2.28 — final coupon status + centered labels */
-#risma-view .risma-coupon-summary-inline .risma-coupon-mini-card{
+/* RISMA V3.2.30 — ringkasan kupon: nama jenis terpusat + status kondisional */
+#risma-coupons.risma-coupon-summary-inline .risma-coupon-mini-label,
+#risma-coupons.risma-coupon-summary-inline .risma-coupon-mini-value,
+#risma-coupons.risma-coupon-summary-inline .risma-coupon-mini-status{
   text-align:center!important;
+  justify-content:center!important;
 }
-#risma-view .risma-coupon-summary-inline .risma-coupon-mini-inner{
-  text-align:center!important;
-  align-items:center!important;
-  justify-items:center!important;
-}
-#risma-view .risma-coupon-summary-inline .risma-coupon-mini-label,
-#risma-view .risma-coupon-summary-inline .risma-coupon-mini-value{
+#risma-coupons.risma-coupon-summary-inline .risma-coupon-mini-status{
+  display:block!important;
   width:100%!important;
-  text-align:center!important;
-}
-#risma-view .risma-coupon-summary-inline .risma-coupon-mini-pending-box{
-  width:100%!important;
-  align-items:center!important;
-  text-align:center!important;
-}
-#risma-view .risma-coupon-summary-inline .risma-coupon-mini-pending-label,
-#risma-view .risma-coupon-summary-inline .risma-coupon-mini-pending{
-  width:100%!important;
-  text-align:center!important;
-}
-#risma-view .risma-coupon-summary-inline .risma-coupon-mini-pending-box.is-warning .risma-coupon-mini-pending-label,
-#risma-view .risma-coupon-summary-inline .risma-coupon-mini-pending-box.is-warning .risma-coupon-mini-pending{
-  color:#C62828!important;
-  font-weight:900!important;
-}
-#risma-view .risma-coupon-summary-inline .risma-coupon-mini-pending-box:not(.is-warning) .risma-coupon-mini-pending-label{
+  font-size:10px!important;
+  line-height:1.2!important;
+  font-weight:800!important;
+  white-space:normal!important;
   color:#667085!important;
 }
-
-
-/* RISMA V3.2.29 - coupon summary final visual */
-#risma-view .risma-coupon-summary-inline .risma-coupon-mini-card{
-  text-align:center!important;
-  overflow:hidden!important;
+#risma-coupons.risma-coupon-summary-inline .risma-coupon-mini-status.pending{
+  color:#B42318!important;
 }
-#risma-view .risma-coupon-summary-inline .risma-coupon-mini-inner{
-  align-items:center!important;
-  justify-content:center!important;
-  text-align:center!important;
-}
-#risma-view .risma-coupon-summary-inline .risma-coupon-mini-label,
-#risma-view .risma-coupon-summary-inline .risma-coupon-mini-value{
-  width:100%!important;
-  text-align:center!important;
-  overflow:hidden!important;
-  text-overflow:ellipsis!important;
-}
-#risma-view .risma-coupon-summary-inline .risma-coupon-mini-pending-box{
-  align-items:center!important;
-  text-align:center!important;
-}
-#risma-view .risma-coupon-summary-inline .risma-coupon-mini-pending-label,
-#risma-view .risma-coupon-summary-inline .risma-coupon-mini-pending{
-  width:100%!important;
-  text-align:center!important;
-}
-#risma-view .risma-coupon-summary-inline .risma-coupon-mini-pending-box.is-warning .risma-coupon-mini-pending-label,
-#risma-view .risma-coupon-summary-inline .risma-coupon-mini-pending-box.is-warning .risma-coupon-mini-pending{
-  color:#C62828!important;
-  font-weight:900!important;
-}
-#risma-view .risma-coupon-summary-inline .risma-coupon-mini-pending-box:not(.is-warning) .risma-coupon-mini-pending-label{
+#risma-coupons.risma-coupon-summary-inline .risma-coupon-mini-status.done,
+#risma-coupons.risma-coupon-summary-inline .risma-coupon-mini-status.empty{
   color:#667085!important;
 }

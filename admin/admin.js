@@ -1,7 +1,7 @@
 (() => {
   "use strict";
 
-  const ADMIN_BUILD = "1.5.21";
+  const ADMIN_BUILD = "1.5.22";
   const config = window.PROXYZ_ADMIN_CONFIG || {};
 
   async function checkAdminBuild() {
@@ -2347,35 +2347,34 @@
       card.setAttribute("aria-label", `Kupon ${meta.label}: ${wholeNumber.format(Number(row.coupons || 0))}`);
       const inner = document.createElement("span");
       inner.className = "risma-coupon-mini-inner";
+      const totalCoupons = Number(row.coupons || 0);
+      const pendingCoupons = Number(row.pending || 0);
+      const pendingRecipients = Number(row.pendingRecipients || 0);
+
       const label = document.createElement("strong");
       label.className = "risma-coupon-mini-label";
+      // Nama jenis kupon ditampilkan langsung tanpa awalan "Kupon" agar lebih bersih.
       label.textContent = meta.label;
       const value = document.createElement("span");
       value.className = "risma-coupon-mini-value";
-      value.textContent = `${wholeNumber.format(Number(row.coupons || 0))}`;
+      value.textContent = `${wholeNumber.format(totalCoupons)}`;
       inner.append(label, value);
 
       const pendingBox = document.createElement("span");
       pendingBox.className = "risma-coupon-mini-pending-box";
-      const pendingLabel = document.createElement("span");
-      pendingLabel.className = "risma-coupon-mini-pending-label";
-      const pending = document.createElement("span");
-      pending.className = "risma-coupon-mini-pending";
-      const couponTotal = Math.max(0, Number(row.coupons || 0));
-      const pendingCount = Math.max(0, Number(row.pending || 0));
-      const pendingPeople = Math.max(0, Number(row.pendingRecipients || 0));
-      if (couponTotal === 0) {
-        pendingLabel.textContent = "silahkan tambahkan penerima";
-        pending.textContent = "";
-      } else if (pendingCount === 0) {
-        pendingLabel.textContent = "kupon sudah dibagikan";
-        pending.textContent = "";
+      const status = document.createElement("span");
+      status.className = "risma-coupon-mini-status";
+      if (totalCoupons === 0) {
+        status.textContent = "belum ada penerima";
+        status.classList.add("empty");
+      } else if (pendingCoupons === 0) {
+        status.textContent = "selesai dibagikan";
+        status.classList.add("done");
       } else {
-        pendingLabel.textContent = "belum dibagi";
-        pending.textContent = `${wholeNumber.format(pendingCount)} kupon · ${wholeNumber.format(pendingPeople)} orang`;
-        pendingBox.classList.add("is-warning");
+        status.textContent = `belum dibagi ${wholeNumber.format(pendingCoupons)} kupon · ${wholeNumber.format(pendingRecipients)} orang`;
+        status.classList.add("pending");
       }
-      pendingBox.append(pendingLabel, pending);
+      pendingBox.append(status);
       card.append(inner, pendingBox);
       host.appendChild(card);
     });
