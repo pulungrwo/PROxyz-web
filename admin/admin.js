@@ -1,7 +1,7 @@
 (() => {
   "use strict";
 
-  const ADMIN_BUILD = "1.5.21";
+  const ADMIN_BUILD = "1.5.22";
   const config = window.PROXYZ_ADMIN_CONFIG || {};
 
   async function checkAdminBuild() {
@@ -2349,7 +2349,7 @@
       inner.className = "risma-coupon-mini-inner";
       const label = document.createElement("strong");
       label.className = "risma-coupon-mini-label";
-      label.textContent = `Kupon ${meta.label}`;
+      label.textContent = meta.label;
       const value = document.createElement("span");
       value.className = "risma-coupon-mini-value";
       value.textContent = `${wholeNumber.format(Number(row.coupons || 0))}`;

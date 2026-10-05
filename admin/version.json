@@ -1,6 +1,6 @@
 {
-  "version": "1.5.21",
-  "updatedAt": "2026-10-05T00:20:00+07:00",
+  "version": "1.5.22",
+  "updatedAt": "2026-10-05T13:15:00+07:00",
   "uiBase": "PROxyz-SOURCE-20260829-2042",
   "features": [
     "admin-v0.9.3",
@@ -197,6 +197,8 @@
     "risma-tadarus-edit-merge-date-v3219",
     "risma-tadarus-khatam-checkbox-v3219",
     "risma-jumat-announcement-wording-v3219",
-    "risma-v3.2.20"
+    "risma-v3.2.20",
+    "risma-coupon-card-name-centered-v3227",
+    "risma-tarawih-attendance-4x2-stamp-grid-v3227"
   ]
 }

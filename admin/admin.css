@@ -2288,3 +2288,40 @@ dialog[id^="risma-"] .icon-button{background:#edf7fd!important;color:#285c7d!imp
   #risma-view .risma-coupon-summary-inline .risma-coupon-mini-pending-label{font-size:9px!important}
   #risma-view .risma-coupon-summary-inline .risma-coupon-mini-pending{font-size:10px!important}
 }
+
+
+/* RISMA V3.2.27 — coupon card final polish + attendance PDF UI contract */
+#risma-view .risma-coupon-summary-inline .risma-coupon-mini-card{
+  align-items:stretch!important;
+  text-align:center!important;
+}
+#risma-view .risma-coupon-summary-inline .risma-coupon-mini-inner{
+  align-items:center!important;
+  text-align:center!important;
+}
+#risma-view .risma-coupon-summary-inline .risma-coupon-mini-label{
+  width:100%!important;
+  text-align:center!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+}
+#risma-view .risma-coupon-summary-inline .risma-coupon-mini-value{
+  width:100%!important;
+  text-align:center!important;
+}
+#risma-view .risma-coupon-summary-inline .risma-coupon-mini-pending-box{
+  align-items:center!important;
+  justify-content:center!important;
+  text-align:center!important;
+}
+#risma-view .risma-coupon-summary-inline .risma-coupon-mini-pending-label,
+#risma-view .risma-coupon-summary-inline .risma-coupon-mini-pending{
+  width:100%!important;
+  text-align:center!important;
+}
+@media(max-width:640px){
+  #risma-view .risma-coupon-summary-inline .risma-coupon-mini-label{font-size:15px!important}
+  #risma-view .risma-coupon-summary-inline .risma-coupon-mini-value{font-size:20px!important}
+  #risma-view .risma-coupon-summary-inline .risma-coupon-mini-pending-box{gap:3px!important}
+}
