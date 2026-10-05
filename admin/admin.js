@@ -2344,15 +2344,15 @@
       card.style.setProperty("--coupon-primary", meta.palette.primary);
       card.style.setProperty("--coupon-light", meta.palette.light);
       card.style.setProperty("--coupon-accent", meta.palette.accent);
-      card.setAttribute("aria-label", `${meta.label}: ${wholeNumber.format(Number(row.coupons || 0))} kupon`);
+      card.setAttribute("aria-label", `Kupon ${meta.label}: ${wholeNumber.format(Number(row.coupons || 0))}`);
       const inner = document.createElement("span");
       inner.className = "risma-coupon-mini-inner";
       const label = document.createElement("strong");
       label.className = "risma-coupon-mini-label";
-      label.textContent = meta.label;
+      label.textContent = `Kupon ${meta.label}`;
       const value = document.createElement("span");
       value.className = "risma-coupon-mini-value";
-      value.textContent = `${wholeNumber.format(Number(row.coupons || 0))} Kupon`;
+      value.textContent = `${wholeNumber.format(Number(row.coupons || 0))}`;
       inner.append(label, value);
 
       const pendingBox = document.createElement("span");
