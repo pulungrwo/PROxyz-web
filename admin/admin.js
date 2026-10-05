@@ -1,7 +1,7 @@
 (() => {
   "use strict";
 
-  const ADMIN_BUILD = "1.5.22";
+  const ADMIN_BUILD = "1.5.23";
   const config = window.PROXYZ_ADMIN_CONFIG || {};
 
   async function checkAdminBuild() {
@@ -2344,26 +2344,36 @@
       card.style.setProperty("--coupon-primary", meta.palette.primary);
       card.style.setProperty("--coupon-light", meta.palette.light);
       card.style.setProperty("--coupon-accent", meta.palette.accent);
-      card.setAttribute("aria-label", `Kupon ${meta.label}: ${wholeNumber.format(Number(row.coupons || 0))}`);
+      const pendingCount = Number(row.pending || 0);
+      card.classList.toggle("is-pending", pendingCount > 0);
+      card.setAttribute("aria-label", `${meta.label}: ${wholeNumber.format(Number(row.coupons || 0))}`);
       const inner = document.createElement("span");
       inner.className = "risma-coupon-mini-inner";
       const label = document.createElement("strong");
       label.className = "risma-coupon-mini-label";
       label.textContent = meta.label;
+      label.style.textAlign = "center";
       const value = document.createElement("span");
       value.className = "risma-coupon-mini-value";
       value.textContent = `${wholeNumber.format(Number(row.coupons || 0))}`;
+      value.style.textAlign = "center";
       inner.append(label, value);
 
       const pendingBox = document.createElement("span");
       pendingBox.className = "risma-coupon-mini-pending-box";
       const pendingLabel = document.createElement("span");
       pendingLabel.className = "risma-coupon-mini-pending-label";
-      pendingLabel.textContent = "belum dibagi";
-      const pending = document.createElement("span");
-      pending.className = "risma-coupon-mini-pending";
-      pending.textContent = `${wholeNumber.format(Number(row.pending || 0))} kupon · ${wholeNumber.format(Number(row.pendingRecipients || 0))} orang`;
-      pendingBox.append(pendingLabel, pending);
+      pendingLabel.textContent = pendingCount > 0 ? "belum dibagi" : "selesai";
+      pendingLabel.style.textAlign = "center";
+      if (pendingCount > 0) {
+        const pending = document.createElement("span");
+        pending.className = "risma-coupon-mini-pending";
+        pending.textContent = `${wholeNumber.format(pendingCount)} kupon · ${wholeNumber.format(Number(row.pendingRecipients || 0))} orang`;
+        pending.style.textAlign = "center";
+        pendingBox.append(pendingLabel, pending);
+      } else {
+        pendingBox.append(pendingLabel);
+      }
       card.append(inner, pendingBox);
       host.appendChild(card);
     });
