@@ -2286,24 +2286,25 @@ dialog[id^="risma-"] .icon-button{background:#edf7fd!important;color:#285c7d!imp
   #risma-view .risma-coupon-summary-inline .risma-coupon-mini-label{font-size:16px!important}
   #risma-view .risma-coupon-summary-inline .risma-coupon-mini-value{font-size:20px!important}
   #risma-view .risma-coupon-summary-inline .risma-coupon-mini-pending-label{font-size:9px!important}
-  #risma-view .risma-coupon-summary-inline .risma-coupon-mini-pending{font-size:10px!important}
+  #risma-view .risma-coupon-summary-inline .risma-coupon-mini-pending{font-size:10.3px!important}
 }
 
-/* RISMA V3.2.31 — coupon summary final polish. */
+/* RISMA V3.2.32 — coupon summary final polish. */
 #risma-view .risma-coupon-summary-inline .risma-coupon-mini-card{
   display:flex!important;
   flex-direction:column!important;
   align-items:stretch!important;
   justify-content:flex-start!important;
   gap:7px!important;
-  min-height:132px!important;
+  min-height:138px!important;
   padding:8px!important;
   overflow:hidden!important;
   text-align:center!important;
+  cursor:pointer!important;
 }
 #risma-view .risma-coupon-summary-inline .risma-coupon-mini-inner{
   flex:1 1 auto!important;
-  min-height:80px!important;
+  min-height:82px!important;
   padding:10px 8px!important;
   align-items:center!important;
   justify-content:center!important;
@@ -2328,8 +2329,8 @@ dialog[id^="risma-"] .icon-button{background:#edf7fd!important;color:#285c7d!imp
 #risma-view .risma-coupon-summary-inline .risma-coupon-mini-pending-box{
   display:block!important;
   width:100%!important;
-  min-height:28px!important;
-  padding:6px 3px 1px!important;
+  min-height:30px!important;
+  padding:7px 4px 2px!important;
   border-top:1px solid color-mix(in srgb,var(--coupon-primary,#1f2937) 13%,#e4eaf0)!important;
   text-align:center!important;
 }
@@ -2337,8 +2338,8 @@ dialog[id^="risma-"] .icon-button{background:#edf7fd!important;color:#285c7d!imp
   display:block!important;
   width:100%!important;
   margin:0!important;
-  font-size:10.5px!important;
-  line-height:1.18!important;
+  font-size:10.8px!important;
+  line-height:1.2!important;
   font-weight:850!important;
   text-align:center!important;
   white-space:normal!important;
@@ -2353,9 +2354,9 @@ dialog[id^="risma-"] .icon-button{background:#edf7fd!important;color:#285c7d!imp
   color:#667085!important;
 }
 @media(max-width:640px){
-  #risma-view .risma-coupon-summary-inline .risma-coupon-mini-card{min-height:126px!important;padding:7px!important;gap:6px!important}
+  #risma-view .risma-coupon-summary-inline .risma-coupon-mini-card{min-height:132px!important;padding:7px!important;gap:6px!important}
   #risma-view .risma-coupon-summary-inline .risma-coupon-mini-inner{min-height:76px!important;padding:10px 7px!important}
   #risma-view .risma-coupon-summary-inline .risma-coupon-mini-label{font-size:16px!important}
   #risma-view .risma-coupon-summary-inline .risma-coupon-mini-value{font-size:20px!important}
-  #risma-view .risma-coupon-summary-inline .risma-coupon-mini-pending{font-size:10px!important}
+  #risma-view .risma-coupon-summary-inline .risma-coupon-mini-pending{font-size:10.3px!important}
 }
