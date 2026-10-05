@@ -2347,32 +2347,30 @@
       card.setAttribute("aria-label", `Kupon ${meta.label}: ${wholeNumber.format(Number(row.coupons || 0))}`);
       const inner = document.createElement("span");
       inner.className = "risma-coupon-mini-inner";
-      const totalCoupons = Number(row.coupons || 0);
-      const pendingCoupons = Number(row.pending || 0);
-      const pendingRecipients = Number(row.pendingRecipients || 0);
-
       const label = document.createElement("strong");
       label.className = "risma-coupon-mini-label";
-      // Nama jenis kupon ditampilkan langsung tanpa awalan "Kupon" agar lebih bersih.
       label.textContent = meta.label;
       const value = document.createElement("span");
       value.className = "risma-coupon-mini-value";
-      value.textContent = `${wholeNumber.format(totalCoupons)}`;
+      const coupons = Number(row.coupons || 0);
+      const pendingCount = Number(row.pending || 0);
+      const pendingRecipients = Number(row.pendingRecipients || 0);
+      value.textContent = `${wholeNumber.format(coupons)}`;
       inner.append(label, value);
 
       const pendingBox = document.createElement("span");
       pendingBox.className = "risma-coupon-mini-pending-box";
       const status = document.createElement("span");
-      status.className = "risma-coupon-mini-status";
-      if (totalCoupons === 0) {
+      status.className = "risma-coupon-mini-pending";
+      if (coupons === 0) {
+        status.classList.add("is-empty");
         status.textContent = "belum ada penerima";
-        status.classList.add("empty");
-      } else if (pendingCoupons === 0) {
+      } else if (pendingCount <= 0 && pendingRecipients <= 0) {
+        status.classList.add("is-done");
         status.textContent = "selesai dibagikan";
-        status.classList.add("done");
       } else {
-        status.textContent = `belum dibagi ${wholeNumber.format(pendingCoupons)} kupon · ${wholeNumber.format(pendingRecipients)} orang`;
-        status.classList.add("pending");
+        status.classList.add("is-pending");
+        status.textContent = `belum dibagi ${wholeNumber.format(pendingCount)} kupon • ${wholeNumber.format(pendingRecipients)} orang`;
       }
       pendingBox.append(status);
       card.append(inner, pendingBox);
