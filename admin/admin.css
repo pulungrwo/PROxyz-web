@@ -2342,7 +2342,7 @@ dialog[id^="risma-"] .icon-button{background:#edf7fd!important;color:#285c7d!imp
   line-height:1.2!important;
   font-weight:850!important;
   text-align:center!important;
-  white-space:normal!important;
+  white-space:pre-line!important;
   overflow-wrap:anywhere!important;
   color:#667085!important;
 }
@@ -2359,4 +2359,71 @@ dialog[id^="risma-"] .icon-button{background:#edf7fd!important;color:#285c7d!imp
   #risma-view .risma-coupon-summary-inline .risma-coupon-mini-label{font-size:16px!important}
   #risma-view .risma-coupon-summary-inline .risma-coupon-mini-value{font-size:20px!important}
   #risma-view .risma-coupon-summary-inline .risma-coupon-mini-pending{font-size:10.3px!important}
+}
+
+
+/* RISMA V3.2.33 — coupon cards: remove inner card, center title/value, give status its own clean row. */
+#risma-view .risma-coupon-summary-inline .risma-coupon-mini-card{
+  min-height:132px!important;
+  padding:14px 12px 10px!important;
+  gap:5px!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  text-align:center!important;
+  overflow:hidden!important;
+}
+#risma-view .risma-coupon-summary-inline .risma-coupon-mini-label{
+  width:100%!important;
+  margin:4px 0 0!important;
+  font-size:18px!important;
+  line-height:1.1!important;
+  font-weight:900!important;
+  text-align:center!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+}
+#risma-view .risma-coupon-summary-inline .risma-coupon-mini-value{
+  width:100%!important;
+  margin:0!important;
+  font-size:29px!important;
+  line-height:1!important;
+  font-weight:950!important;
+  text-align:center!important;
+}
+#risma-view .risma-coupon-summary-inline .risma-coupon-mini-pending-box{
+  width:100%!important;
+  min-height:42px!important;
+  margin-top:auto!important;
+  padding:8px 5px 2px!important;
+  box-sizing:border-box!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  border-top:1px solid color-mix(in srgb,var(--coupon-primary,#1f2937) 14%,#e4eaf0)!important;
+  text-align:center!important;
+}
+#risma-view .risma-coupon-summary-inline .risma-coupon-mini-pending{
+  display:block!important;
+  width:100%!important;
+  margin:0!important;
+  font-size:11px!important;
+  line-height:1.25!important;
+  font-weight:850!important;
+  text-align:center!important;
+  white-space:normal!important;
+  overflow-wrap:anywhere!important;
+  color:#667085!important;
+}
+#risma-view .risma-coupon-summary-inline .risma-coupon-mini-pending.is-pending{color:#B42318!important}
+#risma-view .risma-coupon-summary-inline .risma-coupon-mini-pending.is-done,
+#risma-view .risma-coupon-summary-inline .risma-coupon-mini-pending.is-empty{color:#667085!important}
+#risma-view .risma-coupon-summary-inline .risma-coupon-mini-inner{
+  display:none!important;
+}
+@media(max-width:640px){
+  #risma-view .risma-coupon-summary-inline .risma-coupon-mini-card{min-height:128px!important;padding:13px 9px 9px!important}
+  #risma-view .risma-coupon-summary-inline .risma-coupon-mini-label{font-size:16px!important}
+  #risma-view .risma-coupon-summary-inline .risma-coupon-mini-value{font-size:27px!important}
+  #risma-view .risma-coupon-summary-inline .risma-coupon-mini-pending{font-size:10.5px!important}
 }

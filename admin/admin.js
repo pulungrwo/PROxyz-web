@@ -1,7 +1,7 @@
 (() => {
   "use strict";
 
-  const ADMIN_BUILD = "1.5.22";
+  const ADMIN_BUILD = "1.5.23";
   const config = window.PROXYZ_ADMIN_CONFIG || {};
 
   async function checkAdminBuild() {
@@ -2345,8 +2345,6 @@
       card.style.setProperty("--coupon-light", meta.palette.light);
       card.style.setProperty("--coupon-accent", meta.palette.accent);
       card.setAttribute("aria-label", `Kupon ${meta.label}: ${wholeNumber.format(Number(row.coupons || 0))}`);
-      const inner = document.createElement("span");
-      inner.className = "risma-coupon-mini-inner";
       const label = document.createElement("strong");
       label.className = "risma-coupon-mini-label";
       label.textContent = meta.label;
@@ -2356,7 +2354,6 @@
       const pendingCount = Number(row.pending || 0);
       const pendingRecipients = Number(row.pendingRecipients || 0);
       value.textContent = `${wholeNumber.format(coupons)}`;
-      inner.append(label, value);
 
       const pendingBox = document.createElement("span");
       pendingBox.className = "risma-coupon-mini-pending-box";
@@ -2370,10 +2367,10 @@
         status.textContent = "selesai dibagikan";
       } else {
         status.classList.add("is-pending");
-        status.textContent = `belum dibagi ${wholeNumber.format(pendingCount)} kupon • ${wholeNumber.format(pendingRecipients)} orang`;
+        status.textContent = `belum dibagi\n${wholeNumber.format(pendingCount)} kupon • ${wholeNumber.format(pendingRecipients)} orang`;
       }
       pendingBox.append(status);
-      card.append(inner, pendingBox);
+      card.append(label, value, pendingBox);
       host.appendChild(card);
     });
   }
