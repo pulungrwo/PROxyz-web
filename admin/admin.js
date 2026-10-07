@@ -1,7 +1,7 @@
 (() => {
   "use strict";
 
-  const ADMIN_BUILD = "1.5.25";
+  const ADMIN_BUILD = "1.5.27";
   const config = window.PROXYZ_ADMIN_CONFIG || {};
 
   async function checkAdminBuild() {
@@ -2348,8 +2348,14 @@
       const label = document.createElement("strong");
       label.className = "risma-coupon-mini-label";
       label.textContent = meta.label;
+      label.style.textAlign = "center";
+      label.style.width = "100%";
+      label.style.display = "block";
       const value = document.createElement("span");
       value.className = "risma-coupon-mini-value";
+      value.style.textAlign = "center";
+      value.style.width = "100%";
+      value.style.display = "block";
       const coupons = Number(row.coupons || 0);
       const pendingCount = Number(row.pending || 0);
       const pendingRecipients = Number(row.pendingRecipients || 0);
@@ -2359,6 +2365,11 @@
       pendingBox.className = "risma-coupon-mini-pending-box";
       const status = document.createElement("span");
       status.className = "risma-coupon-mini-pending";
+      status.style.textAlign = "center";
+      status.style.width = "100%";
+      status.style.display = "block";
+      status.style.whiteSpace = "pre-line";
+      status.style.lineHeight = "1.25";
       if (coupons === 0) {
         status.classList.add("is-empty");
         status.textContent = "belum ada penerima";
@@ -2367,7 +2378,8 @@
         status.textContent = "selesai dibagikan";
       } else {
         status.classList.add("is-pending");
-        status.textContent = `belum dibagi\n${wholeNumber.format(pendingCount)} kupon • ${wholeNumber.format(pendingRecipients)} orang`;
+        status.textContent = `belum dibagi
+${wholeNumber.format(pendingCount)} kupon • ${wholeNumber.format(pendingRecipients)} orang`;
       }
       pendingBox.append(status);
       card.append(label, value, pendingBox);
@@ -3180,14 +3192,14 @@
     const summary=$("risma-print-tarawih-attendance-summary");
     if(!summary) return;
     summary.textContent = week==="all"
-      ? "4 lembar A4 · 2 kartu atas-bawah · hitam putih · Minggu 1-4."
-      : `1 lembar A4 · 2 kartu atas-bawah · hitam putih · Minggu ${week}.`;
+      ? "4 lembar A4 · 2 kartu berdampingan · hitam putih · Minggu 1-4."
+      : `1 lembar A4 · 2 kartu berdampingan · hitam putih · Minggu ${week}.`;
   }
 
   async function printRismaTarawihAttendancePdf(){
     const week=$("risma-print-tarawih-attendance-week")?.value||"all";
     const status=$("risma-print-tarawih-attendance-status");
-    setStatus(status,"Membuat Kartu Daftar Hadir Tarawih…");
+    setStatus(status,"Membuat Kartu Kendali Kehadiran Tarawih…");
     try{
       const data=await api("/api/risma/tarawih-attendance/pdf-self",{method:"POST",body:JSON.stringify({week})});
       setStatus(status,`${data.message||"PDF berhasil dikirim ke WhatsApp Anda."} ${data.totalPages||0} lembar · 2 kartu/lembar.`,"success");
