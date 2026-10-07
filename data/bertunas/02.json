@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": 1791117359440,
+  "generatedAt": 1791384185833,
   "id": "02",
   "nama": "Samping Rumah",
   "lokasi": "",
@@ -34,12 +34,30 @@
   "summary": {
     "weightKg": 0,
     "harvestCount": 0,
-    "activityCount": 6,
-    "pendingScheduleCount": 4
+    "activityCount": 8,
+    "pendingScheduleCount": 3
   },
   "financeVisible": false,
   "recentHarvest": [],
   "recentActivities": [
+    {
+      "date": "2026-10-07",
+      "cropId": "01",
+      "komoditas": "Cabai",
+      "category": "Penyemprotan",
+      "description": "spray 15 sivanto, 1 besromil",
+      "note": "",
+      "hst": 10
+    },
+    {
+      "date": "2026-10-07",
+      "cropId": "01",
+      "komoditas": "Cabai",
+      "category": "Pemupukan",
+      "description": "Kocor 3 Ultradap + 30 Ambition + 2 Humigrow",
+      "note": "",
+      "hst": 10
+    },
     {
       "date": "2026-10-04",
       "cropId": "01",
@@ -97,18 +115,6 @@
   ],
   "schedules": [
     {
-      "nomor": 3,
-      "cropId": "01",
-      "komoditas": "Cabai",
-      "category": "Pemupukan",
-      "description": "Kocor Ultradap + Ambition + Humigrow",
-      "note": "",
-      "targetType": "hst",
-      "targetHst": 10,
-      "targetDate": "2026-10-07",
-      "status": "pending"
-    },
-    {
       "nomor": 4,
       "cropId": "01",
       "komoditas": "Cabai",
@@ -145,5 +151,5 @@
       "status": "pending"
     }
   ],
-  "updatedAt": 1791117359440
+  "updatedAt": 1791384185833
 }
