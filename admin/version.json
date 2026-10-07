@@ -1,6 +1,6 @@
 {
-  "version": "1.5.27",
-  "updatedAt": "2026-10-07T12:30:00+07:00",
+  "version": "1.5.28",
+  "updatedAt": "2026-10-07T23:30:00+07:00",
   "uiBase": "PROxyz-SOURCE-20260829-2042",
   "features": [
     "admin-v0.9.3",
@@ -203,6 +203,9 @@
     "risma-coupon-flat-card-v3233",
     "risma-v3.2.35-cache-safe-flat-coupon-attendance",
     "risma-v3.2.36-coupon-card-and-attendance-pdf-final",
-    "risma-v3.2.40-admin-build-guard-fix"
+    "risma-v3.2.40-admin-build-guard-fix",
+    "risma-v3.2.42-khatam-password",
+    "risma-v3.2.42-distinct-coupon-palettes",
+    "risma-v3.2.42-attendance-name-position"
   ]
 }

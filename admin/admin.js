@@ -1,7 +1,7 @@
 (() => {
   "use strict";
 
-  const ADMIN_BUILD = "1.5.27";
+  const ADMIN_BUILD = "1.5.28";
   const config = window.PROXYZ_ADMIN_CONFIG || {};
 
   async function checkAdminBuild() {
@@ -2293,18 +2293,24 @@
 
   const RISMA_COUPON_SUMMARY_PALETTES = {
     hijau:{ primary:"#166534", light:"#F0FDF4", accent:"#86EFAC" },
-    "hijau-muda":{ primary:"#15803D", light:"#F0FDF4", accent:"#4ADE80" },
-    zamrud:{ primary:"#047857", light:"#ECFDF5", accent:"#34D399" },
-    biru:{ primary:"#0369A1", light:"#F0F9FF", accent:"#7DD3FC" },
     emas:{ primary:"#92400E", light:"#FFFBEB", accent:"#FCD34D" },
     ungu:{ primary:"#6B21A8", light:"#FAF5FF", accent:"#D8B4FE" },
-    merah:{ primary:"#B91C1C", light:"#FEF2F2", accent:"#FCA5A5" },
-    toska:{ primary:"#0F766E", light:"#F0FDFA", accent:"#5EEAD4" }
+    biru:{ primary:"#0369A1", light:"#F0F9FF", accent:"#7DD3FC" },
+    toska:{ primary:"#0F766E", light:"#F0FDFA", accent:"#5EEAD4" },
+    navy:{ primary:"#1E3A8A", light:"#EFF6FF", accent:"#93C5FD" },
+    indigo:{ primary:"#4338CA", light:"#EEF2FF", accent:"#A5B4FC" },
+    cyan:{ primary:"#0E7490", light:"#ECFEFF", accent:"#67E8F9" },
+    lime:{ primary:"#4D7C0F", light:"#F7FEE7", accent:"#BEF264" },
+    coral:{ primary:"#C2410C", light:"#FFF7ED", accent:"#FDBA74" },
+    slate:{ primary:"#475569", light:"#F8FAFC", accent:"#CBD5E1" },
+    "hijau-muda":{ primary:"#15803D", light:"#F0FDF4", accent:"#4ADE80" },
+    zamrud:{ primary:"#047857", light:"#ECFDF5", accent:"#34D399" },
+    merah:{ primary:"#B91C1C", light:"#FEF2F2", accent:"#FCA5A5" }
   };
 
   function rismaCouponSummaryMeta(type) {
     const key = String(type || "").toLowerCase();
-    const fallbackPalette = key === "ngaji" ? "hijau" : key === "jumat" ? "hijau-muda" : key === "taraweh" ? "zamrud" : "biru";
+    const fallbackPalette = key === "ngaji" ? "hijau" : key === "jumat" ? "emas" : key === "taraweh" ? "ungu" : "biru";
     const savedPalette = String(rismaDetail?.settings?.couponTemplates?.[key]?.palette || "").toLowerCase();
     const palette = RISMA_COUPON_SUMMARY_PALETTES[savedPalette] || RISMA_COUPON_SUMMARY_PALETTES[fallbackPalette] || RISMA_COUPON_SUMMARY_PALETTES.hijau;
     const label = key === "ngaji" ? "Ngaji" : key === "taraweh" ? "Tarawih" : key === "tadarus" ? "Tadarus" : key === "jumat" ? "Jumat" : (String(type || "Kupon") || "Kupon");
@@ -2528,7 +2534,17 @@ ${wholeNumber.format(pendingCount)} kupon • ${wholeNumber.format(pendingRecipi
     syncRismaKhatamControl();
     setStatus(status,"Menyimpan…");
     try{
-      const data=await api("/api/risma/tadarus/settings",{method:"PUT",body:JSON.stringify({khatam:wanted})});
+      const password=window.prompt(wanted?"Masukkan Sandi Khatam untuk menandai Tadarus sudah khatam.":"Masukkan Sandi Khatam untuk membatalkan status khatam.");
+      if(password===null || !String(password).trim()){
+        input.checked=previous;
+        input.dataset.saved=previous?"1":"0";
+        input.dataset.saving="0";
+        input.disabled=false;
+        syncRismaKhatamControl();
+        setStatus(status,"Perubahan khatam dibatalkan.","error");
+        return;
+      }
+      const data=await api("/api/risma/tadarus/settings",{method:"PUT",body:JSON.stringify({khatam:wanted,password:String(password)})});
       rismaDetail=data.risma || rismaDetail;
       rismaTadarusData=data.tadarus || rismaTadarusData;
       // Jangan render ulang seluruh panel di sini. Render penuh dapat mengembalikan
@@ -2988,10 +3004,10 @@ ${wholeNumber.format(pendingCount)} kupon • ${wholeNumber.format(pendingRecipi
       ? "Minggu 2 sudah diinput. Susunan tim dikunci dan tidak dapat diacak ulang."
       : "Hanya Owner. Acak ulang tersedia sampai sebelum Minggu 2 diinput.";
     const defaultScoring={1:1,2:2,3:3,4:4,5:6,6:7.5,7:9};
-    if(!settings){ $("risma-setting-rank").value="10"; $("risma-setting-team").value="3"; $("risma-setting-coupon-max").value="3"; $("risma-setting-ngaji").checked=true; $("risma-setting-taraweh").checked=true; $("risma-setting-tadarus").checked=true; $("risma-setting-jumat").checked=true; $("risma-setting-tadarus-auto-enabled").checked=true; $("risma-tadarus-min").value="15"; $("risma-tadarus-second").value="50"; $("risma-tadarus-third").value="75"; $("risma-tadarus-max").value="2"; for(let attendance=1;attendance<=7;attendance++) $("risma-setting-score-"+attendance).value=String(defaultScoring[attendance]); syncRismaCouponCountSelects(); syncRismaTemplateForm(); return; }
+    if(!settings){ $("risma-setting-khatam-password").value=""; $("risma-setting-rank").value="10"; $("risma-setting-team").value="3"; $("risma-setting-coupon-max").value="3"; $("risma-setting-ngaji").checked=true; $("risma-setting-taraweh").checked=true; $("risma-setting-tadarus").checked=true; $("risma-setting-jumat").checked=true; $("risma-setting-tadarus-auto-enabled").checked=true; $("risma-tadarus-min").value="15"; $("risma-tadarus-second").value="50"; $("risma-tadarus-third").value="75"; $("risma-tadarus-max").value="2"; for(let attendance=1;attendance<=7;attendance++) $("risma-setting-score-"+attendance).value=String(defaultScoring[attendance]); syncRismaCouponCountSelects(); syncRismaTemplateForm(); return; }
     $("risma-setting-rank").value=String(settings.individualWinnerCount||10); $("risma-setting-team").value=String(settings.teamWinnerCount||3); $("risma-setting-coupon-max").value=String(settings.maxCouponsPerRecipient||3);
     $("risma-setting-ngaji").checked=settings.couponEnabled?.ngaji!==false; $("risma-setting-taraweh").checked=settings.couponEnabled?.taraweh!==false; $("risma-setting-tadarus").checked=settings.couponEnabled?.tadarus!==false; $("risma-setting-jumat").checked=settings.couponEnabled?.jumat!==false;
-    const ts=settings.tadarus||{}; $("risma-setting-tadarus-auto-enabled").checked=ts.enabled!==false; $("risma-tadarus-min").value=String(ts.minAttendancePercent??15); $("risma-tadarus-second").value=String(ts.secondAttendancePercent??50); $("risma-tadarus-third").value=String(ts.thirdAttendancePercent??75); $("risma-tadarus-max").value=String(ts.maxCoupons||2);
+    const ts=settings.tadarus||{}; $("risma-setting-khatam-password").value=""; $("risma-setting-khatam-password").placeholder=ts.khatamPasswordConfigured?"Kosongkan jika tidak mengubah (sudah diatur)":"Buat sandi baru (minimal 4 karakter)"; $("risma-setting-tadarus-auto-enabled").checked=ts.enabled!==false; $("risma-tadarus-min").value=String(ts.minAttendancePercent??15); $("risma-tadarus-second").value=String(ts.secondAttendancePercent??50); $("risma-tadarus-third").value=String(ts.thirdAttendancePercent??75); $("risma-tadarus-max").value=String(ts.maxCoupons||2);
     for(let attendance=1;attendance<=7;attendance++) $("risma-setting-score-"+attendance).value=String(settings.scoring?.[attendance] ?? defaultScoring[attendance]);
     syncRismaCouponCountSelects(); syncRismaTemplateForm();
   }
@@ -3491,7 +3507,7 @@ ${row.label}`))return;
     }catch(error){setStatus($("risma-log-status"),error.message,"error");}
   }
 
-  async function saveRismaSettings(event){ event.preventDefault(); setStatus($("risma-settings-status"),"Menyimpan pengaturan…"); try{ const scoring={}; for(let attendance=1;attendance<=7;attendance++) scoring[attendance]=$("risma-setting-score-"+attendance).value; const data=await api("/api/risma/settings",{method:"PUT",body:JSON.stringify({individualWinnerCount:Number($("risma-setting-rank").value),teamWinnerCount:Number($("risma-setting-team").value),maxCouponsPerRecipient:Number($("risma-setting-coupon-max").value),scoring,couponEnabled:{ngaji:$("risma-setting-ngaji").checked,taraweh:$("risma-setting-taraweh").checked,tadarus:$("risma-setting-tadarus").checked,jumat:$("risma-setting-jumat").checked},tadarus:{enabled:$("risma-setting-tadarus-auto-enabled").checked,minAttendancePercent:Number($("risma-tadarus-min").value),secondAttendancePercent:Number($("risma-tadarus-second").value),thirdAttendancePercent:Number($("risma-tadarus-third").value),maxCoupons:Number($("risma-tadarus-max").value)}})}); rismaDetail=data.risma; renderRisma(); setStatus($("risma-settings-status"),"Pengaturan tersimpan dan poin mingguan disinkronkan.","success"); }catch(error){setStatus($("risma-settings-status"),error.message,"error");} }
+  async function saveRismaSettings(event){ event.preventDefault(); setStatus($("risma-settings-status"),"Menyimpan pengaturan…"); try{ const scoring={}; for(let attendance=1;attendance<=7;attendance++) scoring[attendance]=$("risma-setting-score-"+attendance).value; const data=await api("/api/risma/settings",{method:"PUT",body:JSON.stringify({individualWinnerCount:Number($("risma-setting-rank").value),teamWinnerCount:Number($("risma-setting-team").value),maxCouponsPerRecipient:Number($("risma-setting-coupon-max").value),scoring,couponEnabled:{ngaji:$("risma-setting-ngaji").checked,taraweh:$("risma-setting-taraweh").checked,tadarus:$("risma-setting-tadarus").checked,jumat:$("risma-setting-jumat").checked},tadarus:{enabled:$("risma-setting-tadarus-auto-enabled").checked,minAttendancePercent:Number($("risma-tadarus-min").value),secondAttendancePercent:Number($("risma-tadarus-second").value),thirdAttendancePercent:Number($("risma-tadarus-third").value),maxCoupons:Number($("risma-tadarus-max").value),khatamPassword:$("risma-setting-khatam-password").value.trim() || undefined}})}); rismaDetail=data.risma; $("risma-setting-khatam-password").value=""; renderRisma(); setStatus($("risma-settings-status"),"Pengaturan tersimpan dan poin mingguan disinkronkan.","success"); }catch(error){setStatus($("risma-settings-status"),error.message,"error");} }
   async function saveRismaTemplate(event){ event.preventDefault(); const type=$("risma-template-type").value; setStatus($("risma-template-status"),"Menyimpan template…"); try{const data=await api(`/api/risma/coupon-template/${encodeURIComponent(type)}`,{method:"PUT",body:JSON.stringify({title:$("risma-template-title").value,slogan:$("risma-template-slogan").value,footer:$("risma-template-footer").value,palette:$("risma-template-palette").value})});rismaDetail=data.risma;renderRisma();setStatus($("risma-template-status"),"Template tersimpan.","success");}catch(error){setStatus($("risma-template-status"),error.message,"error");}}
   async function resetRismaTemplate(){ const type=$("risma-template-type").value;if(!confirm("Kembalikan template kupon ini ke desain bawaan?"))return;setStatus($("risma-template-status"),"Mengembalikan template…");try{const data=await api(`/api/risma/coupon-template/${encodeURIComponent(type)}`,{method:"POST",body:"{}"});rismaDetail=data.risma;renderRisma();setStatus($("risma-template-status"),"Template kembali ke default.","success");}catch(error){setStatus($("risma-template-status"),error.message,"error");}}
 

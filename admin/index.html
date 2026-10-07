@@ -10,7 +10,7 @@
   <meta http-equiv="Expires" content="0">
   <title>Admin PROxyz</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
-  <link rel="stylesheet" href="./admin.css?v=3.2.40">
+  <link rel="stylesheet" href="./admin.css?v=3.2.42">
 </head>
 <body>
   <main class="shell">
@@ -718,7 +718,7 @@
                 <label>7x<input id="risma-setting-score-7" type="number" min="0" max="100" step="0.25" inputmode="decimal"></label>
               </div><small class="muted">Default: 1, 2, 3, 4, 6, 7,5, 9 poin. Perubahan menghitung ulang data minggu yang sudah tersimpan.</small></fieldset>
               <fieldset class="toggle-fieldset"><legend>Kupon THR aktif</legend><label class="check-row"><input id="risma-setting-ngaji" type="checkbox"> Kupon Ngaji</label><label class="check-row"><input id="risma-setting-jumat" type="checkbox"> Kupon Jumat</label><label class="check-row"><input id="risma-setting-taraweh" type="checkbox"> Kupon Tarawih</label><label class="check-row"><input id="risma-setting-tadarus" type="checkbox"> Kupon Tadarus</label></fieldset>
-              <fieldset class="toggle-fieldset"><legend>Presensi Tadarus</legend><label class="check-row"><input id="risma-setting-tadarus-auto-enabled" type="checkbox"> Aktifkan perhitungan kupon otomatis</label><div class="context-grid"><label>Minimal kehadiran (%)<input id="risma-tadarus-min" type="number" min="0" max="100" step="1"></label><label>Batas kupon 2 (%)<input id="risma-tadarus-second" type="number" min="0" max="100" step="1"></label><label>Batas kupon 3 (%)<input id="risma-tadarus-third" type="number" min="0" max="100" step="1"></label><label>Maksimal kupon<select id="risma-tadarus-max"><option value="1">1 kupon</option><option value="2">2 kupon</option><option value="3">3 kupon</option></select></label></div><small class="muted">Status khatam diatur langsung dari tab Tadarus.</small></fieldset>
+              <fieldset class="toggle-fieldset"><legend>Presensi Tadarus</legend><label class="check-row"><input id="risma-setting-tadarus-auto-enabled" type="checkbox"> Aktifkan perhitungan kupon otomatis</label><div class="context-grid"><label>Minimal kehadiran (%)<input id="risma-tadarus-min" type="number" min="0" max="100" step="1"></label><label>Batas kupon 2 (%)<input id="risma-tadarus-second" type="number" min="0" max="100" step="1"></label><label>Batas kupon 3 (%)<input id="risma-tadarus-third" type="number" min="0" max="100" step="1"></label><label>Maksimal kupon<select id="risma-tadarus-max"><option value="1">1 kupon</option><option value="2">2 kupon</option><option value="3">3 kupon</option></select></label><label>Sandi Khatam<input id="risma-setting-khatam-password" type="password" minlength="4" maxlength="80" autocomplete="new-password" placeholder="Kosongkan jika tidak mengubah"></label></div><small class="muted">Sandi wajib dimasukkan saat tombol Khatam dicentang maupun dibatalkan. Sandi tidak pernah ditampilkan kembali.</small></fieldset>
               <p id="risma-settings-status" class="status"></p><button class="primary full" type="submit"><i class="fa-solid fa-floppy-disk"></i> Simpan pengaturan</button>
             </form>
 
@@ -734,7 +734,7 @@
               <label>Judul<input id="risma-template-title" maxlength="60" required></label>
               <label>Slogan<input id="risma-template-slogan" maxlength="100" required></label>
               <label>Catatan bawah<textarea id="risma-template-footer" rows="3" maxlength="240" required></textarea></label>
-              <label>Warna<select id="risma-template-palette"><option value="hijau">Hijau</option><option value="hijau-muda">Hijau Muda</option><option value="zamrud">Hijau Zamrud</option><option value="biru">Biru Muda</option><option value="emas">Emas</option><option value="ungu">Ungu</option><option value="merah">Merah</option><option value="toska">Toska</option></select></label>
+              <label>Warna<select id="risma-template-palette"><option value="hijau">Hijau</option><option value="emas">Emas</option><option value="ungu">Ungu</option><option value="biru">Biru Muda</option><option value="toska">Toska</option><option value="navy">Navy</option><option value="indigo">Indigo</option><option value="cyan">Cyan</option><option value="lime">Lime</option><option value="coral">Coral</option><option value="slate">Slate</option><option value="hijau-muda">Hijau Muda</option><option value="zamrud">Hijau Zamrud</option></select></label>
               <div class="actions two"><button id="risma-template-reset" class="ghost" type="button"><i class="fa-solid fa-rotate-left"></i> Kembalikan</button><button class="primary" type="submit"><i class="fa-solid fa-floppy-disk"></i> Simpan template</button></div><p id="risma-template-status" class="status"></p>
             </form>
           </section>
@@ -1316,6 +1316,6 @@
   </dialog>
 
   <script src="./config.js?v=242"></script>
-  <script src="./admin.js?v=3.2.40" defer></script>
+  <script src="./admin.js?v=3.2.42" defer></script>
 </body>
 </html>
