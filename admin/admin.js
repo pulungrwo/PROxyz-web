@@ -1,7 +1,7 @@
 (() => {
   "use strict";
 
-  const ADMIN_BUILD = "1.5.26";
+  const ADMIN_BUILD = "1.5.23";
   const config = window.PROXYZ_ADMIN_CONFIG || {};
 
   async function checkAdminBuild() {
@@ -3180,14 +3180,14 @@
     const summary=$("risma-print-tarawih-attendance-summary");
     if(!summary) return;
     summary.textContent = week==="all"
-      ? "4 lembar A4 · 2 kartu atas-bawah · hitam putih · Minggu 1-4."
-      : `1 lembar A4 · 2 kartu atas-bawah · hitam putih · Minggu ${week}.`;
+      ? "4 lembar A4 · 2 kartu berdampingan · hitam putih · Minggu 1-4."
+      : `1 lembar A4 · 2 kartu berdampingan · hitam putih · Minggu ${week}.`;
   }
 
   async function printRismaTarawihAttendancePdf(){
     const week=$("risma-print-tarawih-attendance-week")?.value||"all";
     const status=$("risma-print-tarawih-attendance-status");
-    setStatus(status,"Membuat Kartu Daftar Hadir Tarawih…");
+    setStatus(status,"Membuat Kartu Kendali Kehadiran Tarawih…");
     try{
       const data=await api("/api/risma/tarawih-attendance/pdf-self",{method:"POST",body:JSON.stringify({week})});
       setStatus(status,`${data.message||"PDF berhasil dikirim ke WhatsApp Anda."} ${data.totalPages||0} lembar · 2 kartu/lembar.`,"success");
