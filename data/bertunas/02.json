@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": 1791384185833,
+  "generatedAt": 1791384310349,
   "id": "02",
   "nama": "Samping Rumah",
   "lokasi": "",
@@ -35,7 +35,7 @@
     "weightKg": 0,
     "harvestCount": 0,
     "activityCount": 8,
-    "pendingScheduleCount": 3
+    "pendingScheduleCount": 4
   },
   "financeVisible": false,
   "recentHarvest": [],
@@ -149,7 +149,19 @@
       "targetHst": 30,
       "targetDate": "2026-10-27",
       "status": "pending"
+    },
+    {
+      "nomor": 7,
+      "cropId": "01",
+      "komoditas": "Cabai",
+      "category": "Lainnya",
+      "description": "panen 1",
+      "note": "",
+      "targetType": "hst",
+      "targetHst": 70,
+      "targetDate": "2026-12-06",
+      "status": "pending"
     }
   ],
-  "updatedAt": 1791384185833
+  "updatedAt": 1791384310349
 }
