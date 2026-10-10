@@ -1,10 +1,16 @@
 {
   "schemaVersion": 1,
-  "generatedAt": 1791651227797,
+  "generatedAt": 1791651462650,
   "totalProjects": 3,
   "totalWeightKg": 0,
   "totalHarvestCount": 0,
   "commodities": [
+    {
+      "komoditas": "A Basanti",
+      "weightKg": 0,
+      "harvestCount": 0,
+      "projectCount": 1
+    },
     {
       "komoditas": "A GosV",
       "weightKg": 0,
@@ -271,11 +277,17 @@
           "komoditas": "A Transfigurasi",
           "weightKg": 0,
           "harvestCount": 0
+        },
+        {
+          "id": "16",
+          "komoditas": "A Basanti",
+          "weightKg": 0,
+          "harvestCount": 0
         }
       ],
       "weightKg": 0,
       "harvestCount": 0,
-      "updatedAt": 1791651227797
+      "updatedAt": 1791651462650
     }
   ]
 }
