@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": 1790101447607,
+  "generatedAt": 1791651227797,
   "id": "03",
   "nama": "Kebunku",
   "lokasi": "",
@@ -106,7 +106,7 @@
       "id": "11",
       "komoditas": "A Shine Muscat",
       "category": "lainnya",
-      "plantingDate": "2026-07-11",
+      "plantingDate": "2026-10-09",
       "status": "aktif",
       "weightKg": 0,
       "harvestCount": 0
@@ -115,7 +115,7 @@
       "id": "12",
       "komoditas": "A Isabella",
       "category": "lainnya",
-      "plantingDate": "2026-07-11",
+      "plantingDate": "2026-10-09",
       "status": "aktif",
       "weightKg": 0,
       "harvestCount": 0
@@ -151,12 +151,30 @@
   "summary": {
     "weightKg": 0,
     "harvestCount": 0,
-    "activityCount": 2,
+    "activityCount": 4,
     "pendingScheduleCount": 0
   },
   "financeVisible": false,
   "recentHarvest": [],
   "recentActivities": [
+    {
+      "date": "2026-10-09",
+      "cropId": "12",
+      "komoditas": "A Isabella",
+      "category": "Tanam",
+      "description": "Tanam isabella 2m++",
+      "note": "",
+      "hst": 0
+    },
+    {
+      "date": "2026-10-09",
+      "cropId": "11",
+      "komoditas": "A Shine Muscat",
+      "category": "Tanam",
+      "description": "Tanam 2m up",
+      "note": "",
+      "hst": 0
+    },
     {
       "date": "2026-09-06",
       "cropId": "01",
@@ -177,5 +195,5 @@
     }
   ],
   "schedules": [],
-  "updatedAt": 1790101447607
+  "updatedAt": 1791651227797
 }
