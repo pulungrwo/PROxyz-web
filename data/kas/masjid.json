@@ -6,8 +6,8 @@
   "saldo": {
     "awal": 0,
     "masuk": 32487000,
-    "keluar": 30846000,
-    "akhir": 1641000
+    "keluar": 31496000,
+    "akhir": 991000
   },
   "jumlahTransaksi": 181,
   "transactions": [
@@ -71,8 +71,8 @@
       "kategori": "pembangunan & renovasi",
       "kategoriNama": "Pembangunan & Renovasi",
       "keterangan": "DP Pintu besi",
-      "catatan": "",
-      "nominal": 1000000,
+      "catatan": "DP 1jt, pelunasan tgl 12 okt 2026",
+      "nominal": 1650000,
       "label": [],
       "bukti": []
     },
@@ -2754,5 +2754,5 @@
       "bukti": []
     }
   ],
-  "updatedAt": 1791562830284
+  "updatedAt": 1791805188279
 }
