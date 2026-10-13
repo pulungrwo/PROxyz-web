@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": 1791650892818,
+  "generatedAt": 1791882837981,
   "id": "02",
   "nama": "Samping Rumah",
   "lokasi": "",
@@ -34,12 +34,21 @@
   "summary": {
     "weightKg": 0,
     "harvestCount": 0,
-    "activityCount": 9,
-    "pendingScheduleCount": 4
+    "activityCount": 10,
+    "pendingScheduleCount": 3
   },
   "financeVisible": false,
   "recentHarvest": [],
   "recentActivities": [
+    {
+      "date": "2026-10-12",
+      "cropId": "01",
+      "komoditas": "Cabai",
+      "category": "Pemupukan",
+      "description": "Kocor 5 Ultradap + 2 mags + Humigrow",
+      "note": "",
+      "hst": 15
+    },
     {
       "date": "2026-10-10",
       "cropId": "01",
@@ -124,18 +133,6 @@
   ],
   "schedules": [
     {
-      "nomor": 4,
-      "cropId": "01",
-      "komoditas": "Cabai",
-      "category": "Pemupukan",
-      "description": "Kocor Ultradap + Ambition + Humigrow",
-      "note": "",
-      "targetType": "hst",
-      "targetHst": 15,
-      "targetDate": "2026-10-12",
-      "status": "pending"
-    },
-    {
       "nomor": 5,
       "cropId": "01",
       "komoditas": "Cabai",
@@ -172,5 +169,5 @@
       "status": "pending"
     }
   ],
-  "updatedAt": 1791650892818
+  "updatedAt": 1791882837981
 }
