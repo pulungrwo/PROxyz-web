@@ -5,12 +5,25 @@
   "status": "aktif",
   "saldo": {
     "awal": 0,
-    "masuk": 32487000,
+    "masuk": 32504000,
     "keluar": 31496000,
-    "akhir": 991000
+    "akhir": 1008000
   },
-  "jumlahTransaksi": 181,
+  "jumlahTransaksi": 182,
   "transactions": [
+    {
+      "id": "masjid-261016-001",
+      "nomor": "182",
+      "tanggal": 1792129806000,
+      "jenis": "masuk",
+      "kategori": "infak",
+      "kategoriNama": "Infak",
+      "keterangan": "Infak Jumat",
+      "catatan": "",
+      "nominal": 17000,
+      "label": [],
+      "bukti": []
+    },
     {
       "id": "masjid-261009-003",
       "nomor": "181",
@@ -2760,5 +2773,5 @@
       "bukti": []
     }
   ],
-  "updatedAt": 1791805328953
+  "updatedAt": 1792129811019
 }
