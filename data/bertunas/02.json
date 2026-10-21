@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": 1792596874863,
+  "generatedAt": 1792596955703,
   "id": "02",
   "nama": "Samping Rumah",
   "lokasi": "",
@@ -34,29 +34,38 @@
   "summary": {
     "weightKg": 0,
     "harvestCount": 0,
-    "activityCount": 13,
+    "activityCount": 14,
     "pendingScheduleCount": 2
   },
   "financeVisible": false,
   "recentHarvest": [],
   "recentActivities": [
     {
-      "date": "2026-10-21",
+      "date": "2026-10-20",
       "cropId": "01",
       "komoditas": "Cabai",
-      "category": "Pemupukan",
-      "description": "Kocor NPK 16 + Mags",
+      "category": "Penyemprotan",
+      "description": "spray sivanto 15ml, 30ml ambition",
       "note": "",
-      "hst": 24
+      "hst": 23
     },
     {
       "date": "2026-10-17",
       "cropId": "01",
       "komoditas": "Cabai",
+      "category": "Pemupukan",
+      "description": "Kocor NPK 16 + Mags",
+      "note": "",
+      "hst": 20
+    },
+    {
+      "date": "2026-10-16",
+      "cropId": "01",
+      "komoditas": "Cabai",
       "category": "Penyemprotan",
       "description": "Spray 1 sdm Mutual + 1 sdt Vitaflex+ 30ml ambition",
       "note": "",
-      "hst": 20
+      "hst": 19
     },
     {
       "date": "2026-10-13",
@@ -184,5 +193,5 @@
       "status": "pending"
     }
   ],
-  "updatedAt": 1792596874863
+  "updatedAt": 1792596955703
 }
