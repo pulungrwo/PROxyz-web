@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": 1792932459777,
+  "generatedAt": 1792932578487,
   "id": "02",
   "nama": "Samping Rumah",
   "lokasi": "",
@@ -34,12 +34,21 @@
   "summary": {
     "weightKg": 0,
     "harvestCount": 0,
-    "activityCount": 15,
+    "activityCount": 16,
     "pendingScheduleCount": 2
   },
   "financeVisible": false,
   "recentHarvest": [],
   "recentActivities": [
+    {
+      "date": "2026-10-25",
+      "cropId": "01",
+      "komoditas": "Cabai",
+      "category": "Pemupukan",
+      "description": "10 npk, 2 urea, 2 kcl",
+      "note": "",
+      "hst": 28
+    },
     {
       "date": "2026-10-24",
       "cropId": "01",
@@ -202,5 +211,5 @@
       "status": "pending"
     }
   ],
-  "updatedAt": 1792932459777
+  "updatedAt": 1792932578487
 }
