@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": 1792597260933,
+  "generatedAt": 1792932459777,
   "id": "02",
   "nama": "Samping Rumah",
   "lokasi": "",
@@ -34,12 +34,21 @@
   "summary": {
     "weightKg": 0,
     "harvestCount": 0,
-    "activityCount": 14,
+    "activityCount": 15,
     "pendingScheduleCount": 2
   },
   "financeVisible": false,
   "recentHarvest": [],
   "recentActivities": [
+    {
+      "date": "2026-10-24",
+      "cropId": "01",
+      "komoditas": "Cabai",
+      "category": "Penyemprotan",
+      "description": "spray 1½ mutual, 1 vitaflex, 2 sibiru",
+      "note": "",
+      "hst": 27
+    },
     {
       "date": "2026-10-20",
       "cropId": "01",
@@ -193,5 +202,5 @@
       "status": "pending"
     }
   ],
-  "updatedAt": 1792597260933
+  "updatedAt": 1792932459777
 }
