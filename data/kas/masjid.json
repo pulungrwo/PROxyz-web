@@ -6,11 +6,50 @@
   "saldo": {
     "awal": 0,
     "masuk": 32521000,
-    "keluar": 31496000,
-    "akhir": 1025000
+    "keluar": 31566000,
+    "akhir": 955000
   },
-  "jumlahTransaksi": 183,
+  "jumlahTransaksi": 186,
   "transactions": [
+    {
+      "id": "masjid-261025-002",
+      "nomor": "186",
+      "tanggal": 1792932753213,
+      "jenis": "keluar",
+      "kategori": "honor & jasa",
+      "kategoriNama": "Honor & Jasa",
+      "keterangan": "Marbot",
+      "catatan": "Periode pembayaran: 30 Oktober 2026",
+      "nominal": 25000,
+      "label": [],
+      "bukti": []
+    },
+    {
+      "id": "masjid-261025-001",
+      "nomor": "185",
+      "tanggal": 1792932745046,
+      "jenis": "keluar",
+      "kategori": "honor & jasa",
+      "kategoriNama": "Honor & Jasa",
+      "keterangan": "Marbot",
+      "catatan": "Periode pembayaran: 23 Oktober 2026",
+      "nominal": 25000,
+      "label": [],
+      "bukti": []
+    },
+    {
+      "id": "masjid-261023-002",
+      "nomor": "184",
+      "tanggal": 1792759911000,
+      "jenis": "keluar",
+      "kategori": "peralatan & perlengkapan",
+      "kategoriNama": "Peralatan & Perlengkapan",
+      "keterangan": "Pembersih Lantai",
+      "catatan": "",
+      "nominal": 20000,
+      "label": [],
+      "bukti": []
+    },
     {
       "id": "masjid-261023-001",
       "nomor": "183",
@@ -2786,5 +2825,5 @@
       "bukti": []
     }
   ],
-  "updatedAt": 1792932627663
+  "updatedAt": 1792932753566
 }
