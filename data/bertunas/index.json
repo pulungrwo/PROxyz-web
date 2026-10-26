@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": 1793019713008,
+  "generatedAt": 1793019945319,
   "totalProjects": 3,
   "totalWeightKg": 0,
   "totalHarvestCount": 0,
@@ -54,6 +54,12 @@
       "projectCount": 2
     },
     {
+      "komoditas": "Duku Palembang",
+      "weightKg": 0,
+      "harvestCount": 0,
+      "projectCount": 1
+    },
+    {
       "komoditas": "Jambu Dalhari",
       "weightKg": 0,
       "harvestCount": 0,
@@ -91,6 +97,12 @@
     },
     {
       "komoditas": "Nangka Merah",
+      "weightKg": 0,
+      "harvestCount": 0,
+      "projectCount": 1
+    },
+    {
+      "komoditas": "Putsa",
       "weightKg": 0,
       "harvestCount": 0,
       "projectCount": 1
@@ -283,11 +295,23 @@
           "komoditas": "A Basanti",
           "weightKg": 0,
           "harvestCount": 0
+        },
+        {
+          "id": "17",
+          "komoditas": "Putsa",
+          "weightKg": 0,
+          "harvestCount": 0
+        },
+        {
+          "id": "18",
+          "komoditas": "Duku Palembang",
+          "weightKg": 0,
+          "harvestCount": 0
         }
       ],
       "weightKg": 0,
       "harvestCount": 0,
-      "updatedAt": 1793019713008
+      "updatedAt": 1793019945319
     }
   ]
 }

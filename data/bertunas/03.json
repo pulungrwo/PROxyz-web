@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": 1793019713008,
+  "generatedAt": 1793019945319,
   "id": "03",
   "nama": "Kebunku",
   "lokasi": "",
@@ -10,7 +10,7 @@
     "nama": "Musim 01",
     "status": "aktif"
   },
-  "activeCropId": "16",
+  "activeCropId": "18",
   "crops": [
     {
       "id": "01",
@@ -155,6 +155,24 @@
       "status": "aktif",
       "weightKg": 0,
       "harvestCount": 0
+    },
+    {
+      "id": "17",
+      "komoditas": "Putsa",
+      "category": "lainnya",
+      "plantingDate": "",
+      "status": "aktif",
+      "weightKg": 0,
+      "harvestCount": 0
+    },
+    {
+      "id": "18",
+      "komoditas": "Duku Palembang",
+      "category": "lainnya",
+      "plantingDate": "",
+      "status": "aktif",
+      "weightKg": 0,
+      "harvestCount": 0
     }
   ],
   "summary": {
@@ -204,5 +222,5 @@
     }
   ],
   "schedules": [],
-  "updatedAt": 1793019713008
+  "updatedAt": 1793019945319
 }
