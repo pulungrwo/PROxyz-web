@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": 1791651890899,
+  "generatedAt": 1793019713008,
   "id": "03",
   "nama": "Kebunku",
   "lokasi": "",
@@ -124,7 +124,7 @@
       "id": "13",
       "komoditas": "A Jupiter",
       "category": "lainnya",
-      "plantingDate": "",
+      "plantingDate": "2026-10-12",
       "status": "aktif",
       "weightKg": 0,
       "harvestCount": 0
@@ -133,7 +133,7 @@
       "id": "14",
       "komoditas": "A GosV",
       "category": "lainnya",
-      "plantingDate": "",
+      "plantingDate": "2026-10-12",
       "status": "aktif",
       "weightKg": 0,
       "harvestCount": 0
@@ -142,7 +142,7 @@
       "id": "15",
       "komoditas": "A Transfigurasi",
       "category": "lainnya",
-      "plantingDate": "",
+      "plantingDate": "2026-10-12",
       "status": "aktif",
       "weightKg": 0,
       "harvestCount": 0
@@ -151,7 +151,7 @@
       "id": "16",
       "komoditas": "A Basanti",
       "category": "lainnya",
-      "plantingDate": "",
+      "plantingDate": "2026-10-22",
       "status": "aktif",
       "weightKg": 0,
       "harvestCount": 0
@@ -204,5 +204,5 @@
     }
   ],
   "schedules": [],
-  "updatedAt": 1791651890899
+  "updatedAt": 1793019713008
 }
