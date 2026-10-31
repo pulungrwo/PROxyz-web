@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": 1791383976576,
+  "generatedAt": 1793487499626,
   "id": "01",
   "nama": "Lahan 300 m²",
   "lokasi": "",
@@ -34,12 +34,21 @@
   "summary": {
     "weightKg": 0,
     "harvestCount": 0,
-    "activityCount": 17,
+    "activityCount": 18,
     "pendingScheduleCount": 0
   },
   "financeVisible": false,
   "recentHarvest": [],
   "recentActivities": [
+    {
+      "date": "2026-10-30",
+      "cropId": "01",
+      "komoditas": "Cabai",
+      "category": "Penyemprotan",
+      "description": "spray 15 agus, 5 mkp,  1 fn",
+      "note": "",
+      "hst": 78
+    },
     {
       "date": "2026-10-06",
       "cropId": "01",
@@ -195,5 +204,5 @@
     }
   ],
   "schedules": [],
-  "updatedAt": 1791383976576
+  "updatedAt": 1793487499626
 }
