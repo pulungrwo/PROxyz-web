@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": 1793487360206,
+  "generatedAt": 1793786272747,
   "id": "02",
   "nama": "Samping Rumah",
   "lokasi": "",
@@ -34,12 +34,21 @@
   "summary": {
     "weightKg": 0,
     "harvestCount": 0,
-    "activityCount": 17,
+    "activityCount": 18,
     "pendingScheduleCount": 2
   },
   "financeVisible": false,
   "recentHarvest": [],
   "recentActivities": [
+    {
+      "date": "2026-11-02",
+      "cropId": "01",
+      "komoditas": "Cabai",
+      "category": "Pemupukan",
+      "description": "kocor 1,5kg grower + ½ kb",
+      "note": "",
+      "hst": 36
+    },
     {
       "date": "2026-10-30",
       "cropId": "01",
@@ -220,5 +229,5 @@
       "status": "pending"
     }
   ],
-  "updatedAt": 1793487360206
+  "updatedAt": 1793786272747
 }
