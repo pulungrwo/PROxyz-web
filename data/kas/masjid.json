@@ -5,12 +5,51 @@
   "status": "aktif",
   "saldo": {
     "awal": 0,
-    "masuk": 32553000,
-    "keluar": 31566000,
-    "akhir": 987000
+    "masuk": 32568000,
+    "keluar": 31616000,
+    "akhir": 952000
   },
-  "jumlahTransaksi": 187,
+  "jumlahTransaksi": 190,
   "transactions": [
+    {
+      "id": "masjid-261106-003",
+      "nomor": "190",
+      "tanggal": 1793966464191,
+      "jenis": "keluar",
+      "kategori": "honor & jasa",
+      "kategoriNama": "Honor & Jasa",
+      "keterangan": "Marbot",
+      "catatan": "Periode pembayaran: 13 November 2026",
+      "nominal": 25000,
+      "label": [],
+      "bukti": []
+    },
+    {
+      "id": "masjid-261106-002",
+      "nomor": "189",
+      "tanggal": 1793966458034,
+      "jenis": "keluar",
+      "kategori": "honor & jasa",
+      "kategoriNama": "Honor & Jasa",
+      "keterangan": "Marbot",
+      "catatan": "Periode pembayaran: 6 November 2026",
+      "nominal": 25000,
+      "label": [],
+      "bukti": []
+    },
+    {
+      "id": "masjid-261106-001",
+      "nomor": "188",
+      "tanggal": 1793966447000,
+      "jenis": "masuk",
+      "kategori": "infak",
+      "kategoriNama": "Infak",
+      "keterangan": "Infak Jumat",
+      "catatan": "",
+      "nominal": 15000,
+      "label": [],
+      "bukti": []
+    },
     {
       "id": "masjid-261030-001",
       "nomor": "187",
@@ -2838,5 +2877,5 @@
       "bukti": []
     }
   ],
-  "updatedAt": 1793358448170
+  "updatedAt": 1793966464511
 }
