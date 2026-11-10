@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
   "idKas": "masjid",
-  "nama": "Kas Masjid Al-Huda Tanjung Bulan",
+  "nama": "Kas Masjid Al-Huda",
   "status": "aktif",
   "saldo": {
     "awal": 0,
@@ -2890,5 +2890,5 @@
       "bukti": []
     }
   ],
-  "updatedAt": 1794324601444
+  "updatedAt": 1794324741398
 }
