@@ -6,11 +6,24 @@
   "saldo": {
     "awal": 0,
     "masuk": 32568000,
-    "keluar": 31616000,
-    "akhir": 952000
+    "keluar": 31916000,
+    "akhir": 652000
   },
-  "jumlahTransaksi": 190,
+  "jumlahTransaksi": 191,
   "transactions": [
+    {
+      "id": "masjid-261110-001",
+      "nomor": "191",
+      "tanggal": 1794324599000,
+      "jenis": "keluar",
+      "kategori": "acara/kegiatan",
+      "kategoriNama": "Acara/Kegiatan",
+      "keterangan": "Khitan Massal",
+      "catatan": "",
+      "nominal": 300000,
+      "label": [],
+      "bukti": []
+    },
     {
       "id": "masjid-261106-003",
       "nomor": "190",
@@ -2877,5 +2890,5 @@
       "bukti": []
     }
   ],
-  "updatedAt": 1793966464511
+  "updatedAt": 1794324601444
 }
