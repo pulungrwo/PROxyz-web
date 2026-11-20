@@ -5,12 +5,25 @@
   "status": "aktif",
   "saldo": {
     "awal": 0,
-    "masuk": 32593000,
+    "masuk": 35093000,
     "keluar": 31976000,
-    "akhir": 617000
+    "akhir": 3117000
   },
-  "jumlahTransaksi": 196,
+  "jumlahTransaksi": 197,
   "transactions": [
+    {
+      "id": "masjid-261120-005",
+      "nomor": "197",
+      "tanggal": 1795181083000,
+      "jenis": "masuk",
+      "kategori": "donatur",
+      "kategoriNama": "Donatur",
+      "keterangan": "Hamba Allah",
+      "catatan": "",
+      "nominal": 2500000,
+      "label": [],
+      "bukti": []
+    },
     {
       "id": "masjid-261120-004",
       "nomor": "196",
@@ -2955,5 +2968,5 @@
       "bukti": []
     }
   ],
-  "updatedAt": 1795181004166
+  "updatedAt": 1795181084641
 }
