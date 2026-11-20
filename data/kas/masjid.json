@@ -1124,7 +1124,7 @@
       "jenis": "masuk",
       "kategori": "donatur",
       "kategoriNama": "Donatur",
-      "keterangan": "Mbah Giarti",
+      "keterangan": "Bu Giarti",
       "catatan": "",
       "nominal": 1000000,
       "label": [],
@@ -2968,5 +2968,5 @@
       "bukti": []
     }
   ],
-  "updatedAt": 1795181084641
+  "updatedAt": 1795181273918
 }

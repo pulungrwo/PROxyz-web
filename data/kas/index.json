@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "updatedAt": 1795181084641,
+  "updatedAt": 1795181273918,
   "kas": [
     {
       "idKas": "mbamar",
@@ -29,7 +29,7 @@
       "idKas": "masjid",
       "nama": "Kas Masjid Al-Huda",
       "visibility": "public",
-      "updatedAt": 1795181084641,
+      "updatedAt": 1795181273918,
       "url": "/kas/masjid/",
       "saldo": 3117000,
       "jumlahTransaksi": 197
