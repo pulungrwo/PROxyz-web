@@ -1,7 +1,7 @@
 (() => {
   "use strict";
 
-  const ADMIN_BUILD = "1.5.28";
+  const ADMIN_BUILD = "1.5.30";
   const config = window.PROXYZ_ADMIN_CONFIG || {};
 
   async function checkAdminBuild() {
@@ -371,8 +371,8 @@
     challengeExpiresAt = 0;
     try { sessionStorage.removeItem(OTP_STORAGE_KEY); } catch (_) {}
     $("otp-form").hidden = true;
-    $("phone-form").hidden = true;
-    if ($("whatsapp-login-panel")) $("whatsapp-login-panel").hidden = false;
+    $("phone-form").hidden = false;
+    if ($("whatsapp-login-panel")) $("whatsapp-login-panel").hidden = true;
   }
 
   function saveOtpChallenge(phone) {
@@ -387,9 +387,9 @@
     try { sessionStorage.removeItem(OTP_STORAGE_KEY); } catch (_) {}
     challengeId = "";
     challengeExpiresAt = 0;
-    $("phone-form").hidden = true;
+    $("phone-form").hidden = false;
     $("otp-form").hidden = true;
-    if ($("whatsapp-login-panel")) $("whatsapp-login-panel").hidden = false;
+    if ($("whatsapp-login-panel")) $("whatsapp-login-panel").hidden = true;
     return false;
   }
 

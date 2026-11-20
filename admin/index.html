@@ -10,7 +10,7 @@
   <meta http-equiv="Expires" content="0">
   <title>Admin PROxyz</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
-  <link rel="stylesheet" href="./admin.css?v=3.2.42">
+  <link rel="stylesheet" href="./admin.css?v=3.2.43">
 </head>
 <body>
   <main class="shell">
@@ -18,28 +18,15 @@
       <section class="panel auth-panel">
         <div class="auth-brand">
           <div class="auth-icon" aria-hidden="true"><i class="fa-solid fa-layer-group"></i></div>
-          <div><p class="eyebrow eyebrow-brand">Akses admin</p><div class="auth-title-lockup"><span class="proxyz-wordmark"><strong class="proxyz-wordmark-pro">PRO</strong><strong class="proxyz-wordmark-xyz">xyz</strong><span class="proxyz-wordmark-web">web</span></span><strong>Admin</strong></div></div>
+          <div><p class="eyebrow eyebrow-brand">Portal pengelola</p><div class="auth-title-lockup"><span class="proxyz-wordmark"><strong class="proxyz-wordmark-pro">PRO</strong><strong class="proxyz-wordmark-xyz">xyz</strong><span class="proxyz-wordmark-web">web</span></span><strong>Admin</strong></div></div>
         </div>
         <div class="auth-copy">
-          <h1>Masuk ke PROxyz</h1>
-          <p class="muted">Kelola aplikasi sesuai hak akses Anda dalam satu tempat.</p>
+          <h1>Masuk</h1>
+          <p class="muted">Masukkan nomor WhatsApp admin untuk menerima kode OTP.</p>
         </div>
-        <div class="auth-app-icons" aria-hidden="true">
-          <span title="Kas"><i class="fa-solid fa-wallet"></i></span>
-          <span title="Bertunas"><i class="fa-solid fa-seedling"></i></span>
-          <span title="Galeri"><i class="fa-solid fa-images"></i></span>
-          <span title="RISMA"><i class="fa-solid fa-star"></i></span>
-          <span title="Ternak"><i class="fa-solid fa-cow"></i></span>
-          <span title="Creator"><i class="fa-solid fa-clapperboard"></i></span>
-          <span title="Pengguna"><i class="fa-solid fa-users-gear"></i></span>
-        </div>
-        <section id="whatsapp-login-panel" class="stack auth-form whatsapp-login-panel">
-          <button id="whatsapp-login-start" type="button" class="primary"><i class="fa-brands fa-whatsapp"></i><span>Buka WhatsApp untuk login</span></button>
-          <p class="muted small whatsapp-login-help">Kirim <strong>Login</strong> di chat pribadi bot. Bot akan membalas link masuk yang aman.</p>
-        </section>
-        <form id="phone-form" class="stack auth-form" hidden aria-hidden="true">
+        <form id="phone-form" class="stack auth-form">
           <label><span class="field-label"><i class="fa-brands fa-whatsapp"></i> Nomor WhatsApp</span>
-            <input id="phone" inputmode="tel" autocomplete="tel" placeholder="08xxxxxxxxxx">
+            <input id="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="08xxxxxxxxxx" required>
           </label>
           <button type="submit" class="primary"><i class="fa-solid fa-paper-plane"></i><span>Kirim kode OTP</span></button>
         </form>
@@ -50,8 +37,12 @@
           <button type="submit" class="primary"><i class="fa-solid fa-right-to-bracket"></i><span>Masuk</span></button>
           <button id="change-phone" type="button" class="ghost"><i class="fa-solid fa-arrow-left"></i><span>Ganti nomor</span></button>
         </form>
+        <div class="auth-wa-alternative">
+          <span>Atau</span>
+          <button id="whatsapp-login-start" type="button" class="ghost auth-wa-button"><i class="fa-brands fa-whatsapp"></i><span>Masuk lewat WhatsApp</span></button>
+        </div>
         <p id="auth-status" class="status" aria-live="polite"></p>
-        <p class="auth-security"><i class="fa-solid fa-shield-halved"></i><span>Login dikonfirmasi melalui chat pribadi bot PROxyz. Sesi aktif 24 jam sejak aktivitas terakhir.</span></p>
+        <p class="auth-security"><i class="fa-solid fa-shield-halved"></i><span>Kode dikirim ke WhatsApp terdaftar. Sesi tetap tersimpan sampai Anda memilih Keluar.</span></p>
       </section>
       <footer id="login-footer" class="admin-footer admin-footer-plain" aria-label="Kredit PROxyz">
         <div class="admin-footer-signature">
@@ -1316,6 +1307,6 @@
   </dialog>
 
   <script src="./config.js?v=242"></script>
-  <script src="./admin.js?v=3.2.42" defer></script>
+  <script src="./admin.js?v=3.2.43" defer></script>
 </body>
 </html>

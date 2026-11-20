@@ -2539,3 +2539,19 @@ dialog[id^="risma-"] .icon-button{background:#edf7fd!important;color:#285c7d!imp
 }
 
 /* RISMA V3.2.42 — password khatam + distinct coupon palettes */
+
+
+/* PROxyz Admin login refresh V3.2.43 */
+.auth-panel{width:min(100%,410px);padding:25px}
+.auth-brand{margin-bottom:25px}
+.auth-copy{margin-bottom:22px}
+.auth-copy h1{font-size:29px;margin-bottom:5px}
+.auth-copy .muted{font-size:14px}
+.auth-form{gap:14px}
+.auth-form input{min-height:52px;font-size:16px}
+.auth-form button{min-height:51px}
+.auth-wa-alternative{display:flex;align-items:center;gap:12px;margin-top:16px;color:#98a2b3;font-size:12px}
+.auth-wa-alternative::before,.auth-wa-alternative::after{content:"";height:1px;flex:1;background:#eaecf0}
+.auth-wa-button{min-height:42px;padding:9px 13px;white-space:nowrap;font-size:12px}
+.auth-wa-button .fa-whatsapp{color:#067647}
+.auth-security{margin-top:19px;font-size:12px}
