@@ -1,6 +1,6 @@
 {
-  "version": "1.5.42",
-  "updatedAt": "2026-11-21T00:45:00+07:00",
+  "version": "1.5.44",
+  "updatedAt": "2026-11-21T01:30:00+07:00",
   "uiBase": "PROxyz-SOURCE-20260829-2042",
   "features": [
     "admin-v0.9.3",
@@ -230,6 +230,7 @@
     "kas-report-catchup-recovery",
     "kas-report-activation-baseline",
     "kas-report-per-group-activation",
-    "kas-automation-v1540-test-contract-sync"
+    "kas-automation-v1540-test-contract-sync",
+    "kas-reminder-catchup-cache-buster-contract-fix-v1544"
   ]
 }
