@@ -1,6 +1,6 @@
 {
-  "version": "1.5.35",
-  "updatedAt": "2026-11-20T21:30:00+07:00",
+  "version": "1.5.37",
+  "updatedAt": "2026-11-20T23:55:00+07:00",
   "uiBase": "PROxyz-SOURCE-20260829-2042",
   "features": [
     "admin-v0.9.3",
@@ -218,6 +218,14 @@
     "admin-v1.5.32-otp-personalized-message",
     "admin-v1.5.32-otp-clipboard-paste",
     "admin-v1.5.33-otp-copy-regression-contract-fix",
-    "admin-v1.5.35-smart-otp-return-popup"
+    "admin-v1.5.35-smart-otp-return-popup",
+    "kas-schedule-reminders-h1-1900",
+    "kas-automatic-monthly-yearly-reports",
+    "human-readable-kas-report-period",
+    "otp-smart-paste-removed",
+    "kas-auto-reports-disabled-by-default",
+    "kas-auto-report-groups-explicit-selection",
+    "kas-auto-report-whatsapp-full-text",
+    "kas-auto-report-cadence-footer"
   ]
 }

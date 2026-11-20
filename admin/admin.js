@@ -1,7 +1,7 @@
 (() => {
   "use strict";
 
-  const ADMIN_BUILD = "1.5.35";
+  const ADMIN_BUILD = "1.5.37";
   const config = window.PROXYZ_ADMIN_CONFIG || {};
 
   async function checkAdminBuild() {
@@ -60,6 +60,7 @@
   let evidenceRows = [];
   let activeKasTab = "transaksi";
   let kasSchedules = [];
+  let kasAutomationSettings = null;
   let kasReportData = null;
   let kasCategoryEditing = null;
   let kasScheduleEditing = null;
@@ -371,8 +372,6 @@
     challengeExpiresAt = 0;
     try { sessionStorage.removeItem(OTP_STORAGE_KEY); } catch (_) {}
     $("otp-form").hidden = true;
-    hideOtpSmartPrompt();
-    otpPageWasBackgrounded = false;
     $("phone-form").hidden = false;
     if ($("whatsapp-login-panel")) $("whatsapp-login-panel").hidden = true;
   }
@@ -1355,6 +1354,75 @@
     const data = await api(`/api/kas/${encodeURIComponent(activeKas)}/jadwal`);
     kasSchedules = data.jadwal || [];
     renderKasSchedules();
+    await loadKasAutomationSettings();
+  }
+
+  function renderKasAutomationSettings() {
+    const value = kasAutomationSettings || {};
+    const set = (id, v) => { const el = $(id); if (el) el.value = String(v ?? ""); };
+    const check = (id, v) => { const el = $(id); if (el) el.checked = Boolean(v); };
+    check("kas-auto-reminder-enabled", value.reminderEnabled !== false);
+    set("kas-auto-reminder-recipients", value.reminderRecipients || "both");
+    set("kas-auto-reminder-time", value.reminderTime || "19:00");
+    check("kas-auto-monthly-enabled", value.monthlyEnabled === true);
+    set("kas-auto-monthly-day", value.monthlyDay || 1);
+    set("kas-auto-monthly-time", value.monthlyTime || "05:00");
+    check("kas-auto-yearly-enabled", value.yearlyEnabled === true);
+    set("kas-auto-yearly-month", value.yearlyMonth || 1);
+    set("kas-auto-yearly-day", value.yearlyDay || 1);
+    set("kas-auto-yearly-time", value.yearlyTime || "00:00");
+    const monthSelect = $("kas-auto-yearly-month");
+    if (monthSelect && !monthSelect.options.length) KAS_MONTH_NAMES.forEach((name, i) => { const option = document.createElement("option"); option.value = String(i + 1); option.textContent = name; monthSelect.appendChild(option); });
+    if (monthSelect) monthSelect.value = String(value.yearlyMonth || 1);
+    const list = $("kas-auto-report-groups");
+    if (!list) return;
+    list.replaceChildren();
+    const installed = (kasReportGroups || []).filter(group => group && group.id && (group.installedKas || []).some(item => item.id === activeKas));
+    const selected = new Set(Array.isArray(value.reportGroupIds) ? value.reportGroupIds : []);
+    if (!installed.length) { const empty = document.createElement("div"); empty.className = "kas-report-group-empty"; empty.textContent = "Kas belum ter-install di grup WhatsApp mana pun."; list.appendChild(empty); return; }
+    for (const group of installed) {
+      const label = document.createElement("label"); label.className = "kas-report-group-check";
+      const input = document.createElement("input"); input.type = "checkbox"; input.dataset.kasAutoGroupId = group.id; input.checked = selected.has(group.id);
+      const copy = document.createElement("span"); const name = document.createElement("strong"); name.textContent = group.nama || "Grup WhatsApp";
+      const meta = document.createElement("small"); meta.textContent = "Kas ter-install"; copy.append(name, meta); label.append(input, copy); list.appendChild(label);
+    }
+  }
+
+  async function loadKasAutomationSettings() {
+    if (!activeKas) return;
+    try {
+      if (!kasReportGroups.length) {
+        const groups = await api("/api/groups");
+        kasReportGroups = Array.isArray(groups.groups) ? groups.groups : [];
+      }
+      const data = await api(`/api/kas/${encodeURIComponent(activeKas)}/jadwal-settings`);
+      kasAutomationSettings = data.settings || {};
+      renderKasAutomationSettings();
+      setStatus($("kas-auto-settings-status"));
+    } catch (error) { setStatus($("kas-auto-settings-status"), error.message, "error"); }
+  }
+
+  async function saveKasAutomationSettings() {
+    const payload = {
+      reminderEnabled: $("kas-auto-reminder-enabled").checked,
+      reminderRecipients: $("kas-auto-reminder-recipients").value,
+      reminderTime: $("kas-auto-reminder-time").value,
+      monthlyEnabled: $("kas-auto-monthly-enabled").checked,
+      monthlyDay: Number($("kas-auto-monthly-day").value),
+      monthlyTime: $("kas-auto-monthly-time").value,
+      yearlyEnabled: $("kas-auto-yearly-enabled").checked,
+      yearlyMonth: Number($("kas-auto-yearly-month").value),
+      yearlyDay: Number($("kas-auto-yearly-day").value),
+      yearlyTime: $("kas-auto-yearly-time").value,
+      reportGroupIds: [...document.querySelectorAll('#kas-auto-report-groups input[data-kas-auto-group-id]:checked')].map(input => input.dataset.kasAutoGroupId)
+    };
+    setStatus($("kas-auto-settings-status"), "Menyimpan pengaturan…");
+    try {
+      const data = await api(`/api/kas/${encodeURIComponent(activeKas)}/jadwal-settings`, { method: "PUT", body: JSON.stringify(payload) });
+      kasAutomationSettings = data.settings || payload;
+      renderKasAutomationSettings();
+      setStatus($("kas-auto-settings-status"), "Pengaturan jadwal berhasil disimpan.", "success");
+    } catch (error) { setStatus($("kas-auto-settings-status"), error.message, "error"); }
   }
 
   function renderKasSchedules() {
@@ -4729,70 +4797,6 @@ ${row.label}`))return;
     const digits = String(input.value || "").replace(/\D/g, "").slice(0, 6);
     if (input.value !== digits) input.value = digits;
   });
-  let otpPageWasBackgrounded = false;
-  let otpSmartPromptTimer = 0;
-
-  function hideOtpSmartPrompt() {
-    const prompt = $("otp-smart-prompt");
-    if (prompt) prompt.hidden = true;
-    if (otpSmartPromptTimer) { clearTimeout(otpSmartPromptTimer); otpSmartPromptTimer = 0; }
-  }
-
-  function showOtpSmartPrompt() {
-    if (!challengeId || $("otp-form")?.hidden || String($("otp")?.value || "").length === 6) return;
-    const prompt = $("otp-smart-prompt");
-    if (!prompt) return;
-    prompt.hidden = false;
-    otpSmartPromptTimer = window.setTimeout(() => {
-      if (prompt && !prompt.matches(":focus-within")) prompt.hidden = true;
-      otpSmartPromptTimer = 0;
-    }, 20000);
-  }
-
-  function noteOtpPageBackgrounded() {
-    if (challengeId && !$("otp-form")?.hidden) otpPageWasBackgrounded = true;
-  }
-
-  function handleOtpPageReturn() {
-    if (!otpPageWasBackgrounded) return;
-    otpPageWasBackgrounded = false;
-    if (!challengeId || $("otp-form")?.hidden) return;
-    window.setTimeout(showOtpSmartPrompt, 250);
-  }
-
-  document.addEventListener("visibilitychange", () => {
-    if (document.visibilityState === "hidden") noteOtpPageBackgrounded();
-    else if (document.visibilityState === "visible") handleOtpPageReturn();
-  });
-  window.addEventListener("blur", noteOtpPageBackgrounded);
-  window.addEventListener("focus", handleOtpPageReturn);
-
-  $("otp-smart-paste")?.addEventListener("click", async () => {
-    const input = $("otp");
-    try {
-      if (!navigator.clipboard?.readText) throw new Error("Clipboard tidak tersedia di browser ini.");
-      // Pembacaan clipboard hanya dilakukan setelah ketukan eksplisit pengguna.
-      const copied = await navigator.clipboard.readText();
-      const match = String(copied || "").match(/(?:^|\D)(\d{6})(?:\D|$)/);
-      const code = match?.[1] || String(copied || "").replace(/\D/g, "").slice(0, 6);
-      if (code.length !== 6) throw new Error("Clipboard belum berisi kode OTP 6 digit.");
-      input.value = code;
-      input.dispatchEvent(new Event("input", { bubbles: true }));
-      input.focus();
-      hideOtpSmartPrompt();
-      setStatus($("auth-status"), "Kode OTP berhasil diisi. Tekan Masuk untuk melanjutkan.", "success");
-    } catch (_) {
-      hideOtpSmartPrompt();
-      input.focus();
-      setStatus($("auth-status"), "Browser membatasi akses clipboard. Ketuk kolom OTP, lalu tekan lama dan pilih Tempel dari keyboard Android.", "error");
-    }
-  });
-  $("otp").addEventListener("input", () => {
-    const input = $("otp");
-    const digits = String(input.value || "").replace(/\D/g, "").slice(0, 6);
-    if (input.value !== digits) input.value = digits;
-    if (digits.length === 6) hideOtpSmartPrompt();
-  });
   $("otp-form").addEventListener("submit", async event => {
     event.preventDefault(); setStatus($("auth-status"), "Memeriksa kode…");
     try { if (!challengeId) throw new Error("Kirim kode OTP terlebih dahulu."); await api("/api/auth/verify", { method: "POST", body: JSON.stringify({ challengeId, code: $("otp").value }) }); clearOtpChallenge(); setStatus($("auth-status")); await bootstrapSession(); } catch (error) { if (/kedaluwarsa|tidak ditemukan|berakhir/i.test(error.message)) clearOtpChallenge(); setStatus($("auth-status"), error.message, "error"); }
@@ -4914,6 +4918,7 @@ ${row.label}`))return;
   $("kas-report-wa-complete").addEventListener("click", () => sendKasReportWhatsApp("complete_group").catch(showError));
   $("kas-report-wa-simple").addEventListener("click", () => sendKasReportWhatsApp("simple_group").catch(showError));
   $("kas-schedule-add").addEventListener("click", () => openKasScheduleDialog());
+  $("kas-auto-settings-save")?.addEventListener("click", saveKasAutomationSettings);
   $("close-kas-schedule").addEventListener("click", () => { kasScheduleEditing = null; $("kas-schedule-dialog").close(); });
   $("kas-schedule-form").addEventListener("submit", submitKasSchedule);
   $("kas-schedule-amount").addEventListener("input", () => formatNominalInput($("kas-schedule-amount")));
