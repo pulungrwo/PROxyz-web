@@ -1,7 +1,7 @@
 (() => {
   "use strict";
 
-  const ADMIN_BUILD = "1.5.31";
+  const ADMIN_BUILD = "1.5.33";
   const config = window.PROXYZ_ADMIN_CONFIG || {};
 
   async function checkAdminBuild() {
@@ -4722,6 +4722,27 @@ ${row.label}`))return;
     try { const result = await api("/api/auth/request", { method: "POST", body: JSON.stringify({ phone: $("phone").value }) }); challengeId = result.challengeId; challengeExpiresAt = Number(result.expiresAt) || Date.now() + 300000; saveOtpChallenge($("phone").value); $("phone-form").hidden = true; $("otp-form").hidden = false; $("otp").value = ""; $("otp").focus(); setStatus($("auth-status"), "Kode OTP sudah dikirim ke WhatsApp.", "success"); } catch (error) { setStatus($("auth-status"), error.message, "error"); }
   });
 
+  $("otp").addEventListener("input", () => {
+    const input = $("otp");
+    const digits = String(input.value || "").replace(/\D/g, "").slice(0, 6);
+    if (input.value !== digits) input.value = digits;
+  });
+  $("paste-otp")?.addEventListener("click", async () => {
+    try {
+      if (!navigator.clipboard?.readText) {
+        throw new Error("Browser tidak mendukung tempel otomatis. Tekan lama kolom OTP lalu pilih Tempel.");
+      }
+      const copied = await navigator.clipboard.readText();
+      const match = String(copied || "").match(/(?:^|\D)(\d{6})(?:\D|$)/);
+      const code = match?.[1] || String(copied || "").replace(/\D/g, "").slice(0, 6);
+      if (code.length !== 6) throw new Error("Clipboard tidak berisi kode OTP 6 digit.");
+      $("otp").value = code;
+      $("otp").focus();
+      setStatus($("auth-status"), "Kode OTP berhasil ditempel. Tekan Masuk untuk melanjutkan.", "success");
+    } catch (error) {
+      setStatus($("auth-status"), error?.message || "Kode belum dapat ditempel. Tekan lama kolom OTP lalu pilih Tempel.", "error");
+    }
+  });
   $("otp-form").addEventListener("submit", async event => {
     event.preventDefault(); setStatus($("auth-status"), "Memeriksa kode…");
     try { if (!challengeId) throw new Error("Kirim kode OTP terlebih dahulu."); await api("/api/auth/verify", { method: "POST", body: JSON.stringify({ challengeId, code: $("otp").value }) }); clearOtpChallenge(); setStatus($("auth-status")); await bootstrapSession(); } catch (error) { if (/kedaluwarsa|tidak ditemukan|berakhir/i.test(error.message)) clearOtpChallenge(); setStatus($("auth-status"), error.message, "error"); }

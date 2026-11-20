@@ -1,6 +1,6 @@
 {
-  "version": "1.5.31",
-  "updatedAt": "2026-11-20T20:50:00+07:00",
+  "version": "1.5.33",
+  "updatedAt": "2026-11-20T21:30:00+07:00",
   "uiBase": "PROxyz-SOURCE-20260829-2042",
   "features": [
     "admin-v0.9.3",
@@ -213,6 +213,10 @@
     "admin-login-v1530-regression-contract-sync",
     "admin-otp-message-only-5min-v1531",
     "admin-explicit-app-view-routing-v1531",
-    "admin-empty-states-ternak-kompetisi-v1531"
+    "admin-empty-states-ternak-kompetisi-v1531",
+    "admin-v1.5.32-module-dom-hierarchy-fix",
+    "admin-v1.5.32-otp-personalized-message",
+    "admin-v1.5.32-otp-clipboard-paste",
+    "admin-v1.5.33-otp-copy-regression-contract-fix"
   ]
 }
