@@ -10,7 +10,7 @@
   <meta http-equiv="Expires" content="0">
   <title>Admin PROxyz</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
-  <link rel="stylesheet" href="./admin.css?v=3.2.43">
+  <link rel="stylesheet" href="./admin.css?v=3.2.44">
 </head>
 <body>
   <main class="shell">
@@ -755,6 +755,11 @@
         <section class="panel compact-panel ternak-picker">
           <div class="selector-with-action"><label class="field-title" for="ternak-select">Pilih usaha ternak<select id="ternak-select"></select></label><div class="inline-actions"><button id="ternak-kind-create" class="ghost compact" type="button">+ Jenis</button><button id="ternak-create" class="ghost compact" type="button">+ Usaha</button></div></div>
         </section>
+        <section id="ternak-empty" class="panel app-empty-state" hidden>
+          <h2>Belum ada usaha ternak</h2><p class="muted">Buat usaha ternak pertama agar pencatatan populasi, pakan, kesehatan, dan keuangan dapat digunakan.</p>
+          <button class="primary compact" type="button" id="ternak-empty-create">+ Buat usaha ternak</button>
+        </section>
+        <p id="ternak-page-status" class="status" aria-live="polite"></p>
         <section id="ternak-content" hidden>
           <section class="hero hero-ternak">
             <div class="hero-head"><div><p class="eyebrow light" id="ternak-kind">Ternak</p><h2 id="ternak-name">—</h2><p id="ternak-mode" class="hero-sub">—</p></div><span id="ternak-role" class="role-pill">—</span></div>
@@ -802,6 +807,11 @@
           <select id="competition-select" aria-label="Pilih kompetisi"></select>
         </section>
 
+        <section id="competition-empty" class="panel app-empty-state" hidden>
+          <h2>Belum ada kompetisi</h2><p class="muted">Buat kompetisi pertama untuk mulai mengelola peserta, jadwal pertandingan, dan klasemen.</p>
+          <button id="competition-empty-create" class="primary compact" type="button"><i class="fa-solid fa-plus"></i> Buat kompetisi</button>
+        </section>
+        <p id="competition-status" class="status" aria-live="polite"></p>
         <section id="competition-content" hidden>
           <section class="hero hero-indigo">
             <div class="hero-head">
@@ -1307,6 +1317,6 @@
   </dialog>
 
   <script src="./config.js?v=242"></script>
-  <script src="./admin.js?v=3.2.43" defer></script>
+  <script src="./admin.js?v=3.2.44" defer></script>
 </body>
 </html>

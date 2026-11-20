@@ -1,6 +1,6 @@
 {
-  "version": "1.5.30",
-  "updatedAt": "2026-11-20T20:15:00+07:00",
+  "version": "1.5.31",
+  "updatedAt": "2026-11-20T20:50:00+07:00",
   "uiBase": "PROxyz-SOURCE-20260829-2042",
   "features": [
     "admin-v0.9.3",
@@ -210,6 +210,9 @@
     "admin-login-simple-otp-phone",
     "admin-persistent-session-until-logout",
     "whatsapp-auto-login-link-preserved",
-    "admin-login-v1530-regression-contract-sync"
+    "admin-login-v1530-regression-contract-sync",
+    "admin-otp-message-only-5min-v1531",
+    "admin-explicit-app-view-routing-v1531",
+    "admin-empty-states-ternak-kompetisi-v1531"
   ]
 }

@@ -2555,3 +2555,6 @@ dialog[id^="risma-"] .icon-button{background:#edf7fd!important;color:#285c7d!imp
 .auth-wa-button{min-height:42px;padding:9px 13px;white-space:nowrap;font-size:12px}
 .auth-wa-button .fa-whatsapp{color:#067647}
 .auth-security{margin-top:19px;font-size:12px}
+
+/* ADMIN MODULE EMPTY STATES V1.5.31 */
+.app-empty-state{margin-top:12px;text-align:center;padding:24px 18px}.app-empty-state h2{margin-bottom:7px}.app-empty-state p{max-width:520px;margin:0 auto 14px}.app-empty-state button{min-height:42px}

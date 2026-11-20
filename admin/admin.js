@@ -1,7 +1,7 @@
 (() => {
   "use strict";
 
-  const ADMIN_BUILD = "1.5.30";
+  const ADMIN_BUILD = "1.5.31";
   const config = window.PROXYZ_ADMIN_CONFIG || {};
 
   async function checkAdminBuild() {
@@ -752,24 +752,45 @@
     $("app-switcher-bar")?.setAttribute("aria-expanded", "false");
   }
 
+  const ADMIN_VIEW_IDS = Object.freeze({
+    kas: "kas-view", bertunas: "bertunas-view", galeri: "galeri-view", risma: "risma-view",
+    ternak: "ternak-view", kompetisi: "kompetisi-view", creator: "creator-view", users: "users-view"
+  });
+  const ADMIN_TAB_IDS = Object.freeze({
+    kas: "tab-kas", bertunas: "tab-bertunas", galeri: "tab-galeri", risma: "tab-risma",
+    ternak: "tab-ternak", kompetisi: "tab-kompetisi", creator: "tab-creator", users: "tab-users"
+  });
+
   function switchView(view) {
+    if (!Object.prototype.hasOwnProperty.call(ADMIN_VIEW_IDS, view)) return;
+    const target = $(ADMIN_VIEW_IDS[view]);
+    if (!target) {
+      console.error(`[Admin Web] Kontainer aplikasi ${view} tidak ditemukan (${ADMIN_VIEW_IDS[view]}).`);
+      return;
+    }
     activeView = view;
     if ($("app-tabs")) $("app-tabs").dataset.activeView = view;
-    for (const name of ["kas", "bertunas", "galeri", "risma", "ternak", "kompetisi", "creator", "users"]) {
-      $(`${name}-view`).hidden = name !== view;
-      $("tab-" + name).classList.toggle("active", name === view);
+    for (const [name, viewId] of Object.entries(ADMIN_VIEW_IDS)) {
+      const section = $(viewId);
+      const tab = $(ADMIN_TAB_IDS[name]);
+      if (section) section.hidden = name !== view;
+      if (tab) {
+        tab.classList.toggle("active", name === view);
+        tab.setAttribute("aria-current", name === view ? "page" : "false");
+      }
     }
+    target.hidden = false;
     collapseAppDock();
     syncProxyzAppSwitcherLabel();
     requestAnimationFrame(syncAppDockFloating);
-    if (view === "kas" && !activeKas && me.kas?.length) loadKas(me.kas[0].id).catch(showError);
-    if (view === "bertunas" && !activeBertunas && me.bertunas?.length) loadBertunas(me.bertunas[0].id).catch(showError);
+    if (view === "kas" && !activeKas && me.kas?.length) loadKas(me.kas[0].id).catch(error => setStatus($("kas-status"), error.message, "error"));
+    if (view === "bertunas" && !activeBertunas && me.bertunas?.length) loadBertunas(me.bertunas[0].id).catch(error => setStatus($("bertunas-status"), error.message, "error"));
     if (view === "galeri" && !activeGallery && me.galeri?.length) loadGallery(me.galeri[0].id).catch(showError);
-    if (view === "risma") loadRisma().catch(showError);
-    if (view === "ternak") loadTernakIndex().catch(showError);
-    if (view === "kompetisi") loadCompetitionIndex().catch(showError);
-    if (view === "creator") loadCreator().catch(showError);
-    if (view === "users" && me.isOwner) loadUsers().catch(showError);
+    if (view === "risma") loadRisma().catch(error => setStatus($("risma-status"), error.message, "error"));
+    if (view === "ternak") loadTernakIndex().catch(error => setStatus($("ternak-page-status"), error.message, "error"));
+    if (view === "kompetisi") loadCompetitionIndex().catch(error => setStatus($("competition-status"), error.message, "error"));
+    if (view === "creator") loadCreator().catch(error => setStatus($("creator-status"), error.message, "error"));
+    if (view === "users" && me.isOwner) loadUsers().catch(error => setStatus($("users-status"), error.message, "error"));
   }
 
   async function handleAdminDeepLink() {
@@ -835,10 +856,11 @@
     const data = await api("/api/kompetisi"); competitionRows = data.kompetisi || [];
     fillSelect($("competition-select"), competitionRows, row => `${row.nama} · ${row.cabang} · ${row.role}`);
     if (!competitionRows.length) {
-      activeCompetition=""; competitionDetail=null; $("competition-content").hidden=true;
+      activeCompetition=""; competitionDetail=null; $("competition-content").hidden=true; $("competition-empty").hidden=false;
       if (me?.isOwner) { $("competition-select").replaceChildren(); const o=document.createElement("option");o.value="";o.textContent="Belum ada kompetisi";$("competition-select").appendChild(o); }
       return;
     }
+    $("competition-empty").hidden=true;
     const id = activeCompetition && competitionRows.some(row=>row.id===activeCompetition) ? activeCompetition : competitionRows[0].id;
     await loadCompetition(id);
   }
@@ -900,7 +922,7 @@
   }
 
   async function loadUsers() {
-    if (!me?.isOwner) return;
+    if (!me?.isOwner) { setStatus($("users-status"), "Menu Pengguna hanya tersedia untuk Owner PROxyz.", "error"); return; }
     setStatus($("users-status"), "Memuat pengguna…");
     const data = await api("/api/users");
     usersDirectory = data.users || [];
@@ -3520,7 +3542,8 @@ ${row.label}`))return;
     const data=await api("/api/ternak"); ternakList=data.ternak||[]; ternakJenis=data.jenis||[];
     fillSelect($("ternak-select"),ternakList,row=>`${row.nama} · ${row.jenis} · ${row.role}`);
     $("ternak-create").hidden=!me?.isOwner; $("ternak-kind-create").hidden=!(data.canCreateJenis ?? me?.isOwner);
-    if(!ternakList.length){ activeTernak=""; ternakDetail=null; $("ternak-content").hidden=true; return; }
+    if(!ternakList.length){ activeTernak=""; ternakDetail=null; $("ternak-content").hidden=true; $("ternak-empty").hidden=false; return; }
+    $("ternak-empty").hidden=true;
     const wanted=activeTernak && ternakList.some(x=>x.id===activeTernak)?activeTernak:ternakList[0].id;
     $("ternak-select").value=wanted;
     if(forceDetail || !ternakDetail || activeTernak!==wanted) await loadTernak(wanted); else renderTernak();
@@ -4709,6 +4732,7 @@ ${row.label}`))return;
   $("competition-select").addEventListener("change",()=>loadCompetition($("competition-select").value).catch(showError));
   $("competition-refresh").addEventListener("click",()=>loadCompetition(activeCompetition).catch(showError));
   $("competition-create").addEventListener("click",openCompetitionCreate);
+  $("competition-empty-create")?.addEventListener("click",openCompetitionCreate);
   $("close-competition-create").addEventListener("click",()=>$("competition-create-dialog").close());
   $("competition-create-format").addEventListener("change",syncCompetitionCreateOptions);
   $("competition-setting-format").addEventListener("change",syncCompetitionSettingOptions);
@@ -5355,7 +5379,7 @@ ${row.label}`))return;
   $("ternak-search").addEventListener("input",()=>{ternakSearch=$("ternak-search").value.trim();renderTernakItems();});
   $("ternak-kind-create").addEventListener("click",openTernakKind); $("close-ternak-kind").addEventListener("click",()=>$("ternak-kind-dialog").close());
   $("ternak-kind-form").addEventListener("submit",async event=>{event.preventDefault();setStatus($("ternak-kind-status"),"Menambahkan jenis…");try{const data=await api("/api/ternak/jenis",{method:"POST",body:JSON.stringify({label:$("ternak-kind-name").value,usahaPrefix:$("ternak-kind-prefix").value,mode:$("ternak-kind-mode").value})});ternakJenis=data.daftar||ternakJenis;$("ternak-kind-dialog").close();await loadTernakIndex(false);}catch(error){setStatus($("ternak-kind-status"),error.message,"error");}});
-  $("ternak-create").addEventListener("click",openTernakCreate); $("close-ternak-create").addEventListener("click",()=>$("ternak-create-dialog").close());
+  $("ternak-create").addEventListener("click",openTernakCreate); $("ternak-empty-create")?.addEventListener("click",openTernakCreate); $("close-ternak-create").addEventListener("click",()=>$("ternak-create-dialog").close());
   $("ternak-create-form").addEventListener("submit",async event=>{event.preventDefault();setStatus($("ternak-create-status"),"Membuat usaha…");try{const data=await api("/api/ternak",{method:"POST",body:JSON.stringify({jenis:$("ternak-create-kind").value,nama:$("ternak-create-name").value})});$("ternak-create-dialog").close();activeTernak=data.ternak.id;const meData=await api("/api/me");me=meData.user;await loadTernakIndex(true);}catch(error){setStatus($("ternak-create-status"),error.message,"error");}});
   $("ternak-add-item").addEventListener("click",openTernakItem); $("close-ternak-item").addEventListener("click",()=>$("ternak-item-dialog").close()); $("ternak-item-sex").addEventListener("change",syncTernakItemFunctions);
   $("ternak-item-form").addEventListener("submit",async event=>{event.preventDefault();const d=ternakDetail;const body=d.mode==="individu"?{nama:$("ternak-item-name").value||"-",kelamin:$("ternak-item-sex").value,fungsi:$("ternak-item-function").value,asal:$("ternak-item-origin").value,tanggalMasuk:$("ternak-item-date").value,hargaBeli:parseNominalText($("ternak-item-cost").value)}:{nama:$("ternak-batch-name").value,fungsi:$("ternak-batch-function").value,jumlahAwal:Number($("ternak-batch-count").value),asal:$("ternak-item-origin").value,tanggalMasuk:$("ternak-item-date").value,modalAwal:parseNominalText($("ternak-item-cost").value)};setStatus($("ternak-item-status"),"Menyimpan populasi…");try{await api(`/api/ternak/${encodeURIComponent(activeTernak)}/item`,{method:"POST",body:JSON.stringify(body)});$("ternak-item-dialog").close();await loadTernak(activeTernak);}catch(error){setStatus($("ternak-item-status"),error.message,"error");}});
