@@ -1,7 +1,7 @@
 (() => {
   "use strict";
 
-  const ADMIN_BUILD = "1.5.37";
+  const ADMIN_BUILD = "1.5.42";
   const config = window.PROXYZ_ADMIN_CONFIG || {};
 
   async function checkAdminBuild() {
@@ -1363,7 +1363,8 @@
     const check = (id, v) => { const el = $(id); if (el) el.checked = Boolean(v); };
     check("kas-auto-reminder-enabled", value.reminderEnabled !== false);
     set("kas-auto-reminder-recipients", value.reminderRecipients || "both");
-    set("kas-auto-reminder-time", value.reminderTime || "19:00");
+    set("kas-auto-reminder-time", value.reminderTime || "05:00");
+    set("kas-auto-reminder-offset", value.reminderOffsetDays ?? 0);
     check("kas-auto-monthly-enabled", value.monthlyEnabled === true);
     set("kas-auto-monthly-day", value.monthlyDay || 1);
     set("kas-auto-monthly-time", value.monthlyTime || "05:00");
@@ -1407,6 +1408,7 @@
       reminderEnabled: $("kas-auto-reminder-enabled").checked,
       reminderRecipients: $("kas-auto-reminder-recipients").value,
       reminderTime: $("kas-auto-reminder-time").value,
+      reminderOffsetDays: Number($("kas-auto-reminder-offset").value),
       monthlyEnabled: $("kas-auto-monthly-enabled").checked,
       monthlyDay: Number($("kas-auto-monthly-day").value),
       monthlyTime: $("kas-auto-monthly-time").value,

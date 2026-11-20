@@ -10,7 +10,7 @@
   <meta http-equiv="Expires" content="0">
   <title>Admin PROxyz</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
-  <link rel="stylesheet" href="./admin.css?v=3.2.49">
+  <link rel="stylesheet" href="./admin.css?v=3.2.53">
 </head>
 <body>
   <main class="shell">
@@ -181,13 +181,14 @@
             <p class="muted small">Kelola pembayaran rutin langsung dari Admin Web. Pembayaran yang dilakukan di sini tetap tercatat sebagai transaksi Kas.</p>
             <div id="kas-schedule-list" class="list-stack"></div>
             <section class="kas-automation-card">
-              <div class="mini-section-title"><span>Pengingat pembayaran</span><small class="muted">H-1 sebelum jatuh tempo</small></div>
+              <div class="mini-section-title"><span>Pengingat pembayaran</span><small class="muted">Default H+0 pada hari jatuh tempo</small></div>
               <label class="kas-automation-toggle"><input id="kas-auto-reminder-enabled" type="checkbox" checked> Aktifkan pengingat pembayaran rutin</label>
               <div class="context-grid">
                 <label>Kirim kepada<select id="kas-auto-reminder-recipients"><option value="both">Owner dan Admin</option><option value="owner">Owner saja</option><option value="admin">Admin saja</option></select></label>
-                <label>Jam pengingat<input id="kas-auto-reminder-time" type="time" value="19:00"></label>
+                <label>Jarak dari jatuh tempo<select id="kas-auto-reminder-offset"><option value="0">H+0 · Hari jatuh tempo</option><option value="1">H-1 · 1 hari sebelumnya</option><option value="2">H-2 · 2 hari sebelumnya</option><option value="3">H-3 · 3 hari sebelumnya</option><option value="5">H-5 · 5 hari sebelumnya</option><option value="7">H-7 · 7 hari sebelumnya</option><option value="14">H-14 · 14 hari sebelumnya</option><option value="30">H-30 · 30 hari sebelumnya</option></select></label>
+                <label>Jam pengingat<input id="kas-auto-reminder-time" type="time" value="05:00"></label>
               </div>
-              <p class="muted small">Default pukul 19.00 WIB pada H-1. Penerima dapat membalas <b>bayar</b>, <b>bayar 2</b>, dan seterusnya untuk mencatat jumlah periode.</p>
+              <p class="muted small">Default H+0 pukul 05.00 WIB pada hari jatuh tempo. Jarak dan jam dapat diubah. Penerima dapat membalas <b>bayar</b>, <b>bayar 2</b>, dan seterusnya untuk mencatat jumlah periode.</p>
             </section>
             <section class="kas-automation-card">
               <div class="mini-section-title"><span>Laporan otomatis bulanan</span><small class="muted">Periode bulan sebelumnya</small></div>
@@ -196,7 +197,7 @@
                 <label>Tanggal pengiriman<input id="kas-auto-monthly-day" type="number" min="1" max="31" value="1"></label>
                 <label>Jam pengiriman<input id="kas-auto-monthly-time" type="time" value="05:00"></label>
               </div>
-              <p class="muted small">Nonaktif secara default. Jika diaktifkan, default pengiriman tanggal 1 pukul 05.00 WIB untuk laporan bulan sebelumnya.</p>
+              <p class="muted small">Nonaktif secara default. Jika diaktifkan, default pengiriman tanggal 1 pukul 05.00 WIB untuk laporan bulan sebelumnya. Aktivasi dimulai dari jadwal berikutnya; jadwal yang sudah lewat sebelum aktivasi tidak dikirim ulang. Jika bot offline saat jadwal yang sudah aktif, laporan akan dikirim setelah bot kembali online.</p>
             </section>
             <section class="kas-automation-card">
               <div class="mini-section-title"><span>Laporan otomatis tahunan</span><small class="muted">Periode tahun sebelumnya</small></div>
@@ -206,7 +207,7 @@
                 <label>Tanggal pengiriman<input id="kas-auto-yearly-day" type="number" min="1" max="31" value="1"></label>
                 <label>Jam pengiriman<input id="kas-auto-yearly-time" type="time" value="00:00"></label>
               </div>
-              <p class="muted small">Nonaktif secara default. Jika diaktifkan, default pengiriman setiap 1 Januari pukul 00.00 WIB untuk laporan tahun sebelumnya.</p>
+              <p class="muted small">Nonaktif secara default. Jika diaktifkan, default pengiriman setiap 1 Januari pukul 00.00 WIB untuk laporan tahun sebelumnya. Aktivasi dimulai dari jadwal berikutnya; jadwal yang sudah lewat sebelum aktivasi tidak dikirim ulang. Jika bot offline saat jadwal yang sudah aktif, laporan akan dikirim setelah bot kembali online.</p>
             </section>
             <section class="kas-automation-card">
               <div class="mini-section-title"><span>Grup penerima laporan otomatis</span><small class="muted">Hanya grup Kas ter-install</small></div>
@@ -1352,6 +1353,6 @@
   </dialog>
 
   <script src="./config.js?v=242"></script>
-  <script src="./admin.js?v=3.2.49" defer></script>
+  <script src="./admin.js?v=3.2.53" defer></script>
 </body>
 </html>
