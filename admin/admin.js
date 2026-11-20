@@ -1,7 +1,7 @@
 (() => {
   "use strict";
 
-  const ADMIN_BUILD = "1.5.33";
+  const ADMIN_BUILD = "1.5.35";
   const config = window.PROXYZ_ADMIN_CONFIG || {};
 
   async function checkAdminBuild() {
@@ -371,6 +371,8 @@
     challengeExpiresAt = 0;
     try { sessionStorage.removeItem(OTP_STORAGE_KEY); } catch (_) {}
     $("otp-form").hidden = true;
+    hideOtpSmartPrompt();
+    otpPageWasBackgrounded = false;
     $("phone-form").hidden = false;
     if ($("whatsapp-login-panel")) $("whatsapp-login-panel").hidden = true;
   }
@@ -4727,21 +4729,69 @@ ${row.label}`))return;
     const digits = String(input.value || "").replace(/\D/g, "").slice(0, 6);
     if (input.value !== digits) input.value = digits;
   });
-  $("paste-otp")?.addEventListener("click", async () => {
+  let otpPageWasBackgrounded = false;
+  let otpSmartPromptTimer = 0;
+
+  function hideOtpSmartPrompt() {
+    const prompt = $("otp-smart-prompt");
+    if (prompt) prompt.hidden = true;
+    if (otpSmartPromptTimer) { clearTimeout(otpSmartPromptTimer); otpSmartPromptTimer = 0; }
+  }
+
+  function showOtpSmartPrompt() {
+    if (!challengeId || $("otp-form")?.hidden || String($("otp")?.value || "").length === 6) return;
+    const prompt = $("otp-smart-prompt");
+    if (!prompt) return;
+    prompt.hidden = false;
+    otpSmartPromptTimer = window.setTimeout(() => {
+      if (prompt && !prompt.matches(":focus-within")) prompt.hidden = true;
+      otpSmartPromptTimer = 0;
+    }, 20000);
+  }
+
+  function noteOtpPageBackgrounded() {
+    if (challengeId && !$("otp-form")?.hidden) otpPageWasBackgrounded = true;
+  }
+
+  function handleOtpPageReturn() {
+    if (!otpPageWasBackgrounded) return;
+    otpPageWasBackgrounded = false;
+    if (!challengeId || $("otp-form")?.hidden) return;
+    window.setTimeout(showOtpSmartPrompt, 250);
+  }
+
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "hidden") noteOtpPageBackgrounded();
+    else if (document.visibilityState === "visible") handleOtpPageReturn();
+  });
+  window.addEventListener("blur", noteOtpPageBackgrounded);
+  window.addEventListener("focus", handleOtpPageReturn);
+
+  $("otp-smart-paste")?.addEventListener("click", async () => {
+    const input = $("otp");
     try {
-      if (!navigator.clipboard?.readText) {
-        throw new Error("Browser tidak mendukung tempel otomatis. Tekan lama kolom OTP lalu pilih Tempel.");
-      }
+      if (!navigator.clipboard?.readText) throw new Error("Clipboard tidak tersedia di browser ini.");
+      // Pembacaan clipboard hanya dilakukan setelah ketukan eksplisit pengguna.
       const copied = await navigator.clipboard.readText();
       const match = String(copied || "").match(/(?:^|\D)(\d{6})(?:\D|$)/);
       const code = match?.[1] || String(copied || "").replace(/\D/g, "").slice(0, 6);
-      if (code.length !== 6) throw new Error("Clipboard tidak berisi kode OTP 6 digit.");
-      $("otp").value = code;
-      $("otp").focus();
-      setStatus($("auth-status"), "Kode OTP berhasil ditempel. Tekan Masuk untuk melanjutkan.", "success");
-    } catch (error) {
-      setStatus($("auth-status"), error?.message || "Kode belum dapat ditempel. Tekan lama kolom OTP lalu pilih Tempel.", "error");
+      if (code.length !== 6) throw new Error("Clipboard belum berisi kode OTP 6 digit.");
+      input.value = code;
+      input.dispatchEvent(new Event("input", { bubbles: true }));
+      input.focus();
+      hideOtpSmartPrompt();
+      setStatus($("auth-status"), "Kode OTP berhasil diisi. Tekan Masuk untuk melanjutkan.", "success");
+    } catch (_) {
+      hideOtpSmartPrompt();
+      input.focus();
+      setStatus($("auth-status"), "Browser membatasi akses clipboard. Ketuk kolom OTP, lalu tekan lama dan pilih Tempel dari keyboard Android.", "error");
     }
+  });
+  $("otp").addEventListener("input", () => {
+    const input = $("otp");
+    const digits = String(input.value || "").replace(/\D/g, "").slice(0, 6);
+    if (input.value !== digits) input.value = digits;
+    if (digits.length === 6) hideOtpSmartPrompt();
   });
   $("otp-form").addEventListener("submit", async event => {
     event.preventDefault(); setStatus($("auth-status"), "Memeriksa kode…");

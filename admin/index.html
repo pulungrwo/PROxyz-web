@@ -10,7 +10,7 @@
   <meta http-equiv="Expires" content="0">
   <title>Admin PROxyz</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
-  <link rel="stylesheet" href="./admin.css?v=3.2.46">
+  <link rel="stylesheet" href="./admin.css?v=3.2.47">
 </head>
 <body>
   <main class="shell">
@@ -32,9 +32,12 @@
         </form>
         <form id="otp-form" class="stack auth-form" hidden aria-hidden="true">
           <label><span class="field-label"><i class="fa-solid fa-key"></i> Kode OTP</span>
-            <input id="otp" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="6 digit" required>
+            <input id="otp" inputmode="numeric" autocomplete="one-time-code" name="one-time-code" pattern="[0-9]{6}" enterkeyhint="done" maxlength="6" placeholder="6 digit" required>
           </label>
-          <button id="paste-otp" type="button" class="ghost compact otp-paste-button"><i class="fa-solid fa-clipboard" aria-hidden="true"></i><span>Tempel kode OTP</span></button>
+          <aside id="otp-smart-prompt" class="otp-smart-prompt" hidden role="status" aria-live="polite">
+            <div class="otp-smart-copy"><strong><i class="fa-solid fa-shield-halved" aria-hidden="true"></i> Kode OTP tersedia?</strong><span>Kode sudah disalin dari notifikasi WhatsApp?</span></div>
+            <button id="otp-smart-paste" type="button" class="ghost compact"><i class="fa-solid fa-clipboard" aria-hidden="true"></i><span>Tempel kode sekarang</span></button>
+          </aside>
           <button type="submit" class="primary"><i class="fa-solid fa-right-to-bracket"></i><span>Masuk</span></button>
           <button id="change-phone" type="button" class="ghost"><i class="fa-solid fa-arrow-left"></i><span>Ganti nomor</span></button>
         </form>
@@ -1318,6 +1321,6 @@
   </dialog>
 
   <script src="./config.js?v=242"></script>
-  <script src="./admin.js?v=3.2.46" defer></script>
+  <script src="./admin.js?v=3.2.47" defer></script>
 </body>
 </html>

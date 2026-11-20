@@ -2560,4 +2560,13 @@ dialog[id^="risma-"] .icon-button{background:#edf7fd!important;color:#285c7d!imp
 .app-empty-state{margin-top:12px;text-align:center;padding:24px 18px}.app-empty-state h2{margin-bottom:7px}.app-empty-state p{max-width:520px;margin:0 auto 14px}.app-empty-state button{min-height:42px}
 
 /* ADMIN V1.5.32: one-tap OTP clipboard action */
-.otp-paste-button{display:inline-flex;align-items:center;justify-content:center;gap:8px;width:100%;min-height:42px}
+
+/* PROxyz Admin V1.5.35 — popup OTP sementara saat kembali dari notifikasi/aplikasi WhatsApp. */
+.otp-smart-prompt{display:grid;gap:10px;padding:13px;border:1px solid #dbe5f1;border-radius:14px;background:linear-gradient(135deg,#f8fbff,#eef4ff);box-shadow:0 8px 22px rgba(16,24,40,.08);animation:otpSmartPromptIn .18s ease-out}
+.otp-smart-prompt[hidden]{display:none!important}
+.otp-smart-copy{display:grid;gap:4px;color:#344054}
+.otp-smart-copy strong{font-size:13px}
+.otp-smart-copy strong i{color:#067647;margin-right:5px}
+.otp-smart-copy span{font-size:12px;color:#667085;line-height:1.4}
+.otp-smart-prompt button{display:flex;align-items:center;justify-content:center;gap:8px;min-height:42px}
+@keyframes otpSmartPromptIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
